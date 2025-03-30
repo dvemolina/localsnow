@@ -1,6 +1,6 @@
 import { sequence } from '@sveltejs/kit/hooks';
 import type { Handle } from '@sveltejs/kit';
-import { paraglideMiddleware } from './paraglide/server';
+import { paraglideMiddleware } from '$lib/paraglide/server';
 /* import * as auth from '$lib/server/auth.js'; */
 
 /* const handleAuth: Handle = async ({ event, resolve }) => {
