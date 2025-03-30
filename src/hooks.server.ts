@@ -1,6 +1,7 @@
 import { sequence } from '@sveltejs/kit/hooks';
 import type { Handle } from '@sveltejs/kit';
 import { paraglideMiddleware } from '$lib/paraglide/server';
+import { getCanonicalUrl } from './lib/utils/seo';
 /* import * as auth from '$lib/server/auth.js'; */
 
 /* const handleAuth: Handle = async ({ event, resolve }) => {
@@ -26,12 +27,14 @@ import { paraglideMiddleware } from '$lib/paraglide/server';
 
 const paraglideHandle: Handle = ({ event, resolve }) =>
 	paraglideMiddleware(event.request, ({ request: localizedRequest, locale }) => {
-		event.request = localizedRequest;
-		return resolve(event, {
-			transformPageChunk: ({ html }) => {
-				return html.replace('%lang%', locale);
-			}
-		});
+	  event.request = localizedRequest;
+	  return resolve(event, {
+		transformPageChunk: ({ html }) => {
+		  return html
+			.replace('%lang%', locale)
+			.replace('%canonical%', getCanonicalUrl(event.url, locale));
+		}
+	  });
 	});
 
 

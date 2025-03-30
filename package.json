@@ -47,7 +47,9 @@
 		"tailwindcss-animate": "^1.0.7",
 		"typescript": "^5.0.0",
 		"typescript-eslint": "^8.20.0",
-		"vite": "^6.0.0"
+		"vite": "^6.0.0",
+		"@inlang/paraglide-js": "2.0.8",
+		"@inlang/cli": "^3.0.0"
 	},
 	"dependencies": {
 		"@oslojs/crypto": "^1.0.1",
