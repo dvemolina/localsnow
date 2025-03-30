@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state'; 
-	import { getLocale, locales } from '$lib/paraglide/runtime'; // Use the correct imports
+	import { locales } from '$lib/paraglide/runtime'; 
 	import { getCanonicalUrl } from '$lib/utils/seo';
 
 	let { children } = $props();
