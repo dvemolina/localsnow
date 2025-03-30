@@ -1,7 +1,7 @@
 import { sequence } from '@sveltejs/kit/hooks';
 import type { Handle } from '@sveltejs/kit';
 import { paraglideMiddleware } from '$lib/paraglide/server';
-import { getCanonicalUrl } from './lib/utils/seo';
+import { getCanonicalUrl } from '$lib/utils/seo';
 /* import * as auth from '$lib/server/auth.js'; */
 
 /* const handleAuth: Handle = async ({ event, resolve }) => {
