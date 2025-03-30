@@ -1,7 +1,7 @@
-import 'dotenv/config';
+import { getProjectUrl } from "./generics";
 
 export function getCanonicalUrl(url: URL, lang?: string): string {
-  const base = process.env.PROJECT_URL;
+  const base = getProjectUrl();
   const path = url.pathname;
   
   // Remove existing language prefix if present
