@@ -19,8 +19,8 @@
 	<!-- x-default for unspecified languages -->
 	<link rel="alternate" hreflang="x-default" href={getCanonicalUrl(page.url, 'en')} />
 </svelte:head>
-
-<ModeWatcher />
+<!-- 
+<ModeWatcher /> -->
 <Header /> 
 <div class="wrapper flex h-full w-full flex-col items-center justify-center">
 	<main class="h-full w-full max-w-4xl pt-32 px-4">
