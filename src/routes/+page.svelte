@@ -2,7 +2,7 @@
 	import { fly } from 'svelte/transition';
 
 	// Svelte 5 reactive state
-	let userLocation = $state<string | null>(null);
+	let userLocation = $state<string | null>("Wonderland");
 	let isGeoLoading = $state(false);
 	let searchQuery = $state('');
 	let lessonType = $state('ski');
@@ -44,6 +44,7 @@
 	function handleSearch() {
 		// Handle search functionality
 	}
+
 </script>
 
 <svelte:head>
@@ -70,6 +71,7 @@
 				height="721"
 				loading="eager"
 				fetchpriority="high"
+                importance="high"
 				decoding="async"
 				class="h-full w-full rounded-md object-cover object-right"
 				itemprop="primaryImageOfPage"
@@ -81,14 +83,14 @@
 	<div
 		class="container relative z-10 flex h-full flex-col items-center justify-center rounded-md px-6 py-6 text-white"
 	>
-		<div class="flex w-full h-full flex-col justify-between gap-4">
+		<div class="flex h-full w-full flex-col justify-between gap-4">
 			<h1
 				itemprop="headline"
 				class="text-shadow mb-2 text-3xl font-bold sm:text-5xl md:text-6xl lg:text-6xl"
 			>
 				{globalHeadline}
 			</h1>
-			<div class="flex flex-col h-full justify-center">
+			<div class="flex h-full flex-col justify-center">
 				<p class="text-shadow mb-4 text-xl md:text-2xl">
 					<span class="rounded-full bg-primary/80 px-2.5 py-0.5">7,000+ Visitors</span> trust our
 					FREE network of
@@ -187,7 +189,7 @@
 </section>
 
 <!-- Instructor Types Section - Critical for keyword targeting -->
-<section class="bg-gray-50 py-12">
+<section class="grey-section">
 	<div class="container px-4">
 		<h2 class="mb-8 text-center text-3xl font-bold">Find Your Perfect Instructor</h2>
 
@@ -240,7 +242,7 @@
 </section>
 
 <!-- Top Resorts Section - Critical for local SEO -->
-<section class="py-12">
+<section class="section">
 	<div class="container mx-auto px-4">
 		<h2 class="mb-2 text-center text-3xl font-bold">Popular Ski Destinations</h2>
 		<p class="mb-8 text-center text-gray-600">
@@ -285,7 +287,7 @@
 </section>
 
 <!-- Trust Signals Section -->
-<section class="bg-gray-50 py-12">
+<section class="grey-section">
 	<div class="container mx-auto px-4">
 		<div class="mx-auto mb-10 max-w-3xl text-center">
 			<h2 class="mb-4 text-3xl font-bold">Why Choose Us</h2>

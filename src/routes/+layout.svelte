@@ -2,10 +2,11 @@
 	import { page } from '$app/state';
 	import { locales } from '$lib/paraglide/runtime';
 	import { getCanonicalUrl } from '$lib/utils/seo';
-	import Header from 'src/lib/components/shared/Header.svelte';
+	import Header from '$src/lib/components/shared/Header.svelte';
 	import '../app.css';
 	import { ModeWatcher } from 'mode-watcher';
-	import ScreenSize from 'src/lib/components/shared/ScreenSize.svelte';
+	import ScreenSize from '$src/lib/components/shared/ScreenSize.svelte';
+	import Footer from '$src/lib/components/shared/Footer.svelte';
 	
 	let { children } = $props();
 </script>
@@ -22,9 +23,10 @@
 <!-- 
 <ModeWatcher /> -->
 <Header /> 
-<div class="wrapper flex h-full w-full flex-col items-center justify-center">
+<div class="wrapper flex w-full flex-col items-center justify-center">
 	<main class="h-full w-full max-w-4xl pt-32 px-4">
 		{@render children()}
 	</main>
 </div>
+<Footer/>
 <ScreenSize/>
