@@ -4,24 +4,9 @@
 	import LanguageSwitch from './LanguageSwitch.svelte';
 	import ModeSwitch from './ModeSwitch.svelte';
 	import Breadcrumb from './Breadcrumb.svelte';
-
-	const items = [
-		{ label: 'Instructors', href: '/instructors' },
-		{ label: 'Resorts', href: '/location' },
-		{ label: 'Contact', href: '/contact' },
-		{ label: 'About', href: '/about' }
-	];
+	import { items, isCurrentPath } from "$src/lib/utils/generics";
 
 	let isMobileMenuOpen = $state(false);
-
-	function isCurrentPath(href: string, currentPath: string) {
-		// Remove language prefixes from both paths
-		const cleanHref = href.replace(/^\/[a-z]{2}(\/|$)/, '/');
-		const cleanCurrent = currentPath.replace(/^\/[a-z]{2}(\/|$)/, '/');
-
-		// Also handle cases where one path has a trailing slash and the other doesn't
-		return cleanHref.replace(/\/$/, '') === cleanCurrent.replace(/\/$/, '');
-	}
 
 	// Prevent scrolling when menu is open
 	$effect(() => {
@@ -40,12 +25,12 @@
 		<div
 			class="header flex w-fit flex-row items-center justify-between gap-4 rounded-full border border-border bg-card pr-4 sm:gap-12"
 		>
-			<a href="/" class="group flex flex-row items-center justify-center gap-2">
+			<a href="/" class="group flex flex-row items-center justify-center">
 				<div class="m-1 size-12 overflow-hidden rounded-full object-cover">
 					<img
-						src="/logo-local-snow.png"
+						src="/local-snow-head-big.png"
 						alt="Local Snow Logo"
-						class="opacity-85 invert-0 group-hover:opacity-100 group-focus:opacity-100 dark:invert"
+						class="opacity-85 invert-0 group-hover:opacity-100 group-focus:opacity-100 dark:invert p-1"
 					/>
 				</div>
 				<p class="title4 mt-0 text-foreground/85 transition-all group-hover:text-foreground">
