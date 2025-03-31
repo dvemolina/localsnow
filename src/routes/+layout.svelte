@@ -5,6 +5,8 @@
 	import Header from 'src/lib/components/shared/Header.svelte';
 	import '../app.css';
 	import { ModeWatcher } from 'mode-watcher';
+	import ScreenSize from 'src/lib/components/shared/ScreenSize.svelte';
+	
 	let { children } = $props();
 </script>
 
@@ -19,9 +21,10 @@
 </svelte:head>
 
 <ModeWatcher />
-<Header />
+<Header /> 
 <div class="wrapper flex h-full w-full flex-col items-center justify-center">
-	<main class="h-full w-full max-w-4xl pt-[80px]">
+	<main class="h-full w-full max-w-4xl pt-32 px-4">
 		{@render children()}
 	</main>
 </div>
+<ScreenSize/>
