@@ -16,7 +16,7 @@
 		{ name: 'Chamonix', slug: 'chamonix', country: 'France', instructorCount: 87 },
 		{ name: 'Whistler', slug: 'whistler', country: 'Canada', instructorCount: 112 },
 		{ name: 'Zermatt', slug: 'zermatt', country: 'Switzerland', instructorCount: 65 },
-		{ name: 'Aspen', slug: 'aspen', country: 'USA', instructorCount: 93 }
+		{ name: 'Catedral', slug: 'catedral', country: 'Argentina', instructorCount: 93 }
 		// Add more popular resorts
 	];
 
@@ -61,7 +61,7 @@
 
 <section class="hero relative h-full w-full" itemscope itemtype="http://schema.org/WPHeader">
 	<!-- LCP-optimized hero image -->
-	<div class="absolute inset-0 z-0 max-h-[400px]">
+	<div class="absolute inset-0 z-0 max-h-[400px] shadow-md rounded-lg">
 		<picture>
 			<source srcset="/ski-instructor-powder.webp" type="image/webp" />
 			<img
@@ -91,10 +91,10 @@
 				{globalHeadline}
 			</h1>
 			<div class="flex h-full flex-col justify-center">
-				<p class="text-shadow mb-4 text-xl md:text-2xl">
+				<p class="text-shadow mb-4 text-xl md:text-2xl max-w-[500px]">
 					<span class="rounded-full bg-primary/80 px-2.5 py-0.5">7,000+ Visitors</span> trust our
-					FREE network of
-					<span class="rounded-full bg-secondary/50 px-2.5 py-0.5">900+ Certified Instructors</span>
+					FREE network of local instructors
+					<span class="rounded-full bg-secondary/50 px-2.5 py-0.5"> around 200+ Resorts</span>
 				</p>
 
 				<!-- Search form - critical for conversion and user intent matching -->
@@ -141,7 +141,7 @@
 
 				<!-- Geolocation feature -->
 				{#if userLocation}
-					<div class="rounded-lg bg-white/80 p-4 text-gray-800 shadow-lg" in:fly={{ y: 20 }}>
+					<div class="rounded-lg bg-white/80 mt-1 p-4 text-gray-800 shadow-lg" in:fly={{ y: 20 }}>
 						<h2 class="flex items-center gap-2 text-xl font-bold">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -179,7 +179,7 @@
 						</div>
 					</div>
 				{:else if isGeoLoading}
-					<div class="animate-pulse rounded-lg bg-white/80 p-4 text-gray-800 shadow-lg">
+					<div class="animate-pulse rounded-lg bg-white/80 p-4 text-gray-800 shadow-lg mt-1">
 						<p>Finding instructors near your location...</p>
 					</div>
 				{/if}
@@ -190,7 +190,7 @@
 
 <!-- Instructor Types Section - Critical for keyword targeting -->
 <section class="grey-section">
-	<div class="container px-4">
+	<div class="container">
 		<h2 class="mb-8 text-center text-3xl font-bold">Find Your Perfect Instructor</h2>
 
 		<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -252,12 +252,12 @@
 		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
 			{#each topResorts as resort}
 				<a
-					href={`/${resort.slug}/ski-instructors`}
+					href={`/${resort.slug}/instructors`}
 					class="group relative overflow-hidden rounded-lg shadow-md transition-shadow hover:shadow-lg"
 				>
 					<img
-						src={`/resorts/${resort.slug}.webp`}
-						alt={`${resort.name} ski resort with instructors`}
+						src={`/${resort.slug}.webp`}
+						alt={`${resort.name} ski resort instructors`}
 						loading="lazy"
 						width="300"
 						height="200"
@@ -288,9 +288,9 @@
 
 <!-- Trust Signals Section -->
 <section class="grey-section">
-	<div class="container mx-auto px-4">
+	<div class="container mx-auto">
 		<div class="mx-auto mb-10 max-w-3xl text-center">
-			<h2 class="mb-4 text-3xl font-bold">Why Choose Us</h2>
+			<h2 class="mb-4 text-3xl font-bold">What We Do</h2>
 			<p class="text-gray-600">
 				Unlike booking platforms, we connect you directly with instructors - no commissions, no fees
 			</p>

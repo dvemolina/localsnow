@@ -4,8 +4,8 @@
     
 </script>
 
-<footer class="w-full flex justify-center items-center">
-    <div class="flex w-full max-w-4xl flex-row p-6 bg-card border border-border my-12 rounded-md justify-around items-center">
+<footer class="w-full flex justify-center items-center ">
+    <div class="flex w-full max-w-4xl flex-row p-6 bg-card border border-border my-12 rounded-md justify-around items-center shadow-md">
         <img src="/local-snow.png" alt="Local Snow Ski Instructor Logo" class="size-48">
         <nav class="flex flex-col items-center justify-center">
             <ul class="flex flex-col items-center gap-1">

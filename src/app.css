@@ -82,10 +82,10 @@
 	}
 
 	.section {
-		@apply py-16 h-full
+		@apply py-16 h-full rounded-lg
 	}
 	.grey-section {
-		@apply bg-gray-50 py-16 h-full rounded-md
+		@apply bg-gray-50 py-16 h-full rounded-lg
 	}
 
 	.title {

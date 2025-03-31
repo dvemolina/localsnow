@@ -24,7 +24,7 @@
 <ModeWatcher /> -->
 <Header /> 
 <div class="wrapper flex w-full flex-col items-center justify-center">
-	<main class="h-full w-full max-w-4xl pt-32 px-4">
+	<main class="h-full w-full max-w-4xl pt-36 px-4 min-h-screen">
 		{@render children()}
 	</main>
 </div>
