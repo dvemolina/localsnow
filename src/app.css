@@ -4,7 +4,7 @@
 
 @layer base {
 	:root {
-		--background: 0 0% 100%;
+		--background: 0 0% 99%;
 		--foreground: 20 14.3% 4.1%;
 		--muted: 240 4.8% 95.9%;
 		--muted-foreground: 240 3.8% 46.1%;
@@ -72,20 +72,29 @@
 		margin: 0;
 		padding: 0;
 	}
-	html,
-	body {
-		height: 100%;
-		width: 100%;
-	}
+	
 	body {
 		@apply bg-background text-foreground;
+	}
+
+	.dots {
+		content: none;
+		background-image: url('/dots-25.svg');
+		background-repeat: repeat;
+		background-size:  258px;
+		width:100%;
+		height: 100%;
+		position: fixed;
+		overflow-y: auto;
 	}
 
 	.section {
 		@apply py-16 h-full rounded-lg
 	}
 	.grey-section {
-		@apply bg-gray-50 py-16 h-full rounded-lg
+		@apply bg-white/5 py-16 h-full rounded-lg;
+		backdrop-filter: blur(2px);
+		-webkit-backdrop-filter: blur(2px)
 	}
 
 	.title {

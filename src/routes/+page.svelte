@@ -86,7 +86,7 @@
 		<div class="flex h-full w-full flex-col justify-between gap-4">
 			<h1
 				itemprop="headline"
-				class="text-shadow mb-2 text-3xl font-bold sm:text-5xl md:text-6xl lg:text-6xl"
+				class="text-shadow mb-4 text-3xl font-bold sm:text-5xl md:text-6xl lg:text-6xl"
 			>
 				{globalHeadline}
 			</h1>
@@ -290,9 +290,9 @@
 <section class="grey-section">
 	<div class="container mx-auto">
 		<div class="mx-auto mb-10 max-w-3xl text-center">
-			<h2 class="mb-4 text-3xl font-bold">What We Do</h2>
+			<h2 class="mb-4 text-3xl font-bold">Wait, you said free..?</h2>
 			<p class="text-gray-600">
-				Unlike booking platforms, we connect you directly with instructors - no commissions, no fees
+				Yes, unlike booking platforms, we connect you directly with instructors - no commissions, no fees
 			</p>
 		</div>
 
@@ -318,7 +318,7 @@
 				</div>
 				<h3 class="mb-2 text-xl font-semibold">No Booking Fees</h3>
 				<p class="text-gray-600">
-					Unlike SkiBro and CheckYeti, we never take commissions from instructors
+					Unlike Skibro and CheckYeti, we never take commissions from instructors
 				</p>
 			</div>
 
@@ -366,7 +366,7 @@
 						/>
 					</svg>
 				</div>
-				<h3 class="mb-2 text-xl font-semibold">Direct Communication</h3>
+				<h3 class="mb-2 text-xl font-semibold">Direct to the Source</h3>
 				<p class="text-gray-600">
 					Connect directly with instructors - no middlemen or booking platforms
 				</p>

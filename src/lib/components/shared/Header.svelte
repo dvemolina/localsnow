@@ -151,9 +151,9 @@
 <style>
 
 .header-wrapper {
-	background: linear-gradient(to bottom, rgb(255, 255, 255) 0%,rgba(255, 255, 255, 0.884) 75%,rgba(255, 255, 255, 0.697) 100%);
-	backdrop-filter: blur(5px);
-	-webkit-backdrop-filter: blur(5px)
+	background: linear-gradient(to bottom, hsl(0, 0%, 99%) 0%,hsla(0, 0%, 99%, 0.914) 50%,hsla(0, 0%, 99%, 0.64) 100%);
+	backdrop-filter: blur(2px);
+	-webkit-backdrop-filter: blur(2px)
 }
 
 </style>

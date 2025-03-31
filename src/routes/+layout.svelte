@@ -22,11 +22,13 @@
 </svelte:head>
 <!-- 
 <ModeWatcher /> -->
-<Header /> 
-<div class="wrapper flex w-full flex-col items-center justify-center">
-	<main class="h-full w-full max-w-4xl pt-36 px-4 min-h-screen">
-		{@render children()}
-	</main>
+<div class="dots">
+	<Header /> 
+	<div class="wrapper flex w-full flex-col items-center justify-center">
+		<main class="h-full w-full max-w-4xl pt-36 px-2 min-h-screen">
+			{@render children()}
+		</main>
+	</div>
+	<Footer/>
+	<ScreenSize/>
 </div>
-<Footer/>
-<ScreenSize/>
