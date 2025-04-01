@@ -17,7 +17,7 @@
 		}
 	});
 </script>
-<div class="header-wrapper fixed top-0 left-0 w-full z-30 pt-6 pb-4">
+<div class="header-wrapper fixed top-0 left-0 w-full z-30 pt-4 pb-4 px-2">
 	<div class="blur-gradient"></div>
 	<header
 		class="flex w-full flex-col items-center justify-center gap-2 self-center transition-all z-50"

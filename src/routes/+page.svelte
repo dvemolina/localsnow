@@ -61,8 +61,8 @@
 
 <section class="hero relative h-full w-full" itemscope itemtype="http://schema.org/WPHeader">
 	<!-- LCP-optimized hero image -->
-	<div class="absolute inset-0 z-0 max-h-[400px] shadow-md rounded-lg">
-		<picture>
+	<div class="overlay absolute inset-0 z-0 max-h-[400px] shadow-md rounded-lg">
+		<picture >
 			<source srcset="/ski-instructor-powder.webp" type="image/webp" />
 			<img
 				src="/ski-instructor-powder.jpeg"
@@ -81,7 +81,7 @@
 
 	<!-- Content overlay with search functionality -->
 	<div
-		class="container relative z-10 flex h-full flex-col items-center justify-center rounded-md px-6 py-6 text-white"
+		class="container relative z-10 flex h-full flex-col items-center justify-center rounded-md px-4 py-6 text-white"
 	>
 		<div class="flex h-full w-full flex-col justify-between gap-4">
 			<h1
@@ -91,7 +91,7 @@
 				{globalHeadline}
 			</h1>
 			<div class="flex h-full flex-col justify-center">
-				<p class="text-shadow mb-4 text-xl md:text-2xl max-w-[500px]">
+				<p class="text-shadow mb-4 text-xl md:text-2xl max-w-[500px] text-white">
 					<span class="rounded-full bg-primary/80 px-2.5 py-0.5">7,000+ Visitors</span> trust our
 					FREE network of local instructors
 					<span class="rounded-full bg-secondary/50 px-2.5 py-0.5"> around 200+ Resorts</span>
@@ -157,7 +157,7 @@
 							</svg>
 							{geoHeadline}
 						</h2>
-						<div class="mt-3 grid grid-cols-2 gap-4">
+						<div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
 							<a
 								href={`/${userLocation}/ski-schools`}
 								class="flex items-center gap-2 text-primary hover:underline"
@@ -190,7 +190,6 @@
 
 <!-- Instructor Types Section - Critical for keyword targeting -->
 <section class="grey-section">
-	<div class="container">
 		<h2 class="mb-8 text-center text-3xl font-bold">Find Your Perfect Instructor</h2>
 
 		<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -238,12 +237,11 @@
 				<span class="font-medium text-primary">View Options →</span>
 			</a>
 		</div>
-	</div>
 </section>
 
 <!-- Top Resorts Section - Critical for local SEO -->
 <section class="section">
-	<div class="container mx-auto px-4">
+	
 		<h2 class="mb-2 text-center text-3xl font-bold">Popular Ski Destinations</h2>
 		<p class="mb-8 text-center text-gray-600">
 			Find certified instructors at these top ski resorts
@@ -283,13 +281,11 @@
 				View All 200+ Ski Resorts
 			</a>
 		</div>
-	</div>
 </section>
 
 <!-- Trust Signals Section -->
 <section class="grey-section">
-	<div class="container mx-auto">
-		<div class="mx-auto mb-10 max-w-3xl text-center">
+		<div class="mb-10 max-w-3xl text-center">
 			<h2 class="mb-4 text-3xl font-bold">Wait, you said free..?</h2>
 			<p class="text-gray-600">
 				Yes, unlike booking platforms, we connect you directly with instructors - no commissions, no fees
@@ -366,17 +362,24 @@
 						/>
 					</svg>
 				</div>
-				<h3 class="mb-2 text-xl font-semibold">Direct to the Source</h3>
+				<h3 class="mb-2 text-xl font-semibold">Straight to the Source</h3>
 				<p class="text-gray-600">
 					Connect directly with instructors - no middlemen or booking platforms
 				</p>
 			</div>
 		</div>
-	</div>
 </section>
 
 <style>
 	.text-shadow {
-		text-shadow: 0 2px 2px rgba(0, 0, 0, 0.567);
+		text-shadow: 0 1px 5px rgba(0, 0, 0, 0.567);
 	}
+
+	.overlay::before {
+		content: var(--tw-content);
+		position:absolute; 
+    	inset: 0px;
+		background: linear-gradient(to top, rgba(100, 100, 100, 0.303) 0%, transparent 100%);
+	}
+	
 </style>
