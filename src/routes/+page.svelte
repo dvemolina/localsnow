@@ -379,7 +379,7 @@
 		content: var(--tw-content);
 		position:absolute; 
     	inset: 0px;
-		background: linear-gradient(to top, rgba(100, 100, 100, 0.303) 0%, transparent 100%);
+		background: linear-gradient(to top, rgba(0, 0, 0, 0.221) 0%, transparent 100%);
 	}
 	
 </style>
