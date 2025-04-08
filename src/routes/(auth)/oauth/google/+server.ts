@@ -1,8 +1,6 @@
 import { generateState, generateCodeVerifier } from "arctic";
 import { google } from "$lib/server/oauth/google";
 import type { RequestEvent } from "@sveltejs/kit";
-import 'dotenv/config'
-
 
 export async function GET(event: RequestEvent): Promise<Response> {
 	const state = generateState();

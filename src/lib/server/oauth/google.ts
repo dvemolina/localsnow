@@ -1,15 +1,19 @@
 import 'dotenv/config'
 import { Google } from "arctic";
+import { env } from '$env/dynamic/private';
 
 let callbackUrl: string;
 
 if(process.env.NODE_ENV === "production") {
-	callbackUrl = `${process.env.PROJECT_URL}/google/callback`
+	callbackUrl = `${process.env.PROJECT_URL}/oauth/google/callback`
 } else {
-	callbackUrl = `http://localhost:5173/google/callback`
+	callbackUrl = `${env.PROJECT_URL}/oauth/google/callback`
 }
-const clientId = process.env.GOOGLE_CLIENT_ID;
-const clientSecret = process.env.GOOGLE_CLIENT_SECRET
+
+const clientId = env.GOOGLE_CLIENT_ID;
+const clientSecret = env.GOOGLE_CLIENT_SECRET
+
+console.log('GOOGLE: ', clientId)
 
 export const google = new Google(
 	clientId,

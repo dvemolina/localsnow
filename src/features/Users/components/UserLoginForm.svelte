@@ -15,29 +15,29 @@
 	const { form: formData, enhance } = form;
 </script>
 
-
-
 <form method="POST" use:enhance>
-		<Form.Field {form} name="email" class="w-full">
-			<Form.Control>
-				{#snippet children({ props })}
-					<Form.Label>Email</Form.Label>
-					<Input {...props} bind:value={$formData.email} type="email" />
-				{/snippet}
-			</Form.Control>
-			<Form.FieldErrors />
-		</Form.Field>
-		<Form.Field {form} name="password" class="w-full">
-			<Form.Control>
-				{#snippet children({ props })}
-					<Form.Label>Password (optional)</Form.Label>
-					<Input {...props} bind:value={$formData.password} type="password"/>
-				{/snippet}
-			</Form.Control>
-			<Form.FieldErrors />
-		</Form.Field>
-    <div class="flex flex-row gap-2 items-center justify-start w-full mt-6">
-        <Form.Button>Submit</Form.Button>
-		<a href="/signup" class="text-sm {buttonVariants({ variant: "outline" })}"> I don't have an account</a>
-    </div>
+	<Form.Field {form} name="email" class="w-full">
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Email</Form.Label>
+				<Input {...props} bind:value={$formData.email} type="email" />
+			{/snippet}
+		</Form.Control>
+		<Form.FieldErrors />
+	</Form.Field>
+	<Form.Field {form} name="password" class="w-full">
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Password (optional)</Form.Label>
+				<Input {...props} bind:value={$formData.password} type="password" />
+			{/snippet}
+		</Form.Control>
+		<Form.FieldErrors />
+	</Form.Field>
+	<div class="mt-6 flex w-full flex-row items-center justify-start gap-2">
+		<Form.Button>Submit</Form.Button>
+		<a href="/signup" class="text-sm {buttonVariants({ variant: 'outline' })}">
+			I don't have an account</a
+		>
+	</div>
 </form>

@@ -102,9 +102,9 @@
 
 					<nav class="flex flex-col items-center justify-center space-y-8 mb-8">
 						<a href="/" class="group flex flex-row items-center justify-center gap-1">
-							<div class="m-1 size-12 overflow-hidden rounded-full object-cover">
+							<div class="m-1 size-12 overflow-hidden object-cover">
 								<img
-									src="/logo-local-snow.png"
+									src="/local-snow-head-big.png"
 									alt="Local Snow Logo"
 									class="opacity-85 invert-0 group-hover:opacity-100 group-focus:opacity-100 dark:invert"
 								/>

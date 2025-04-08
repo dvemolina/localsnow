@@ -6,8 +6,8 @@
 	let { children }: Props = $props();
 </script>
 
-<a href="/google">
-	<button class="button bg-secondary text-foreground border border-border">
+<a href="/oauth/google">
+	<button class="button border border-border bg-secondary text-foreground">
 		<img src="/icons/google.svg" alt="Google" class="size-5" />
 		{@render children?.()}
 	</button>

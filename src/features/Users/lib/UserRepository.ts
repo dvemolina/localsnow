@@ -1,6 +1,6 @@
 import { db } from "$lib/server/db/index";
 import { users } from "$src/lib/server/db/schema";
-import type { User } from "$src/lib/server/db/schema";
+import type { InsertUser, User } from "$src/lib/server/db/schema";
 import { eq } from "drizzle-orm";
 
 
