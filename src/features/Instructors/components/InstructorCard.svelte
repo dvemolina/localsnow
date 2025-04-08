@@ -17,13 +17,13 @@
 		
 		<div class="flex flex-col gap-1">
 			<p class="title4">Emiliano</p>
-			<div class="flex flex-row items-center gap-1">
+			<div class="sports-that-teach flex flex-row items-center gap-1">
 				<Badge class="opacity-60">Ski</Badge>
 				<Badge class="opacity-60">Snowboard</Badge>
 			</div>
 			<div class="flex flex-row items-center gap-2">
 				<img src="/icons/ski-resort.svg" alt="[resortName] ski resort" class="size-4" />
-				<a href="/dashboard" class={badgeVariants({ variant: 'secondary' })}
+				<a href="/resorts/[country]/[region]/resort-name" class={badgeVariants({ variant: 'secondary' })}
 				>Resort Name, Location</a
 				>
 			</div>
@@ -32,14 +32,14 @@
 				{#if type}
 				<Badge variant="secondary">Independent</Badge>
 				{:else if !type}
-				<a href="/dashboard" class="cursor- {badgeVariants({ variant: 'secondary' })}"
+				<a href="/ski-schools/[country]/[region]/[resort]/school-name" class="cursor- {badgeVariants({ variant: 'secondary' })}"
 				>School Full Name at Resort</a
 				>
 				{/if}
 			</div>
 			<div class="flex flex-row items-center gap-2">
 				<img src="/icons/certificate.svg" alt="Qualification-Association" class="size-4" />
-				<a href="/dashboard" class={badgeVariants({ variant: 'secondary' })}
+				<a href="/associations/[country]" class={badgeVariants({ variant: 'secondary' })}
 				>Level X - Association</a
 				>
 			</div>

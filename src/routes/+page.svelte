@@ -8,7 +8,7 @@
 	let lessonType = $state('ski');
 
 	// Primary keyword targets (expanded for search intent)
-	const globalHeadline = 'Find Certified Ski & Snowboard Instructors Worldwide';
+	const globalHeadline = 'Find Ski & Snowboard Lessons With Certified Instructors';
 	const geoHeadline = $derived(`${userLocation || 'Local'} Ski & Snowboard Instructors`);
 
 	// Top resorts data (helps with internal linking)
@@ -20,24 +20,22 @@
 		// Add more popular resorts
 	];
 
-	// Schema data - enhanced with more structured data
+	// Enhanced schema
 	const websiteSchema = {
-		'@context': 'https://schema.org',
-		'@type': 'WebApplication',
-		name: 'SkiProFinder',
-		applicationCategory: 'SportsApplication',
-		operatingSystem: 'Web',
-		offers: {
-			'@type': 'Offer',
-			price: '0',
-			priceCurrency: 'USD'
-		},
-		description:
-			'Find certified ski and snowboard instructors worldwide. Connect directly with no booking fees.',
-		aggregateRating: {
-			'@type': 'AggregateRating',
-			ratingValue: '4.8',
-			reviewCount: '1245'
+		"@context": "https://schema.org",
+		"@type": ["WebSite", "SportsActivityLocation"],
+		"name": "SkiLessonsHub",
+		"description": "Book ski lessons directly with certified ski and snowboard schools/instructors at top resorts worldwide",
+		"url": "https://skilessonshub.com",
+		"image": "/ski-lessons-og.jpg",
+		"hasOfferCatalog": {
+			"@type": "OfferCatalog",
+			"name": "Ski Lessons",
+			"itemListElement": topResorts.map(resort => ({
+				"@type": "Offer",
+				"name": `${resort.name} Ski Lessons`,
+				"category": "SkiSchool"
+			}))
 		}
 	};
 
@@ -48,10 +46,10 @@
 </script>
 
 <svelte:head>
-	<title>Find Certified Ski & Snowboard Instructors | No Booking Fees</title>
+	<title>Ski Lessons Hub | Certified Ski & Snowboard Instructors at Top Resorts</title>
 	<meta
 		name="description"
-		content="Connect directly with certified ski & snowboard instructors at 200+ resorts worldwide. No middlemen, no booking fees - just the best professional instruction."
+		content="Find & Book Ski Lessons | Connect directly with Certified Schools & Instructors at 200+ Top Resorts Worldwide. Get best prices with no booking fees, no middlemen."
 	/>
 	<script type="application/ld+json">
       {JSON.stringify(websiteSchema)}
@@ -91,9 +89,9 @@
 				{globalHeadline}
 			</h1>
 			<div class="flex h-full flex-col justify-center">
-				<p class="text-shadow mb-4 text-xl md:text-2xl max-w-[500px] text-white">
+				<p class="text-shadow mb-4 text-lg sm:text-xl  md:text-2xl max-w-[550px] text-white">
 					<span class="rounded-full bg-primary/80 px-2.5 py-0.5">7,000+ Visitors</span> trust our
-					FREE network of local instructors
+					<span class="font-semibold">FREE Worldwide</span> network of local instructors
 					<span class="rounded-full bg-secondary/50 px-2.5 py-0.5"> around 200+ Resorts</span>
 				</p>
 
@@ -242,9 +240,9 @@
 <!-- Top Resorts Section - Critical for local SEO -->
 <section class="section">
 	
-		<h2 class="mb-2 text-center text-3xl font-bold">Popular Ski Destinations</h2>
+		<h2 class="mb-2 text-center text-3xl font-bold">Popular Ski Resorts</h2>
 		<p class="mb-8 text-center text-gray-600">
-			Find certified instructors at these top ski resorts
+			Find certified instructors at these top ski destinations
 		</p>
 
 		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -284,10 +282,10 @@
 </section>
 
 <!-- Trust Signals Section -->
-<section class="grey-section">
-		<div class="mb-10 max-w-3xl text-center">
-			<h2 class="mb-4 text-3xl font-bold">Wait, you said free..?</h2>
-			<p class="text-gray-600">
+<section class="grey-section w-full">
+		<div class="mb-10 text-center">
+			<h2 class="mb-4 text-3xl font-bold text-center">Wait, you said free..?</h2>
+			<p class="text-gray-600 text-center">
 				Yes, unlike booking platforms, we connect you directly with instructors - no commissions, no fees
 			</p>
 		</div>

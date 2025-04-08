@@ -32,3 +32,28 @@
 	<Footer/>
 	<ScreenSize/>
 </div>
+
+<style>
+	.dots {
+		content: none;
+		background-image: url('/dots-25.svg');
+		background-repeat: repeat;
+		background-size:  258px;
+		width:100%;
+		height: 100%;
+		position: fixed;
+		overflow-y: auto;
+	}
+
+	.topo {
+		content: none;
+		background-image: url('/topomap.png');
+		background-repeat: no-repeat;
+		background-size:  cover;
+		background-position: center;
+		width:100%;
+		height: 100%;
+		position: fixed;
+		overflow-y: auto;
+	}
+</style>

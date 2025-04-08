@@ -35,7 +35,7 @@
 						/>
 					</div>
 					<p class="title4 mt-0 text-foreground/85 transition-all group-hover:text-foreground">
-						localsnow
+						Skilessons<span class="text-xs">hub</span>
 					</p>
 				</a>
 
