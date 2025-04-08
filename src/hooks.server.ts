@@ -2,9 +2,9 @@ import { sequence } from '@sveltejs/kit/hooks';
 import type { Handle } from '@sveltejs/kit';
 import { paraglideMiddleware } from '$lib/paraglide/server';
 import { getCanonicalUrl } from '$lib/utils/seo';
-/* import * as auth from '$lib/server/auth.js'; */
+import * as auth from '$lib/server/auth.js';
 
-/* const handleAuth: Handle = async ({ event, resolve }) => {
+const handleAuth: Handle = async ({ event, resolve }) => {
 	const sessionToken = event.cookies.get(auth.sessionCookieName);
 	if (!sessionToken) {
 		event.locals.user = null;
@@ -23,7 +23,7 @@ import { getCanonicalUrl } from '$lib/utils/seo';
 	event.locals.session = session;
 
 	return resolve(event);
-}; */
+}; 
 
 const paraglideHandle: Handle = ({ event, resolve }) =>
 	paraglideMiddleware(event.request, ({ request: localizedRequest, locale }) => {
@@ -38,4 +38,4 @@ const paraglideHandle: Handle = ({ event, resolve }) =>
 	});
 
 
-export const handle: Handle = sequence(paraglideHandle/* handleAuth */);
+export const handle: Handle = sequence(paraglideHandle, handleAuth);

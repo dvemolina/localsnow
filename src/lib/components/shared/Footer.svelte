@@ -5,7 +5,7 @@
 </script>
 
 <footer class="w-full flex justify-center items-center">
-    <div class="flex w-full max-w-4xl flex-col gap-8 sm:flex-row p-6 sm:p-12 bg-card my-4 rounded-md justify-between items-center shadow-md mx-4">
+    <div class="flex w-full max-w-4xl flex-col gap-8 sm:flex-row p-6 sm:p-12 bg-card/50 grey-section mt-4 sm:my-4 rounded-md justify-between items-center shadow-md">
         <div class="flex flex-col items-center gap-2 justify-center max-w-64 text-center">
             <img src="/local-snow.png" alt="Local Snow Ski Instructor Logo" class="w-36">
             <h3 class="title4">The free worldwide directory of snow sports professionals</h3>

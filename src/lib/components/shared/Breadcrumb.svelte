@@ -58,7 +58,7 @@
 </script>
 
 <Breadcrumb.Root
-	class="group flex flex-row items-center gap-2 px-3 text-xs text-foreground "
+	class="group flex flex-row items-center gap-2 px-3 text-xs text-foreground bg-card/50"
 >
 	<a	href="/" class="flex flex-row"
 		><img

@@ -4,20 +4,28 @@ export const userRoleEnum = pgEnum('user_role', ['admin', 'instructor', 'school-
 export const sportSlugEnum = pgEnum('sport_slug', ['ski', 'snowboard', 'telemark']);
 export const modalitySlugEnum = pgEnum('modality_slug', ['piste', 'off-piste', 'freeride', 'freestyle', 'touring', 'adaptive']);
 
+export const timestamps = {
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at'),
+    deletedAt: timestamp('deleted_at'),
+}
 // --- Users ---
 export const users = pgTable('users', {
     uuid: uuid('uuid').defaultRandom().unique().notNull(),
     id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	googleId: varchar('google_id').unique(),
     name: varchar('name', { length: 100 }).notNull(),
 	lastName: varchar('last_name', { length: 100 }).notNull(),
+	username: varchar('username', { length: 50 }),
     email: varchar('email', { length: 255 }).notNull().unique(),
     passwordHash: varchar('password_hash', { length: 255 }).notNull(),
-    role: userRoleEnum('role').notNull().default('client'), // This can now be 'instructor', 'client', 'admin', etc.
-    createdAt: timestamp('created_at').defaultNow(),
+    role: userRoleEnum('role'), // This can now be 'instructor', 'client', 'admin', etc.
     bio: text('bio'), // Only populated for 'instructor' role
-    profileImage: varchar('profile_image', { length: 255 }), // Only populated for 'instructor' role
+    profileImage: varchar('profile_image', { length: 255 }). default('/local-snow-head.png'), // Only populated for 'instructor' role
     phone: varchar('phone', { length: 50 }), // Optional, only for 'instructor'
-    isVerified: boolean('is_verified').default(false) // Optional, only for 'instructor'
+    isVerified: boolean('is_verified').default(false),// Optional, only for 'instructor'
+	acceptedTerms: boolean('accepted_terms').notNull().default(false),
+	...timestamps
 });
 // --- Sports ---
 export const sports = pgTable('sports', {
@@ -135,6 +143,8 @@ export const session = pgTable('session', {
 	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull()
 });
 
-export type Session = typeof session.$inferSelect;
+
 
 export type User = typeof users.$inferSelect;
+export type InsertUser = typeof users.$inferInsert;
+export type Session = typeof session.$inferSelect;
