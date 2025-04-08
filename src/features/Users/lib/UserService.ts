@@ -1,4 +1,4 @@
-import { type User } from "$src/lib/server/db/schema";
+import { type InsertUser, type User } from "$src/lib/server/db/schema";
 import { UserRepository } from "$src/features/Users/lib/UserRepository";
 
 //Possibility of leveraging dependency Injection for db and contracts switching.
