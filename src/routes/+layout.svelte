@@ -8,11 +8,11 @@
 	import Footer from '$src/lib/components/shared/Footer.svelte';
 
 	let { children } = $props();
-	let isDashboard = $state(page.url.pathname.includes('/dashboard'))
+	let isDashboard = $state(page.url.pathname.includes('/dashboard'));
 
-	$effect(()=> {
-		isDashboard = page.url.pathname.includes('/dashboard')
-	})
+	$effect(() => {
+		isDashboard = page.url.pathname.includes('/dashboard');
+	});
 </script>
 
 <svelte:head>
@@ -31,12 +31,16 @@
 		<Header />
 	{/if}
 	<div class="wrapper flex w-full flex-col items-center justify-center">
-		<main class="h-full min-h-screen w-full  {isDashboard ? '' : 'max-w-4xl px-4 pt-32'}">
+		<main class="h-full min-h-screen w-full {isDashboard ? '' : 'max-w-4xl px-4 pt-32'}">
 			{@render children()}
 		</main>
 	</div>
 	{#if !isDashboard}
-		<Footer />
+	<div class="flex w-full flex-col items-center justify-center">
+		<div class="flex w-full max-w-4xl flex-col items-center justify-center px-4">
+			<Footer />
+		</div>
+	</div>
 	{/if}
 	<ScreenSize />
 </div>

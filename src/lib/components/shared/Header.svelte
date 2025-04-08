@@ -18,7 +18,6 @@
 	});
 </script>
 <div class="header-wrapper fixed top-0 left-0 w-full z-30 pt-4 pb-4 px-2">
-	<div class="blur-gradient"></div>
 	<header
 		class="flex w-full flex-col items-center justify-center gap-2 self-center transition-all z-50"
 	>
@@ -77,7 +76,7 @@
 			{#if isMobileMenuOpen}
 				<div
 					transition:fade={{ duration: 200 }}
-					class="absolute top-0 left-0 w-full h-screen z-50 flex flex-col items-center justify-center bg-background/90 backdrop-blur-lg"
+					class="absolute top-0 left-0 w-full h-screen z-50 flex flex-col items-center justify-center bg-card"
 				>
 					<button
 						aria-label="Close Menu"
@@ -140,7 +139,7 @@
 
 		{#if !isCurrentPath("/", page.url.pathname)}
 		<div
-			class="breadcrumb flex w-full max-w-4xl flex-row items-center justify-between gap-4 rounded-full border border-border bg-background py-0.5 sm:gap-12 transition-all"
+			class="breadcrumb flex w-full max-w-xl flex-row items-center justify-between gap-4 rounded-full border border-border bg-background py-0.5 sm:gap-12 transition-all"
 		>
 			<Breadcrumb {items} {page} />
 		</div>
@@ -155,5 +154,6 @@
 	backdrop-filter: blur(2px);
 	-webkit-backdrop-filter: blur(2px)
 }
+
 
 </style>

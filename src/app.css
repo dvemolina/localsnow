@@ -79,10 +79,10 @@
 
 
 	.section {
-		@apply py-16 h-full rounded-lg
+		@apply py-16 last:pt-16 h-full rounded-lg
 	}
 	.grey-section {
-		@apply bg-white/5 py-16 h-full rounded-lg;
+		@apply bg-white/5 py-16 last:pt-16 h-full rounded-lg;
 		backdrop-filter: blur(2px);
 		-webkit-backdrop-filter: blur(2px)
 	}
