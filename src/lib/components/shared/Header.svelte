@@ -35,7 +35,7 @@
 						/>
 					</div>
 					<p class="title4 mt-0 text-foreground/85 transition-all group-hover:text-foreground">
-						Skilessons<span class="text-xs">hub</span>
+						localsnow
 					</p>
 				</a>
 
@@ -101,7 +101,7 @@
 					</button>
 
 					<nav class="flex flex-col items-center justify-center space-y-8 mb-8">
-						<a href="/" class="group flex flex-row items-center justify-center gap-2">
+						<a href="/" class="group flex flex-row items-center justify-center gap-1">
 							<div class="m-1 size-12 overflow-hidden rounded-full object-cover">
 								<img
 									src="/logo-local-snow.png"
