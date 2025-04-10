@@ -139,7 +139,7 @@
 
 		{#if !isCurrentPath("/", page.url.pathname)}
 		<div
-			class="breadcrumb flex w-full max-w-xl flex-row items-center justify-between gap-4 rounded-full border border-border bg-background py-0.5 sm:gap-12 transition-all"
+			class="breadcrumb flex w-full max-w-[550px] flex-row items-center justify-between gap-4 rounded-full border border-border bg-background py-0.5 sm:gap-12 transition-all"
 		>
 			<Breadcrumb {items} {page} />
 		</div>
