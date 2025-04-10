@@ -9,7 +9,6 @@ import { getClientIP } from './lib/utils/auth';
 const bucket = new RefillingTokenBucket<string>(100, 1);
 
 const rateLimitHandle: Handle = async ({ event, resolve }) => {
-	// Note: Assumes X-Forwarded-For will always be defined.
 	const clientIP = getClientIP(event);
 	if (clientIP === null) {
 		return resolve(event);
