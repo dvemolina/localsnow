@@ -28,7 +28,7 @@
 	<Form.Field {form} name="password" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>Password (optional)</Form.Label>
+				<Form.Label>Password</Form.Label>
 				<Input {...props} bind:value={$formData.password} type="password" />
 			{/snippet}
 		</Form.Control>

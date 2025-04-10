@@ -1,4 +1,5 @@
 import { redirect, type RequestEvent } from "@sveltejs/kit";
+import bcrypt from 'bcryptjs';
 
 export function obtainRedirectUrl(event: RequestEvent, message: string | undefined = "Session Expired. Login again to access Local Snow") {
     try {
@@ -25,4 +26,16 @@ export function requireAuth(event: RequestEvent, message?: string | undefined) {
 	}
 
 	return { user };
+}
+
+
+export async function hashPassword(password: string): Promise<string> {
+    const saltRounds = 10; 
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    return hashedPassword; 
+}
+
+export async function verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
+    const result = await bcrypt.compare(password, hashedPassword)
+    return result
 }

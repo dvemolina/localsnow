@@ -1,5 +1,7 @@
 import { type InsertUser, type User } from "$src/lib/server/db/schema";
 import { UserRepository } from "$src/features/Users/lib/UserRepository";
+import type { UserSignupData } from "./validations/authSchema";
+import { hashPassword } from "$src/lib/utils/auth";
 
 //Possibility of leveraging dependency Injection for db and contracts switching.
 export class UserService {
@@ -9,8 +11,19 @@ export class UserService {
         this.userRepository = new UserRepository();
     }
 
-    async createUser(userData: InsertUser): Promise<User> {
-        return await this.userRepository.createUser(userData);
+    async createUser(userData: UserSignupData): Promise<User> {
+
+        if (userData.password) {
+            const hash = await hashPassword(userData.password);
+            delete userData.password;
+            userData.passwordHash = hash
+        }
+
+        console.log('User data after processing: ', userData )
+        
+        const user = await this.userRepository.createUser(userData); 
+        console.log('New User created with Data: ', user)
+        return user
     }
 
     async getUserById(userId: number): Promise<User | null> {

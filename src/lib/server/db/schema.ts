@@ -18,7 +18,7 @@ export const users = pgTable('users', {
 	lastName: varchar('last_name', { length: 100 }).notNull(),
 	username: varchar('username', { length: 50 }),
     email: varchar('email', { length: 255 }).notNull().unique(),
-    passwordHash: varchar('password_hash', { length: 255 }).notNull(),
+    passwordHash: varchar('password_hash', { length: 255 }),
     role: userRoleEnum('role'), // This can now be 'instructor', 'client', 'admin', etc.
     bio: text('bio'), // Only populated for 'instructor' role
     profileImage: varchar('profile_image', { length: 255 }). default('/local-snow-head.png'), // Only populated for 'instructor' role

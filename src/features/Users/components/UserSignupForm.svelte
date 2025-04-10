@@ -77,7 +77,7 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<div class="items-top flex space-x-2">
-					<Checkbox {...props} bind:checked={$formData.acceptedTerms}/>
+					<Checkbox {...props} bind:checked={$formData.acceptedTerms} required={true}/>
 					<div class="grid gap-1.5 leading-none">
 					  <Label
 						class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
