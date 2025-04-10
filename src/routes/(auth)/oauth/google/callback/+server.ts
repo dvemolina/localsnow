@@ -1,5 +1,5 @@
 
-import { generateSessionToken, createSession, setSessionTokenCookie } from "$lib/server/auth";
+import { generateSessionToken, createSession, setSessionTokenCookie } from "$src/lib/server/session";
 import { google, type GoogleClaims } from "$lib/server/oauth/google";
 import { decodeIdToken } from "arctic";
 import type { RequestEvent } from "@sveltejs/kit";
