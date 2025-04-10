@@ -27,3 +27,12 @@ export type UserSignupData = {
     phone?: string
     acceptedTerms: boolean;
 };
+
+export type UserGoogleData = {
+        googleId: string;
+        name: string;
+        lastName: string;
+        username: string;
+        email: string;
+        profileImage: string;
+}

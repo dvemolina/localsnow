@@ -37,7 +37,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
 	const claims: GoogleClaims = decodeIdToken(tokens.idToken());
 	const username = generateUsernameFromGoogle(claims);
 
-	const googleUser = {googleId: claims.sub,  name: claims.given_name, username: username, surname: claims.family_name ? clearImmediate.family_name : "", email: claims.email, profileImage: claims.picture}
+	const googleUser = {googleId: claims.sub,  name: claims.given_name, username: username, lastName: claims.family_name ? clearImmediate.family_name : "", email: claims.email, profileImage: claims.picture}
 
 	// TODO: Replace this with your own DB query.
 	const existingUser = await userService.getUserByGoogleId(googleUser.googleId);
@@ -70,7 +70,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
 		});
 	}
 
-	const newUser = await userService.createUser(googleUser)
+	const newUser = await userService.createUserWithGoogle(googleUser)
 	
 	const sessionToken = generateSessionToken();
 	const session = await createSession(sessionToken, newUser.id);

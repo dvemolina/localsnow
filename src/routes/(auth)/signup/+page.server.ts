@@ -45,7 +45,7 @@ export const actions: Actions = {
         
         let user;
         try {
-           user =  await userService.createUser(form.data);
+           user =  await userService.createUserWithPassword(form.data);
         } catch (error) {
             console.error('Something went wrong creating a user with email/password: ', error)
             return fail(500, { form, error: 'Internal server error while creating the user. Try again later' });
