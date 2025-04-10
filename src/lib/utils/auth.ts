@@ -35,7 +35,18 @@ export async function hashPassword(password: string): Promise<string> {
     return hashedPassword; 
 }
 
-export async function verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
+export async function verifyPasswordHash(password: string, hashedPassword: string): Promise<boolean> {
     const result = await bcrypt.compare(password, hashedPassword)
     return result
+}
+
+export function getClientIP(event: RequestEvent): string | null {
+	const forwarded = event.request.headers.get("x-forwarded-for");
+	if (forwarded) {
+		return forwarded.split(",")[0].trim();
+	}
+	if (typeof event.getClientAddress === "function") {
+		return event.getClientAddress();
+	}
+	return null;
 }
