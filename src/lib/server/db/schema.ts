@@ -19,11 +19,11 @@ export const users = pgTable('users', {
 	username: varchar('username', { length: 50 }),
     email: varchar('email', { length: 255 }).notNull().unique(),
     passwordHash: varchar('password_hash', { length: 255 }),
-    role: userRoleEnum('role'), // This can now be 'instructor', 'client', 'admin', etc.
-    bio: text('bio'), // Only populated for 'instructor' role
-    profileImage: varchar('profile_image', { length: 255 }). default('/local-snow-head.png'), // Only populated for 'instructor' role
-    phone: varchar('phone', { length: 50 }), // Optional, only for 'instructor'
-    isVerified: boolean('is_verified').default(false),// Optional, only for 'instructor'
+    role: userRoleEnum('role'), 
+    bio: text('bio'),
+    profileImage: varchar('profile_image', { length: 255 }). default('/local-snow-head.png'),
+    phone: varchar('phone', { length: 50 }),
+    isVerified: boolean('is_verified').default(false),
 	acceptedTerms: boolean('accepted_terms').notNull().default(false),
 	...timestamps
 });
@@ -129,7 +129,7 @@ export const schoolInstructorHistory = pgTable('school_instructor_history', {
 	schoolId: integer('school_id').references(() => schools.id), // Null for independent work
 	startDate: timestamp('start_date').defaultNow().notNull(),
 	endDate: timestamp('end_date'), // Null means still active
-	role: varchar('role', { length: 100 }), // e.g., 'full-time', 'seasonal', 'independent'
+	contractType: varchar('contract_type', { length: 100 }), // e.g., 'full-time', 'seasonal', 'independent'
 	notes: text('notes'), // Optional comments or roles
 	isIndependent: boolean('is_independent').default(false) // True if the instructor worked independently
 });

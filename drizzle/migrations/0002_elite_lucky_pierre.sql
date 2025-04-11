@@ -1,0 +1,1 @@
+ALTER TABLE "school_instructor_history" RENAME COLUMN "role" TO "contract_type";
