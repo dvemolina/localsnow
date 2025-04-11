@@ -6,6 +6,7 @@ import type { RequestEvent } from "@sveltejs/kit";
 import type {  OAuth2Tokens } from "arctic";
 import { UserService } from "$src/features/Users/lib/UserService";
 import { generateUsernameFromGoogle } from "$src/lib/utils/generics";
+import { sendSignupEmail } from "$src/lib/server/webhooks/email-n8n";
 
 
 const userService = new UserService()
@@ -71,6 +72,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
 	}
 
 	const newUser = await userService.createUserWithGoogle(googleUser)
+	await sendSignupEmail(newUser.name, newUser.email)
 	
 	const sessionToken = generateSessionToken();
 	const session = await createSession(sessionToken, newUser.id);

@@ -125,7 +125,7 @@ export const schoolInstructors = pgTable('school_instructors', {
 
 export const schoolInstructorHistory = pgTable('school_instructor_history', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
-	instructorId: integer('instructor_id').notNull().references(() => users.id),
+	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
 	schoolId: integer('school_id').references(() => schools.id), // Null for independent work
 	startDate: timestamp('start_date').defaultNow().notNull(),
 	endDate: timestamp('end_date'), // Null means still active
@@ -139,7 +139,7 @@ export const session = pgTable('session', {
 	id: text('id').primaryKey(),
 	userId: integer('user_id')
 		.notNull()
-		.references(() => users.id),
+		.references(() => users.id, { onDelete: 'cascade' }),
 	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull()
 });
 

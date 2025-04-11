@@ -24,6 +24,7 @@ export function requireAuth(event: RequestEvent, message?: string | undefined) {
 		const redirectUrl = obtainRedirectUrl(event, message);
 		throw redirect(302, redirectUrl);
 	}
+    
 
 	return { user };
 }
