@@ -8,6 +8,4 @@ export const load: LayoutServerLoad = async (event) => {
     if(user.role) redirect(302, '/dashboard')
     
     return { user }
-
-
 };
