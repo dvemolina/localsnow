@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { userSignupSchema, type UserSignupSchema } from '../lib/validations/authSchema';
+	import { userSignupSchema, type UserSignupSchema } from '../lib/validations/userSchemas';
 	import * as Form from '$src/lib/components/ui/form';
 	import { Input } from '$src/lib/components/ui/input';
 	import { buttonVariants } from '$src/lib/components/ui/button';

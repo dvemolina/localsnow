@@ -75,8 +75,25 @@
 	
 	body {
 		@apply bg-background text-foreground;
+		position: relative;
+		width: 100%;
+		min-height: 100dvh;
+		z-index: 0;
 	}
-
+	
+	body::before {
+		content: "";
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-image: url('/dots-25.svg');
+		background-repeat: repeat;
+		background-size: 258px;
+		z-index: -1;
+		pointer-events: none;
+	}
 
 	.section {
 		@apply py-16 last:pt-16 h-full rounded-lg

@@ -24,17 +24,18 @@
 	<!-- x-default for unspecified languages -->
 	<link rel="alternate" hreflang="x-default" href={getCanonicalUrl(page.url, 'en')} />
 </svelte:head>
+
 <!-- 
 <ModeWatcher /> -->
-<div class="dots">
+
 	{#if !isDashboard}
 		<Header />
 	{/if}
-	<div class="wrapper flex w-full flex-col items-center justify-center">
-		<main class="h-full min-h-screen w-full {isDashboard ? '' : 'max-w-4xl px-4 pt-32'}">
+	<main class="wrapper h-full flex w-full flex-col items-center justify-center">
+		<div class=" w-full {isDashboard ? '' : 'max-w-4xl px-4 pt-32'}">
 			{@render children()}
-		</main>
-	</div>
+		</div>
+	</main>
 	{#if !isDashboard}
 	<div class="flex w-full flex-col items-center justify-center">
 		<div class="flex w-full max-w-4xl flex-col items-center justify-center px-4">
@@ -43,29 +44,6 @@
 	</div>
 	{/if}
 	<ScreenSize />
-</div>
 
-<style>
-	.dots {
-		content: none;
-		background-image: url('/dots-25.svg');
-		background-repeat: repeat;
-		background-size: 258px;
-		width: 100%;
-		height: 100%;
-		position: fixed;
-		overflow-y: auto;
-	}
 
-	/* .topo {
-		content: none;
-		background-image: url('/topomap.png');
-		background-repeat: no-repeat;
-		background-size: cover;
-		background-position: center;
-		width: 100%;
-		height: 100%;
-		position: fixed;
-		overflow-y: auto;
-	} */
-</style>
+

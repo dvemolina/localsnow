@@ -1,4 +1,4 @@
-import { userLoginSchema } from "$src/features/Users/lib/validations/authSchema.js";
+import { userLoginSchema } from "$src/features/Users/lib/validations/userSchemas.js";
 import { redirect, type Actions } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types.js";
 import { fail, setError, superValidate } from "sveltekit-superforms";

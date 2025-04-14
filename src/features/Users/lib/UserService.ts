@@ -1,6 +1,6 @@
 import { type InsertUser, type User } from "$src/lib/server/db/schema";
 import { UserRepository } from "$src/features/Users/lib/UserRepository";
-import type { UserGoogleData, UserSignupData } from "./validations/authSchema";
+import type { UserGoogleData, UserSignupData } from "./validations/userSchemas";
 import { hashPassword } from "$src/lib/utils/auth";
 
 //Possibility of leveraging dependency Injection for db and contracts switching.
