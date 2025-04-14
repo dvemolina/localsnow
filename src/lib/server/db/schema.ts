@@ -37,9 +37,10 @@ export const sports = pgTable('sports', {
 
 // --- Geography ---
 export const countries = pgTable('countries', {
-uuid: uuid('uuid').defaultRandom().unique().notNull(),
+	uuid: uuid('uuid').defaultRandom().unique().notNull(),
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
 	name: varchar('name', { length: 100} ).notNull(),
+	code: varchar('code', { length: 4}).notNull(),
 	slug: varchar('slug', { length: 100}).notNull().unique()
 });
 
@@ -56,7 +57,9 @@ export const resorts = pgTable('resorts', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
 	name: varchar('name', { length: 100} ).notNull(),
 	slug: varchar('slug', { length: 100}).notNull().unique(),
-	regionId: integer('region_id').notNull().references(() => regions.id)
+	regionId: integer('region_id').notNull().references(() => regions.id),
+	countryId: integer('country_id').notNull().references(() => countries.id)
+	
 });
 
 
