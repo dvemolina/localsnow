@@ -1,4 +1,4 @@
-import { pgTable, text, integer, timestamp, varchar, uuid, boolean, pgEnum } from 'drizzle-orm/pg-core';
+import { pgTable, text, integer, timestamp, varchar, uuid, boolean, pgEnum, numeric } from 'drizzle-orm/pg-core';
 
 export const userRoleEnum = pgEnum('user_role', ['admin', 'instructor', 'school-admin', 'client']);
 export const sportSlugEnum = pgEnum('sport_slug', ['ski', 'snowboard', 'telemark']);
@@ -39,27 +39,37 @@ export const sports = pgTable('sports', {
 export const countries = pgTable('countries', {
 	uuid: uuid('uuid').defaultRandom().unique().notNull(),
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
-	name: varchar('name', { length: 100} ).notNull(),
-	code: varchar('code', { length: 4}).notNull(),
-	slug: varchar('slug', { length: 100}).notNull().unique()
+	country: varchar('country', { length: 100} ).notNull(),
+	countryCode: varchar('country_code', { length: 4}).notNull(),
+	countrySlug: varchar('country_slug', { length: 100}).notNull().unique()
 });
 
 export const regions = pgTable('regions', {
 	uuid: uuid('uuid').defaultRandom().unique().notNull(),
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
-	name: varchar('name', { length: 100} ).notNull(),
-	slug: varchar('slug', { length: 100}).notNull().unique(),
-	countryId: integer('country_id').notNull().references(() => countries.id)
+	countryId: integer('country_id').notNull().references(() => countries.id),
+	region: varchar('region', { length: 100} ).notNull(),
+	regionSlug: varchar('region_slug', { length: 100}).notNull().unique(),
 });
 
 export const resorts = pgTable('resorts', {
-	uuid: uuid('uuid').defaultRandom().unique().notNull(),
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
-	name: varchar('name', { length: 100} ).notNull(),
-	slug: varchar('slug', { length: 100}).notNull().unique(),
-	regionId: integer('region_id').notNull().references(() => regions.id),
-	countryId: integer('country_id').notNull().references(() => countries.id)
-	
+	uuid: uuid('uuid').defaultRandom().unique().notNull(),
+	name: varchar('name', { length: 100 }).notNull(),
+	slug: varchar('slug', { length: 100 }).notNull().unique(),
+	label: varchar('label'),
+	minElevation: integer('min_elevation'),
+	maxElevation: integer('max_elevation'),
+	lat: numeric('lat', { precision: 10, scale: 6 }).notNull(),
+	lon: numeric('lon', { precision: 10, scale: 6 }).notNull(),
+	website: varchar('website', { length: 255 }),
+	countryId: integer('country_id')
+		.notNull()
+		.references(() => countries.id, { onDelete: 'cascade' }),
+	regionId: integer('region_id')
+		.notNull()
+		.references(() => regions.id, { onDelete: 'cascade' }),
+	...timestamps
 });
 
 
@@ -147,7 +157,13 @@ export const session = pgTable('session', {
 });
 
 
-
+//User
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 export type Session = typeof session.$inferSelect;
+//Countries
+export type Country = typeof countries.$inferSelect;
+export type InsertCountry = typeof countries.$inferInsert;
+//Regions
+export type Region = typeof regions.$inferSelect;
+export type InsertRegion = typeof regions.$inferInsert;

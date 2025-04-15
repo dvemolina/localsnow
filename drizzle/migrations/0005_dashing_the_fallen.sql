@@ -1,0 +1,1 @@
+ALTER TABLE "resorts" ALTER COLUMN "label" SET DATA TYPE varchar;

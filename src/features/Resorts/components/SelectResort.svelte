@@ -1,145 +1,81 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import * as Select from "$src/components/ui/select";
-  
-  // Use props instead of createEventDispatcher
-  let { 
-    value = null, 
-    onChange = undefined,
-    onBreakSelected = undefined
-  } = $props();
-  
-  // State for selections
-  let selectedCountry = $state(null);
-  let selectedRegion = $state(null);
-  let selectedBreak = $state(value);  // Initialize with passed value if available
-  
-  // Data containers
-  let countries = $state([]);
-  let regions = $state([]);
-  let breaks = $state([]);
-  let allBreaks = $state({});  // Store all breaks for lookup by ID
-  
-  // Load data
-  async function loadSurfBreaks() {
+  import { goto } from '$app/navigation';
+  import { onDestroy } from 'svelte';
+
+  let query = $state('');
+  let suggestions = $state([]);
+  let showSuggestions = $state(false);
+  let abortController: AbortController;
+  let debounceTimeout: ReturnType<typeof setTimeout>;
+
+  async function fetchSuggestions(q: string) {
+    // Abort previous fetch
+    abortController?.abort();
+    abortController = new AbortController();
+
     try {
-      const response = await fetch('/api/breaks');
-      const data = await response.json();
-      console.log('Breaks Data: ', data)
-      countries = data.countries;
-      
-      // Build a lookup object for all breaks by ID
-      const breaksLookup = {};
-      data.countries.forEach(country => {
-        country.regions.forEach(region => {
-          region.breaks.forEach(breakSpot => { //Not "breake" because it is a javascript reserved word
-            breaksLookup[breakSpot.id] = {
-              ...breakSpot,
-              country: country.name,
-              region: region.name
-            };
-          });
-        });
+      const res = await fetch(`/api/search-suggestions?q=${encodeURIComponent(q)}`, {
+        signal: abortController.signal
       });
-      allBreaks = breaksLookup;
-      
-      // If we have an initial value, set the appropriate selections
-      if (selectedBreak && allBreaks[selectedBreak]) {
-        const countryId = selectedBreak.split('-')[0];
-        const regionId = `${countryId}-${selectedBreak.split('-')[1]}`;
-        
-        selectedCountry = countryId;
-        const country = countries.find(c => c.id === selectedCountry);
-        regions = country ? country.regions : [];
-        
-        selectedRegion = regionId;
-        const region = regions.find(r => r.id === selectedRegion);
-        breaks = region ? region.breaks : [];
-      }
+
+      if (!res.ok) return;
+      const data = await res.json();
+      suggestions = data;
+      showSuggestions = true;
     } catch (error) {
-      console.error('Failed to load surf data:', error);
+      if (error.name !== 'AbortError') console.error(error);
     }
   }
-  
-  // Update regions when country changes
-  function handleCountryChange(value) {
-    selectedCountry = value;
-    selectedRegion = null;
-    selectedBreak = null;
-    
-    // Find the selected country and get its regions
-    const country = countries.find(c => c.id === selectedCountry);
-    regions = country ? country.regions : [];
-    breaks = [];
-    
-    // Notify parent form that value has changed
-    if (onChange) onChange(null);
-  }
-  
-  // Update breaks when region changes
-  function handleRegionChange(value) {
-    selectedRegion = value;
-    selectedBreak = null;
-    
-    // Find the selected region and get its breaks
-    const country = countries.find(c => c.id === selectedCountry);
-    if (country) {
-      const region = country.regions.find(r => r.id === selectedRegion);
-      breaks = region ? region.breaks : [];
+
+  function onInput(event: Event) {
+    query = (event.target as HTMLInputElement).value;
+    clearTimeout(debounceTimeout);
+
+    if (query.length >= 2) {
+      debounceTimeout = setTimeout(() => fetchSuggestions(query), 200);
     } else {
-      breaks = [];
+      showSuggestions = false;
+      suggestions = [];
     }
-    
-    // Notify parent form that value has changed
-    if (onChange) onChange(null);
   }
-  
-  // Handle break selection
-  function handleBreakChange(value) {
-    selectedBreak = value;
-    
-    // Find the full break data
-    const breakData = breaks.find(b => b.id === selectedBreak);
-    
-    // Call callback props for form and map integration
-    if (onChange) onChange(selectedBreak);
-    if (onBreakSelected && breakData) onBreakSelected(breakData);
+
+  function onSelect(suggestion) {
+    // You can adjust this to match your route structure
+    goto(`/resorts/${suggestion.slug}`);
+    showSuggestions = false;
+    suggestions = [];
   }
-  
-  onMount(loadSurfBreaks);
+
+  onDestroy(() => {
+    clearTimeout(debounceTimeout);
+    abortController?.abort();
+  });
 </script>
 
-<div class="flex flex-row gap-2">
-  <Select.Root onValueChange={(v) => handleCountryChange(v)} type="single" >
-    <Select.Trigger class="min-w-[150px]">
-      <span>{selectedCountry ? countries.find(c => c.id === selectedCountry)?.name : 'Country'}</span>
-    </Select.Trigger>
-    <Select.Content>
-      {#each countries as country}
-        <Select.Item value={country.id}>{country.name}</Select.Item>
+<div class="relative w-full max-w-lg mx-auto">
+  <input
+    type="text"
+    bind:value={query}
+    oninput={onInput}
+    placeholder="Search resort…"
+    class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+  />
+
+  {#if showSuggestions && suggestions.length > 0}
+    <ul class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+      {#each suggestions as s}
+        <li
+          class="cursor-pointer px-4 py-2 hover:bg-blue-50"
+          onclick={() => onSelect(s)}
+        >
+          <div class="font-semibold">{s.name}</div>
+          <div class="text-sm text-gray-500">{s.region}, {s.country}</div>
+        </li>
       {/each}
-    </Select.Content>
-  </Select.Root>
-  
-  <Select.Root onValueChange={(v) => handleRegionChange(v)} disabled={!selectedCountry} type="single">
-    <Select.Trigger class="min-w-[150px]">
-      <span>{selectedRegion ? regions.find(r => r.id === selectedRegion)?.name : 'Region'}</span>
-    </Select.Trigger>
-    <Select.Content>
-      {#each regions as region}
-        <Select.Item value={region.id}>{region.name}</Select.Item>
-      {/each}
-    </Select.Content>
-  </Select.Root>
-  
-  <Select.Root onValueChange={(v) => handleBreakChange(v)} disabled={!selectedRegion} type="single">
-    <Select.Trigger class="min-w-[150px]">
-      <span>{selectedBreak ? breaks.find(b => b.id === selectedBreak)?.name : 'Break'}</span>
-    </Select.Trigger>
-    <Select.Content>
-      {#each breaks as breakSpot}
-        <Select.Item value={breakSpot.id}>{breakSpot.name}</Select.Item>
-      {/each}
-    </Select.Content>
-  </Select.Root>
+    </ul>
+  {:else if showSuggestions && suggestions.length === 0}
+    <div class="absolute z-50 w-full mt-1 px-4 py-3 text-sm text-gray-400 bg-white border border-gray-200 rounded-xl shadow-md">
+      No results found.
+    </div>
+  {/if}
 </div>

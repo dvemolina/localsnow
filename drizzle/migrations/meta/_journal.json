@@ -29,6 +29,20 @@
       "when": 1744371374220,
       "tag": "0003_optimal_swarm",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1744737322352,
+      "tag": "0004_aberrant_squadron_supreme",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1744741874994,
+      "tag": "0005_dashing_the_fallen",
+      "breakpoints": true
     }
   ]
 }
