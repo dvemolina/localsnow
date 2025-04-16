@@ -1,7 +1,7 @@
 <script>
 
-	import SelectResort from "$src/features/Resorts/components/SelectResort.svelte";
+	import SearchResort from "$src/features/Resorts/components/SearchResort.svelte";
 
 </script>
 
-<SelectResort/>
+<SearchResort/>

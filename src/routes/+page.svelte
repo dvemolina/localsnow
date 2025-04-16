@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { fly } from 'svelte/transition';
+	import SearchResort from '$src/features/Resorts/components/SearchResort.svelte';
+import { fly } from 'svelte/transition';
 
 	// Svelte 5 reactive state
 	let userLocation = $state<string | null>("Wonderland");
@@ -102,13 +103,7 @@
 							<label for="location" class="mb-1 block text-sm font-medium text-gray-700"
 								>Resort or Location</label
 							>
-							<input
-								type="text"
-								id="location"
-								bind:value={searchQuery}
-								placeholder="e.g., Chamonix, Whistler, Zermatt..."
-								class="w-full rounded-md border border-gray-300 p-3 text-gray-700"
-							/>
+							<SearchResort id="location"/>
 						</div>
 						<div class="w-full md:w-auto">
 							<label for="lessonType" class="mb-1 block text-sm font-medium text-gray-700"
@@ -117,7 +112,7 @@
 							<select
 								id="lessonType"
 								bind:value={lessonType}
-								class="h-[46px] w-full rounded-md border border-gray-300 p-3 text-gray-700"
+								class="h-12 w-full rounded-md border border-gray-300 p-3 text-gray-700"
 							>
 								<option value="ski">Ski Lessons</option>
 								<option value="snowboard">Snowboard Lessons</option>
@@ -129,7 +124,7 @@
 						<div class="flex items-end">
 							<button
 								type="submit"
-								class="h-[46px] w-full whitespace-nowrap rounded-md bg-primary p-3 font-medium text-white md:w-auto"
+								class="h-12 w-full whitespace-nowrap rounded-md bg-primary p-3 font-medium text-white md:w-auto"
 							>
 								Find Instructors
 							</button>
