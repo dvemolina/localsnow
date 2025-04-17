@@ -1,5 +1,6 @@
 <script lang="ts">
 	import * as Command from '$lib/components/ui/command/index.js';
+	import { Label } from '$src/lib/components/ui/label';
 
 	let { id }: { id?: string } = $props();
 
@@ -48,9 +49,12 @@
 
 <!-- 💡 Floating results dropdown over a relative container -->
 <div class="relative mx-auto w-full max-w-md">
+	{#if !id}
+		<Label>Choose Resort</Label>
+	{/if}
 	<Command.Root class="rounded-md border border-gray-300">
 		<Command.Input
-			placeholder="Search resorts..."
+			placeholder="Type to search resorts..."
 			class="h-12 w-full border-0 p-3 text-sm text-gray-700 focus:outline-none"
 			oninput={onInput}
 			value={query}
@@ -62,22 +66,22 @@
 		<div
 			class="absolute top-full z-50 max-h-64 w-full overflow-auto rounded-md border border-border bg-white shadow-md"
 		>
-    <Command.Root>
-			<Command.Group>
-				{#each suggestions as resort}
-					<Command.Item
-						value={resort.name}
-						onselect={() => selectResort(resort.slug)}
-						class="w-full cursor-pointer px-4 py-2 hover:bg-muted"
-					>
-						<div class="flex flex-col text-left">
-							<span class="font-medium">{resort.name}</span>
-							<span class="text-sm text-muted-foreground">{resort.region}, {resort.country}</span>
-						</div>
-					</Command.Item>
-				{/each}
-			</Command.Group>
-    </Command.Root>
+			<Command.Root>
+				<Command.Group>
+					{#each suggestions as resort}
+						<Command.Item
+							value={resort.name}
+							onselect={() => selectResort(resort.slug)}
+							class="w-full cursor-pointer px-4 py-2 hover:bg-muted"
+						>
+							<div class="flex flex-col text-left">
+								<span class="font-medium">{resort.name}</span>
+								<span class="text-sm text-muted-foreground">{resort.region}, {resort.country}</span>
+							</div>
+						</Command.Item>
+					{/each}
+				</Command.Group>
+			</Command.Root>
 		</div>
 	{:else if query.length >= 2}
 		<div

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import SearchResort from '$src/features/Resorts/components/SearchResort.svelte';
-import { fly } from 'svelte/transition';
+	import { fly } from 'svelte/transition';
 
 	// Svelte 5 reactive state
 	let userLocation = $state<string | null>("Wonderland");
@@ -114,11 +114,10 @@ import { fly } from 'svelte/transition';
 								bind:value={lessonType}
 								class="h-12 w-full rounded-md border border-gray-300 p-3 text-gray-700"
 							>
-								<option value="ski">Ski Lessons</option>
-								<option value="snowboard">Snowboard Lessons</option>
 								<option value="private">Private Lessons</option>
 								<option value="group">Group Lessons</option>
 								<option value="kids">Kids Lessons</option>
+								<option value="club">Club Lessons</option>
 							</select>
 						</div>
 						<div class="flex items-end">
