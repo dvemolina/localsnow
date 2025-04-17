@@ -9,24 +9,39 @@
 	import { Textarea } from '$src/lib/components/ui/textarea';
 	import { instructorSignupSchema, type InstructorSignupSchema } from '../lib/instructorSchemas';
 	import SearchResort from '$src/features/Resorts/components/SearchResort.svelte';
-	
+
 	let { data }: { data: { form: SuperValidated<Infer<InstructorSignupSchema>> } } = $props();
-		
-		const form = superForm(data.form, {
-			validators: zodClient(instructorSignupSchema)
-		});
-		
-		const { form: formData, enhance } = form;
-	</script>
+
+	const form = superForm(data.form, {
+		validators: zodClient(instructorSignupSchema)
+	});
+
+	const { form: formData, enhance } = form;
+</script>
 
 <form method="POST" use:enhance enctype="multipart/form-data" class="flex flex-col gap-4">
 	<SearchResort />
-	<Form.Field {form} name="name" class="w-full">
+	<Form.Field {form} name="profileImage" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label>Profesional Profile Image</Form.Label>
-				<Form.Description class="text-xs">This image will appear in your Instructor Card for clients to see.</Form.Description>
-				<Input {...props} bind:value={$formData.profileImage} type="file"/>
+				<Form.Description class="text-xs"
+					>This image will appear in your Instructor Card for clients to see.</Form.Description
+				>
+				<Input {...props} bind:value={$formData.profileImage} type="file" />
+			{/snippet}
+		</Form.Control>
+
+		<Form.FieldErrors />
+	</Form.Field>
+	<Form.Field {form} name="qualification" class="w-full">
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Qualification File</Form.Label>
+				<Form.Description class="text-xs"
+					>The qualification has to be in pdf format.</Form.Description
+				>
+				<Input {...props} bind:value={$formData.qualification} type="file" accept="pdf" />
 			{/snippet}
 		</Form.Control>
 
@@ -59,6 +74,9 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label>Biography</Form.Label>
+				<Form.Description class="text-xs"
+					>Short description of yourself for the clients</Form.Description
+				>
 				<Textarea name="bio" bind:value={$formData.bio} />
 			{/snippet}
 		</Form.Control>
