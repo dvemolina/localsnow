@@ -8,7 +8,7 @@
     
     {#if !user.role}
         <div class="flex flex-col min-h-dvh w-full items-center justify-center">
-            <div class="flex p-8 flex-col border border-border/50 rounded-md bg-card max-w-lg gap-6 shadow-md">
+            <div class="flex p-8 my-8 flex-col border border-border/50 rounded-md bg-card max-w-lg gap-6 shadow-md">
                 {@render children?.()}
             </div>
 

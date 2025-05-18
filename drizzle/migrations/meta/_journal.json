@@ -43,6 +43,13 @@
       "when": 1744741874994,
       "tag": "0005_dashing_the_fallen",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1747591764558,
+      "tag": "0006_freezing_genesis",
+      "breakpoints": true
     }
   ]
 }

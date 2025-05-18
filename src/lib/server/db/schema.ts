@@ -1,6 +1,7 @@
 import { pgTable, text, integer, timestamp, varchar, uuid, boolean, pgEnum, numeric } from 'drizzle-orm/pg-core';
 
 export const userRoleEnum = pgEnum('user_role', ['admin', 'instructor', 'school-admin', 'client']);
+export const sportsEnum = pgEnum('sport', ['Ski', 'Snowboard', 'Telemark'])
 export const sportSlugEnum = pgEnum('sport_slug', ['ski', 'snowboard', 'telemark']);
 export const modalitySlugEnum = pgEnum('modality_slug', ['piste', 'off-piste', 'freeride', 'freestyle', 'touring', 'adaptive']);
 
@@ -31,8 +32,8 @@ export const users = pgTable('users', {
 export const sports = pgTable('sports', {
 	uuid: uuid('uuid').defaultRandom().unique().notNull(),
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
-	name: varchar('name', { length: 100} ).notNull(),
-	slug: sportSlugEnum('slug').notNull().unique() // e.g. 'ski', 'snowboard'
+	sport: sportsEnum('sport').notNull().unique(),
+	sportSlug: sportSlugEnum('sport_slug').notNull().unique() // e.g. 'ski', 'snowboard'
 });
 
 // --- Geography ---
