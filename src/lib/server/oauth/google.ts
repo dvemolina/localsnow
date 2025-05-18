@@ -13,7 +13,6 @@ if(process.env.NODE_ENV === "production") {
 const clientId = env.GOOGLE_CLIENT_ID;
 const clientSecret = env.GOOGLE_CLIENT_SECRET
 
-console.log('GOOGLE: ', clientId)
 
 export const google = new Google(
 	clientId,
