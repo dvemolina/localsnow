@@ -254,7 +254,7 @@
 						class="h-48 w-full object-cover transition-transform group-hover:scale-105"
 					/>
 					<div
-						class="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 to-transparent p-4"
+						class="absolute inset-0 flex flex-col justify-end bg-linear-to-t from-black/70 to-transparent p-4"
 					>
 						<h3 class="text-xl font-bold text-white">{resort.name}</h3>
 						<p class="text-sm text-white/90">

@@ -55,7 +55,7 @@
 	<Command.Root class="rounded-md border border-gray-300">
 		<Command.Input
 			placeholder="Type to search resorts..."
-			class="h-12 w-full border-0 p-3 text-sm text-gray-700 focus:outline-none"
+			class="h-12 w-full border-0 p-3 text-sm text-gray-700 focus:outline-hidden"
 			oninput={onInput}
 			value={query}
 			{id}

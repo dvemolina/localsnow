@@ -36,7 +36,7 @@
 	</Form.Field>
 	<div class="mt-6 flex w-full flex-row items-center justify-start gap-2">
 		<Form.Button>Submit</Form.Button>
-		<a href="/signup" class="text-sm {buttonVariants({ variant: 'outline' })}">
+		<a href="/signup" class="text-sm {buttonVariants({ variant: 'outline-solid' })}">
 			I don't have an account</a
 		>
 	</div>

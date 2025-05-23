@@ -23,7 +23,7 @@
 	>
 		<div class="flex flex-row gap-2 items-center justify-center ">
 			<div
-				class="header flex w-fit flex-row items-center justify-between gap-4 rounded-full shadow-sm border border-border bg-card pr-4 sm:gap-12"
+				class="header flex w-fit flex-row items-center justify-between gap-4 rounded-full shadow-xs border border-border bg-card pr-4 sm:gap-12"
 			>
 				<a href="/" class="group flex flex-row items-center justify-center">
 					<div class="m-1 size-12 overflow-hidden rounded-full object-cover">

@@ -96,6 +96,6 @@
 	
     <div class="flex flex-row gap-2 items-center justify-center w-full mt-6">
         <Form.Button>Submit</Form.Button>
-        <a href="/login" class="text-sm {buttonVariants({ variant: "outline" })}"> I already have an account</a>
+        <a href="/login" class="text-sm {buttonVariants({ variant: "outline-solid" })}"> I already have an account</a>
     </div>
 </form>

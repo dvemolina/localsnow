@@ -84,7 +84,7 @@
 	</Form.Field> -->
 
 	<div class="mt-6 flex w-full flex-row items-center justify-center gap-2">
-		<a href="/dashboard" class="text-sm {buttonVariants({ variant: 'outline' })}">Go back</a>
+		<a href="/dashboard" class="text-sm {buttonVariants({ variant: 'outline-solid' })}">Go back</a>
 		<Form.Button>Submit</Form.Button>
 	</div>
 </form>
