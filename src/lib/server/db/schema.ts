@@ -24,6 +24,7 @@ export const users = pgTable('users', {
     bio: text('bio'),
     profileImage: varchar('profile_image', { length: 255 }). default('/local-snow-head.png'),
     phone: varchar('phone', { length: 50 }),
+	qualificationFile: varchar('qualification_file', { length: 255 }),
     isVerified: boolean('is_verified').default(false),
 	acceptedTerms: boolean('accepted_terms').notNull().default(false),
 	...timestamps

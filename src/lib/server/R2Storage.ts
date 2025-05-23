@@ -1,8 +1,8 @@
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import sharp from 'sharp';
 
-//AFTER BUYING THE DOMAIN, ADD IT TO CLOUDFLARE AND ADD THE CREDENTIALS TO DOTENV (Check Pulso de Nieve Project)
 //CREATE SERVICE/REPOSITORY IN USER/INSTRUCTOR TO UPLOAD THE IMAGE / QUALIFICATION
+//USE UUID FOR THE FILENAME IN THE REPO
 
 export class StorageService {
     private s3Client: S3Client;
