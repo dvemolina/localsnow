@@ -7,7 +7,7 @@
 	let type = false;
 </script>
 
-<div class="card relative flex flex-col gap-3 bg-card justify-between rounded-md border border-border p-2 w-full min-w-[265px] sm:max-w-[717px] md:max-w-[435px] shadow-sm">
+<div class="card relative flex flex-col gap-3 bg-card justify-between rounded-md border border-border p-2 w-full min-w-[265px] sm:max-w-[717px] md:max-w-[435px] shadow-xs">
 	<div class="flex flex-row gap-3 w-full">
 
 		<Avatar.Root class="size-24 sm:size-32 border border-border mt-2">

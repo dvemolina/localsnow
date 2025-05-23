@@ -1,14 +1,13 @@
 <script lang="ts">
-	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
+	import SuperDebug, { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import * as Form from '$src/lib/components/ui/form';
 	import { Input } from '$src/lib/components/ui/input';
 	import { buttonVariants } from '$src/lib/components/ui/button';
-	import { Checkbox } from '$src/lib/components/ui/checkbox';
-	import { Label } from '$src/lib/components/ui/label';
 	import { Textarea } from '$src/lib/components/ui/textarea';
 	import { instructorSignupSchema, type InstructorSignupSchema } from '../lib/instructorSchemas';
 	import SearchResort from '$src/features/Resorts/components/SearchResort.svelte';
+	import SportsCheckboxes from '$src/features/Sports/components/SportsCheckboxes.svelte';
 
 	let { data }: { data: { form: SuperValidated<Infer<InstructorSignupSchema>> } } = $props();
 
@@ -83,6 +82,8 @@
 		<Form.FieldErrors />
 	</Form.Field>
 
+	<SportsCheckboxes {form} name='sports'/>
+
 	<!-- <Form.Field {form} name="acceptedTerms" class="mt-6 w-full">
 		<Form.Control>
 			{#snippet children({ props })}
@@ -106,7 +107,9 @@
 	</Form.Field> -->
 
 	<div class="mt-6 flex w-full flex-row items-center justify-center gap-2">
-		<a href="/dashboard" class="text-sm {buttonVariants({ variant: 'outline' })}">Go back</a>
+		<a href="/dashboard" class="text-sm {buttonVariants({ variant: 'outline-solid' })}">Go back</a>
 		<Form.Button>Submit</Form.Button>
 	</div>
 </form>
+
+<SuperDebug data={$formData}/>

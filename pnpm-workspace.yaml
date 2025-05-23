@@ -1,2 +1,5 @@
 onlyBuiltDependencies:
   - aws-sdk
+
+ignoredBuiltDependencies:
+  - '@tailwindcss/oxide'
