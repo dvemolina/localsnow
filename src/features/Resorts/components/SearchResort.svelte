@@ -110,13 +110,13 @@
   <Form.Control>
     {#snippet children({ props })}
       <div class="relative mx-auto w-full max-w-md" bind:this={container}>
-        <Form.Label>{label}</Form.Label>
+        <Form.Label class="mb-1 block text-sm font-medium text-gray-700">{label}</Form.Label>
 
         <input
           {...props}
           {id}
           type="text"
-          class="h-12 w-full rounded-md border border-gray-300 p-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="h-12 w-full rounded-md border border-gray-300 p-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-foreground"
           placeholder="Type to search resorts..."
           bind:value={query}
           on:input={onInput}
@@ -144,7 +144,7 @@
                 on:mouseenter={() => (highlightedIndex = i)}
               >
                 <div class="flex flex-col text-left">
-                  <span class="font-medium">{resort.name}</span>
+                  <span class="text-foreground font-medium">{resort.name}</span>
                   <span class="text-muted-foreground text-sm">{resort.region}, {resort.country}</span>
                 </div>
               </li>

@@ -1,12 +1,17 @@
 <script lang="ts">
 	import SearchResort from '$src/features/Resorts/components/SearchResort.svelte';
+	import { heroResortSearchSchema } from '$src/features/Resorts/lib/resortSchemas';
 	import { fly } from 'svelte/transition';
+	import { superForm, superValidate } from 'sveltekit-superforms';
+	import { zod, zodClient } from 'sveltekit-superforms/adapters';
 
 	// Svelte 5 reactive state
 	let userLocation = $state<string | null>("Wonderland");
 	let isGeoLoading = $state(false);
 	let searchQuery = $state('');
 	let lessonType = $state('ski');
+
+	let { data } = $props()
 
 	// Primary keyword targets (expanded for search intent)
 	const globalHeadline = 'Find Ski & Snowboard Lessons With Certified Instructors';
@@ -39,6 +44,13 @@
 			}))
 		}
 	};
+
+	//Hero Resort Search Form
+	const form = superForm(data.form, {
+		validators: zodClient(heroResortSearchSchema)
+	});
+
+	const { form: formData, enhance } = form;
 
 </script>
 
@@ -93,30 +105,27 @@
 				</p>
 
 				<!-- Search form - critical for conversion and user intent matching -->
-				<form onsubmit={handleSearch} class="mb-8 rounded-lg bg-white/90 p-4 shadow-lg">
+				<form method="POST" class="mb-8 rounded-lg bg-white/90 p-4 shadow-lg">
 					<div class="flex flex-col gap-4 md:flex-row">
 						<div class="flex-1">
-							<label for="location" class="mb-1 block text-sm font-medium text-gray-700"
-								>Resort or Location</label
-							>
-							<SearchResort id="location"/>
+							<SearchResort {form} name='resort' id="location"/>
 						</div>
 						<div class="w-full md:w-auto">
-							<label for="lessonType" class="mb-1 block text-sm font-medium text-gray-700"
+							<label for="sport" class="mb-1 block text-sm font-medium text-gray-700"
 								>Lesson Type</label
 							>
 							<select
-								id="lessonType"
+								id="sport"
 								bind:value={lessonType}
+								name='sport'
 								class="h-12 w-full rounded-md border border-gray-300 p-3 text-gray-700"
 							>
-								<option value="private">Private Lessons</option>
-								<option value="group">Group Lessons</option>
-								<option value="kids">Kids Lessons</option>
-								<option value="club">Club Lessons</option>
+								<option value="ski">Ski</option>
+								<option value="snowboard">Snowboard</option>
+								<option value="telemark">Telemark</option>
 							</select>
 						</div>
-						<div class="flex items-end">
+						<div class="flex items-center pt-4">
 							<button
 								type="submit"
 								class="h-12 w-full whitespace-nowrap rounded-md bg-primary p-3 font-medium text-white md:w-auto"
