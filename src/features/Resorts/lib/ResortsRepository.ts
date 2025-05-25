@@ -9,6 +9,7 @@ export class ResortRepository {
 
 		return await db
 			.select({
+				id: resorts.id,
 				name: resorts.name,
 				slug: resorts.slug,
 				region: regions.region,
