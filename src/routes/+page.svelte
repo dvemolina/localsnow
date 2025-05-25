@@ -40,10 +40,6 @@
 		}
 	};
 
-	function handleSearch() {
-		// Handle search functionality
-	}
-
 </script>
 
 <svelte:head>

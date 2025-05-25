@@ -18,21 +18,13 @@ export class UserService {
             delete userData.password;
             userData.passwordHash = hash
         }
-
-        
-
-        console.log('User data after processing: ', userData )
         
         const user = await this.userRepository.createUser(userData); 
-        console.log('New User created with Data: ', user)
         return user
     }
 
-    async createUserWithGoogle(userData: UserGoogleData): Promise<User> {
-        console.log('User data after processing: ', userData )
-        
+    async createUserWithGoogle(userData: UserGoogleData): Promise<User> { 
         const user = await this.userRepository.createUser(userData); 
-        console.log('New User created with Data: ', user)
         return user
     }
 
@@ -50,5 +42,28 @@ export class UserService {
 
     async updateUser(userId: number, updatedFields: Partial<InsertUser>): Promise<User | null> {
         return await this.userRepository.updateUser(userId, updatedFields);
+    }
+
+    async updateUserQualification(userId: number, qualificationUrl: string) {
+        try {
+            const updatedUser = await this.userRepository.updateUser(userId, {
+                qualificationFile: qualificationUrl,
+                updatedAt: new Date()
+            });
+            return updatedUser;
+        } catch (error) {
+            console.error('Error updating user qualification:', error);
+            throw new Error('Failed to update user qualification');
+        }
+    }
+
+    async getUserQualificationUrl(userId: number) {
+        const qualification = await this.userRepository.getUserQualification(userId);
+        const qualificationUrl = qualification?.qualificationFile;
+        return qualificationUrl ? qualificationUrl: null
+    }
+
+    async verifyUser(userId: number) {
+        await this.userRepository.verifyUser(userId)
     }
 }

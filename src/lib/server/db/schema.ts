@@ -24,6 +24,7 @@ export const users = pgTable('users', {
     bio: text('bio'),
     profileImage: varchar('profile_image', { length: 255 }). default('/local-snow-head.png'),
     phone: varchar('phone', { length: 50 }),
+	qualificationFile: varchar('qualification_file', { length: 255 }),
     isVerified: boolean('is_verified').default(false),
 	acceptedTerms: boolean('accepted_terms').notNull().default(false),
 	...timestamps
@@ -95,12 +96,14 @@ export const lessons = pgTable('lessons', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
 	title: varchar('title', { length: 100 }),
 	description: text('description'),
-	price: integer('price'),
+	basePrice: integer('base_price'),
+	currency: varchar('currency', { length: 50 }),
 	duration: varchar('duration', { length: 50 }), // e.g. '2h', 'half-day'
 	sportId: integer('sport_id').notNull().references(() => sports.id),
 	instructorId: integer('instructor_id').references(() => users.id),
 	schoolId: integer('school_id').references(() => schools.id),
-	isPublished: boolean('is_published').default(true)
+	isPublished: boolean('is_published').default(true),
+	isBaseLesson: boolean('is_base_lesson').default(false)
 });
 
 // --- Many-to-Many Relationships ---

@@ -50,6 +50,13 @@
       "when": 1747591764558,
       "tag": "0006_freezing_genesis",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1748028170250,
+      "tag": "0007_brainy_micromax",
+      "breakpoints": true
     }
   ]
 }
