@@ -27,7 +27,7 @@
 <Form.Fieldset {form} {name} class="space-y-0">
 	<div class="mb-4">
 		<Form.Legend class="text-base capitalize">{legend}</Form.Legend>
-		<Form.Description>Select one or more options.</Form.Description>
+		<Form.Description class="text-xs" >Select one or more options.</Form.Description>
 	</div>
 
 	<div class="space-y-2">

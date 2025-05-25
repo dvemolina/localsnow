@@ -96,12 +96,14 @@ export const lessons = pgTable('lessons', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
 	title: varchar('title', { length: 100 }),
 	description: text('description'),
-	price: integer('price'),
+	basePrice: integer('base_price'),
+	currency: varchar('currency', { length: 50 }),
 	duration: varchar('duration', { length: 50 }), // e.g. '2h', 'half-day'
 	sportId: integer('sport_id').notNull().references(() => sports.id),
 	instructorId: integer('instructor_id').references(() => users.id),
 	schoolId: integer('school_id').references(() => schools.id),
-	isPublished: boolean('is_published').default(true)
+	isPublished: boolean('is_published').default(true),
+	isBaseLesson: boolean('is_base_lesson').default(false)
 });
 
 // --- Many-to-Many Relationships ---
