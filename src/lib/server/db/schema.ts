@@ -22,9 +22,10 @@ export const users = pgTable('users', {
     passwordHash: varchar('password_hash', { length: 255 }),
     role: userRoleEnum('role'), 
     bio: text('bio'),
-    profileImage: varchar('profile_image', { length: 255 }). default('/local-snow-head.png'),
+    profileImageUrl: varchar('profile_image_url', { length: 255 }). default('/local-snow-head.png'),
+	countryPrefix: integer('country_prefix'),
     phone: varchar('phone', { length: 50 }),
-	qualificationFile: varchar('qualification_file', { length: 255 }),
+	qualificationUrl: varchar('qualification_url', { length: 255 }),
     isVerified: boolean('is_verified').default(false),
 	acceptedTerms: boolean('accepted_terms').notNull().default(false),
 	...timestamps

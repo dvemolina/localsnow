@@ -15,6 +15,7 @@
 	import SportsCheckboxes from '$src/features/Sports/components/SportsCheckboxes.svelte';
 	import { onDestroy } from 'svelte';
 	import CurrencySelect from '$src/lib/components/shared/CurrencySelect.svelte';
+	import CountryPrefixSelect from '$src/lib/components/shared/CountryPrefixSelect.svelte';
 
 	let { data }: { data: { form: SuperValidated<Infer<InstructorSignupSchema>> } } = $props();
 
@@ -129,21 +130,12 @@
 	</Form.Field>
 
 	<div class="flex w-full flex-col gap-2 sm:flex-row">
+		<CountryPrefixSelect {form} name="countryPrefix" />
 		<Form.Field {form} name="phone" class="w-full">
 			<Form.Control>
 				{#snippet children({ props })}
 					<Form.Label>Client Contact Phone</Form.Label>
 					<Input {...props} bind:value={$formData.phone} type="tel"/>
-				{/snippet}
-			</Form.Control>
-			<Form.Description class="text-xs">E.g: (+44)6870979153.</Form.Description>
-			<Form.FieldErrors />
-		</Form.Field>
-		<Form.Field {form} name="email" class="w-full">
-			<Form.Control>
-				{#snippet children({ props })}
-					<Form.Label>Client Contact Email</Form.Label>
-					<Input {...props} bind:value={$formData.email} type="email" />
 				{/snippet}
 			</Form.Control>
 			<Form.FieldErrors />

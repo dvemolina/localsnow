@@ -19,10 +19,10 @@
 <Form.Field {form} {name}>
 	<Form.Control>
 		{#snippet children({ props })}
-			<Form.Label>Currency</Form.Label>
+			<Form.Label>Sport</Form.Label>
 			<Select.Root type="single" bind:value={$formStore[name]} name={props.name}>
 				<Select.Trigger {...props}>
-					{$formStore[name] ? $formStore[name] : 'Select a currency'}
+					{$formStore[name] ? $formStore[name] : 'Select a sport'}
 				</Select.Trigger>
 				<Select.Content>
 					{#each sports as { label, value }}
