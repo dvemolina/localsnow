@@ -51,11 +51,8 @@ export const actions: Actions = {
                 //Convert file Browser API to Buffer
                 const imageArrayBuffer = await form.data.profileImage.arrayBuffer();
                 const imageBuffer = Buffer.from(imageArrayBuffer);
-
-                //generate unique filename
-                const imageFileName = `profileImages/${user.name}-${user.id}`;
                 
-                profileImageUrl = await storageService.uploadProfileImage(imageBuffer, imageFileName);
+                profileImageUrl = await storageService.uploadProfileImage(imageBuffer, user.id);
                 console.log('Profile image uploaded:', profileImageUrl);
             }
 
@@ -64,9 +61,6 @@ export const actions: Actions = {
                 // Convert File to Buffer
                 const pdfArrayBuffer = await form.data.qualification.arrayBuffer();
                 const pdfBuffer = Buffer.from(pdfArrayBuffer);
-                
-                // Generate unique filename
-                const pdfFileName = `qualifications/${user.name}-${user.id}`;
                 
                 qualificationUrl = await storageService.uploadQualificationPDF(pdfBuffer, user.id);
                 console.log('Qualification PDF uploaded:', qualificationUrl);
@@ -82,6 +76,7 @@ export const actions: Actions = {
         // Remove the File objects since we now have URLs
         delete form.data.profileImage;
         delete form.data.qualification;
+
         //Instructor data with URLS
         const instructorData = {
             ...form.data,
