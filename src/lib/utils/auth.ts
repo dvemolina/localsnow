@@ -26,7 +26,7 @@ export function requireAuth(event: RequestEvent, message?: string | undefined) {
 	}
     
 
-	return { user };
+	return user;
 }
 
 
