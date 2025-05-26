@@ -66,7 +66,7 @@
 	}
 </script>
 
-<form method="POST" use:enhance enctype="multipart/form-data" class="flex flex-col gap-4">
+<form method="POST"  enctype="multipart/form-data" class="flex flex-col gap-4" onsubmit={() => console.log('Submitting')}>
 	<SearchResort {form} name="resort"/>
 	<Form.Field {form} name="profileImage" class="w-full">
 		<Form.Control>
@@ -133,7 +133,7 @@
 			<Form.Control>
 				{#snippet children({ props })}
 					<Form.Label>Client Contact Phone</Form.Label>
-					<Input {...props} value={$formData.phone} />
+					<Input {...props} bind:value={$formData.phone} type="tel"/>
 				{/snippet}
 			</Form.Control>
 			<Form.Description class="text-xs">E.g: (+44)6870979153.</Form.Description>
@@ -206,7 +206,7 @@
 
 	<div class="mt-6 flex w-full flex-row items-center justify-center gap-2">
 		<a href="/dashboard" class="text-sm {buttonVariants({ variant: 'outline' })}">Go back</a>
-		<Form.Button>Submit</Form.Button>
+		<Form.Button type="submit">Submit</Form.Button>
 	</div>
 </form>
 

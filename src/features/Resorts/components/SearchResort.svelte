@@ -28,6 +28,14 @@
   // Get form data store
   const { form: formData } = form;
 
+  // Initialize the form field with proper default value
+  onMount(() => {
+    // Ensure the field starts with a proper default value
+    if ($formData[name] === undefined || $formData[name] === null) {
+      $formData[name] = mode === 'form' ? 0 : '';
+    }
+  });
+
   // Fetch suggestions
   async function fetchSuggestions(q: string) {
     abortController?.abort();
@@ -69,8 +77,22 @@
     query = resort.name;
     isOpen = false;
     suggestions = [];
-    // Update the form data with the selected resort
-    $formData[name] = mode === 'form' ? resort.id : resort.slug;
+    
+    // Ensure proper type conversion for form mode
+    if (mode === 'form') {
+      // Explicitly convert to number and ensure it's valid
+      const resortId = Number(resort.id);
+      if (!isNaN(resortId)) {
+        $formData[name] = resortId;
+      } else {
+        console.error('Invalid resort ID:', resort.id);
+        $formData[name] = 0;
+      }
+    } else {
+      $formData[name] = resort.slug;
+    }
+    
+    console.log('Selected resort:', resort, 'Form value:', $formData[name]);
   }
 
   function onKeyDown(event: KeyboardEvent) {
@@ -111,9 +133,16 @@
     {#snippet children({ props })}
       <div class="relative mx-auto w-full max-w-md" bind:this={container}>
         <Form.Label class="mb-1 block text-sm font-medium text-gray-700">{label}</Form.Label>
-
+        
+        <!-- Hidden field for SuperForms -->
         <input
           {...props}
+          type="hidden"
+          bind:value={$formData[name]}
+        />
+        
+        <!-- Visible search input -->
+        <input
           {id}
           type="text"
           class="h-12 w-full rounded-md border border-gray-300 p-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-foreground"

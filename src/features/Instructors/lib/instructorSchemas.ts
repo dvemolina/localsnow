@@ -21,8 +21,8 @@ export const instructorSignupSchema = z.object({
     bio: z.string().optional(),
     phone: z.string().optional(),
     email: z.string().nonempty("Insert School's Contact Email"),
-    resort: z.number(),
-    sports: z.boolean().array(),
+    resort: z.coerce.number().min(1, "Choose a Resort where you teach"),
+    sports: z.array(z.string()),
     basePrice: z.number(),
     currency: z.string()
 });
