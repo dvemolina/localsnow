@@ -66,7 +66,7 @@
 	}
 </script>
 
-<form method="POST"  enctype="multipart/form-data" class="flex flex-col gap-4" onsubmit={() => console.log('Submitting')}>
+<form method="POST" use:enhance enctype="multipart/form-data" class="flex flex-col gap-4" onsubmit={() => console.log('Submitting')}>
 	<SearchResort {form} name="resort"/>
 	<Form.Field {form} name="profileImage" class="w-full">
 		<Form.Control>

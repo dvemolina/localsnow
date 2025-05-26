@@ -18,7 +18,8 @@ export class StorageService {
         });
     }
 
-    async uploadProfileImage(imageBuffer: Buffer, fileName: string): Promise<string> {
+    async uploadProfileImage(imageBuffer: Buffer,  userId: number): Promise<string> {
+        const fileName = `profileImgs/${userId}-profileImg`;
         const compressedBuffer = await sharp(imageBuffer)
                             .rotate()
                             .resize(300, 300, { fit: "cover", position: "top" })
@@ -45,12 +46,9 @@ export class StorageService {
 
  
     
-    async uploadQualificationPDF(fileBuffer: Buffer, fileName: string): Promise<string> {
+    async uploadQualificationPDF(fileBuffer: Buffer, userId: number): Promise<string> {
         try {
-            // Generate a unique filename with timestamp
-            const timestamp = new Date().getTime();
-            const sanitizedFileName = fileName.replace(/[^a-zA-Z0-9.]/g, '_');
-            const finalFileName = `qualifications/${timestamp}-${sanitizedFileName}`;
+            const finalFileName = `qualifications/${userId}-qualification`;
             
             await this.s3Client.send(
                 new PutObjectCommand({

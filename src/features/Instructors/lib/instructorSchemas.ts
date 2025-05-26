@@ -4,7 +4,7 @@ export const instructorSignupSchema = z.object({
     profileImage: z
         .instanceof(File, {
         message: 'Please upload a Profile Image. You can always change it later',
-        })
+        }).optional()
         .refine((file) => file.size <= 5 * 1024 * 1024, 'Max 5MB upload size.')
         .refine(
         (file) =>
