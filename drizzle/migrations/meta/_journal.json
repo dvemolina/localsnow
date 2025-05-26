@@ -57,6 +57,13 @@
       "when": 1748028170250,
       "tag": "0007_brainy_micromax",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1748270750304,
+      "tag": "0008_yielding_tarot",
+      "breakpoints": true
     }
   ]
 }
