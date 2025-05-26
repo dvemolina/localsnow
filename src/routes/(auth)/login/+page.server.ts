@@ -15,6 +15,8 @@ const ipBucket = new RefillingTokenBucket<string>(20, 1);
 
  
 export const load: PageServerLoad = async (event) => {
+    const user = event.locals.user;
+    if(user) redirect(302, '/dashboard')
     const form = await superValidate(zod(userLoginSchema))
     const redirectMessage = event.url.searchParams.get('redirectMessage') ?? null;
   

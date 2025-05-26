@@ -1,6 +1,7 @@
 <script lang="ts">
 	import SearchResort from '$src/features/Resorts/components/SearchResort.svelte';
 	import { heroResortSearchSchema } from '$src/features/Resorts/lib/resortSchemas';
+	import SportSelect from '$src/lib/components/shared/SportSelect.svelte';
 	import { fly } from 'svelte/transition';
 	import { superForm, superValidate } from 'sveltekit-superforms';
 	import { zod, zodClient } from 'sveltekit-superforms/adapters';
@@ -105,25 +106,13 @@
 				</p>
 
 				<!-- Search form - critical for conversion and user intent matching -->
-				<form method="POST" class="mb-8 rounded-lg bg-white/90 p-4 shadow-lg">
+				<form method="POST" use:enhance class="mb-8 rounded-lg bg-white/90 p-4 shadow-lg">
 					<div class="flex flex-col gap-4 md:flex-row">
 						<div class="flex-1">
 							<SearchResort {form} name='resort' id="location"/>
 						</div>
 						<div class="w-full md:w-auto">
-							<label for="sport" class="mb-1 block text-sm font-medium text-gray-700"
-								>Lesson Type</label
-							>
-							<select
-								id="sport"
-								bind:value={lessonType}
-								name='sport'
-								class="h-12 w-full rounded-md border border-gray-300 p-3 text-gray-700"
-							>
-								<option value="ski">Ski</option>
-								<option value="snowboard">Snowboard</option>
-								<option value="telemark">Telemark</option>
-							</select>
+							<SportSelect {form} name='sport' isHero={true}/>
 						</div>
 						<div class="flex items-center pt-4">
 							<button

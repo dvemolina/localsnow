@@ -12,8 +12,11 @@ import { sendSignupEmail } from "$src/lib/server/webhooks/email-n8n.js";
 const userService = new UserService()
 const ipBucket = new RefillingTokenBucket<string>(3, 10);
  
-export const load: PageServerLoad = async () => {
-    const form = await superValidate(zod(userSignupSchema));
+export const load: PageServerLoad = async (event) => {
+    const user = event.locals.user;
+    if(user) redirect(302, '/dashboard')
+    
+        const form = await superValidate(zod(userSignupSchema));
     
     return { form }
 };
