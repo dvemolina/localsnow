@@ -24,7 +24,8 @@ export const instructorSignupSchema = z.object({
     resort: z.coerce.number().min(1, "Choose a Resort where you teach"),
     sports: z.array(z.string()),
     basePrice: z.number(),
-    currency: z.string()
+    currency: z.string(),
+    instructorType: z.string()
 });
 
 export type InstructorSignupSchema = typeof instructorSignupSchema

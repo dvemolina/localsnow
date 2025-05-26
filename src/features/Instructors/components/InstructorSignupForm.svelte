@@ -16,6 +16,7 @@
 	import { onDestroy } from 'svelte';
 	import CurrencySelect from '$src/lib/components/shared/CurrencySelect.svelte';
 	import CountryPrefixSelect from '$src/lib/components/shared/CountryPrefixSelect.svelte';
+	import InstructorTypeSelect from '$src/lib/components/shared/InstructorTypeSelect.svelte';
 
 	let { data }: { data: { form: SuperValidated<Infer<InstructorSignupSchema>> } } = $props();
 
@@ -67,8 +68,15 @@
 	}
 </script>
 
-<form method="POST" use:enhance enctype="multipart/form-data" class="flex flex-col gap-4" onsubmit={() => console.log('Submitting')}>
-	<SearchResort {form} name="resort"/>
+<form
+	method="POST"
+	use:enhance
+	enctype="multipart/form-data"
+	class="flex flex-col gap-4"
+	onsubmit={() => console.log('Submitting')}
+>
+	<SearchResort {form} name="resort" />
+	<InstructorTypeSelect {form} name="instructorType" />
 	<Form.Field {form} name="profileImage" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
@@ -135,7 +143,7 @@
 			<Form.Control>
 				{#snippet children({ props })}
 					<Form.Label>Client Contact Phone</Form.Label>
-					<Input {...props} bind:value={$formData.phone} type="tel"/>
+					<Input {...props} bind:value={$formData.phone} type="tel" />
 				{/snippet}
 			</Form.Control>
 			<Form.FieldErrors />
@@ -160,18 +168,17 @@
 		<Form.Field {form} name="basePrice" class="w-full">
 			<Form.Control>
 				{#snippet children({ props })}
-				<Form.Label>Base Price (1 Hour)</Form.Label>
-				
-				<Input {...props} bind:value={$formData.basePrice} type="number" min="0"/>
-				<Form.Description class="text-xs"
-				>Base Hourly Rate. You'll be able to add Discounts and Promotions later.</Form.Description
-				>
+					<Form.Label>Base Price (1 Hour)</Form.Label>
+
+					<Input {...props} bind:value={$formData.basePrice} type="number" min="0" />
+					<Form.Description class="text-xs"
+						>Base Hourly Rate. You'll be able to add Discounts and Promotions later.</Form.Description
+					>
 				{/snippet}
 			</Form.Control>
 			<Form.FieldErrors />
 		</Form.Field>
-		<CurrencySelect {form} name="currency"/>
-
+		<CurrencySelect {form} name="currency" />
 	</div>
 
 	<!-- <Form.Field {form} name="acceptedTerms" class="mt-6 w-full">

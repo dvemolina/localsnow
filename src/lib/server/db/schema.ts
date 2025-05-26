@@ -1,6 +1,6 @@
 import { pgTable, text, integer, timestamp, varchar, uuid, boolean, pgEnum, numeric } from 'drizzle-orm/pg-core';
 
-export const userRoleEnum = pgEnum('user_role', ['admin', 'instructor', 'school-admin', 'client']);
+export const userRoleEnum = pgEnum('user_role', ['admin', 'instructor-independent','instructor-school', 'school-admin', 'client']);
 export const sportsEnum = pgEnum('sport', ['Ski', 'Snowboard', 'Telemark'])
 export const sportSlugEnum = pgEnum('sport_slug', ['ski', 'snowboard', 'telemark']);
 export const modalitySlugEnum = pgEnum('modality_slug', ['piste', 'off-piste', 'freeride', 'freestyle', 'touring', 'adaptive']);
