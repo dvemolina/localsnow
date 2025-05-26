@@ -3,7 +3,7 @@
     import AppSidebar from "$src/features/Dashboard/components/AppSidebar.svelte";
     
     let { data, children } = $props();
-    let user = $state(data.user.user)
+    let user = $state(data.user)
    </script>
     
     {#if !user.role}

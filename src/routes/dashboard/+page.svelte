@@ -3,7 +3,7 @@
 	import Button from '$src/lib/components/ui/button/button.svelte';
 
 	let { data } = $props();
-	let user = $state(data.user.user);
+	let user = $state(data.user);
 </script>
 
 {#if !user.role}
