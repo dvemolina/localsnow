@@ -19,7 +19,7 @@ export const instructorSignupSchema = z.object({
         .refine((file) => file.size <= 1 * 1024 * 1024, 'Max 1MB upload size.')
         .refine((f) => f.type === 'application/pdf', 'The file has to be in PDF format'),
     bio: z.string().optional(),
-    countryPrefix: z.number(),
+    countryCode: z.number(),
     phone: z.coerce.number(),
     resort: z.coerce.number().min(1, "Choose a Resort where you teach"),
     sports: z.array(z.string()),
