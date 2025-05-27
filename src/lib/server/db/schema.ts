@@ -110,7 +110,7 @@ export const lessons = pgTable('lessons', {
 
 // --- Many-to-Many Relationships ---
 export const instructorSports = pgTable('instructor_sports', {
-	instructorId: integer('instructor_id').notNull().references(() => users.id),
+	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
 	sportId: integer('sport_id').notNull().references(() => sports.id)
 });
 
