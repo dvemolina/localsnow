@@ -6,9 +6,9 @@
 
 	let form = props.form;
 	let name = props.name;
-	const sports = [
+	const instructorTypes = [
 		{ label: 'School', value: 'instructor-school' },
-		{ label: 'Independent', value: 'instructor-independent' },
+		{ label: 'Independent', value: 'instructor-independent' }
 	];
 
 	const formStore = form.form; //the reactive store for form values
@@ -20,12 +20,18 @@
 			<Form.Label>Instructor Type</Form.Label>
 			<Select.Root type="single" bind:value={$formStore[name]} name={props.name}>
 				<Select.Trigger {...props}>
-					{$formStore[name] ? $formStore[name] : 'Select your type'}
+					{#if $formStore[name]}
+						{instructorTypes.find((s) => s.value === $formStore[name])?.label}
+					{:else}
+						Select your type
+					{/if}
 				</Select.Trigger>
 				<Select.Content>
-					{#each sports as { label, value }}
-						<Select.Item {value} {label} />
-					{/each}
+					<Select.Group>
+						{#each instructorTypes as { label, value }}
+							<Select.Item {value} {label}>{label}</Select.Item>
+						{/each}
+					</Select.Group>
 				</Select.Content>
 			</Select.Root>
 		{/snippet}

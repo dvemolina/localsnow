@@ -131,8 +131,8 @@
 <Form.Field {form} {name} class="w-full">
   <Form.Control>
     {#snippet children({ props })}
-      <div class="relative mx-auto w-full max-w-md" bind:this={container}>
-        <Form.Label class="mb-1 block text-sm font-medium text-gray-700">{label}</Form.Label>
+      <div class="relative mx-auto w-full" bind:this={container}>
+        <Form.Label class="mb-1 block text-sm font-medium text-foreground">{label}</Form.Label>
         
         <!-- Hidden field for SuperForms -->
         <input

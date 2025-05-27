@@ -111,7 +111,7 @@
 						<div class="flex-1">
 							<SearchResort {form} name='resort' id="location"/>
 						</div>
-						<div class="w-full md:w-auto">
+						<div class="flex-1 text-foreground">
 							<SportSelect {form} name='sport' isHero={true}/>
 						</div>
 						<div class="flex items-center pt-4">
