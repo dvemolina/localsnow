@@ -16,7 +16,7 @@
 	];
 </script>
 
-<Sidebar.Root >
+<Sidebar.Root class="bg-background">
 	<Sidebar.Header>
       <a href="http://localhost:5173" class="group flex flex-row items-center justify-center gap-1">
         <div class="m-1 size-12 overflow-hidden  object-cover">

@@ -4,9 +4,9 @@
     //Hardcoded for Proto/Fast dev. 
     //Change to DB call for consistency and adapt interface structure/types to match schema.
     const sports = [
-        { id: 'ski', label: 'Ski' },
-        { id: 'snowboard', label: 'Snowboard' },
-        { id: 'telemark', label: 'Telemark' }
+        { id: 1, label: 'Ski' },
+        { id: 2, label: 'Snowboard' },
+        { id: 3, label: 'Telemark' }
     ]
     
     let { form, name } = $props();

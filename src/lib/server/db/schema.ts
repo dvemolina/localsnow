@@ -23,7 +23,7 @@ export const users = pgTable('users', {
     role: userRoleEnum('role'), 
     bio: text('bio'),
     profileImageUrl: varchar('profile_image_url', { length: 255 }). default('/local-snow-head.png'),
-	countryCode: varchar('country_code', { length: 4}).notNull(),
+	countryCode: varchar('country_code', { length: 4}),
     phone: varchar('phone', { length: 50 }),
 	qualificationUrl: varchar('qualification_url', { length: 255 }),
     isVerified: boolean('is_verified').default(false),
@@ -115,7 +115,7 @@ export const instructorSports = pgTable('instructor_sports', {
 });
 
 export const instructorResorts = pgTable('instructor_resorts', {
-	instructorId: integer('instructor_id').notNull().references(() => users.id),
+	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
 	resortId: integer('resort_id').notNull().references(() => resorts.id)
 });
 
@@ -137,7 +137,7 @@ export const schoolAdmins = pgTable('school_admins', {
   
 export const schoolInstructors = pgTable('school_instructors', {
 	schoolId: integer('school_id').notNull().references(() => schools.id),
-	instructorId: integer('instructor_id').notNull().references(() => users.id),
+	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
 	isAcceptedBySchool: boolean('is_accepted_by_school').default(false),
 	isActive: boolean('is_active').default(true)
 });

@@ -3,12 +3,13 @@ import type { PageServerLoad } from "./$types";
 import { fail, superValidate } from "sveltekit-superforms";
 import { redirect, type Actions } from "@sveltejs/kit";
 import { getClientIP, requireAuth } from "$src/lib/utils/auth";
-import { UserService } from "$src/features/Users/lib/UserService";
-import { RefillingTokenBucket } from "$src/lib/server/rate-limit";
-import { instructorSignupSchema } from "$src/features/Instructors/lib/instructorSchemas";
-import { StorageService } from "$src/lib/server/R2Storage";
 
-const userService = new UserService();
+import { RefillingTokenBucket } from "$src/lib/server/rate-limit";
+import { instructorSignupSchema, type InstructorSignupData } from "$src/features/Instructors/lib/instructorSchemas";
+import { StorageService } from "$src/lib/server/R2Storage";
+import { InstructorService } from "$src/features/Instructors/lib/instructorService";
+
+const instructorService = new InstructorService();
 const storageService = new StorageService();
 const ipBucket = new RefillingTokenBucket<string>(3, 10);
 
@@ -77,19 +78,21 @@ export const actions: Actions = {
         delete form.data.profileImage;
         delete form.data.qualification;
 
+        const userId = user.id
+
         //Instructor data with URLS
-        const instructorData = {
+        const instructorSignupData: InstructorSignupData = {
             ...form.data,
             profileImageUrl,
             qualificationUrl,
-            
+            userId
         };
 
-        console.log('Processed instructor data:', instructorData);
+        console.log('Processed instructor data:', instructorSignupData);
 
-        // TODO: Save to database
-        // await saveInstructorToDatabase(instructorData);
+        await instructorService.createInstructor(instructorSignupData);
 
-        return { form }
+        //To improve set a Flash Message System (sveltekit-flash-messages library maybe?)
+        redirect(302, '/dashboard')
     }
 };

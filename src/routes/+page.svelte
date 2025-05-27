@@ -1,7 +1,7 @@
 <script lang="ts">
 	import SearchResort from '$src/features/Resorts/components/SearchResort.svelte';
 	import { heroResortSearchSchema } from '$src/features/Resorts/lib/resortSchemas';
-	import SportSelect from '$src/lib/components/shared/SportSelect.svelte';
+	import SportSelect from '$src/features/Resorts/components/SportSelect.svelte';
 	import { fly } from 'svelte/transition';
 	import { superForm, superValidate } from 'sveltekit-superforms';
 	import { zod, zodClient } from 'sveltekit-superforms/adapters';

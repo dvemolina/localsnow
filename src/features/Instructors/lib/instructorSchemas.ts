@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { InstructorData } from "./instructorRepository";
 
 export const instructorSignupSchema = z.object({
     profileImage: z
@@ -22,10 +23,25 @@ export const instructorSignupSchema = z.object({
     countryCode: z.number(),
     phone: z.string(),
     resort: z.coerce.number().min(1, "Choose a Resort where you teach"),
-    sports: z.array(z.string()),
+    sports: z.array(z.number()),
     basePrice: z.number(),
     currency: z.string(),
-    instructorType: z.string()
+    instructorType: z.enum(['instructor-independent', 'instructor-school'])
 });
 
 export type InstructorSignupSchema = typeof instructorSignupSchema
+
+//Form submission Data type:
+export type InstructorSignupData = {
+    userId: number;
+    profileImageUrl: string | null;
+    qualificationUrl: string | null;
+    countryCode: number;
+    phone: string;
+    resort: number;
+    sports: number[];
+    basePrice: number;
+    currency: string;
+    instructorType: InstructorData['instructorType'];
+    bio?: string | undefined;
+}
