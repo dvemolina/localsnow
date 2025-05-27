@@ -8,6 +8,7 @@
 	import { Label } from '$src/lib/components/ui/label';
 	import { schoolSignupSchema, type SchoolSignupSchema } from '../lib/validations/schoolSchemas';
 	import { Textarea } from '$src/lib/components/ui/textarea';
+	import CountryCodeSelect from '$src/lib/components/shared/CountryCodeSelect.svelte';
 
 	let { data }: { data: { form: SuperValidated<Infer<SchoolSignupSchema>> } } = $props();
 
@@ -29,23 +30,25 @@
 
 		<Form.FieldErrors />
 	</Form.Field>
+	<Form.Field {form} name="schoolEmail" class="w-full">
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Contact Email</Form.Label>
+				<Form.Description class="text-xs">Contact details for the Clients</Form.Description>
+				<Input {...props} bind:value={$formData.schoolEmail} type="email" />
+			{/snippet}
+		</Form.Control>
+		
+		<Form.FieldErrors />
+	</Form.Field>
 
 	<div class="flex w-full flex-col gap-2 sm:flex-row">
-		<Form.Field {form} name="phone" class="w-full">
+		<CountryCodeSelect {form} name="countryCode" />
+		<Form.Field {form} name="schoolPhone" class="w-full">
 			<Form.Control>
 				{#snippet children({ props })}
 					<Form.Label>Contact Phone</Form.Label>
-					<Input {...props} value={$formData.phone} />
-				{/snippet}
-			</Form.Control>
-			<Form.Description class="text-xs">E.g: (+44)6870979153.</Form.Description>
-			<Form.FieldErrors />
-		</Form.Field>
-		<Form.Field {form} name="email" class="w-full">
-			<Form.Control>
-				{#snippet children({ props })}
-					<Form.Label>Contact Email</Form.Label>
-					<Input {...props} bind:value={$formData.email} type="email" />
+					<Input {...props} value={$formData.schoolPhone} />
 				{/snippet}
 			</Form.Control>
 			<Form.FieldErrors />
@@ -84,7 +87,7 @@
 	</Form.Field> -->
 
 	<div class="mt-6 flex w-full flex-row items-center justify-center gap-2">
-		<a href="/dashboard" class="text-sm {buttonVariants({ variant: 'outline-solid' })}">Go back</a>
+		<a href="/dashboard" class="text-sm {buttonVariants({ variant: 'outline' })}">Go back</a>
 		<Form.Button>Submit</Form.Button>
 	</div>
 </form>
