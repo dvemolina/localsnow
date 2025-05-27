@@ -20,7 +20,7 @@ export const instructorSignupSchema = z.object({
         .refine((f) => f.type === 'application/pdf', 'The file has to be in PDF format'),
     bio: z.string().optional(),
     countryCode: z.number(),
-    phone: z.coerce.number(),
+    phone: z.string(),
     resort: z.coerce.number().min(1, "Choose a Resort where you teach"),
     sports: z.array(z.string()),
     basePrice: z.number(),

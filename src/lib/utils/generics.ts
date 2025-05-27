@@ -37,3 +37,10 @@ export function generateUsernameFromGoogle(claims: GoogleClaims) {
     // Combine into username
     return `${formattedName}${firstLetterSurname}${lastThreeDigits}`;
 }
+
+export function slugifyString(string: string) :string {
+	return string.trim()
+	.toLowerCase()
+	.replace(/\s+/g, '-')        // spaces to dashes
+	.replace(/[^a-z0-9\-]/g, ''); // remove special characters
+}

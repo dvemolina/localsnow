@@ -1,5 +1,6 @@
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import sharp from 'sharp';
+import { slugifyString } from '../utils/generics';
 
 //CREATE SERVICE/REPOSITORY IN USER/INSTRUCTOR TO UPLOAD THE IMAGE / QUALIFICATION
 //USE UUID FOR THE FILENAME IN THE REPO
@@ -45,7 +46,8 @@ export class StorageService {
     } 
 
     async uploadSchoolLogo(imageBuffer: Buffer,  schoolName: string, userId: number): Promise<string> {
-        const fileName = `schoolLogos/${schoolName}-logo-${userId}`;
+        const cleanSchoolName = slugifyString(schoolName);
+        const fileName = `schoolLogos/${cleanSchoolName}-logo-${userId}`;
         const compressedBuffer = await sharp(imageBuffer)
                             .rotate()
                             .resize(300, 300, { fit: "cover", position: "top" })
