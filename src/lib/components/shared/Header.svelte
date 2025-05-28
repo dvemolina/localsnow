@@ -2,7 +2,6 @@
 	import { page } from '$app/state';
 	import { fade } from 'svelte/transition';
 	import LanguageSwitch from './LanguageSwitch.svelte';
-	import ModeSwitch from './ModeSwitch.svelte';
 	import Breadcrumb from './Breadcrumb.svelte';
 	import { items, isCurrentPath } from "$src/lib/utils/generics";
 
