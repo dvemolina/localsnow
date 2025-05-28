@@ -67,7 +67,7 @@
 					<img
 						src="/icons/burger.svg"
 						alt="Menu"
-						class="size-6 opacity-80 invert-0 dark:invert hover:opacity-100 active:opacity-100"
+						class="size-6 opacity-80 hover:opacity-100 active:opacity-100"
 					/>
 				</button>
 			</div>
@@ -105,7 +105,7 @@
 								<img
 									src="/local-snow-head-big.png"
 									alt="Local Snow Logo"
-									class="opacity-85 invert-0 group-hover:opacity-100 group-focus:opacity-100 dark:invert"
+									class="opacity-85 group-hover:opacity-100 group-focus:opacity-100"
 								/>
 							</div>
 							<p class="title4 mt-0 text-foreground/85 transition-all group-hover:text-foreground">

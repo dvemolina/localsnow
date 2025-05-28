@@ -15,7 +15,20 @@ export const schoolSignupSchema = z.object({
     countryCode: z.number().min(1, 'Choose Country Phone Prefix'),
     schoolPhone: z.string().nonempty("Insert School's Contact Phone"),
     schoolEmail: z.string().nonempty("Insert School's Contact Email"),
-    resort: z.string()
+    resort: z.coerce.number().min(1, "Choose the Resort where your School is")
 });
 
 export type SchoolSignupSchema = typeof schoolSignupSchema
+
+//Form submission Data type:
+export interface SchoolSignupData {
+    ownerUserId: number;
+    name: string;
+    slug: string;
+    bio?: string;
+    schoolEmail: string;
+    countryCode: number;
+    schoolPhone: string;
+    logoUrl?: string | null;
+    resort: number;
+}

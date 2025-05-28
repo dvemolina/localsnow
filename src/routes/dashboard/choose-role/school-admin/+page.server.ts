@@ -6,7 +6,10 @@ import { StorageService } from "$src/lib/server/R2Storage";
 import { RefillingTokenBucket } from "$src/lib/server/rate-limit";
 import { getClientIP, requireAuth } from "$src/lib/utils/auth";
 import { redirect, type Actions } from "@sveltejs/kit";
+import { SchoolService } from "$src/features/Schools/lib/schoolService";
+import { slugifyString } from "$src/lib/utils/generics";
 
+const schoolService = new SchoolService()
 const storageService = new StorageService();
 const ipBucket = new RefillingTokenBucket<string>(3, 10);
 
@@ -20,26 +23,21 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
     default: async (event) => {
-        console.log('Server Hit!');
         const user = requireAuth(event, 'Session Expired. Login again to proceed')
         const form = await superValidate(event.request, zod(schoolSignupSchema));
-        console.log('Received Form: ', form)
 
         const clientIP = getClientIP(event);
         if (clientIP !== null && !ipBucket.check(clientIP, 1)) {
-            console.log('Too many requests from same IP')
             return fail(429, {
                 message: "Too many requests"
             });
         }
         
         if (!form.valid) {
-            console.log('Invalid form: ', form)
             return fail(400, { form })
         }
 
-        console.log('Sent Form: ', form)
-        let schoolLogoUrl: string | null = null;
+        let logoUrl: string | null = null;
 
         try {
             
@@ -49,8 +47,7 @@ export const actions: Actions = {
                 const imageArrayBuffer = await form.data.logo.arrayBuffer();
                 const imageBuffer = Buffer.from(imageArrayBuffer);
                 
-                schoolLogoUrl = await storageService.uploadSchoolLogo(imageBuffer, form.data.name, user.id);
-                console.log('Profile image uploaded:', schoolLogoUrl);
+                logoUrl = await storageService.uploadSchoolLogo(imageBuffer, form.data.name, user.id);
             }
 
         } catch (error) {
@@ -64,15 +61,19 @@ export const actions: Actions = {
         // Remove the File logo since we now have a URL
         delete form.data.logo;
 
-        const schoolData = {
+        const ownerUserId = user.id
+        const slug = slugifyString(form.data.name)
+
+        const schoolSignupData = {
             ...form.data,
-            schoolLogoUrl
+            ownerUserId,
+            logoUrl,
+            slug
         }
 
-        console.log('Processed instructor data:', schoolData);
-
-        // TODO: Save to database
-
-        return {form }
+        await schoolService.createSchool(schoolSignupData);
+        
+        //To improve set a Flash Message System (sveltekit-flash-messages library maybe?)
+        redirect(302, '/dashboard')
     }
 };

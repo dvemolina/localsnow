@@ -23,21 +23,17 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
     default: async (event)=> {
-        console.log('Server Hit!');
         const user = requireAuth(event, 'Session Expired. Login again to proceed')
         const form = await superValidate(event.request, zod(instructorSignupSchema));
-        console.log('Received Form: ', form)
 
         const clientIP = getClientIP(event);
         if (clientIP !== null && !ipBucket.check(clientIP, 1)) {
-            console.log('Too many requests from same IP')
             return fail(429, {
                 message: "Too many requests"
             });
         }
         
         if (!form.valid) {
-            console.log('Invalid form: ', form)
             return fail(400, { form })
         }
 
@@ -54,7 +50,6 @@ export const actions: Actions = {
                 const imageBuffer = Buffer.from(imageArrayBuffer);
                 
                 profileImageUrl = await storageService.uploadProfileImage(imageBuffer, user.id);
-                console.log('Profile image uploaded:', profileImageUrl);
             }
 
             // Process qualification PDF
@@ -64,7 +59,6 @@ export const actions: Actions = {
                 const pdfBuffer = Buffer.from(pdfArrayBuffer);
                 
                 qualificationUrl = await storageService.uploadQualificationPDF(pdfBuffer, user.id);
-                console.log('Qualification PDF uploaded:', qualificationUrl);
             }
         } catch (error) {
             console.error('Error processing form files:', error);
@@ -88,7 +82,6 @@ export const actions: Actions = {
             userId
         };
 
-        console.log('Processed instructor data:', instructorSignupData);
 
         await instructorService.createInstructor(instructorSignupData);
 

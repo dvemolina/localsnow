@@ -167,6 +167,10 @@ export const session = pgTable('session', {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 export type Session = typeof session.$inferSelect;
+
+//School
+export type School = typeof schools.$inferSelect
+export type InsertSchool = typeof schools.$inferInsert;
 //Countries
 export type Country = typeof countries.$inferSelect;
 export type InsertCountry = typeof countries.$inferInsert;
