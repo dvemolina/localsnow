@@ -8,11 +8,12 @@
 	import { Checkbox } from '$src/lib/components/ui/checkbox';
 	import { Label } from '$src/lib/components/ui/label';
 
-	let { data }: { data: { form: SuperValidated<Infer<UserProfileSchema>> } } = $props();
+	let { userForm }: { userForm: SuperValidated<Infer<UserProfileSchema>> } = $props();
 
-	const form = superForm(data.form, {
+	const form = superForm(userForm, {
 		validators: zodClient(userProfileSchema)
 	});
+
 
 	const { form: formData, enhance } = form;
 </script>

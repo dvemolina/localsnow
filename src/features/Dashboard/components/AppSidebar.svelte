@@ -12,6 +12,12 @@
 			url: '/dashboard/profile',
 			icon: '/icons/ski-resort.svg'
 		},
+		{
+			title: 'Lessons',
+			url: '/dashboard/lessons',
+			icon: '/icons/service.svg'
+
+		}
 		
 	];
 </script>
