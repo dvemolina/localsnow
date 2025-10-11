@@ -1,3 +1,4 @@
+
 import { db } from "$lib/server/db/index";
 import { users, instructorSports, instructorResorts } from "$src/lib/server/db/schema";
 import type { InsertUser, User } from "$src/lib/server/db/schema";
