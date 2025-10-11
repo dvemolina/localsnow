@@ -16,9 +16,11 @@
     {:else if user.role}
         <Sidebar.Provider>
         <AppSidebar />
-        <main>
-        <Sidebar.Trigger/>
-        {@render children?.()}
+        <main class="w-full">
+        <Sidebar.Trigger />
+        <div class="p-4 w-full">
+            {@render children?.()}
+        </div>
         </main>
     </Sidebar.Provider>
     {/if}

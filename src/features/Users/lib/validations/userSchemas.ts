@@ -14,9 +14,19 @@ export const userLoginSchema = z.object({
     password: z.string().nonempty('Insert a Password'),
 });
 
+export const userProfileSchema = z.object({
+    name: z.string().nonempty('Insert your First Name'),
+    lastName: z.string().nonempty('Insert you Last Name'),
+    email: z.string().nonempty('Insert your Email'),
+    phone: z.string().optional(),
+
+});
+
+
 
 export type UserSignupSchema = typeof userSignupSchema
 export type UserLoginSchema = typeof userLoginSchema
+export type UserProfileSchema = typeof userProfileSchema
 
 export type UserSignupData = {
     name: string;
@@ -27,6 +37,13 @@ export type UserSignupData = {
     phone?: string
     acceptedTerms: boolean;
 };
+
+export type UserProfileData = {
+    name: string;
+    lastName: string;
+    email: string;
+    phone?: string
+}
 
 export type UserGoogleData = {
         googleId: string;

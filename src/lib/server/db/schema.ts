@@ -63,8 +63,8 @@ export const resorts = pgTable('resorts', {
 	label: varchar('label'),
 	minElevation: integer('min_elevation'),
 	maxElevation: integer('max_elevation'),
-	lat: numeric('lat', { precision: 10, scale: 6 }).notNull(),
-	lon: numeric('lon', { precision: 10, scale: 6 }).notNull(),
+	lat: numeric('lat', { precision: 10, scale: 6 }),
+	lon: numeric('lon', { precision: 10, scale: 6 }),
 	website: varchar('website', { length: 255 }),
 	countryId: integer('country_id')
 		.notNull()

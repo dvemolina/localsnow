@@ -44,6 +44,7 @@ export const actions: Actions = {
             //Process logo
             if (form.data.logo && form.data.logo.size > 0){
                 //Convert file Browser API to Buffer
+
                 const imageArrayBuffer = await form.data.logo.arrayBuffer();
                 const imageBuffer = Buffer.from(imageArrayBuffer);
                 
