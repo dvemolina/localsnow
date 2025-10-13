@@ -92,6 +92,26 @@ export const schools = pgTable('schools', {
 	isVerified: boolean('is_verified').default(false)
 });
 
+// --- Booking Requests ---
+export const bookingRequests = pgTable('booking_requests', {
+    id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+    uuid: uuid('uuid').defaultRandom().unique().notNull(),
+    instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    clientName: varchar('client_name', { length: 100 }).notNull(),
+    clientEmail: varchar('client_email', { length: 255 }).notNull(),
+    clientPhone: varchar('client_phone', { length: 50 }),
+    preferredDate: timestamp('preferred_date').notNull(),
+    lessonType: varchar('lesson_type', { length: 100 }),
+    numberOfPeople: integer('number_of_people').default(1),
+    skillLevel: varchar('skill_level', { length: 50 }),
+    message: text('message'),
+    status: varchar('status', { length: 50 }).default('pending'),
+    ...timestamps
+});
+
+export type BookingRequest = typeof bookingRequests.$inferSelect;
+export type InsertBookingRequest = typeof bookingRequests.$inferInsert;
+
 // --- Lessons (future) ---
 export const lessons = pgTable('lessons', {
 	uuid: uuid('id').defaultRandom().unique().notNull(),

@@ -1,0 +1,75 @@
+// src/routes/instructors/[id]/+page.server.ts
+import { error, fail, json } from '@sveltejs/kit';
+import type { PageServerLoad, Actions } from './$types';
+import { InstructorService } from '$src/features/Instructors/lib/instructorService';
+import { BookingRequestService } from '$src/features/Bookings/lib/bookingRequestService';
+
+const instructorService = new InstructorService();
+const bookingRequestService = new BookingRequestService();
+
+export const load: PageServerLoad = async ({ params }) => {
+    const instructorId = Number(params.id);
+    
+    if (isNaN(instructorId)) {
+        throw error(404, 'Instructor not found');
+    }
+
+    try {
+        const instructorData = await instructorService.getInstructorWithRelations(instructorId);
+        
+        if (!instructorData.instructor) {
+            throw error(404, 'Instructor not found');
+        }
+
+        // Verify the user has an instructor role
+        if (!instructorData.instructor.role?.includes('instructor')) {
+            throw error(404, 'Instructor not found');
+        }
+
+        return {
+            instructor: instructorData.instructor,
+            sports: instructorData.sports,
+            resorts: instructorData.resorts
+        };
+    } catch (err) {
+        console.error('Error loading instructor profile:', err);
+        throw error(500, 'Failed to load instructor profile');
+    }
+};
+
+export const actions: Actions = {
+    default: async ({ request, params }) => {
+        const instructorId = Number(params.id);
+        
+        if (isNaN(instructorId)) {
+            return fail(400, { message: 'Invalid instructor ID' });
+        }
+
+        try {
+            const data = await request.json();
+            
+            // Validate required fields
+            if (!data.clientName || !data.clientEmail || !data.preferredDate || !data.skillLevel) {
+                return fail(400, { message: 'Missing required fields' });
+            }
+
+            // Create booking request
+            await bookingRequestService.createBookingRequest({
+                instructorId,
+                clientName: data.clientName,
+                clientEmail: data.clientEmail,
+                clientPhone: data.clientPhone || null,
+                preferredDate: new Date(data.preferredDate),
+                lessonType: data.lessonType,
+                numberOfPeople: Number(data.numberOfPeople) || 1,
+                skillLevel: data.skillLevel,
+                message: data.message || null
+            });
+
+            return json({ success: true });
+        } catch (err) {
+            console.error('Error creating booking request:', err);
+            return fail(500, { message: 'Failed to submit booking request' });
+        }
+    }
+};
