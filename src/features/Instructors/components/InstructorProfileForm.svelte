@@ -164,23 +164,6 @@
 	</Form.Field>
 
 	<SportsCheckboxes {form} name="sports" />
-	<div class="flex w-full flex-col gap-2 sm:flex-row">
-		<Form.Field {form} name="basePrice" class="w-full">
-			<Form.Control>
-				{#snippet children({ props })}
-					<Form.Label>Base Price (1 Hour)</Form.Label>
-
-					<Input {...props} bind:value={$formData.basePrice} type="number" min="0" />
-					<Form.Description class="text-xs"
-						>Base Hourly Rate. You'll be able to add Discounts and Promotions later.</Form.Description
-					>
-				{/snippet}
-			</Form.Control>
-			<Form.FieldErrors />
-		</Form.Field>
-		<CurrencySelect {form} name="currency" />
-	</div>
-
 
 	<div class="mt-6 flex w-full flex-row items-center justify-center gap-2">
 		<a href="/dashboard" class="text-sm {buttonVariants({ variant: 'outline' })}">Go back</a>

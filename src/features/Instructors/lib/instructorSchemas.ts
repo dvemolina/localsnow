@@ -85,5 +85,6 @@ export type InstructorProfileData = {
     sports: number[];
     basePrice: number;
     currency: string;
+    instructorType: InstructorData['instructorType'];
     bio?: string | undefined;
 }
