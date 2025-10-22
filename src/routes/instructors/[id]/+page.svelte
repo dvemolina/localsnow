@@ -5,6 +5,8 @@
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { Button } from '$src/lib/components/ui/button';
 	import BookingRequestDialog from '$src/features/Bookings/components/BookingRequestDialog.svelte';
+	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
 
 	let { data } = $props();
 	let showBookingDialog = $state(false);
@@ -15,6 +17,20 @@
 
 	const isAuthenticated = !!data.user; // Will be true if user exists
 
+	$effect(() => {
+		// Check if auth_success parameter exists
+		const authSuccess = page.url.searchParams.get('auth_success');
+		
+		if (authSuccess === 'true' && isAuthenticated) {
+			// Open the dialog automatically
+			showBookingDialog = true;
+			
+			// Clean up the URL by removing the auth_success parameter
+			const newUrl = new URL(page.url);
+			newUrl.searchParams.delete('auth_success');
+			goto(newUrl.pathname + newUrl.search, { replaceState: true, noScroll: true });
+		}
+	});
 	// Map sport IDs to labels
 	const sportLabels: Record<number, string> = {
 		1: 'Ski',
