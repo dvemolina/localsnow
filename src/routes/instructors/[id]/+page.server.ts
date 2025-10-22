@@ -7,8 +7,8 @@ import { BookingRequestService } from '$src/features/Bookings/lib/bookingRequest
 const instructorService = new InstructorService();
 const bookingRequestService = new BookingRequestService();
 
-export const load: PageServerLoad = async ({ params }) => {
-    const instructorId = Number(params.id);
+export const load: PageServerLoad = async (event) => {
+    const instructorId = Number(event.params.id);
     
     if (isNaN(instructorId)) {
         throw error(404, 'Instructor not found');
@@ -29,7 +29,9 @@ export const load: PageServerLoad = async ({ params }) => {
         return {
             instructor: instructorData.instructor,
             sports: instructorData.sports,
-            resorts: instructorData.resorts
+            resorts: instructorData.resorts,
+            user: event.locals.user ?? null
+            
         };
     } catch (err) {
         console.error('Error loading instructor profile:', err);

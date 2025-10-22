@@ -13,6 +13,8 @@
 	const sports = data.sports;
 	const resorts = data.resorts;
 
+	const isAuthenticated = !!data.user; // Will be true if user exists
+
 	// Map sport IDs to labels
 	const sportLabels: Record<number, string> = {
 		1: 'Ski',
@@ -436,4 +438,9 @@
 		</div>
 	</div>
 </section>
-<BookingRequestDialog instructorId={instructor.id} instructorName={instructor.name} open={showBookingDialog}/>
+<BookingRequestDialog 
+	bind:open={showBookingDialog}
+	instructorId={instructor.id} 
+	instructorName={instructor.name}
+	isAuthenticated={isAuthenticated}
+/>
