@@ -12,7 +12,7 @@
 		instructorId, 
 		instructorName,
 		open = $bindable(false),
-		isAuthenticated = false // Pass from parent
+		isAuthenticated = false
 	}: {
 		instructorId: number;
 		instructorName: string;
@@ -20,10 +20,8 @@
 		isAuthenticated: boolean;
 	} = $props();
 
-	// View state: 'login' | 'signup' | 'booking'
 	let currentView = $state<'login' | 'signup' | 'booking'>('booking');
 
-	// Authentication forms
 	let loginData = $state({
 		email: '',
 		password: ''
@@ -37,7 +35,6 @@
 		confirmPassword: ''
 	});
 
-	// Booking form data
 	let bookingData = $state({
 		clientName: '',
 		clientEmail: '',
@@ -53,7 +50,6 @@
 	let submitSuccess = $state(false);
 	let submitError = $state('');
 
-	// When dialog opens, check auth status and set view
 	$effect(() => {
 		if (open) {
 			if (!isAuthenticated) {
@@ -61,27 +57,24 @@
 			} else {
 				currentView = 'booking';
 			}
-			// Reset states
 			submitSuccess = false;
 			submitError = '';
 		}
 	});
 
-	// Handle Login
 	async function handleLogin(e: Event) {
 		e.preventDefault();
 		isSubmitting = true;
 		submitError = '';
 
 		try {
-			const response = await fetch('/login', {
+			const response = await fetch('/api/auth/login', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(loginData)
 			});
 
 			if (response.ok) {
-				// Reload page to update auth state
 				window.location.reload();
 			} else {
 				const error = await response.json();
@@ -94,13 +87,11 @@
 		}
 	}
 
-	// Handle Signup
 	async function handleSignup(e: Event) {
 		e.preventDefault();
 		isSubmitting = true;
 		submitError = '';
 
-		// Validate passwords match
 		if (signupData.password !== signupData.confirmPassword) {
 			submitError = 'Passwords do not match';
 			isSubmitting = false;
@@ -108,7 +99,7 @@
 		}
 
 		try {
-			const response = await fetch('/signup', {
+			const response = await fetch('/api/auth/signup', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
@@ -120,7 +111,6 @@
 			});
 
 			if (response.ok) {
-				// Reload page to update auth state
 				window.location.reload();
 			} else {
 				const error = await response.json();
@@ -133,7 +123,6 @@
 		}
 	}
 
-	// Handle Booking Submission
 	async function handleBooking(e: Event) {
 		e.preventDefault();
 		isSubmitting = true;
@@ -152,7 +141,6 @@
 
 			if (response.ok) {
 				submitSuccess = true;
-				// Reset form
 				bookingData = {
 					clientName: '',
 					clientEmail: '',
@@ -164,7 +152,6 @@
 					message: ''
 				};
 				
-				// Close after showing success
 				setTimeout(() => {
 					open = false;
 					submitSuccess = false;
@@ -204,7 +191,6 @@
 		class="max-h-[90vh] overflow-y-auto sm:max-w-[600px]"
 		onInteractOutside={(e) => e.preventDefault()}
 	>
-		<!-- LOGIN VIEW -->
 		{#if currentView === 'login'}
 			<Dialog.Header>
 				<Dialog.Title>Login to Request Lesson</Dialog.Title>
@@ -276,14 +262,13 @@
 
 			<div class="text-center">
 				<button
-					onclick={() => {currentView = 'signup'; submitError = ''}}
+					onclick={() => { currentView = 'signup'; submitError = ''}}
 					class="text-sm text-primary hover:underline"
 				>
 					Don't have an account? Sign up
 				</button>
 			</div>
 
-		<!-- SIGNUP VIEW -->
 		{:else if currentView === 'signup'}
 			<Dialog.Header>
 				<Dialog.Title>Create Account</Dialog.Title>
@@ -397,14 +382,13 @@
 
 			<div class="text-center">
 				<button
-					onclick={() =>  { currentView = 'login'; submitError = ''}}
+					onclick={() => {currentView = 'login'; submitError = ''}}
 					class="text-sm text-primary hover:underline"
 				>
 					Already have an account? Login
 				</button>
 			</div>
 
-		<!-- BOOKING VIEW -->
 		{:else}
 			<Dialog.Header>
 				<Dialog.Title>Request a Lesson with {instructorName}</Dialog.Title>
@@ -433,7 +417,7 @@
 						<div>
 							<p class="font-semibold">Request Sent Successfully!</p>
 							<p class="mt-1 text-sm">
-								{instructorName} will contact you at {bookingData.clientEmail} to confirm details.
+								{instructorName} will contact you to confirm details.
 							</p>
 						</div>
 					</div>
@@ -441,7 +425,7 @@
 			{/if}
 
 			{#if submitError}
-				<div class="my-4 rounded-lg bg-red-50 p-4 text-red-800 dark:bg-red-900/20 dark:text-red-200">
+				<div class="my-4 rounded-lg bg-red-50 p-4 text-red-800 dark:bg-red-900/80 dark:text-red-200">
 					<p class="text-sm">{submitError}</p>
 				</div>
 			{/if}
