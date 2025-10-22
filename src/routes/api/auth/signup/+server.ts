@@ -49,7 +49,11 @@ export const POST: RequestHandler = async (event) => {
 
         return json({ 
             success: true, 
-            user: { id: newUser.id, name: newUser.name, email: newUser.email } 
+            user: { 
+                id: newUser.id, 
+                name: `${newUser.name} ${newUser.lastName}`, 
+                email: newUser.email 
+            } 
         });
     } catch (error) {
         console.error('Signup error:', error);

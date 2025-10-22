@@ -40,7 +40,14 @@ export const POST: RequestHandler = async (event) => {
         const session = await createSession(sessionToken, user.id);
         setSessionTokenCookie(event, sessionToken, session.expiresAt);
 
-        return json({ success: true, user: { id: user.id, name: user.name, email: user.email } });
+        return json({ 
+            success: true, 
+            user: { 
+                id: user.id, 
+                name: `${user.name} ${user.lastName}`, 
+                email: user.email 
+            } 
+        });
     } catch (error) {
         console.error('Login error:', error);
         return json({ message: 'An error occurred during login' }, { status: 500 });

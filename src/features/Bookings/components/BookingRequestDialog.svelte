@@ -75,7 +75,17 @@
 			});
 
 			if (response.ok) {
-				window.location.reload();
+				const data = await response.json();
+				// Pre-fill booking form with user data
+				bookingData.clientName = data.user.name || '';
+				bookingData.clientEmail = data.user.email || '';
+				
+				// Switch to booking view instead of reloading
+				currentView = 'booking';
+				isAuthenticated = true;
+				
+				// Reset login form
+				loginData = { email: '', password: '' };
 			} else {
 				const error = await response.json();
 				submitError = error.message || 'Invalid credentials';
@@ -111,7 +121,23 @@
 			});
 
 			if (response.ok) {
-				window.location.reload();
+				const data = await response.json();
+				// Pre-fill booking form with user data
+				bookingData.clientName = `${data.user.name}` || '';
+				bookingData.clientEmail = data.user.email || '';
+				
+				// Switch to booking view instead of reloading
+				currentView = 'booking';
+				isAuthenticated = true;
+				
+				// Reset signup form
+				signupData = {
+					name: '',
+					lastName: '',
+					email: '',
+					password: '',
+					confirmPassword: ''
+				};
 			} else {
 				const error = await response.json();
 				submitError = error.message || 'Signup failed';
@@ -200,7 +226,7 @@
 			</Dialog.Header>
 
 			{#if submitError}
-				<div class="my-4 rounded-lg bg-red-50 p-4 text-red-800 dark:bg-red-900/80 dark:text-red-200">
+				<div class="my-4 rounded-lg bg-red-50 p-4 text-red-800 dark:bg-red-900/20 dark:text-red-200">
 					<p class="text-sm">{submitError}</p>
 				</div>
 			{/if}
@@ -262,7 +288,7 @@
 
 			<div class="text-center">
 				<button
-					onclick={() => { currentView = 'signup'; submitError = ''}}
+					onclick={() => currentView = 'signup'}
 					class="text-sm text-primary hover:underline"
 				>
 					Don't have an account? Sign up
@@ -278,7 +304,7 @@
 			</Dialog.Header>
 
 			{#if submitError}
-				<div class="my-4 rounded-lg bg-red-50 p-4 text-red-800 dark:bg-red-900/80 dark:text-red-200">
+				<div class="my-4 rounded-lg bg-red-50 p-4 text-red-800 dark:bg-red-900/20 dark:text-red-200">
 					<p class="text-sm">{submitError}</p>
 				</div>
 			{/if}
@@ -336,6 +362,7 @@
 						required
 						disabled={isSubmitting}
 						placeholder="••••••••"
+						minlength="8"
 					/>
 					<p class="mt-1 text-xs text-muted-foreground">At least 8 characters</p>
 				</div>
@@ -382,7 +409,7 @@
 
 			<div class="text-center">
 				<button
-					onclick={() => {currentView = 'login'; submitError = ''}}
+					onclick={() => currentView = 'login'}
 					class="text-sm text-primary hover:underline"
 				>
 					Already have an account? Login
@@ -425,7 +452,7 @@
 			{/if}
 
 			{#if submitError}
-				<div class="my-4 rounded-lg bg-red-50 p-4 text-red-800 dark:bg-red-900/80 dark:text-red-200">
+				<div class="my-4 rounded-lg bg-red-50 p-4 text-red-800 dark:bg-red-900/20 dark:text-red-200">
 					<p class="text-sm">{submitError}</p>
 				</div>
 			{/if}
