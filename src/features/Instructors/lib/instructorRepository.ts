@@ -2,7 +2,7 @@
 import { db } from "$lib/server/db/index";
 import { users, instructorSports, instructorResorts } from "$src/lib/server/db/schema";
 import type { InsertUser, User } from "$src/lib/server/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, or } from "drizzle-orm";
 import type { InstructorSignupData } from "./instructorSchemas";
 
 export interface InstructorData {
@@ -169,5 +169,114 @@ export class InstructorRepository {
 
             return result.length > 0;
         });
+    }
+
+    async searchInstructors(filters: {
+        resortId?: number;
+        sportId?: number;
+        searchQuery?: string;
+    }) {
+        try {
+            let query = db
+                .select({
+                    id: users.id,
+                    name: users.name,
+                    lastName: users.lastName,
+                    email: users.email,
+                    profileImageUrl: users.profileImageUrl,
+                    bio: users.bio,
+                    phone: users.phone,
+                    countryCode: users.countryCode,
+                    role: users.role,
+                    qualificationUrl: users.qualificationUrl,
+                    // Join data
+                    sports: instructorSports.sportId,
+                    resorts: instructorResorts.resortId
+                })
+                .from(users)
+                .leftJoin(instructorSports, eq(users.id, instructorSports.instructorId))
+                .leftJoin(instructorResorts, eq(users.id, instructorResorts.instructorId))
+                .$dynamic();
+
+            // Build WHERE conditions
+            const conditions = [
+                or(
+                    eq(users.role, 'instructor-independent'),
+                    eq(users.role, 'instructor-school')
+                )
+            ];
+
+            // Filter by resort
+            if (filters.resortId) {
+                query = query.where(
+                    and(
+                        ...conditions,
+                        eq(instructorResorts.resortId, filters.resortId)
+                    )
+                );
+            } else {
+                query = query.where(and(...conditions));
+            }
+
+            // Execute query
+            const results = await query;
+
+            // Group by instructor ID to handle multiple sports/resorts
+            const instructorsMap = new Map();
+
+            for (const row of results) {
+                if (!instructorsMap.has(row.id)) {
+                    instructorsMap.set(row.id, {
+                        id: row.id,
+                        name: row.name,
+                        lastName: row.lastName,
+                        email: row.email,
+                        profileImageUrl: row.profileImageUrl,
+                        bio: row.bio,
+                        phone: row.phone,
+                        countryCode: row.countryCode,
+                        role: row.role,
+                        qualificationUrl: row.qualificationUrl,
+                        sports: [],
+                        resorts: []
+                    });
+                }
+
+                const instructor = instructorsMap.get(row.id);
+                
+                // Add sport if exists and not already added
+                if (row.sports && !instructor.sports.includes(row.sports)) {
+                    instructor.sports.push(row.sports);
+                }
+                
+                // Add resort if exists and not already added
+                if (row.resorts && !instructor.resorts.includes(row.resorts)) {
+                    instructor.resorts.push(row.resorts);
+                }
+            }
+
+            let instructorsList = Array.from(instructorsMap.values());
+
+            // Filter by sport if specified
+            if (filters.sportId) {
+                instructorsList = instructorsList.filter(instructor =>
+                    instructor.sports.includes(filters.sportId)
+                );
+            }
+
+            // Filter by search query (name)
+            if (filters.searchQuery) {
+                const query = filters.searchQuery.toLowerCase();
+                instructorsList = instructorsList.filter(instructor =>
+                    instructor.name.toLowerCase().includes(query) ||
+                    instructor.lastName.toLowerCase().includes(query)
+                );
+            }
+
+            return instructorsList;
+        } catch (error) {
+            console.error('Error in searchInstructors:', error);
+            throw error;
+        }
     }
 }

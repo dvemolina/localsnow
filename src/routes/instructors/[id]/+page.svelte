@@ -14,6 +14,7 @@
 	const resorts = data.resorts; // Array of resort IDs
 
 	// Map sport IDs to labels (you'll need to fetch these or pass them from server)
+	//Also Map Resorts Id to labels (Pass them from the server)
 	const sportLabels: Record<number, string> = {
 		1: 'Ski',
 		2: 'Snowboard',
@@ -32,7 +33,7 @@
 	/>
 </svelte:head>
 
-<section class="section w-full">
+<section class="w-full">
 	<!-- Back Button -->
 	<div class="mb-6">
 		<a href="/instructors" class="text-sm text-muted-foreground hover:text-foreground">
@@ -62,7 +63,7 @@
 
 				<!-- Star Rating -->
 				<div class="mt-2 flex justify-center">
-					<StarScore score={4.8} />
+					<StarScore score=5/5 />
 				</div>
 
 				<!-- Instructor Type Badge -->
@@ -140,24 +141,6 @@
 				</div>
 			</div>
 
-			<!-- Bio -->
-			{#if instructor.bio}
-				<div>
-					<h2 class="title4 mb-3">About Me</h2>
-					<p class="hyphens-auto text-sm leading-relaxed text-muted-foreground">
-						{instructor.bio}
-					</p>
-				</div>
-			{:else}
-				<div>
-					<h2 class="title4 mb-3">About Me</h2>
-					<p class="hyphens-auto text-sm leading-relaxed text-muted-foreground">
-						Professional ski instructor ready to help you improve your skills on the slopes. Whether
-						you're a beginner or looking to refine your technique, I provide personalized
-						instruction tailored to your goals.
-					</p>
-				</div>
-			{/if}
 
 			<!-- Qualifications -->
 			{#if instructor.qualificationUrl}
@@ -199,6 +182,27 @@
 
 	<!-- Additional Info Section -->
 	<div class="mt-8 grid gap-6 md:grid-cols-2">
+		<div class="rounded-lg border border-border bg-card p-6">
+			<!-- Bio -->
+			{#if instructor.bio}
+				<div>
+					<h2 class="title4 mb-3">About {instructor.name}</h2>
+					<p class="hyphens-auto text-sm leading-relaxed text-muted-foreground">
+						{instructor.bio}
+					</p>
+				</div>
+			{:else}
+				<div>
+					<h2 class="title4 mb-3">About {instructor.name}</h2>
+					<p class="hyphens-auto text-sm leading-relaxed text-muted-foreground">
+						Professional ski instructor ready to help you improve your skills on the slopes. Whether
+						you're a beginner or looking to refine your technique, I provide personalized
+						instruction tailored to your goals.
+					</p>
+				</div>
+			{/if}
+			
+		</div>
 		<!-- What to Expect -->
 		<div class="rounded-lg border border-border bg-card p-6">
 			<h2 class="title4 mb-4">What to Expect</h2>

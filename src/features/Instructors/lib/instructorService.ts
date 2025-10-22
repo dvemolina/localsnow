@@ -120,4 +120,17 @@ export class InstructorService {
             throw new Error('Failed to fetch instructor resorts');
         }
     }
+
+    async searchInstructors(filters: {
+        resortId?: number;
+        sportId?: number;
+        searchQuery?: string;
+    }): Promise<unknown[]> {
+        try {
+            return await this.instructorRepository.searchInstructors(filters);
+        } catch (error) {
+            console.error('Error searching instructors:', error);
+            throw new Error('Failed to search instructors');
+        }
+    }
 }
