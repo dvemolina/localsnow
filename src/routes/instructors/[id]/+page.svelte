@@ -4,17 +4,16 @@
 	import * as Avatar from '$src/lib/components/ui/avatar';
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { Button } from '$src/lib/components/ui/button';
-	import BookingRequestForm from '$src/features/Instructors/components/BookingRequestForm.svelte';
+	import BookingRequestDialog from '$src/features/Bookings/components/BookingRequestDialog.svelte';
 
 	let { data } = $props();
-	let showBookingForm = $state(false);
+	let showBookingDialog = $state(false);
 
 	const instructor = data.instructor;
-	const sports = data.sports; // Array of sport IDs
-	const resorts = data.resorts; // Array of resort IDs
+	const sports = data.sports;
+	const resorts = data.resorts;
 
-	// Map sport IDs to labels (you'll need to fetch these or pass them from server)
-	//Also Map Resorts Id to labels (Pass them from the server)
+	// Map sport IDs to labels
 	const sportLabels: Record<number, string> = {
 		1: 'Ski',
 		2: 'Snowboard',
@@ -36,17 +35,34 @@
 <section class="w-full">
 	<!-- Back Button -->
 	<div class="mb-6">
-		<a href="/instructors" class="text-sm text-muted-foreground hover:text-foreground">
-			← Back to Instructors
+		<a 
+			href="/instructors" 
+			class="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="size-4"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M15 19l-7-7 7-7"
+				/>
+			</svg>
+			Back to Instructors
 		</a>
 	</div>
 
-	<!-- Main Profile Card -->
+	<!-- Main Profile Card-->
 	<div
-		class="flex w-full flex-col gap-6 rounded-lg border border-border bg-card p-6 shadow-md md:flex-row"
+		class="flex w-full flex-col gap-6 md:flex-row"
 	>
 		<!-- Left Column - Avatar & Basic Info -->
-		<div class="flex flex-col items-center gap-4 md:w-1/3">
+		<div class="flex flex-col items-center gap-4 md:w-1/3 rounded-lg border border-border bg-card p-6">
 			<Avatar.Root class="size-32 border-2 border-border shadow-sm sm:size-40">
 				<Avatar.Image
 					src={instructor.profileImageUrl || '/local-snow-head.png'}
@@ -63,7 +79,7 @@
 
 				<!-- Star Rating -->
 				<div class="mt-2 flex justify-center">
-					<StarScore score=5/5 />
+					<StarScore score={5} />
 				</div>
 
 				<!-- Instructor Type Badge -->
@@ -76,17 +92,36 @@
 				</div>
 			</div>
 
-			<!-- Contact Button -->
-			<Button onclick={() => (showBookingForm = !showBookingForm)} class="mt-4 w-full">
-				{showBookingForm ? 'Hide Booking Form' : 'Request a Lesson'}
+			<!-- Contact Button - Primary CTA -->
+			<Button 
+				onclick={() => (showBookingDialog = true)} 
+				class="mt-4 w-full"
+				size="lg"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="mr-2 size-5"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+					/>
+				</svg>
+				Request a Lesson
 			</Button>
 
 			<!-- Quick Info Box -->
 			<div class="mt-4 w-full space-y-3 rounded-lg bg-muted p-4">
 				<div class="flex items-center gap-2">
 					<img src="/icons/certificate.svg" alt="Certification" class="size-5" />
-					<span class="text-sm">Verified Instructor</span>
+					<span class="text-sm font-medium">Verified Instructor</span>
 				</div>
+				<!-- 
 				{#if instructor.phone}
 					<div class="flex items-center gap-2">
 						<svg
@@ -104,19 +139,52 @@
 							/>
 						</svg>
 						<span class="text-sm">
-							+{instructor.countryCode}
-							{instructor.phone}
+							+{instructor.countryCode} {instructor.phone}
 						</span>
 					</div>
 				{/if}
+				-->
+				<div class="flex items-center gap-2">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="size-5"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+						/>
+					</svg>
+					<span class="text-sm">24h response time</span>
+				</div>
 			</div>
 		</div>
 
 		<!-- Right Column - Detailed Info -->
-		<div class="flex-1 space-y-6">
+		<div class="flex flex-1 flex-col space-y-6 rounded-lg border border-border bg-card p-6">
 			<!-- Sports Taught -->
 			<div>
-				<h2 class="title4 mb-3">Sports</h2>
+				<h2 class="title4 mb-3 flex items-center gap-2">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="size-5"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M13 10V3L4 14h7v7l9-11h-7z"
+						/>
+					</svg>
+					Sports Offered
+				</h2>
 				<div class="flex flex-wrap gap-2">
 					{#each sports as sportId}
 						<Badge variant="outline" class="text-sm">
@@ -128,62 +196,180 @@
 
 			<!-- Location/Resort -->
 			<div>
-				<h2 class="title4 mb-3">Teaching Location</h2>
+				<h2 class="title4 mb-3 flex items-center gap-2">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="size-5"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+						/>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+						/>
+					</svg>
+					Teaching Location
+				</h2>
 				<div class="flex items-center gap-2">
-					<img src="/icons/ski-resort.svg" alt="Resort" class="size-5" />
-					<span class="text-sm">
+					<span class="text-sm text-muted-foreground">
 						{#if resorts.length > 0}
-							{resorts.length} Resort{resorts.length > 1 ? 's' : ''}
+							Teaching at {resorts.length} resort{resorts.length > 1 ? 's' : ''}
 						{:else}
-							Multiple locations
+							Multiple locations available
 						{/if}
 					</span>
 				</div>
 			</div>
 
-
 			<!-- Qualifications -->
 			{#if instructor.qualificationUrl}
 				<div>
-					<h2 class="title4 mb-3">Qualifications</h2>
-					<div class="flex items-center gap-2">
-						<img src="/icons/certificate.svg" alt="Certification" class="size-5" />
-						<a
-							href={instructor.qualificationUrl}
-							target="_blank"
-							rel="noopener noreferrer"
-							class="text-sm text-primary hover:underline"
+					<h2 class="title4 mb-3 flex items-center gap-2">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="size-5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
 						>
-							View Certification
-						</a>
-					</div>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+							/>
+						</svg>
+						Qualifications
+					</h2>
+					<a
+						href={instructor.qualificationUrl}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="inline-flex items-center gap-2 text-sm text-primary hover:underline"
+					>
+						View Certification Document
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="size-4"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+							/>
+						</svg>
+					</a>
 				</div>
 			{/if}
 
-			<!-- Experience -->
+			<!-- Experience Highlights -->
 			<div>
-				<h2 class="title4 mb-3">Experience Highlights</h2>
-				<ul class="list-inside list-disc space-y-2 text-sm text-muted-foreground">
-					<li>Certified professional instructor</li>
-					<li>Years of teaching experience</li>
-					<li>All skill levels welcome</li>
-					<li>Personalized lesson plans</li>
+				<h2 class="title4 mb-3 flex items-center gap-2">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="size-5"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+						/>
+					</svg>
+					What You'll Get
+				</h2>
+				<ul class="space-y-2.5 text-sm text-muted-foreground">
+					<li class="flex items-start gap-2">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="mt-0.5 size-5 shrink-0 text-primary"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M5 13l4 4L19 7"
+							/>
+						</svg>
+						<span>Certified professional instruction</span>
+					</li>
+					<li class="flex items-start gap-2">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="mt-0.5 size-5 shrink-0 text-primary"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M5 13l4 4L19 7"
+							/>
+						</svg>
+						<span>Personalized lessons for all skill levels</span>
+					</li>
+					<li class="flex items-start gap-2">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="mt-0.5 size-5 shrink-0 text-primary"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M5 13l4 4L19 7"
+							/>
+						</svg>
+						<span>Focus on technique and safety</span>
+					</li>
+					<li class="flex items-start gap-2">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="mt-0.5 size-5 shrink-0 text-primary"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M5 13l4 4L19 7"
+							/>
+						</svg>
+						<span>Flexible scheduling to fit your needs</span>
+					</li>
 				</ul>
 			</div>
 		</div>
 	</div>
 
-	<!-- Booking Request Form (Toggleable) -->
-	{#if showBookingForm}
-		<div class="mt-8">
-			<BookingRequestForm instructorId={instructor.id} instructorName={instructor.name} />
-		</div>
-	{/if}
-
-	<!-- Additional Info Section -->
-	<div class="mt-8 grid gap-6 md:grid-cols-2">
-		<div class="rounded-lg border border-border bg-card p-6">
-			<!-- Bio -->
+	<!-- Bio -->
+	<div class="rounded-lg border border-border bg-card p-6 mt-8">
 			{#if instructor.bio}
 				<div>
 					<h2 class="title4 mb-3">About {instructor.name}</h2>
@@ -203,6 +389,9 @@
 			{/if}
 			
 		</div>
+
+	<!-- Additional Info Section -->
+	<div class="mt-8 grid gap-6 md:grid-cols-2">
 		<!-- What to Expect -->
 		<div class="rounded-lg border border-border bg-card p-6">
 			<h2 class="title4 mb-4">What to Expect</h2>
@@ -247,3 +436,4 @@
 		</div>
 	</div>
 </section>
+<BookingRequestDialog instructorId={instructor.id} instructorName={instructor.name} open={showBookingDialog}/>
