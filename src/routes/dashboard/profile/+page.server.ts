@@ -1,3 +1,4 @@
+// src/routes/dashboard/profile/+page.server.ts
 import { userProfileSchema } from "$src/features/Users/lib/validations/userSchemas.js";
 import { redirect, type Actions } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types.js";
@@ -7,91 +8,154 @@ import { UserService } from "$src/features/Users/lib/UserService.js";
 import { RefillingTokenBucket } from "$src/lib/server/rate-limit.js";
 import { getClientIP } from "$src/lib/utils/auth.js";
 import { instructorProfileSchema } from "$src/features/Instructors/lib/instructorSchemas.js";
+import { InstructorService } from "$src/features/Instructors/lib/instructorService.js";
+import { StorageService } from "$src/lib/server/R2Storage.js";
 
-const userService = new UserService()
-const ipBucket = new RefillingTokenBucket<string>(3, 10);
+const userService = new UserService();
+const instructorService = new InstructorService();
+const storageService = new StorageService();
+const ipBucket = new RefillingTokenBucket<string>(5, 60); // 5 requests per minute
  
 export const load: PageServerLoad = async (event) => {
     const user = event.locals.user;
-    if(!user) redirect(302, '/login')
+    if (!user) redirect(302, '/login');
     
-    const userForm = await superValidate(zod(userProfileSchema));
-    const instructorForm = await superValidate(zod(instructorProfileSchema));
+    // Pre-populate forms with existing user data
+    const userForm = await superValidate(
+        {
+            name: user.name,
+            lastName: user.lastName,
+            email: user.email,
+            phone: user.phone || ''
+        },
+        zod(userProfileSchema)
+    );
 
-    return { userForm, instructorForm }
+    // For instructors, pre-populate instructor form
+    let instructorForm = null;
+    if (user.role === 'instructor-independent' || user.role === 'instructor-school') {
+        const instructorData = await instructorService.getInstructorWithRelations(user.id);
+        
+        instructorForm = await superValidate(
+            {
+                bio: user.bio || '',
+                countryCode: parseInt(user.countryCode || '1'),
+                phone: user.phone || '',
+                resort: instructorData.resorts[0] || 0,
+                sports: instructorData.sports || [],
+                basePrice: 0, // Get from instructor data
+                currency: 'EUR',
+                instructorType: user.role
+            },
+            zod(instructorProfileSchema)
+        );
+    }
+
+    return { userForm, instructorForm };
 };
 
 export const actions: Actions = {
     userProfile: async (event) => {
-        const user = event.locals.user
-        if(!user) redirect(302, '/login')
+        const user = event.locals.user;
+        if (!user) redirect(302, '/login');
 
+        // Rate limiting
         const clientIP = getClientIP(event);
-        if (clientIP !== null && !ipBucket.check(clientIP, 1)) {
+        if (clientIP !== null && !ipBucket.consume(clientIP, 1)) {
             return fail(429, {
-                message: "Too many requests"
+                message: "Too many requests. Please try again later."
             });
         }
+
         const form = await superValidate(event.request, zod(userProfileSchema));
         
         if (!form.valid) {
-        return fail(400, { form })
+            return fail(400, { form });
         }
 
-        const emailExists = await userService.getUserByEmail(form.data.email);
-        if(emailExists) {
-            return setError(form, 'email', 'Este correo ya existe',  {status: 409})
+        // Check if email is already taken by another user
+        if (form.data.email !== user.email) {
+            const emailExists = await userService.getUserByEmail(form.data.email);
+            if (emailExists && emailExists.id !== user.id) {
+                return setError(form, 'email', 'This email is already registered', { status: 409 });
+            }
         }
-
-        if (clientIP !== null && !ipBucket.consume(clientIP, 1)) {
-            return fail(429, {
-                message: "Too many requests"
-            });
-        }
-        
 
         try {
-           await userService.updateUser(user.id, form.data);
+            await userService.updateUser(user.id, {
+                name: form.data.name,
+                lastName: form.data.lastName,
+                email: form.data.email,
+                phone: form.data.phone,
+                updatedAt: new Date()
+            });
+
+            return { form, success: true };
         } catch (error) {
-            console.error('Something went wrong updating a user with email/password: ', error)
-            return fail(500, { form, error: 'Internal server error while updating the user. Try again later' });
+            console.error('Error updating user profile:', error);
+            return fail(500, { 
+                form, 
+                error: 'Failed to update profile. Please try again.' 
+            });
         }
-        
-        return redirect(302, '/profile')
-        
     },
 
     instructorProfile: async (event) => {
-        const user = event.locals.user
-        if(!user) redirect(302, '/login')
+        const user = event.locals.user;
+        if (!user) redirect(302, '/login');
+        if (user.role !== 'instructor-independent' && user.role !== 'instructor-school') {
+            return fail(403, { message: 'Not authorized' });
+        }
 
+        // Rate limiting
         const clientIP = getClientIP(event);
-        if (clientIP !== null && !ipBucket.check(clientIP, 1)) {
+        if (clientIP !== null && !ipBucket.consume(clientIP, 1)) {
             return fail(429, {
-                message: "Too many requests"
+                message: "Too many requests. Please try again later."
             });
         }
+
         const form = await superValidate(event.request, zod(instructorProfileSchema));
         
         if (!form.valid) {
-        return fail(400, { form })
+            return fail(400, { form });
         }
-
-        if (clientIP !== null && !ipBucket.consume(clientIP, 1)) {
-            return fail(429, {
-                message: "Too many requests"
-            });
-        }
-        
 
         try {
-           await userService.updateUser(user.id, form.data);
+            let profileImageUrl: string | null = null;
+            let qualificationUrl: string | null = null;
+
+            // Process profile image if uploaded
+            if (form.data.profileImage && form.data.profileImage.size > 0) {
+                const imageArrayBuffer = await form.data.profileImage.arrayBuffer();
+                const imageBuffer = Buffer.from(imageArrayBuffer);
+                profileImageUrl = await storageService.uploadProfileImage(imageBuffer, user.id);
+            }
+
+            // Process qualification PDF if uploaded
+            if (form.data.qualification && form.data.qualification.size > 0) {
+                const pdfArrayBuffer = await form.data.qualification.arrayBuffer();
+                const pdfBuffer = Buffer.from(pdfArrayBuffer);
+                qualificationUrl = await storageService.uploadQualificationPDF(pdfBuffer, user.id);
+            }
+
+            // Update instructor profile
+            await instructorService.updateInstructor(user.id, {
+                bio: form.data.bio,
+                countryCode: form.data.countryCode,
+                phone: form.data.phone,
+                resort: form.data.resort,
+                sports: form.data.sports,
+                instructorType: form.data.instructorType
+            }, profileImageUrl, qualificationUrl);
+
+            return { form, success: true };
         } catch (error) {
-            console.error('Something went wrong updating a user with email/password: ', error)
-            return fail(500, { form, error: 'Internal server error while updating the user. Try again later' });
+            console.error('Error updating instructor profile:', error);
+            return fail(500, { 
+                form, 
+                error: 'Failed to update instructor profile. Please try again.' 
+            });
         }
-        
-        return redirect(302, '/profile')
-        
     }
-};  
+};

@@ -6,6 +6,7 @@
 	import '../app.css';
 	import ScreenSize from '$src/lib/components/shared/ScreenSize.svelte';
 	import Footer from '$src/lib/components/shared/Footer.svelte';
+	import { Toaster } from 'svelte-sonner';
 
 	let { children } = $props();
 	let isDashboard = $state(page.url.pathname.includes('/dashboard'));
@@ -14,6 +15,8 @@
 		isDashboard = page.url.pathname.includes('/dashboard');
 	});
 </script>
+
+<Toaster position="top-right" />
 
 <svelte:head>
 	<!-- hreflang implementation -->
