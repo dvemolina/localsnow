@@ -76,8 +76,8 @@
 							Manage your professional credentials, certifications, and teaching information
 						</p>
 						{#if !data.user.isVerified}
-							<div class="mt-3 rounded-md bg-yellow-50 p-3 dark:bg-yellow-900/20">
-								<p class="text-sm text-yellow-800 dark:text-yellow-200">
+							<div class="mt-3 rounded-md bg-yellow-50 p-3">
+								<p class="text-sm text-yellow-800">
 									⚠️ Your instructor profile is pending verification. We'll review your credentials within 24-48 hours.
 								</p>
 							</div>
@@ -98,8 +98,8 @@
 							Manage your school's information, contact details, and instructors
 						</p>
 						{#if !data.user.isVerified}
-							<div class="mt-3 rounded-md bg-yellow-50 p-3 dark:bg-yellow-900/20">
-								<p class="text-sm text-yellow-800 dark:text-yellow-200">
+							<div class="mt-3 rounded-md bg-yellow-50 p-3">
+								<p class="text-sm text-yellow-800">
 									⚠️ Your school profile is pending verification. We'll review your credentials within 24-48 hours.
 								</p>
 							</div>

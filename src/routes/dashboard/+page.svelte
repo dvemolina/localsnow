@@ -149,7 +149,7 @@
 
 		<!-- Getting Started (for unverified users) -->
 		{#if !user.isVerified && (user.role === 'instructor-independent' || user.role === 'instructor-school')}
-			<Card.Root class="border-yellow-200 bg-yellow-50 dark:border-yellow-900 dark:bg-yellow-900/20">
+			<Card.Root class="border-yellow-200 bg-yellow-50" >
 				<Card.Header>
 					<Card.Title class="flex items-center gap-2">
 						<svg class="h-5 w-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
@@ -159,10 +159,10 @@
 					</Card.Title>
 				</Card.Header>
 				<Card.Content>
-					<p class="mb-4 text-sm text-yellow-800 dark:text-yellow-200">
+					<p class="mb-4 text-sm text-yellow-800 ">
 						Your instructor profile is under review. To speed up verification:
 					</p>
-					<ul class="mb-4 space-y-2 text-sm text-yellow-800 dark:text-yellow-200">
+					<ul class="mb-4 space-y-2 text-sm text-yellow-800 ">
 						<li class="flex items-start gap-2">
 							<svg class="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
