@@ -4,6 +4,7 @@
 	import Button from '$src/lib/components/ui/button/button.svelte';
 	import { Badge } from '$src/lib/components/ui/badge';
 	import * as Card from '$src/lib/components/ui/card';
+	import ProfileVisitsCard from '$src/features/Dashboard/components/ProfileVisitsCard.svelte';
 
 	let { data } = $props();
 	let user = $state(data.user);
@@ -110,19 +111,7 @@
 					</Card.Content>
 				</Card.Root>
 
-				<Card.Root>
-					<Card.Header class="pb-2">
-						<Card.Title class="text-sm font-medium text-muted-foreground">
-							Profile Views
-						</Card.Title>
-					</Card.Header>
-					<Card.Content>
-						<div class="text-2xl font-bold">0</div>
-						<p class="text-xs text-muted-foreground">
-							This month
-						</p>
-					</Card.Content>
-				</Card.Root>
+				<ProfileVisitsCard visits={data.profileVisits || 0} />
 			{/if}
 		</div>
 

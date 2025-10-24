@@ -25,6 +25,8 @@ export const users = pgTable('users', {
     profileImageUrl: varchar('profile_image_url', { length: 255 }). default('/local-snow-head.png'),
 	countryCode: varchar('country_code', { length: 4}),
     phone: varchar('phone', { length: 50 }),
+	professionalCountryCode: varchar('professional_country_code', { length: 4}),
+	professionalPhone: varchar('professional_phone', { length: 50 }),
 	qualificationUrl: varchar('qualification_url', { length: 255 }),
     isVerified: boolean('is_verified').default(false),
 	acceptedTerms: boolean('accepted_terms').notNull().default(false),
@@ -173,6 +175,13 @@ export const schoolInstructorHistory = pgTable('school_instructor_history', {
 	isIndependent: boolean('is_independent').default(false) // True if the instructor worked independently
 });
 
+export const profileVisits = pgTable('profile_visits', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	visitorIp: varchar('visitor_ip', { length: 45 }),
+	visitedAt: timestamp('visited_at'),
+	yearMonth: varchar('year_month', { length: 7}).notNull()
+})
 
 export const session = pgTable('session', {
 	id: text('id').primaryKey(),

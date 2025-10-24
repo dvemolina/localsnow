@@ -1,125 +1,209 @@
 <!-- src/routes/dashboard/lessons/+page.svelte -->
 <script lang="ts">
-	import LessonForm from '$src/features/Lessons/components/LessonForm.svelte';
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { Button } from '$src/lib/components/ui/button';
-	import * as Tabs from '$lib/components/ui/tabs';
+	import * as Card from '$src/lib/components/ui/card';
+	import { Input } from '$src/lib/components/ui/input';
+	import * as Form from '$src/lib/components/ui/form';
+	import SportsCheckboxes from '$src/features/Sports/components/SportsCheckboxes.svelte';
+	import CurrencySelect from '$src/lib/components/shared/CurrencySelect.svelte';
+	import { superForm } from 'sveltekit-superforms';
+	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { lessonSchema } from '$src/features/Lessons/lib/lessonSchema';
 
 	let { data } = $props();
 	
-	// Mock lesson data - replace with actual data from server
-	let lessons = $state([
-		{
-			id: 1,
-			title: 'Private Ski Lesson',
-			duration: '1 hour',
-			basePrice: 60,
-			currency: 'EUR',
-			isPublished: true,
-			sportId: 1
-		}
-	]);
+	const form = superForm(data.lessonForm, {
+		validators: zodClient(lessonSchema),
+		dataType: 'json'
+	});
+
+	const { form: formData, enhance, delayed } = form;
+	
+	// Check if base lesson exists
+	const hasBaseLesson = data.baseLesson !== null;
+	const baseLesson = data.baseLesson;
+
+	let isEditing = $state(false);
 </script>
 
-<div class="container mx-auto max-w-6xl py-6">
+<div class="container mx-auto max-w-4xl py-6">
 	<!-- Header -->
 	<div class="mb-6">
-		<h1 class="title2 mb-2">Lesson Management</h1>
+		<h1 class="title2 mb-2">Base Lesson Configuration</h1>
 		<p class="text-muted-foreground">
-			Create and manage your lesson offerings for potential clients
+			Set your standard hourly rate and available sports. This will be shown to potential clients.
 		</p>
 	</div>
 
-	<Tabs.Root value="active" class="w-full">
-		<Tabs.List class="grid w-full grid-cols-3">
-			<Tabs.Trigger value="active">Active Lessons</Tabs.Trigger>
-			<Tabs.Trigger value="create">Create New</Tabs.Trigger>
-			<Tabs.Trigger value="drafts">Drafts</Tabs.Trigger>
-		</Tabs.List>
-
-		<!-- Active Lessons Tab -->
-		<Tabs.Content value="active" class="mt-6">
-			<div class="space-y-4">
-				{#if lessons.length === 0}
-					<div class="rounded-lg border border-dashed border-border bg-card/50 p-12 text-center">
-						<div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-							<svg class="h-8 w-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-							</svg>
-						</div>
-						<h3 class="mb-2 text-lg font-semibold">No lessons yet</h3>
-						<p class="mb-4 text-sm text-muted-foreground">
-							Create your first lesson to start accepting bookings from clients
-						</p>
-						<Button onclick={() => {
-							// Switch to create tab
-							document.querySelector('[value="create"]')?.click();
-						}}>
-							Create Your First Lesson
-						</Button>
+	{#if hasBaseLesson && !isEditing}
+		<!-- Display existing base lesson -->
+		<Card.Root class="border-2">
+			<Card.Header>
+				<div class="flex items-start justify-between">
+					<div>
+						<Card.Title class="flex items-center gap-2">
+							Base Lesson Rate
+							<Badge variant="secondary" class="text-xs">Standard</Badge>
+						</Card.Title>
+						<Card.Description class="mt-1">
+							Your hourly rate for private lessons
+						</Card.Description>
 					</div>
-				{:else}
-					<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-						{#each lessons as lesson}
-							<div class="rounded-lg border border-border bg-card p-5 shadow-sm hover:shadow-md transition-shadow">
-								<div class="mb-3 flex items-start justify-between">
-									<div>
-										<h3 class="font-semibold">{lesson.title}</h3>
-										<p class="text-sm text-muted-foreground">{lesson.duration}</p>
-									</div>
-									<Badge variant={lesson.isPublished ? 'default' : 'secondary'}>
-										{lesson.isPublished ? 'Published' : 'Draft'}
-									</Badge>
-								</div>
-								
-								<div class="mb-4 flex items-baseline gap-1">
-									<span class="text-2xl font-bold">{lesson.basePrice}</span>
-									<span class="text-sm text-muted-foreground">{lesson.currency}</span>
-								</div>
+					<Button 
+						variant="outline" 
+						size="sm"
+						onclick={() => isEditing = true}
+					>
+						<svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+						</svg>
+						Edit
+					</Button>
+				</div>
+			</Card.Header>
+			<Card.Content class="space-y-4">
+				<!-- Price Display -->
+				<div class="rounded-lg bg-muted p-4">
+					<div class="flex items-baseline gap-2">
+						<span class="text-3xl font-bold">{baseLesson.basePrice}</span>
+						<span class="text-lg text-muted-foreground">{baseLesson.currency}/hour</span>
+					</div>
+					<p class="mt-1 text-sm text-muted-foreground">Base hourly rate</p>
+				</div>
 
-								<div class="flex gap-2">
-									<Button variant="outline" size="sm" class="flex-1">
-										Edit
-									</Button>
-									<Button variant="ghost" size="sm">
-										<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
-										</svg>
-									</Button>
-								</div>
-							</div>
+				<!-- Sports Display -->
+				<div>
+					<h3 class="mb-2 text-sm font-medium">Available Sports</h3>
+					<div class="flex flex-wrap gap-2">
+						{#each baseLesson.sports as sportId}
+							<Badge variant="outline">
+								{sportId === 1 ? 'Ski' : sportId === 2 ? 'Snowboard' : 'Telemark'}
+							</Badge>
 						{/each}
 					</div>
-				{/if}
-			</div>
-		</Tabs.Content>
+				</div>
 
-		<!-- Create New Lesson Tab -->
-		<Tabs.Content value="create" class="mt-6">
-			<div class="rounded-lg border border-border bg-card p-6 shadow-sm">
-				<div class="mb-6">
-					<h2 class="title4 mb-1">Create New Lesson</h2>
-					<p class="text-sm text-muted-foreground">
-						Define your lesson details, pricing, and availability
+				<!-- Info Box -->
+				<div class="rounded-md bg-blue-50 p-3 dark:bg-blue-900/20">
+					<p class="text-sm text-blue-800 dark:text-blue-200">
+						<strong>Note:</strong> This is your base rate. You can discuss custom pricing directly with clients for longer sessions or group lessons.
 					</p>
 				</div>
-				<LessonForm lessonForm={data.lessonForm} />
-			</div>
-		</Tabs.Content>
+			</Card.Content>
+		</Card.Root>
+	{:else}
+		<!-- Edit/Create Form -->
+		<Card.Root>
+			<Card.Header>
+				<Card.Title>
+					{hasBaseLesson ? 'Edit Base Lesson' : 'Create Base Lesson'}
+				</Card.Title>
+				<Card.Description>
+					Set your hourly rate and select which sports you teach
+				</Card.Description>
+			</Card.Header>
+			<Card.Content>
+				<form method="POST" action="?/saveBaseLesson" use:enhance class="space-y-6">
+					<!-- Sports Selection -->
+					<SportsCheckboxes {form} name="sports" />
 
-		<!-- Drafts Tab -->
-		<Tabs.Content value="drafts" class="mt-6">
-			<div class="rounded-lg border border-dashed border-border bg-card/50 p-12 text-center">
-				<div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
-					<svg class="h-8 w-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-					</svg>
-				</div>
-				<h3 class="mb-2 text-lg font-semibold">No draft lessons</h3>
-				<p class="text-sm text-muted-foreground">
-					Draft lessons will appear here before you publish them
-				</p>
-			</div>
-		</Tabs.Content>
-	</Tabs.Root>
+					<!-- Pricing -->
+					<div class="grid gap-4 sm:grid-cols-3">
+						<Form.Field {form} name="basePrice" class="sm:col-span-2">
+							<Form.Control>
+								{#snippet children({ props })}
+									<Form.Label>Hourly Rate <span class="text-red-500">*</span></Form.Label>
+									<Input 
+										{...props} 
+										bind:value={$formData.basePrice} 
+										type="number" 
+										min="0" 
+										step="1"
+										disabled={$delayed}
+										placeholder="50"
+									/>
+									<Form.Description class="text-xs">
+										Your standard rate for a 1-hour private lesson
+									</Form.Description>
+								{/snippet}
+							</Form.Control>
+							<Form.FieldErrors />
+						</Form.Field>
+
+						<CurrencySelect {form} name="currency" />
+					</div>
+
+					<!-- Info Notice -->
+					<div class="rounded-md border border-yellow-200 bg-yellow-50 p-4 dark:bg-yellow-900/20">
+						<div class="flex gap-3">
+							<svg class="h-5 w-5 text-yellow-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+								<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+							</svg>
+							<div class="text-sm text-yellow-800 dark:text-yellow-200">
+								<p class="font-medium">About your base lesson</p>
+								<p class="mt-1">This represents your standard hourly rate for private lessons. Clients will see this on your profile. You can always discuss custom pricing for different lesson types or durations.</p>
+							</div>
+						</div>
+					</div>
+
+					<!-- Action Buttons -->
+					<div class="flex gap-3 pt-4">
+						{#if hasBaseLesson}
+							<Button 
+								type="button" 
+								variant="outline"
+								onclick={() => isEditing = false}
+								disabled={$delayed}
+							>
+								Cancel
+							</Button>
+						{/if}
+						<Button type="submit" disabled={$delayed} class="flex-1">
+							{#if $delayed}
+								<span class="flex items-center gap-2">
+									<svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+										<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+										<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+									</svg>
+									Saving...
+								</span>
+							{:else}
+								{hasBaseLesson ? 'Update Base Lesson' : 'Save Base Lesson'}
+							{/if}
+						</Button>
+					</div>
+				</form>
+			</Card.Content>
+		</Card.Root>
+	{/if}
+
+	<!-- Additional Info Section -->
+	<Card.Root class="mt-6">
+		<Card.Header>
+			<Card.Title class="text-base">Why only one lesson type?</Card.Title>
+		</Card.Header>
+		<Card.Content class="space-y-3 text-sm text-muted-foreground">
+			<p>
+				We keep it simple with just a base hourly rate. Here's why:
+			</p>
+			<ul class="space-y-2">
+				<li class="flex gap-2">
+					<span class="text-primary">✓</span>
+					<span>Easy for clients to understand your pricing</span>
+				</li>
+				<li class="flex gap-2">
+					<span class="text-primary">✓</span>
+					<span>Flexibility to negotiate custom packages directly</span>
+				</li>
+				<li class="flex gap-2">
+					<span class="text-primary">✓</span>
+					<span>Less confusion, more bookings</span>
+				</li>
+			</ul>
+			<p class="text-xs italic">
+				Tip: Your base rate is just a starting point. You can always discuss multi-day packages, group rates, or seasonal pricing directly with interested clients.
+			</p>
+		</Card.Content>
+	</Card.Root>
 </div>

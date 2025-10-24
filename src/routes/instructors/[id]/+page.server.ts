@@ -3,6 +3,8 @@ import { error, fail, json } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 import { InstructorService } from '$src/features/Instructors/lib/instructorService';
 import { BookingRequestService } from '$src/features/Bookings/lib/bookingRequestService';
+import { trackProfileVisit } from '$src/features/Dashboard/lib/utils';
+import { getClientIP } from '$src/lib/utils/auth';
 
 const instructorService = new InstructorService();
 const bookingRequestService = new BookingRequestService();
@@ -26,12 +28,19 @@ export const load: PageServerLoad = async (event) => {
             throw error(404, 'Instructor not found');
         }
 
+        // Track profile visit (async, don't wait)
+        const visitorIP = getClientIP(event);
+        if (visitorIP) {
+            trackProfileVisit(instructorId, visitorIP).catch(err => 
+                console.error('Failed to track visit:', err)
+            );
+        }
+
         return {
             instructor: instructorData.instructor,
             sports: instructorData.sports,
             resorts: instructorData.resorts,
             user: event.locals.user ?? null
-            
         };
     } catch (err) {
         console.error('Error loading instructor profile:', err);

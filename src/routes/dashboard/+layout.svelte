@@ -4,6 +4,7 @@
 	import AppSidebar from "$src/features/Dashboard/components/AppSidebar.svelte";
 	import { Button } from "$src/lib/components/ui/button";
 	import { goto } from "$app/navigation";
+
 	
 	let { data, children } = $props();
 	let user = $state(data.user);

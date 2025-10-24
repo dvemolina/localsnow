@@ -35,8 +35,8 @@
 	let qualificationPreviewUrl: string | null = $state(null);
 
 	onDestroy(() => {
-		// This will automatically clean up blob URLs to avoid memory leaks
 		if (profilePreviewUrl) URL.revokeObjectURL(profilePreviewUrl);
+		if (qualificationPreviewUrl) URL.revokeObjectURL(qualificationPreviewUrl);
 	});
 
 	function handleProfileImagePreview(event: Event) {
@@ -44,7 +44,6 @@
 		const file = input.files?.[0];
 
 		if (file) {
-			// Clean up old preview URL
 			if (profilePreviewUrl) URL.revokeObjectURL(profilePreviewUrl);
 			profilePreviewUrl = URL.createObjectURL(file);
 		} else {
@@ -58,7 +57,6 @@
 		const file = input.files?.[0];
 
 		if (file) {
-			// Clean up old preview URL
 			if (qualificationPreviewUrl) URL.revokeObjectURL(qualificationPreviewUrl);
 			qualificationPreviewUrl = URL.createObjectURL(file);
 		} else {
@@ -77,14 +75,14 @@
 >
 	<SearchResort {form} name="resort" />
 	<InstructorTypeSelect {form} name="instructorType" />
+	
 	<Form.Field {form} name="profileImage" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>Profesional Profile Image</Form.Label>
+				<Form.Label>Professional Profile Image</Form.Label>
 				<Form.Description class="text-xs"
 					>This image will appear in your Instructor Card for clients to see.</Form.Description
 				>
-				<!-- File input -->
 				<Input
 					{...props}
 					bind:files={$profileImageProxy}
@@ -92,7 +90,6 @@
 					type="file"
 					accept="image"
 				/>
-				<!-- Image preview -->
 				{#if profilePreviewUrl}
 					<div
 						class="mt-2 flex size-12 items-center justify-center overflow-hidden rounded-full border border-gray-300"
@@ -106,15 +103,15 @@
 				{/if}
 			{/snippet}
 		</Form.Control>
-
 		<Form.FieldErrors />
 	</Form.Field>
+	
 	<Form.Field {form} name="qualification" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label>Qualification File</Form.Label>
 				<Form.Description class="text-xs"
-					>The qualification has to be in pdf format.</Form.Description
+					>The qualification has to be in PDF format.</Form.Description
 				>
 				<Input
 					{...props}
@@ -123,27 +120,30 @@
 					type="file"
 					accept="application/pdf"
 				/>
-				<!-- Qualification  preview -->
 				{#if qualificationPreviewUrl}
 					<div
 						class="mt-2 flex size-12 items-center justify-center overflow-hidden rounded border border-gray-300"
 					>
-						<img src={qualificationPreviewUrl} alt="PDF" class="max-h-full max-w-full" />
+						<svg class="h-8 w-8 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+							<path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" />
+						</svg>
 					</div>
 				{/if}
 			{/snippet}
 		</Form.Control>
-
 		<Form.FieldErrors />
 	</Form.Field>
 
 	<div class="flex w-full flex-col gap-2 sm:flex-row">
-		<CountryCodeSelect {form} name="countryCode" />
-		<Form.Field {form} name="phone" class="w-full">
+		<CountryCodeSelect {form} name="professionalCountryCode" />
+		<Form.Field {form} name="professionalPhone" class="w-full">
 			<Form.Control>
 				{#snippet children({ props })}
-					<Form.Label>Client Contact Phone</Form.Label>
-					<Input {...props} bind:value={$formData.phone} type="tel" />
+					<Form.Label>Professional Contact Phone</Form.Label>
+					<Form.Description class="text-xs">
+						This number will be shown to clients
+					</Form.Description>
+					<Input {...props} bind:value={$formData.professionalPhone} type="tel" />
 				{/snippet}
 			</Form.Control>
 			<Form.FieldErrors />
@@ -164,12 +164,12 @@
 	</Form.Field>
 
 	<SportsCheckboxes {form} name="sports" />
+	
 	<div class="flex w-full flex-col gap-2 sm:flex-row">
 		<Form.Field {form} name="basePrice" class="w-full">
 			<Form.Control>
 				{#snippet children({ props })}
 					<Form.Label>Base Price (1 Hour)</Form.Label>
-
 					<Input {...props} bind:value={$formData.basePrice} type="number" min="0" />
 					<Form.Description class="text-xs"
 						>Base Hourly Rate. You'll be able to add Discounts and Promotions later.</Form.Description
@@ -180,28 +180,6 @@
 		</Form.Field>
 		<CurrencySelect {form} name="currency" />
 	</div>
-
-	<!-- <Form.Field {form} name="acceptedTerms" class="mt-6 w-full">
-		<Form.Control>
-			{#snippet children({ props })}
-				<div class="items-top flex space-x-2">
-					<Checkbox {...props} bind:checked={$formData.acceptedTerms} required={true} />
-					<div class="grid gap-1.5 leading-none">
-						<Label
-							class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-						>
-							Accept terms and conditions
-						</Label>
-						<p class="text-sm text-muted-foreground">
-							You agree to our <a href="/terms-conditions">Terms of Service</a> and
-							<a href="/privay-policy">Privacy Policy</a>.
-						</p>
-					</div>
-				</div>
-			{/snippet}
-		</Form.Control>
-		<Form.FieldErrors />
-	</Form.Field> -->
 
 	<div class="mt-6 flex w-full flex-row items-center justify-center gap-2">
 		<a href="/dashboard" class="text-sm {buttonVariants({ variant: 'outline' })}">Go back</a>

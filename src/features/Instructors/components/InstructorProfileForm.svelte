@@ -166,35 +166,6 @@
 
 				<!-- Sports -->
 				<SportsCheckboxes {form} name="sports" />
-
-				<!-- Pricing -->
-				<div class="grid gap-4 sm:grid-cols-3">
-					<Form.Field {form} name="basePrice" class="sm:col-span-2">
-						<Form.Control>
-							{#snippet children({ props })}
-								<Form.Label>Base Hourly Rate <span class="text-red-500">*</span></Form.Label>
-								<Input 
-									{...props} 
-									bind:value={$formData.basePrice} 
-									type="number" 
-									min="0" 
-									step="1"
-									disabled={$delayed}
-									placeholder="50"
-								/>
-								<Form.Description class="text-xs">
-									Your standard rate for a 1-hour private lesson
-								</Form.Description>
-							{/snippet}
-						</Form.Control>
-						<Form.FieldErrors />
-					</Form.Field>
-
-					<!-- Currency Select would go here -->
-					<div class="flex items-center">
-						<p class="text-sm text-muted-foreground">Currency: EUR</p>
-					</div>
-				</div>
 			</Accordion.Content>
 		</Accordion.Item>
 
@@ -210,7 +181,7 @@
 						{#snippet children({ props })}
 							<Form.Label>Instructor Qualification Certificate</Form.Label>
 							<Form.Description class="text-xs">
-								Upload your instructor certification in PDF format (max 1MB). Required for verification.
+								Upload your instructor certification in PDF format (max 10MB). Required for verification.
 							</Form.Description>
 							<Input
 								{...props}
@@ -233,16 +204,16 @@
 					<Form.FieldErrors />
 				</Form.Field>
 
-				<!-- Contact Information -->
+				<!-- Professional Contact Information -->
 				<div class="flex w-full flex-col gap-4 sm:flex-row">
-					<CountryCodeSelect {form} name="countryCode" />
-					<Form.Field {form} name="phone" class="w-full">
+					<CountryCodeSelect {form} name="professionalCountryCode" />
+					<Form.Field {form} name="professionalPhone" class="w-full">
 						<Form.Control>
 							{#snippet children({ props })}
-								<Form.Label>Contact Phone <span class="text-red-500">*</span></Form.Label>
+								<Form.Label>Professional Contact Phone <span class="text-red-500">*</span></Form.Label>
 								<Input 
 									{...props} 
-									bind:value={$formData.phone} 
+									bind:value={$formData.professionalPhone} 
 									type="tel" 
 									disabled={$delayed}
 									placeholder="123 456 7890"
