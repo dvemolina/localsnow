@@ -116,7 +116,7 @@ export type InsertBookingRequest = typeof bookingRequests.$inferInsert;
 
 // --- Lessons (future) ---
 export const lessons = pgTable('lessons', {
-	uuid: uuid('id').defaultRandom().unique().notNull(),
+	uuid: uuid('uuid').defaultRandom().unique().notNull(),
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
 	title: varchar('title', { length: 100 }),
 	description: text('description'),
