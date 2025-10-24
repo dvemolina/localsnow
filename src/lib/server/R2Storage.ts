@@ -39,9 +39,7 @@ export class StorageService {
                 })
             );
 
-            // Add timestamp to bust cache
-            const timestamp = Date.now();
-            const profileImageUrl = `${process.env.R2_PUBLIC_URL}/${fileName}?v=${timestamp}`
+            const profileImageUrl = `${process.env.R2_PUBLIC_URL}/${fileName}`
             return profileImageUrl;
         } catch (error) {
             console.error('Error uploading to R2:', error);
