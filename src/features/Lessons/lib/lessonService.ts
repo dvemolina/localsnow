@@ -6,10 +6,16 @@ export class LessonService {
 
     async createLesson(data: LessonData, sportIds: number[]): Promise<LessonWithSports> {
         try {
-            return await this.lessonRepository.createLesson(data, sportIds);
+            console.log('LessonService.createLesson called with:', { data, sportIds });
+            const result = await this.lessonRepository.createLesson(data, sportIds);
+            console.log('LessonService.createLesson succeeded:', result);
+            return result;
         } catch (error) {
-            console.error("Error creating lesson:", error);
-            throw new Error("Failed to create lesson");
+            console.error("Detailed error in LessonService.createLesson:", error);
+            console.error("Error name:", error?.name);
+            console.error("Error message:", error?.message);
+            console.error("Error stack:", error?.stack);
+            throw error; // Re-throw original error to see it in the page action
         }
     }
 
