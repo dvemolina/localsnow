@@ -176,12 +176,12 @@ export const schoolInstructorHistory = pgTable('school_instructor_history', {
 });
 
 export const profileVisits = pgTable('profile_visits', {
-	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
-	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-	visitorIp: varchar('visitor_ip', { length: 45 }),
-	visitedAt: timestamp('visited_at'),
-	yearMonth: varchar('year_month', { length: 7}).notNull()
-})
+    id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+    instructorId: integer('instructor_id').notNull(),
+    visitorIp: varchar('visitor_ip', { length: 45 }).notNull(),
+    yearMonth: varchar('year_month', { length: 7 }).notNull(),
+    createdAt: timestamp('created_at').defaultNow(),
+});
 
 export const session = pgTable('session', {
 	id: text('id').primaryKey(),

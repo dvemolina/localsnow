@@ -1,4 +1,4 @@
-// src/lib/server/profileVisits.ts
+// src/features/Dashboard/lib/utils.ts
 import { db } from '$lib/server/db';
 import { sql } from 'drizzle-orm';
 
@@ -30,7 +30,19 @@ export async function getMonthlyVisits(instructorId: number): Promise<number> {
 			AND year_month = ${currentYearMonth}
 		`);
 
-		return (result.rows[0] as any)?.visit_count || 0;
+		// Handle different possible result formats from different database drivers
+		// Some return result.rows[0], others return result[0]
+		let visitCount = 0;
+		
+		if (result && Array.isArray(result)) {
+			// Direct array result
+			visitCount = result[0]?.visit_count ?? 0;
+		} else if (result?.rows && Array.isArray(result.rows)) {
+			// Result with rows property
+			visitCount = result.rows[0]?.visit_count ?? 0;
+		}
+		
+		return Number(visitCount) || 0;
 	} catch (error) {
 		console.error('Error getting monthly visits:', error);
 		return 0;

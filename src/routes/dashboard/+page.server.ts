@@ -10,7 +10,12 @@ export const load: PageServerLoad = async (event) => {
     
     // Get profile visits for instructors
     if (user.role === 'instructor-independent' || user.role === 'instructor-school') {
-        profileVisits = await getMonthlyVisits(user.id);
+        try {
+            profileVisits = await getMonthlyVisits(user.id);
+        } catch (error) {
+            console.error('Failed to get profile visits:', error);
+            // Continue with profileVisits = 0
+        }
     }
     
     return { 
