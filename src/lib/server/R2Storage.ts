@@ -19,31 +19,34 @@ export class StorageService {
         });
     }
 
-    async uploadProfileImage(imageBuffer: Buffer,  userId: number): Promise<string> {
+    async uploadProfileImage(imageBuffer: Buffer, userId: number): Promise<string> {
         const fileName = `profileImgs/${userId}-profileImg`;
         const compressedBuffer = await sharp(imageBuffer)
                             .rotate()
                             .resize(300, 300, { fit: "cover", position: "top" })
                             .webp({ quality: 50 })
                             .toBuffer();
-    
+
         try {
             await this.s3Client.send(
                 new PutObjectCommand({
                     Bucket: process.env.R2_BUCKET_NAME,
                     Key: fileName,
                     Body: compressedBuffer,
-                    ContentType: "image/webp"
+                    ContentType: "image/webp",
+                    CacheControl: 'no-cache' // Add this to prevent caching
                 })
             );
-    
-            // Return the public URL of the uploaded image
-            return `${process.env.R2_PUBLIC_URL}/${fileName}`;
+
+            // Add timestamp to bust cache
+            const timestamp = Date.now();
+            const profileImageUrl = `${process.env.R2_PUBLIC_URL}/${fileName}?v=${timestamp}`
+            return profileImageUrl;
         } catch (error) {
             console.error('Error uploading to R2:', error);
             throw new Error('Failed to upload image');
         }
-    } 
+    }
 
     async uploadSchoolLogo(imageBuffer: Buffer,  schoolName: string, userId: number): Promise<string> {
         const cleanSchoolName = slugifyString(schoolName);

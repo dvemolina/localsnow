@@ -108,65 +108,70 @@ export const actions: Actions = {
     },
 
     instructorProfile: async (event) => {
-        const user = event.locals.user;
-        if (!user) redirect(302, '/login');
-        if (user.role !== 'instructor-independent' && user.role !== 'instructor-school') {
-            return fail(403, { message: 'Not authorized' });
-        }
-
-        // Rate limiting
-        const clientIP = getClientIP(event);
-        if (clientIP !== null && !ipBucket.consume(clientIP, 1)) {
-            return fail(429, {
-                message: "Too many requests. Please try again later."
-            });
-        }
-
-        const form = await superValidate(event.request, zod(instructorProfileSchema));
-        
-        if (!form.valid) {
-            return fail(400, { form });
-        }
-
-        try {
-            let profileImageUrl: string | null = null;
-            let qualificationUrl: string | null = null;
-
-            // Process profile image if uploaded
-            if (form.data.profileImage && form.data.profileImage.size > 0) {
-                const imageArrayBuffer = await form.data.profileImage.arrayBuffer();
-                const imageBuffer = Buffer.from(imageArrayBuffer);
-                profileImageUrl = await storageService.uploadProfileImage(imageBuffer, user.id);
-            }
-
-            // Process qualification PDF if uploaded
-            if (form.data.qualification && form.data.qualification.size > 0) {
-                const pdfArrayBuffer = await form.data.qualification.arrayBuffer();
-                const pdfBuffer = Buffer.from(pdfArrayBuffer);
-                qualificationUrl = await storageService.uploadQualificationPDF(pdfBuffer, user.id);
-            }
-
-            // Update instructor profile
-            await instructorService.updateInstructorProfile(user.id, {
-                bio: form.data.bio,
-                professionalCountryCode: form.data.professionalCountryCode,
-                professionalPhone: form.data.professionalPhone,
-                resort: form.data.resort,
-                sports: form.data.sports,
-                profileImageUrl,
-                qualificationUrl
-            });
-
-            form.data.profileImage = undefined;
-            form.data.qualification = undefined;
-
-            return { form, success: true };
-        } catch (error) {
-            console.error('Error updating instructor profile:', error);
-            return fail(500, { 
-                form, 
-                error: 'Failed to update instructor profile. Please try again.' 
-            });
-        }
+    const user = event.locals.user;
+    if (!user) redirect(302, '/login');
+    if (user.role !== 'instructor-independent' && user.role !== 'instructor-school') {
+        return fail(403, { message: 'Not authorized' });
     }
+
+    // Rate limiting
+    const clientIP = getClientIP(event);
+    if (clientIP !== null && !ipBucket.consume(clientIP, 1)) {
+        return fail(429, {
+            message: "Too many requests. Please try again later."
+        });
+    }
+
+    const form = await superValidate(event.request, zod(instructorProfileSchema));
+    
+    if (!form.valid) {
+        return fail(400, { form });
+    }
+
+    try {
+        // Get current user data to preserve existing URLs
+        const currentUser = await userService.getUserById(user.id);
+        
+        let profileImageUrl: string | null | undefined = undefined;
+        let qualificationUrl: string | null | undefined = undefined;
+
+        // Process profile image if uploaded
+        if (form.data.profileImage && form.data.profileImage.size > 0) {
+            const imageArrayBuffer = await form.data.profileImage.arrayBuffer();
+            const imageBuffer = Buffer.from(imageArrayBuffer);
+            profileImageUrl = await storageService.uploadProfileImage(imageBuffer, user.id);
+            console.log('NEW PROFILE IMAGE URL:', profileImageUrl)
+        }
+
+        // Process qualification PDF if uploaded
+        if (form.data.qualification && form.data.qualification.size > 0) {
+            const pdfArrayBuffer = await form.data.qualification.arrayBuffer();
+            const pdfBuffer = Buffer.from(pdfArrayBuffer);
+            qualificationUrl = await storageService.uploadQualificationPDF(pdfBuffer, user.id);
+        }
+
+        // Update instructor profile
+        await instructorService.updateInstructorProfile(user.id, {
+            bio: form.data.bio,
+            professionalCountryCode: form.data.professionalCountryCode,
+            professionalPhone: form.data.professionalPhone,
+            resort: form.data.resort,
+            sports: form.data.sports,
+            // Only update if new file was uploaded, otherwise keep existing
+            profileImageUrl: profileImageUrl !== undefined ? profileImageUrl : currentUser?.profileImageUrl,
+            qualificationUrl: qualificationUrl !== undefined ? qualificationUrl : currentUser?.qualificationUrl
+        });
+
+        form.data.profileImage = undefined;
+        form.data.qualification = undefined;
+
+        return { form, success: true };
+    } catch (error) {
+        console.error('Error updating instructor profile:', error);
+        return fail(500, { 
+            form, 
+            error: 'Failed to update instructor profile. Please try again.' 
+        });
+    }
+}
 };
