@@ -1,19 +1,19 @@
-import type { LessonData, LessonUpdateData } from "./lessonSchema";
+import type { LessonData, LessonUpdateData, LessonWithSports } from "./lessonSchema";
 import { LessonRepository } from "./lessonRepository";
 
 export class LessonService {
     private lessonRepository = new LessonRepository();
 
-    async createLesson(data: LessonData) {
+    async createLesson(data: LessonData, sportIds: number[]): Promise<LessonWithSports> {
         try {
-            return await this.lessonRepository.createLesson(data);
+            return await this.lessonRepository.createLesson(data, sportIds);
         } catch (error) {
             console.error("Error creating lesson:", error);
             throw new Error("Failed to create lesson");
         }
     }
 
-    async getLessonById(id: number) {
+    async getLessonById(id: number): Promise<LessonWithSports | null> {
         try {
             return await this.lessonRepository.getLessonById(id);
         } catch (error) {
@@ -22,16 +22,16 @@ export class LessonService {
         }
     }
 
-    async updateLesson(id: number, data: LessonUpdateData) {
+    async updateLesson(id: number, data: LessonUpdateData, sportIds?: number[]): Promise<LessonWithSports | null> {
         try {
-            return await this.lessonRepository.updateLesson(id, data);
+            return await this.lessonRepository.updateLesson(id, data, sportIds);
         } catch (error) {
             console.error("Error updating lesson:", error);
             throw new Error("Failed to update lesson");
         }
     }
 
-    async deleteLesson(id: number) {
+    async deleteLesson(id: number): Promise<boolean> {
         try {
             return await this.lessonRepository.deleteLesson(id);
         } catch (error) {
@@ -40,7 +40,7 @@ export class LessonService {
         }
     }
 
-    async listLessonsByInstructor(instructorId: number) {
+    async listLessonsByInstructor(instructorId: number): Promise<LessonWithSports[]> {
         try {
             return await this.lessonRepository.listLessonsByInstructor(instructorId);
         } catch (error) {
@@ -49,7 +49,7 @@ export class LessonService {
         }
     }
 
-    async listAllLessons() {
+    async listAllLessons(): Promise<LessonWithSports[]> {
         try {
             return await this.lessonRepository.listAllLessons();
         } catch (error) {

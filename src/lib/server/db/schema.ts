@@ -123,11 +123,16 @@ export const lessons = pgTable('lessons', {
 	basePrice: integer('base_price'),
 	currency: varchar('currency', { length: 50 }),
 	duration: varchar('duration', { length: 50 }), // e.g. '2h', 'half-day'
-	sportId: integer('sport_id').notNull().references(() => sports.id),
 	instructorId: integer('instructor_id').references(() => users.id),
 	schoolId: integer('school_id').references(() => schools.id),
 	isPublished: boolean('is_published').default(true),
 	isBaseLesson: boolean('is_base_lesson').default(false)
+});
+
+// --- Lesson Sports Junction Table ---
+export const lessonSports = pgTable('lesson_sports', {
+	lessonId: integer('lesson_id').notNull().references(() => lessons.id, { onDelete: 'cascade' }),
+	sportId: integer('sport_id').notNull().references(() => sports.id, { onDelete: 'cascade' })
 });
 
 // --- Many-to-Many Relationships ---

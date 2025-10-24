@@ -10,21 +10,47 @@
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { lessonSchema } from '$src/features/Lessons/lib/lessonSchema';
+	import { toast } from 'svelte-sonner';
 
 	let { data } = $props();
 	
 	const form = superForm(data.lessonForm, {
 		validators: zodClient(lessonSchema),
-		dataType: 'json'
+		dataType: 'json',
+		onUpdated: ({ form }) => {
+			if (form.valid && form.message) {
+				toast.success('Base lesson saved successfully!');
+				isEditing = false;
+			}
+		}
 	});
 
 	const { form: formData, enhance, delayed } = form;
 	
 	// Check if base lesson exists
-	const hasBaseLesson = data.baseLesson !== null;
+	const hasBaseLesson = data.baseLesson !== null && data.baseLesson !== undefined;
 	const baseLesson = data.baseLesson;
 
 	let isEditing = $state(false);
+	
+	// Pre-populate form if editing
+	$effect(() => {
+		if (isEditing && baseLesson) {
+			$formData.basePrice = baseLesson.basePrice;
+			$formData.currency = baseLesson.currency;
+			$formData.sports = baseLesson.sports;
+		}
+	});
+	
+	// Helper to get sport name from ID
+	const getSportName = (sportId: number) => {
+		const sportNames: Record<number, string> = {
+			1: 'Ski',
+			2: 'Snowboard',
+			3: 'Telemark'
+		};
+		return sportNames[sportId] || 'Unknown';
+	};
 </script>
 
 <div class="container mx-auto max-w-4xl py-6">
@@ -77,8 +103,8 @@
 					<h3 class="mb-2 text-sm font-medium">Available Sports</h3>
 					<div class="flex flex-wrap gap-2">
 						{#each baseLesson.sports as sportId}
-							<Badge variant="outline">
-								{sportId === 1 ? 'Ski' : sportId === 2 ? 'Snowboard' : 'Telemark'}
+							<Badge variant="outline" class="text-sm">
+								{getSportName(sportId)}
 							</Badge>
 						{/each}
 					</div>
@@ -106,7 +132,15 @@
 			<Card.Content>
 				<form method="POST" action="?/saveBaseLesson" use:enhance class="space-y-6">
 					<!-- Sports Selection -->
-					<SportsCheckboxes {form} name="sports" />
+					<div>
+						<label class="text-sm font-medium mb-2 block">
+							Sports You Teach <span class="text-red-500">*</span>
+						</label>
+						<SportsCheckboxes {form} name="sports" />
+						<p class="text-xs text-muted-foreground mt-2">
+							Select all sports you're qualified to teach
+						</p>
+					</div>
 
 					<!-- Pricing -->
 					<div class="grid gap-4 sm:grid-cols-3">
@@ -135,14 +169,14 @@
 					</div>
 
 					<!-- Info Notice -->
-					<div class="rounded-md border border-yellow-200 bg-yellow-50 p-4 dark:bg-yellow-900/20">
+					<div class="rounded-md border border-yellow-200 bg-yellow-50 p-4 ">
 						<div class="flex gap-3">
 							<svg class="h-5 w-5 text-yellow-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
 								<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
 							</svg>
-							<div class="text-sm text-yellow-800 dark:text-yellow-200">
+							<div class="text-sm text-yellow-800 ">
 								<p class="font-medium">About your base lesson</p>
-								<p class="mt-1">This represents your standard hourly rate for private lessons. Clients will see this on your profile. You can always discuss custom pricing for different lesson types or durations.</p>
+								<p class="mt-1">This represents your standard hourly rate. Clients will see this on your profile. You can teach any of the sports you selected - perfect for multi-disciplinary instructors!</p>
 							</div>
 						</div>
 					</div>
@@ -181,28 +215,28 @@
 	<!-- Additional Info Section -->
 	<Card.Root class="mt-6">
 		<Card.Header>
-			<Card.Title class="text-base">Why only one lesson type?</Card.Title>
+			<Card.Title class="text-base">Multi-Sport Instructors</Card.Title>
 		</Card.Header>
 		<Card.Content class="space-y-3 text-sm text-muted-foreground">
 			<p>
-				We keep it simple with just a base hourly rate. Here's why:
+				You can select multiple sports if you're qualified to teach them:
 			</p>
 			<ul class="space-y-2">
 				<li class="flex gap-2">
 					<span class="text-primary">✓</span>
-					<span>Easy for clients to understand your pricing</span>
+					<span>One base hourly rate applies to all sports you teach</span>
 				</li>
 				<li class="flex gap-2">
 					<span class="text-primary">✓</span>
-					<span>Flexibility to negotiate custom packages directly</span>
+					<span>Clients can see all sports you're certified for</span>
 				</li>
 				<li class="flex gap-2">
 					<span class="text-primary">✓</span>
-					<span>Less confusion, more bookings</span>
+					<span>Perfect for instructors who teach skiing and snowboarding</span>
 				</li>
 			</ul>
 			<p class="text-xs italic">
-				Tip: Your base rate is just a starting point. You can always discuss multi-day packages, group rates, or seasonal pricing directly with interested clients.
+				Tip: Your base rate is the same across all sports. If you want to charge differently per sport, you can discuss custom pricing directly with clients.
 			</p>
 		</Card.Content>
 	</Card.Root>
