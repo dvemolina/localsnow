@@ -6,6 +6,7 @@
 	import * as Form from '$src/lib/components/ui/form';
 	import { Input } from '$src/lib/components/ui/input';
 	import { Button } from '$src/lib/components/ui/button';
+	import CountryCodeSelect from '$src/lib/components/shared/CountryCodeSelect.svelte';
 	import { toast } from 'svelte-sonner';
 
 	let { userForm }: { userForm: SuperValidated<Infer<UserProfileSchema>> } = $props();
@@ -80,25 +81,28 @@
 		<Form.FieldErrors />
 	</Form.Field>
 
-	<!-- Phone Field -->
-	<Form.Field {form} name="phone" class="w-full">
-		<Form.Control>
-			{#snippet children({ props })}
-				<Form.Label>Phone Number</Form.Label>
-				<Input 
-					{...props} 
-					bind:value={$formData.phone} 
-					type="tel" 
-					disabled={$delayed}
-					placeholder="+1 (555) 123-4567"
-				/>
-				<Form.Description class="text-xs">
-					Include country code (e.g., +44 for UK, +1 for US)
-				</Form.Description>
-			{/snippet}
-		</Form.Control>
-		<Form.FieldErrors />
-	</Form.Field>
+	<!-- Phone Field with Country Code -->
+	<div class="flex w-full flex-col gap-4 sm:flex-row">
+		<CountryCodeSelect {form} name="countryCode" />
+		<Form.Field {form} name="phone" class="w-full">
+			<Form.Control>
+				{#snippet children({ props })}
+					<Form.Label>Phone Number</Form.Label>
+					<Input 
+						{...props} 
+						bind:value={$formData.phone} 
+						type="tel" 
+						disabled={$delayed}
+						placeholder="123 456 7890"
+					/>
+					<Form.Description class="text-xs">
+						Your personal contact number
+					</Form.Description>
+				{/snippet}
+			</Form.Control>
+			<Form.FieldErrors />
+		</Form.Field>
+	</div>
 
 	<!-- Submit Button -->
 	<div class="flex items-center justify-end gap-3 pt-4">

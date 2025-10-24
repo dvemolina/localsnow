@@ -22,7 +22,7 @@
 	];
 </script>
 
-<Sidebar.Root class="bg-background">
+<Sidebar.Root class="bg-background" >
 	<Sidebar.Header class="bg-white">
       <a href="http://localhost:5173" class="group flex flex-row items-center justify-center gap-1">
         <div class="m-1 size-12 overflow-hidden  object-cover">

@@ -1,8 +1,6 @@
 import type { User } from "$src/lib/server/db/schema";
 import { InstructorRepository, type InstructorData } from "./instructorRepository";
-import type { InstructorSignupData, InstructorSignupSchema } from "./instructorSchemas";
-
-
+import type { InstructorSignupData, InstructorProfileData } from "./instructorSchemas";
 
 export class InstructorService {
     private instructorRepository: InstructorRepository;
@@ -52,22 +50,24 @@ export class InstructorService {
         }
     }
 
-    async updateInstructor(
+    async updateInstructorProfile(
         instructorId: number,
-        formData: Partial<InstructorSignupSchema>,
-        profileImageUrl?: string | null,
-        qualificationUrl?: string | null
+        profileData: InstructorProfileData
     ): Promise<User | null> {
         try {
             const updateData: Partial<InstructorData> = {
-                ...formData,
-                profileImageUrl,
-                qualificationUrl
+                bio: profileData.bio,
+                professionalCountryCode: profileData.professionalCountryCode.toString(),
+                professionalPhone: profileData.professionalPhone,
+                resort: profileData.resort,
+                sports: profileData.sports,
+                profileImageUrl: profileData.profileImageUrl,
+                qualificationUrl: profileData.qualificationUrl
             };
 
             return await this.instructorRepository.updateInstructor(instructorId, updateData);
         } catch (error) {
-            console.error('Error updating instructor:', error);
+            console.error('Error updating instructor profile:', error);
             throw new Error('Failed to update instructor profile');
         }
     }

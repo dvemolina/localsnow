@@ -52,7 +52,7 @@ export const instructorSignupSchema = z.object({
 	instructorType: z.enum(['instructor-independent', 'instructor-school']),
 	profileImage: imageFileSchema,
 	qualification: documentFileSchema,
-	professionalCountryCode: z.number().min(1, 'Choose Country Phone Prefix'),
+	professionalCountryCode: z.coerce.number().min(1, 'Choose Country Phone Prefix'),
 	professionalPhone: z.string().nonempty("Insert Professional Contact Phone"),
 	bio: z.string().optional(),
 	sports: z.array(z.number()).min(1, 'Select at least one sport'),
@@ -60,14 +60,13 @@ export const instructorSignupSchema = z.object({
 	currency: z.string().min(1, 'Select currency')
 });
 
-// Instructor profile update schema
+// Instructor profile update schema (removed instructorType)
 export const instructorProfileSchema = z.object({
 	bio: z.string().optional(),
-	professionalCountryCode: z.number().min(1, 'Choose Country Phone Prefix'),
+	professionalCountryCode: z.coerce.number().min(1, 'Choose Country Phone Prefix'),
 	professionalPhone: z.string().nonempty("Insert Professional Contact Phone"),
 	resort: z.coerce.number().min(1, "Choose the Resort where you teach"),
 	sports: z.array(z.number()).min(1, 'Select at least one sport'),
-	instructorType: z.enum(['instructor-independent', 'instructor-school']),
 	profileImage: imageFileSchema,
 	qualification: documentFileSchema
 });
@@ -82,10 +81,20 @@ export interface InstructorSignupData {
 	instructorType: 'instructor-independent' | 'instructor-school';
 	profileImageUrl?: string | null;
 	qualificationUrl?: string | null;
-	professionalCountryCode: number;
-	professionalPhone: string;
+	countryCode: string;
+	phone: string;
 	bio?: string;
 	sports: number[];
 	basePrice: number;
 	currency: string;
+}
+
+export interface InstructorProfileData {
+	bio?: string;
+	professionalCountryCode: number;
+	professionalPhone: string;
+	resort: number;
+	sports: number[];
+	profileImageUrl?: string | null;
+	qualificationUrl?: string | null;
 }

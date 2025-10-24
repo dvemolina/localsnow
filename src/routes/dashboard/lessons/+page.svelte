@@ -111,8 +111,8 @@
 				</div>
 
 				<!-- Info Box -->
-				<div class="rounded-md bg-blue-50 p-3 dark:bg-blue-900/20">
-					<p class="text-sm text-blue-800 dark:text-blue-200">
+				<div class="rounded-md bg-blue-50 p-3 ">
+					<p class="text-sm text-blue-800 ">
 						<strong>Note:</strong> This is your base rate. You can discuss custom pricing directly with clients for longer sessions or group lessons.
 					</p>
 				</div>

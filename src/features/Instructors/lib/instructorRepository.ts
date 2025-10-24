@@ -1,4 +1,3 @@
-
 import { db } from "$lib/server/db/index";
 import { users, instructorSports, instructorResorts } from "$src/lib/server/db/schema";
 import type { InsertUser, User } from "$src/lib/server/db/schema";
@@ -8,15 +7,15 @@ import type { InstructorSignupData } from "./instructorSchemas";
 export interface InstructorData {
     userId: number;
     resort: number;
-    instructorType: 'instructor-independent' | 'instructor-school';
+    instructorType?: 'instructor-independent' | 'instructor-school';
     profileImageUrl?: string | null;
     qualificationUrl?: string | null;
-    countryCode: string;
-    phone: string;
-    bio: string;
-    sports: number[];
-    basePrice: number;
-    currency: string;
+    professionalCountryCode?: string;
+    professionalPhone?: string;
+    bio?: string;
+    sports?: number[];
+    basePrice?: number;
+    currency?: string;
 }
 
 export class InstructorRepository {
@@ -29,8 +28,8 @@ export class InstructorRepository {
                     role: instructorData.instructorType,
                     profileImageUrl: instructorData.profileImageUrl,
                     qualificationUrl: instructorData.qualificationUrl,
-                    countryCode: instructorData.countryCode.toString(),
-                    phone: instructorData.phone,
+                    professionalCountryCode: instructorData.countryCode.toString(),
+                    professionalPhone: instructorData.phone,
                     bio: instructorData.bio,
                     updatedAt: new Date()
                 })
@@ -101,9 +100,9 @@ export class InstructorRepository {
             
             if (updateData.profileImageUrl !== undefined) userUpdateFields.profileImageUrl = updateData.profileImageUrl;
             if (updateData.qualificationUrl !== undefined) userUpdateFields.qualificationUrl = updateData.qualificationUrl;
-            if (updateData.countryCode) userUpdateFields.countryCode = updateData.countryCode;
-            if (updateData.phone) userUpdateFields.phone = updateData.phone;
-            if (updateData.bio) userUpdateFields.bio = updateData.bio;
+            if (updateData.professionalCountryCode) userUpdateFields.professionalCountryCode = updateData.professionalCountryCode;
+            if (updateData.professionalPhone) userUpdateFields.professionalPhone = updateData.professionalPhone;
+            if (updateData.bio !== undefined) userUpdateFields.bio = updateData.bio;
             
             userUpdateFields.updatedAt = new Date();
 

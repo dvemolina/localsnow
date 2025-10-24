@@ -17,7 +17,6 @@
 	import SportsCheckboxes from '$src/features/Sports/components/SportsCheckboxes.svelte';
 	import { onDestroy } from 'svelte';
 	import CountryCodeSelect from '$src/lib/components/shared/CountryCodeSelect.svelte';
-	import InstructorTypeSelect from '$src/lib/components/shared/InstructorTypeSelect.svelte';
 	import { toast } from 'svelte-sonner';
 
 	let { instructorForm }: { instructorForm: SuperValidated<Infer<InstructorProfileSchema>> } = $props();
@@ -149,9 +148,6 @@
 					</Form.Control>
 					<Form.FieldErrors />
 				</Form.Field>
-
-				<!-- Instructor Type -->
-				<InstructorTypeSelect {form} name="instructorType" />
 			</Accordion.Content>
 		</Accordion.Item>
 

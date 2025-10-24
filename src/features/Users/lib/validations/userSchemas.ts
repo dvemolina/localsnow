@@ -18,11 +18,9 @@ export const userProfileSchema = z.object({
     name: z.string().nonempty('Insert your First Name'),
     lastName: z.string().nonempty('Insert you Last Name'),
     email: z.string().nonempty('Insert your Email'),
+    countryCode: z.coerce.number().optional(),
     phone: z.string().optional(),
-
 });
-
-
 
 export type UserSignupSchema = typeof userSignupSchema
 export type UserLoginSchema = typeof userLoginSchema
@@ -42,6 +40,7 @@ export type UserProfileData = {
     name: string;
     lastName: string;
     email: string;
+    countryCode?: number;
     phone?: string
 }
 

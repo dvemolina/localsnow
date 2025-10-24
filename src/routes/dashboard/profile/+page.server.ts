@@ -20,13 +20,18 @@ export const load: PageServerLoad = async (event) => {
     const user = event.locals.user;
     if (!user) redirect(302, '/login');
     
+    // Fetch full user data
+    const fullUser = await userService.getUserById(user.id);
+    if (!fullUser) redirect(302, '/login');
+    
     // Pre-populate forms with existing user data
     const userForm = await superValidate(
         {
-            name: user.name,
-            lastName: user.lastName,
-            email: user.email,
-            phone: user.phone || ''
+            name: fullUser.name,
+            lastName: fullUser.lastName,
+            email: fullUser.email,
+            countryCode: fullUser.countryCode ? parseInt(fullUser.countryCode) : undefined,
+            phone: fullUser.phone || ''
         },
         zod(userProfileSchema)
     );
@@ -38,20 +43,21 @@ export const load: PageServerLoad = async (event) => {
         
         instructorForm = await superValidate(
             {
-                bio: user.bio || '',
-                countryCode: parseInt(user.countryCode || '1'),
-                phone: user.phone || '',
+                bio: fullUser.bio || '',
+                professionalCountryCode: fullUser.professionalCountryCode ? parseInt(fullUser.professionalCountryCode) : 1,
+                professionalPhone: fullUser.professionalPhone || '',
                 resort: instructorData.resorts[0] || 0,
-                sports: instructorData.sports || [],
-                basePrice: 0, // Get from instructor data
-                currency: 'EUR',
-                instructorType: user.role
+                sports: instructorData.sports || []
             },
             zod(instructorProfileSchema)
         );
     }
 
-    return { userForm, instructorForm };
+    return { 
+        userForm, 
+        instructorForm,
+        user: fullUser 
+    };
 };
 
 export const actions: Actions = {
@@ -74,7 +80,8 @@ export const actions: Actions = {
         }
 
         // Check if email is already taken by another user
-        if (form.data.email !== user.email) {
+        const fullUser = await userService.getUserById(user.id);
+        if (form.data.email !== fullUser?.email) {
             const emailExists = await userService.getUserByEmail(form.data.email);
             if (emailExists && emailExists.id !== user.id) {
                 return setError(form, 'email', 'This email is already registered', { status: 409 });
@@ -86,8 +93,8 @@ export const actions: Actions = {
                 name: form.data.name,
                 lastName: form.data.lastName,
                 email: form.data.email,
-                phone: form.data.phone,
-                updatedAt: new Date()
+                countryCode: form.data.countryCode?.toString(),
+                phone: form.data.phone
             });
 
             return { form, success: true };
@@ -140,14 +147,15 @@ export const actions: Actions = {
             }
 
             // Update instructor profile
-            await instructorService.updateInstructor(user.id, {
+            await instructorService.updateInstructorProfile(user.id, {
                 bio: form.data.bio,
-                countryCode: form.data.countryCode,
-                phone: form.data.phone,
+                professionalCountryCode: form.data.professionalCountryCode,
+                professionalPhone: form.data.professionalPhone,
                 resort: form.data.resort,
                 sports: form.data.sports,
-                instructorType: form.data.instructorType
-            }, profileImageUrl, qualificationUrl);
+                profileImageUrl,
+                qualificationUrl
+            });
 
             return { form, success: true };
         } catch (error) {

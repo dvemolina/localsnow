@@ -3,7 +3,6 @@ import { users } from "$src/lib/server/db/schema";
 import type { InsertUser, User } from "$src/lib/server/db/schema";
 import { eq } from "drizzle-orm";
 
-
 //Contracts tightly coupled with my PostreSQL instance
 export class UserRepository {
     async createUser(userData: InsertUser): Promise<User> {
@@ -27,18 +26,17 @@ export class UserRepository {
     }
 
     async updateUser(userId: number, updatedFields: Partial<InsertUser>): Promise<User | null> {
+        updatedFields.updatedAt = new Date();
         const result = await db.update(users).set(updatedFields).where(eq(users.id, userId)).returning();
         return result[0] ?? null;
     }
 
     async getUserQualification(userId: number) {
-        const result = await db?.select({ qualificationFile: users.qualificationFile }).from(users).where(eq(users.id, userId));
+        const result = await db?.select({ qualificationUrl: users.qualificationUrl }).from(users).where(eq(users.id, userId));
         return result?.[0]
     }
 
     async verifyUser(userId: number) {
         await db?.update(users).set({ isVerified: true }).where(eq(users.id, userId))
     }
-
-
 }
