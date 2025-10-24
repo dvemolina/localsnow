@@ -157,6 +157,9 @@ export const actions: Actions = {
                 qualificationUrl
             });
 
+            form.data.profileImage = undefined;
+            form.data.qualification = undefined;
+
             return { form, success: true };
         } catch (error) {
             console.error('Error updating instructor profile:', error);

@@ -3,11 +3,19 @@
   import * as Form from '$src/lib/components/ui/form';
   import { onMount } from 'svelte';
 
-  export let form: any; // SuperForms form object
-  export let name: string;
-  export let mode: 'form' | 'navigate' = 'form';
-  export let label: string = 'Choose Resort';
-  export let id: string = name;
+  let { 
+    form, 
+    name, 
+    mode = 'form', 
+    label = 'Choose Resort', 
+    id = name 
+  }: {
+    form: any;
+    name: string;
+    mode?: 'form' | 'navigate';
+    label?: string;
+    id?: string;
+  } = $props();
 
   type Resort = {
     id: number;
@@ -17,26 +25,38 @@
     country: string;
   };
 
-  let query = '';
-  let suggestions: Resort[] = [];
-  let isOpen = false;
-  let highlightedIndex = -1;
+  let query = $state('');
+  let suggestions: Resort[] = $state([]);
+  let isOpen = $state(false);
+  let highlightedIndex = $state(-1);
+  let selectedResort: Resort | null = $state(null);
 
   let abortController: AbortController | null = null;
   let debounceTimeout: ReturnType<typeof setTimeout> | null = null;
 
-  // Get form data store
   const { form: formData } = form;
 
-  // Initialize the form field with proper default value
+  // Fetch resort by ID when form loads with existing value
+  async function fetchResortById(resortId: number) {
+    try {
+      const res = await fetch(`/api/resorts/${resortId}`);
+      if (res.ok) {
+        const resort: Resort = await res.json();
+        selectedResort = resort;
+        query = resort.name;
+      }
+    } catch (e) {
+      console.error('Failed to fetch resort:', e);
+    }
+  }
+
   onMount(() => {
-    // Ensure the field starts with a proper default value
-    if ($formData[name] === undefined || $formData[name] === null) {
-      $formData[name] = mode === 'form' ? 0 : '';
+    // Load existing resort if form has a value
+    if (mode === 'form' && $formData[name] && $formData[name] > 0) {
+      fetchResortById($formData[name]);
     }
   });
 
-  // Fetch suggestions
   async function fetchSuggestions(q: string) {
     abortController?.abort();
     abortController = new AbortController();
@@ -63,6 +83,8 @@
 
   function onInput(event: Event) {
     query = (event.target as HTMLInputElement).value;
+    selectedResort = null; // Clear selection when typing
+    
     if (debounceTimeout) clearTimeout(debounceTimeout);
 
     if (query.length >= 2) {
@@ -74,13 +96,12 @@
   }
 
   function selectResort(resort: Resort) {
+    selectedResort = resort;
     query = resort.name;
     isOpen = false;
     suggestions = [];
     
-    // Ensure proper type conversion for form mode
     if (mode === 'form') {
-      // Explicitly convert to number and ensure it's valid
       const resortId = Number(resort.id);
       if (!isNaN(resortId)) {
         $formData[name] = resortId;
@@ -91,8 +112,11 @@
     } else {
       $formData[name] = resort.slug;
     }
-    
-    console.log('Selected resort:', resort, 'Form value:', $formData[name]);
+  }
+
+  function handleResortMouseDown(event: MouseEvent, resort: Resort) {
+    event.preventDefault();
+    selectResort(resort);
   }
 
   function onKeyDown(event: KeyboardEvent) {
@@ -114,7 +138,6 @@
     }
   }
 
-  // Close dropdown if clicked outside
   let container: HTMLDivElement;
   function onClickOutside(event: MouseEvent) {
     if (!container.contains(event.target as Node)) {
@@ -134,22 +157,20 @@
       <div class="relative mx-auto w-full" bind:this={container}>
         <Form.Label class="mb-1 block text-sm font-medium text-foreground">{label}</Form.Label>
         
-        <!-- Hidden field for SuperForms -->
         <input
           {...props}
           type="hidden"
           bind:value={$formData[name]}
         />
         
-        <!-- Visible search input -->
         <input
           {id}
           type="text"
           class="h-12 w-full rounded-md border border-gray-300 p-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-foreground"
           placeholder="Type to search resorts..."
           bind:value={query}
-          on:input={onInput}
-          on:keydown={onKeyDown}
+          oninput={onInput}
+          onkeydown={onKeyDown}
           autocomplete="off"
           aria-autocomplete="list"
           aria-controls="resort-listbox"
@@ -169,8 +190,8 @@
                 aria-selected={highlightedIndex === i}
                 class="cursor-pointer px-4 py-2 hover:bg-blue-100"
                 class:selected={highlightedIndex === i}
-                on:mousedown|preventDefault={() => selectResort(resort)}
-                on:mouseenter={() => (highlightedIndex = i)}
+                onmousedown={(e) => handleResortMouseDown(e, resort)}
+                onmouseenter={() => (highlightedIndex = i)}
               >
                 <div class="flex flex-col text-left">
                   <span class="text-foreground font-medium">{resort.name}</span>
@@ -193,6 +214,6 @@
 <style>
   li.selected,
   li[aria-selected='true'] {
-    background-color: #bfdbfe; /* Tailwind blue-300 */
+    background-color: #bfdbfe;
   }
 </style>
