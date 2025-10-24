@@ -9,6 +9,7 @@ export class StorageService {
     private s3Client: S3Client;
     
     constructor() {
+       
         this.s3Client = new S3Client({
             region: 'auto',
             endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
