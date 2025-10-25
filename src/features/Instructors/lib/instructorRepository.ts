@@ -1,9 +1,8 @@
 import { db } from "$lib/server/db/index";
-import { users, instructorSports, instructorResorts } from "$src/lib/server/db/schema";
+import { users, instructorSports, instructorResorts, lessons, lessonSports as lessonSportsTable } from "$src/lib/server/db/schema";
 import type { InsertUser, User } from "$src/lib/server/db/schema";
 import { eq, and, or } from "drizzle-orm";
 import type { InstructorSignupData } from "./instructorSchemas";
-import { lessons, lessonSports } from "$src/lib/server/db/schema";
 
 
 
@@ -302,21 +301,21 @@ export class InstructorRepository {
             const baseLesson = instructorLessons[0] || null;
 
             // If there's a base lesson, get its sports
-            let lessonSports: number[] = [];
+            let baseLessonSports: number[] = [];
             if (baseLesson) {
                 const sports = await db
-                    .select({ sportId: lessonSports.sportId })
-                    .from(lessonSports)
-                    .where(eq(lessonSports.lessonId, baseLesson.id));
+                    .select({ sportId: lessonSportsTable.sportId })
+                    .from(lessonSportsTable)
+                    .where(eq(lessonSportsTable.lessonId, baseLesson.id));
                 
-                lessonSports = sports.map(s => s.sportId);
+                baseLessonSports = sports.map(s => s.sportId);
             }
 
             return {
                 instructor,
                 baseLesson: baseLesson ? {
                     ...baseLesson,
-                    sports: lessonSports
+                    sports: baseLessonSports
                 } : null
             };
         } catch (error) {

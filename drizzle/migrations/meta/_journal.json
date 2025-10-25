@@ -127,6 +127,13 @@
       "when": 1761292320997,
       "tag": "0017_robust_loki",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1761383344697,
+      "tag": "0018_gigantic_lord_hawal",
+      "breakpoints": true
     }
   ]
 }

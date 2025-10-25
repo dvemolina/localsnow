@@ -4,6 +4,7 @@ export const userRoleEnum = pgEnum('user_role', ['admin', 'instructor-independen
 export const sportsEnum = pgEnum('sport', ['Ski', 'Snowboard', 'Telemark'])
 export const sportSlugEnum = pgEnum('sport_slug', ['ski', 'snowboard', 'telemark']);
 export const modalitySlugEnum = pgEnum('modality_slug', ['piste', 'off-piste', 'freeride', 'freestyle', 'touring', 'adaptive']);
+export const pricingModeEnum = pgEnum('pricing_mode', ['per_hour', 'per_session', 'per_day']);
 
 export const timestamps = {
     createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -111,10 +112,8 @@ export const bookingRequests = pgTable('booking_requests', {
     ...timestamps
 });
 
-export type BookingRequest = typeof bookingRequests.$inferSelect;
-export type InsertBookingRequest = typeof bookingRequests.$inferInsert;
 
-// --- Lessons (future) ---
+// --- Lessons ---
 export const lessons = pgTable('lessons', {
 	uuid: uuid('uuid').defaultRandom().unique().notNull(),
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
@@ -128,6 +127,48 @@ export const lessons = pgTable('lessons', {
 	isPublished: boolean('is_published').default(true),
 	isBaseLesson: boolean('is_base_lesson').default(false)
 });
+
+
+export const pricingModes = pgTable('pricing_modes', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	mode: pricingModeEnum('mode').notNull().unique(),
+	label: varchar('label', { length: 100 }).notNull(),
+	description: text('description')
+});
+
+// --- Conditional Pricing (e.g., group discounts, duration discounts) ---
+export const conditionalPricing = pgTable('conditional_pricing', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	uuid: uuid('uuid').defaultRandom().unique().notNull(),
+	lessonId: integer('lesson_id').notNull().references(() => lessons.id, { onDelete: 'cascade' }),
+	conditionType: varchar('condition_type', { length: 50 }).notNull(), // 'students', 'duration', 'date_range'
+	minValue: integer('min_value'), // e.g., min 2 students, min 2 hours
+	maxValue: integer('max_value'), // e.g., max 10 students, max 8 hours
+	adjustmentType: varchar('adjustment_type', { length: 50 }).notNull(), // 'percentage', 'fixed_amount', 'multiplier'
+	adjustmentValue: numeric('adjustment_value', { precision: 10, scale: 2 }).notNull(),
+	priority: integer('priority').default(0), // Higher priority rules apply first
+	isActive: boolean('is_active').default(true),
+	...timestamps
+});
+
+// --- Promotional Pricing (e.g., seasonal discounts, promo codes) ---
+export const promotionalPricing = pgTable('promotional_pricing', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	uuid: uuid('uuid').defaultRandom().unique().notNull(),
+	lessonId: integer('lesson_id').references(() => lessons.id, { onDelete: 'cascade' }), // null = applies to all lessons
+	instructorId: integer('instructor_id').references(() => users.id, { onDelete: 'cascade' }), // null = applies to all instructors
+	code: varchar('code', { length: 50 }).unique(), // null if no code required (automatic discount)
+	discountType: varchar('discount_type', { length: 50 }).notNull(), // 'percentage', 'fixed_amount'
+	discountValue: numeric('discount_value', { precision: 10, scale: 2 }).notNull(),
+	startDate: timestamp('start_date'),
+	endDate: timestamp('end_date'),
+	maxUses: integer('max_uses'), // null = unlimited
+	currentUses: integer('current_uses').default(0),
+	minPurchaseAmount: numeric('min_purchase_amount', { precision: 10, scale: 2 }),
+	isActive: boolean('is_active').default(true),
+	...timestamps
+});
+
 
 // --- Lesson Sports Junction Table ---
 export const lessonSports = pgTable('lesson_sports', {
@@ -161,7 +202,7 @@ export const schoolAdmins = pgTable('school_admins', {
 	userId: integer('user_id').notNull().references(() => users.id),
 	isAccepted: boolean('is_accepted').default(false)
 });
-  
+
 export const schoolInstructors = pgTable('school_instructors', {
 	schoolId: integer('school_id').notNull().references(() => schools.id),
 	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
@@ -181,7 +222,7 @@ export const schoolInstructorHistory = pgTable('school_instructor_history', {
 });
 
 export const profileVisits = pgTable('profile_visits', {
-    id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
     instructorId: integer('instructor_id').notNull(),
     visitorIp: varchar('visitor_ip', { length: 45 }).notNull(),
     yearMonth: varchar('year_month', { length: 7 }).notNull(),
@@ -191,8 +232,8 @@ export const profileVisits = pgTable('profile_visits', {
 export const session = pgTable('session', {
 	id: text('id').primaryKey(),
 	userId: integer('user_id')
-		.notNull()
-		.references(() => users.id, { onDelete: 'cascade' }),
+	.notNull()
+	.references(() => users.id, { onDelete: 'cascade' }),
 	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull()
 });
 
@@ -211,3 +252,13 @@ export type InsertCountry = typeof countries.$inferInsert;
 //Regions
 export type Region = typeof regions.$inferSelect;
 export type InsertRegion = typeof regions.$inferInsert;
+
+//Pricing
+export type ConditionalPricing = typeof conditionalPricing.$inferSelect;
+export type InsertConditionalPricing = typeof conditionalPricing.$inferInsert;
+export type PromotionalPricing = typeof promotionalPricing.$inferSelect;
+export type InsertPromotionalPricing = typeof promotionalPricing.$inferInsert;
+
+//Bookings
+export type BookingRequest = typeof bookingRequests.$inferSelect;
+export type InsertBookingRequest = typeof bookingRequests.$inferInsert;
