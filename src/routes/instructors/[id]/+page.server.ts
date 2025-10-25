@@ -2,11 +2,13 @@
 import { error, fail, json } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 import { InstructorService } from '$src/features/Instructors/lib/instructorService';
+import { PricingService } from '$src/features/Pricing/lib/pricingService';
 import { BookingRequestService } from '$src/features/Bookings/lib/bookingRequestService';
 import { trackProfileVisit } from '$src/features/Dashboard/lib/utils';
 import { getClientIP } from '$src/lib/utils/auth';
 
 const instructorService = new InstructorService();
+const pricingService = new PricingService();
 const bookingRequestService = new BookingRequestService();
 
 export const load: PageServerLoad = async (event) => {
@@ -35,6 +37,18 @@ export const load: PageServerLoad = async (event) => {
             instructorService.getInstructorResorts(instructorId)
         ]);
 
+        // ✅ Load pricing data if base lesson exists
+        let groupTiers = [];
+        let durationPackages = [];
+        let promoCodes = [];
+        
+        if (instructorData.baseLesson) {
+            const pricingData = await pricingService.getLessonPricingData(instructorData.baseLesson.id);
+            groupTiers = pricingData.groupTiers;
+            durationPackages = pricingData.durationPackages;
+            promoCodes = pricingData.promoCodes;
+        }
+
         // Track profile visit (async, don't wait)
         const visitorIP = getClientIP(event);
         if (visitorIP) {
@@ -46,6 +60,9 @@ export const load: PageServerLoad = async (event) => {
         return {
             instructor: instructorData.instructor,
             baseLesson: instructorData.baseLesson,
+            groupTiers,
+            durationPackages,
+            promoCodes,
             sports,
             resorts,
             user: event.locals.user ?? null
