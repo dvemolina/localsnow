@@ -21,11 +21,11 @@
 	});
 </script>
 
-<Card.Root>
+<Card.Root class="bg-card">
 	<Card.Header>
-		<Card.Title>Pricing</Card.Title>
+		<Card.Title class="title4">Pricing</Card.Title>
 	</Card.Header>
-	<Card.Content class="space-y-6">
+	<Card.Content class="space-y-6 ">
 		<!-- Hourly Pricing Section -->
 		<div>
 			<div class="flex items-center gap-2 mb-3">
@@ -35,7 +35,7 @@
 			
 			<!-- Base Price (1-2 students) -->
 			<div class="rounded-lg border bg-card p-3 mb-2">
-				<div class="flex items-center justify-between">
+				<div class="flex flex-col items-center justify-between md:flex-row">
 					<div class="flex items-center gap-2">
 						<Users class="h-4 w-4 text-muted-foreground" />
 						<span class="text-sm">1-2 students</span>
@@ -50,8 +50,8 @@
 			<!-- Group Tiers -->
 			{#if groupTiers.length > 0}
 				{#each groupTiers as tier}
-					<div class="rounded-lg border bg-muted/30 p-3 mb-2">
-						<div class="flex items-center justify-between">
+					<div class="rounded-lg border bg-card p-3 mb-2">
+						<div class="flex flex-col md:flex-row items-center justify-between">
 							<div class="flex items-center gap-2">
 								<Users class="h-4 w-4 text-muted-foreground" />
 								<span class="text-sm">{tier.minStudents}-{tier.maxStudents} students</span>
@@ -82,7 +82,7 @@
 						<div class="flex items-center justify-between mb-1">
 							<div class="flex items-center gap-2">
 								<span class="font-medium text-sm">{pkg.name}</span>
-								<Badge variant="outline" class="text-xs">{pkg.hours}h</Badge>
+								<Badge variant="secondary" class="text-xs">{pkg.hours}h</Badge>
 							</div>
 							<div class="flex items-baseline gap-1">
 								<span class="text-lg font-bold">{pkg.price}</span>

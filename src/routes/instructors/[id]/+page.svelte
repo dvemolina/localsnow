@@ -43,11 +43,11 @@
 </script>
 
 <svelte:head>
-	<title>{instructor.name} {instructor.lastName} - Ski Instructor | Local Snow</title>
+	<title>{instructor.name} {instructor.lastName.charAt(0)} - Ski Instructor | Local Snow</title>
 	<meta
 		name="description"
 		content={instructor.bio ||
-			`Book ski lessons with ${instructor.name} ${instructor.lastName}, a certified instructor.`}
+			`Book ski lessons with ${instructor.name} ${instructor.lastName.charAt(0)}, a certified instructor.`}
 	/>
 </svelte:head>
 
@@ -85,22 +85,24 @@
 			<Avatar.Root class="size-32 border-2 border-border shadow-sm sm:size-40">
 				<Avatar.Image
 					src={instructor.profileImageUrl || '/local-snow-head.png'}
-					alt={`${instructor.name} ${instructor.lastName}`}
+					alt={`${instructor.name} ${instructor.lastName.charAt(0)}`}
 				/>
 				<Avatar.Fallback>{instructor.name[0]}{instructor.lastName[0]}</Avatar.Fallback>
 			</Avatar.Root>
 
 			<div class="text-center">
-				<h1 class="title3">
-					{instructor.name}
-					{instructor.lastName}
-				</h1>
-
-				<!-- Star Rating -->
-				<div class="mt-2 flex justify-center">
-					<StarScore score={5} />
+				<div class="flex items-center justify-center gap-2 flex-col-reverse">
+					<h1 class="title3">
+						{instructor.name}
+						{`${instructor.lastName[0]}.`}
+					</h1>
+					
+					<!-- Star Rating -->
+					<div class="flex justify-center">
+						<StarScore score={5} />
+					</div>
 				</div>
-
+					
 				<!-- Instructor Type Badge -->
 				<div class="mt-4">
 					{#if isIndependent}
@@ -140,29 +142,6 @@
 					<img src="/icons/certificate.svg" alt="Certification" class="size-5" />
 					<span class="text-sm font-medium">Verified Instructor</span>
 				</div>
-				<!-- 
-				{#if instructor.phone}
-					<div class="flex items-center gap-2">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							class="size-5"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-							/>
-						</svg>
-						<span class="text-sm">
-							+{instructor.countryCode} {instructor.phone}
-						</span>
-					</div>
-				{/if}
-				-->
 				<div class="flex items-center gap-2">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -181,7 +160,13 @@
 					<span class="text-sm">24h response time</span>
 				</div>
 			</div>
-			{#if data.baseLesson}
+		</div>
+
+
+
+		<!-- Right Column - Detailed Info -->
+		<div class="flex flex-1 flex-col space-y-6">
+			{#if data.baseLesson && data.groupTiers?.length < 0 && data.durationPackages?.length < 0}
 				<div class="mt-4 w-full rounded-lg border border-primary/20 bg-primary/5 p-4">
 					<div class="mb-2 flex items-center justify-between">
 						<span class="text-sm font-medium">Hourly Rate</span>
@@ -203,73 +188,70 @@
 					durationPackages={data.durationPackages}
 				/>
 			{/if}
-		</div>
-
-
-
-		<!-- Right Column - Detailed Info -->
-		<div class="flex flex-1 flex-col space-y-6 rounded-lg border border-border bg-card p-6">
-			<!-- Sports Taught -->
-			<div>
-				<h2 class="title4 mb-3 flex items-center gap-2">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="size-5"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M13 10V3L4 14h7v7l9-11h-7z"
-						/>
-					</svg>
-					Sports Offered
-				</h2>
-				<div class="flex flex-wrap gap-2">
-					{#each sports as sportId}
-						<Badge variant="outline" class="text-sm">
-							{sportLabels[sportId] || 'Unknown Sport'}
-						</Badge>
-					{/each}
+			<div class="rounded-lg border border-border bg-card p-6 flex flex-col gap-4">
+				
+				<!-- Sports Taught -->
+				<div>
+					<h2 class="title4 mb-3 flex items-center gap-2">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="size-5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M13 10V3L4 14h7v7l9-11h-7z"
+							/>
+						</svg>
+						Sports Offered
+					</h2>
+					<div class="flex flex-wrap gap-2">
+						{#each sports as sportId}
+							<Badge variant="outline" class="text-sm">
+								{sportLabels[sportId] || 'Unknown Sport'}
+							</Badge>
+						{/each}
+					</div>
 				</div>
-			</div>
 
-			<!-- Location/Resort -->
-			<div>
-				<h2 class="title4 mb-3 flex items-center gap-2">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="size-5"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-						/>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-						/>
-					</svg>
-					Teaching Location
-				</h2>
-				<div class="flex items-center gap-2">
-					<span class="text-sm text-muted-foreground">
-						{#if resorts.length > 0}
-							Teaching at {resorts.length} resort{resorts.length > 1 ? 's' : ''}
-						{:else}
-							Multiple locations available
-						{/if}
-					</span>
+				<!-- Location/Resort -->
+				<div>
+					<h2 class="title4 mb-3 flex items-center gap-2">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="size-5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+							/>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+							/>
+						</svg>
+						Teaching Location
+					</h2>
+					<div class="flex items-center gap-2">
+						<span class="text-sm text-muted-foreground">
+							{#if resorts.length > 0}
+								Teaching at {resorts.length} resort{resorts.length > 1 ? 's' : ''}
+							{:else}
+								Multiple locations available
+							{/if}
+						</span>
+					</div>
 				</div>
 			</div>
 
@@ -317,9 +299,35 @@
 					</a>
 				</div>
 			{/if}
+		</div>
+	</div>
 
-			<!-- Experience Highlights -->
-			<div>
+	<!-- Bio -->
+	<div class="rounded-lg border border-border bg-card p-6 mt-8">
+			{#if instructor.bio}
+				<div>
+					<h2 class="title4 mb-3">About {instructor.name}</h2>
+					<p class="hyphens-auto text-sm leading-relaxed text-muted-foreground">
+						{instructor.bio}
+					</p>
+				</div>
+			{:else}
+				<div>
+					<h2 class="title4 mb-3">About {instructor.name}</h2>
+					<p class="hyphens-auto text-sm leading-relaxed text-muted-foreground">
+						Professional ski instructor ready to help you improve your skills on the slopes. Whether
+						you're a beginner or looking to refine your technique, I provide personalized
+						instruction tailored to your goals.
+					</p>
+				</div>
+			{/if}
+			
+		</div>
+
+	<!-- Additional Info Section -->
+	<div class="mt-8 grid gap-6 md:grid-cols-2">
+		<!-- What to Expect -->
+		<div class="rounded-lg border border-border bg-card p-6">
 				<h2 class="title4 mb-3 flex items-center gap-2">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -335,7 +343,7 @@
 							d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
 						/>
 					</svg>
-					What You'll Get
+					What to Expect
 				</h2>
 				<ul class="space-y-2.5 text-sm text-muted-foreground">
 					<li class="flex items-start gap-2">
@@ -408,55 +416,6 @@
 					</li>
 				</ul>
 			</div>
-		</div>
-	</div>
-
-	<!-- Bio -->
-	<div class="rounded-lg border border-border bg-card p-6 mt-8">
-			{#if instructor.bio}
-				<div>
-					<h2 class="title4 mb-3">About {instructor.name}</h2>
-					<p class="hyphens-auto text-sm leading-relaxed text-muted-foreground">
-						{instructor.bio}
-					</p>
-				</div>
-			{:else}
-				<div>
-					<h2 class="title4 mb-3">About {instructor.name}</h2>
-					<p class="hyphens-auto text-sm leading-relaxed text-muted-foreground">
-						Professional ski instructor ready to help you improve your skills on the slopes. Whether
-						you're a beginner or looking to refine your technique, I provide personalized
-						instruction tailored to your goals.
-					</p>
-				</div>
-			{/if}
-			
-		</div>
-
-	<!-- Additional Info Section -->
-	<div class="mt-8 grid gap-6 md:grid-cols-2">
-		<!-- What to Expect -->
-		<div class="rounded-lg border border-border bg-card p-6">
-			<h2 class="title4 mb-4">What to Expect</h2>
-			<ul class="space-y-3 text-sm text-muted-foreground">
-				<li class="flex gap-2">
-					<span class="text-primary">✓</span>
-					<span>Personalized instruction based on your skill level</span>
-				</li>
-				<li class="flex gap-2">
-					<span class="text-primary">✓</span>
-					<span>Focus on technique and safety</span>
-				</li>
-				<li class="flex gap-2">
-					<span class="text-primary">✓</span>
-					<span>Flexible scheduling options</span>
-				</li>
-				<li class="flex gap-2">
-					<span class="text-primary">✓</span>
-					<span>Equipment advice and tips</span>
-				</li>
-			</ul>
-		</div>
 
 		<!-- Booking Info -->
 		<div class="rounded-lg border border-border bg-card p-6">
