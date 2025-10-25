@@ -2,94 +2,98 @@
 	import * as Card from '$src/lib/components/ui/card';
 	import { Button } from '$src/lib/components/ui/button';
 	import { Badge } from '$src/lib/components/ui/badge';
-	import * as Tabs from '$src/lib/components/ui/tabs';
 	import * as Dialog from '$src/lib/components/ui/dialog';
 	import { Input } from '$src/lib/components/ui/input';
 	import { Label } from '$src/lib/components/ui/label';
-	import * as Select from '$src/lib/components/ui/select';
 	import { Separator } from '$src/lib/components/ui/separator';
-	import { Switch } from '$src/lib/components/ui/switch';
-	import { Plus, Pencil, Trash2, DollarSign, Tag, Percent } from '@lucide/svelte';
+	import { Plus, Pencil, Trash2, Users, Clock, Tag } from '@lucide/svelte';
 
 	let {
 		lesson,
-		conditionalRules = [],
-		promos = []
+		groupTiers = [],
+		durationPackages = [],
+		promoCodes = []
 	}: {
 		lesson: any;
-		conditionalRules: any[];
-		promos: any[];
+		groupTiers?: any[];
+		durationPackages?: any[];
+		promoCodes?: any[];
 	} = $props();
 
-	let isConditionalDialogOpen = $state(false);
+	// Dialog states
+	let isGroupTierDialogOpen = $state(false);
+	let isDurationDialogOpen = $state(false);
 	let isPromoDialogOpen = $state(false);
-	let selectedRule = $state<any>(null);
+
+	// Selected items for editing
+	let selectedTier = $state<any>(null);
+	let selectedPackage = $state<any>(null);
 	let selectedPromo = $state<any>(null);
 
-	let conditionalForm = $state({
-		conditionType: 'students',
-		minValue: '',
-		maxValue: '',
-		adjustmentType: 'percentage',
-		adjustmentValue: '',
-		priority: '0',
-		isActive: true
+	// Forms
+	let groupTierForm = $state({
+		minStudents: '',
+		maxStudents: '',
+		pricePerHour: ''
+	});
+
+	let durationForm = $state({
+		name: '',
+		hours: '',
+		price: '',
+		description: ''
 	});
 
 	let promoForm = $state({
 		code: '',
-		discountType: 'percentage',
-		discountValue: '',
-		startDate: '',
-		endDate: '',
-		maxUses: '',
-		minPurchaseAmount: '',
-		isActive: true
+		discountPercent: '',
+		validUntil: '',
+		maxUses: ''
 	});
 
-	function resetConditionalForm() {
-		conditionalForm = {
-			conditionType: 'students',
-			minValue: '',
-			maxValue: '',
-			adjustmentType: 'percentage',
-			adjustmentValue: '',
-			priority: '0',
-			isActive: true
-		};
+	function resetGroupTierForm() {
+		groupTierForm = { minStudents: '', maxStudents: '', pricePerHour: '' };
+	}
+
+	function resetDurationForm() {
+		durationForm = { name: '', hours: '', price: '', description: '' };
 	}
 
 	function resetPromoForm() {
-		promoForm = {
-			code: '',
-			discountType: 'percentage',
-			discountValue: '',
-			startDate: '',
-			endDate: '',
-			maxUses: '',
-			minPurchaseAmount: '',
-			isActive: true
-		};
+		promoForm = { code: '', discountPercent: '', validUntil: '', maxUses: '' };
 	}
 
-	function handleCreateConditional() {
-		resetConditionalForm();
-		selectedRule = null;
-		isConditionalDialogOpen = true;
+	function handleCreateGroupTier() {
+		resetGroupTierForm();
+		selectedTier = null;
+		isGroupTierDialogOpen = true;
 	}
 
-	function handleEditConditional(rule: any) {
-		selectedRule = rule;
-		conditionalForm = {
-			conditionType: rule.conditionType,
-			minValue: rule.minValue?.toString() || '',
-			maxValue: rule.maxValue?.toString() || '',
-			adjustmentType: rule.adjustmentType,
-			adjustmentValue: rule.adjustmentValue,
-			priority: rule.priority.toString(),
-			isActive: rule.isActive
+	function handleEditGroupTier(tier: any) {
+		selectedTier = tier;
+		groupTierForm = {
+			minStudents: tier.minStudents.toString(),
+			maxStudents: tier.maxStudents.toString(),
+			pricePerHour: tier.pricePerHour.toString()
 		};
-		isConditionalDialogOpen = true;
+		isGroupTierDialogOpen = true;
+	}
+
+	function handleCreateDuration() {
+		resetDurationForm();
+		selectedPackage = null;
+		isDurationDialogOpen = true;
+	}
+
+	function handleEditDuration(pkg: any) {
+		selectedPackage = pkg;
+		durationForm = {
+			name: pkg.name,
+			hours: pkg.hours.toString(),
+			price: pkg.price.toString(),
+			description: pkg.description || ''
+		};
+		isDurationDialogOpen = true;
 	}
 
 	function handleCreatePromo() {
@@ -101,347 +105,323 @@
 	function handleEditPromo(promo: any) {
 		selectedPromo = promo;
 		promoForm = {
-			code: promo.code || '',
-			discountType: promo.discountType,
-			discountValue: promo.discountValue,
-			startDate: promo.startDate ? new Date(promo.startDate).toISOString().split('T')[0] : '',
-			endDate: promo.endDate ? new Date(promo.endDate).toISOString().split('T')[0] : '',
-			maxUses: promo.maxUses?.toString() || '',
-			minPurchaseAmount: promo.minPurchaseAmount || '',
-			isActive: promo.isActive
+			code: promo.code,
+			discountPercent: promo.discountPercent.toString(),
+			validUntil: promo.validUntil || '',
+			maxUses: promo.maxUses?.toString() || ''
 		};
 		isPromoDialogOpen = true;
 	}
-
-	function getAdjustmentLabel(type: string, value: string): string {
-		const val = parseFloat(value);
-		switch (type) {
-			case 'percentage':
-				return `${val > 0 ? '+' : ''}${val}%`;
-			case 'fixed_amount':
-				return `${val > 0 ? '+' : ''}${val}€`;
-			case 'multiplier':
-				return `×${val}`;
-			default:
-				return value;
-		}
-	}
-
-	function getConditionDescription(rule: any): string {
-		const min = rule.minValue;
-		const max = rule.maxValue;
-		const type = rule.conditionType;
-
-		if (min && max) {
-			return `${min}-${max} ${type === 'students' ? 'students' : 'hours'}`;
-		} else if (min) {
-			return `${min}+ ${type === 'students' ? 'students' : 'hours'}`;
-		} else if (max) {
-			return `Up to ${max} ${type === 'students' ? 'students' : 'hours'}`;
-		}
-		return 'Any';
-	}
-
-	function isPromoActive(promo: any): boolean {
-		if (!promo.isActive) return false;
-		const now = new Date();
-		if (promo.startDate && new Date(promo.startDate) > now) return false;
-		if (promo.endDate && new Date(promo.endDate) < now) return false;
-		if (promo.maxUses && promo.currentUses >= promo.maxUses) return false;
-		return true;
-	}
 </script>
 
-<Card.Root>
-	<Card.Header>
-		<Card.Title class="flex items-center gap-2">
-			<DollarSign class="h-5 w-5" />
-			Pricing Rules for {lesson.title}
-		</Card.Title>
-	</Card.Header>
-	<Card.Content>
-		<Tabs.Root value="conditional">
-			<Tabs.List class="grid w-full grid-cols-2">
-				<Tabs.Trigger value="conditional">
-					<Percent class="mr-2 h-4 w-4" />
-					Conditional Pricing
-				</Tabs.Trigger>
-				<Tabs.Trigger value="promotional">
-					<Tag class="mr-2 h-4 w-4" />
-					Promotions
-				</Tabs.Trigger>
-			</Tabs.List>
-
-			<!-- Conditional Pricing Tab -->
-			<Tabs.Content value="conditional" class="space-y-4 mt-4">
-				<div class="flex justify-between items-center">
-					<p class="text-sm text-muted-foreground">Group discounts, duration discounts</p>
-					<Button size="sm" onclick={handleCreateConditional}>
-						<Plus class="mr-2 h-4 w-4" />
-						Add Rule
-					</Button>
+<div class="space-y-6">
+	<!-- Base Price Display -->
+	<Card.Root>
+		<Card.Header>
+			<Card.Title class="flex items-center gap-2">
+				<Clock class="h-5 w-5" />
+				Base Hourly Rate
+			</Card.Title>
+			<Card.Description>Your standard rate for 1-2 students</Card.Description>
+		</Card.Header>
+		<Card.Content>
+			<div class="rounded-lg bg-muted p-4">
+				<div class="flex items-baseline gap-2">
+					<span class="text-3xl font-bold">{lesson.basePrice}</span>
+					<span class="text-lg text-muted-foreground">{lesson.currency}/hour</span>
 				</div>
+				<p class="mt-1 text-sm text-muted-foreground">For 1-2 students per hour</p>
+			</div>
+		</Card.Content>
+	</Card.Root>
 
+	<!-- Group Pricing Tiers -->
+	<Card.Root>
+		<Card.Header>
+			<div class="flex items-center justify-between">
+				<div>
+					<Card.Title class="flex items-center gap-2">
+						<Users class="h-5 w-5" />
+						Group Pricing
+					</Card.Title>
+					<Card.Description>Discounts for larger groups (optional)</Card.Description>
+				</div>
+				<Button size="sm" onclick={handleCreateGroupTier}>
+					<Plus class="mr-2 h-4 w-4" />
+					Add Tier
+				</Button>
+			</div>
+		</Card.Header>
+		<Card.Content>
+			{#if groupTiers.length > 0}
 				<div class="space-y-2">
-					{#each conditionalRules as rule (rule.id)}
-						<div class="rounded-lg border p-3">
-							<div class="flex items-start justify-between">
-								<div class="flex-1 space-y-1">
-									<div class="flex items-center gap-2">
-										<span class="text-sm font-medium">{getConditionDescription(rule)}</span>
-										<Badge variant={rule.isActive ? 'default' : 'secondary'} class="text-xs">
-											{rule.isActive ? 'Active' : 'Inactive'}
-										</Badge>
-									</div>
-									<p class="text-sm text-muted-foreground">
-										{getAdjustmentLabel(rule.adjustmentType, rule.adjustmentValue)} adjustment
-									</p>
+					{#each groupTiers as tier}
+						<div class="flex items-center justify-between rounded-lg border p-3">
+							<div class="flex items-center gap-4">
+								<div class="flex items-center gap-2 text-sm">
+									<Users class="h-4 w-4 text-muted-foreground" />
+									<span class="font-medium">{tier.minStudents}-{tier.maxStudents} students</span>
 								</div>
-								<div class="flex gap-1">
-									<Button variant="ghost" size="icon" class="h-8 w-8" onclick={() => handleEditConditional(rule)}>
-										<Pencil class="h-3 w-3" />
+								<div class="flex items-baseline gap-1">
+									<span class="text-lg font-bold">{tier.pricePerHour}</span>
+									<span class="text-sm text-muted-foreground">{lesson.currency}/hr</span>
+								</div>
+							</div>
+							<div class="flex gap-1">
+								<Button variant="ghost" size="icon" class="h-8 w-8" onclick={() => handleEditGroupTier(tier)}>
+									<Pencil class="h-3 w-3" />
+								</Button>
+								<form method="POST" action="?/deleteGroupTier">
+									<input type="hidden" name="tierId" value={tier.id} />
+									<Button type="submit" variant="ghost" size="icon" class="h-8 w-8">
+										<Trash2 class="h-3 w-3" />
 									</Button>
-									<form method="POST" action="?/deleteConditional">
-										<input type="hidden" name="ruleId" value={rule.id} />
-										<Button type="submit" variant="ghost" size="icon" class="h-8 w-8">
-											<Trash2 class="h-3 w-3" />
-										</Button>
-									</form>
-								</div>
+								</form>
 							</div>
 						</div>
 					{/each}
-
-					{#if conditionalRules.length === 0}
-						<div class="text-center py-8 text-sm text-muted-foreground">
-							No conditional pricing rules. Add one to offer group or duration discounts.
-						</div>
-					{/if}
 				</div>
-			</Tabs.Content>
+			{:else}
+				<p class="text-center py-4 text-sm text-muted-foreground">
+					No group pricing set. Add tiers to offer discounts for larger groups.
+				</p>
+			{/if}
+		</Card.Content>
+	</Card.Root>
 
-			<!-- Promotional Pricing Tab -->
-			<Tabs.Content value="promotional" class="space-y-4 mt-4">
-				<div class="flex justify-between items-center">
-					<p class="text-sm text-muted-foreground">Promo codes, seasonal discounts</p>
-					<Button size="sm" onclick={handleCreatePromo}>
-						<Plus class="mr-2 h-4 w-4" />
-						Add Promotion
-					</Button>
+	<!-- Duration Packages -->
+	<Card.Root>
+		<Card.Header>
+			<div class="flex items-center justify-between">
+				<div>
+					<Card.Title class="flex items-center gap-2">
+						<Clock class="h-5 w-5" />
+						Duration Packages
+					</Card.Title>
+					<Card.Description>Half-day/full-day rates (optional)</Card.Description>
 				</div>
-
+				<Button size="sm" onclick={handleCreateDuration}>
+					<Plus class="mr-2 h-4 w-4" />
+					Add Package
+				</Button>
+			</div>
+		</Card.Header>
+		<Card.Content>
+			{#if durationPackages.length > 0}
 				<div class="space-y-2">
-					{#each promos as promo (promo.id)}
-						{@const active = isPromoActive(promo)}
-						<div class="rounded-lg border p-3">
-							<div class="flex items-start justify-between">
-								<div class="flex-1 space-y-1">
-									<div class="flex items-center gap-2">
-										{#if promo.code}
-											<span class="text-sm font-mono font-bold">{promo.code}</span>
-										{:else}
-											<span class="text-sm font-medium">Automatic Discount</span>
-										{/if}
-										<Badge variant={active ? 'default' : 'secondary'} class="text-xs">
-											{active ? 'Active' : 'Inactive'}
-										</Badge>
-									</div>
-									<p class="text-sm text-muted-foreground">
-										-{getAdjustmentLabel(promo.discountType, promo.discountValue)} off
-										{#if promo.maxUses}
-											· {promo.currentUses}/{promo.maxUses} uses
-										{/if}
-									</p>
+					{#each durationPackages as pkg}
+						<div class="flex items-center justify-between rounded-lg border p-3">
+							<div>
+								<div class="flex items-center gap-2 mb-1">
+									<span class="font-medium">{pkg.name}</span>
+									<Badge variant="outline" class="text-xs">{pkg.hours}h</Badge>
 								</div>
-								<div class="flex gap-1">
-									<Button variant="ghost" size="icon" class="h-8 w-8" onclick={() => handleEditPromo(promo)}>
-										<Pencil class="h-3 w-3" />
+								<div class="flex items-baseline gap-1">
+									<span class="text-lg font-bold">{pkg.price}</span>
+									<span class="text-sm text-muted-foreground">{lesson.currency}</span>
+								</div>
+								{#if pkg.description}
+									<p class="text-xs text-muted-foreground mt-1">{pkg.description}</p>
+								{/if}
+							</div>
+							<div class="flex gap-1">
+								<Button variant="ghost" size="icon" class="h-8 w-8" onclick={() => handleEditDuration(pkg)}>
+									<Pencil class="h-3 w-3" />
+								</Button>
+								<form method="POST" action="?/deleteDurationPackage">
+									<input type="hidden" name="packageId" value={pkg.id} />
+									<Button type="submit" variant="ghost" size="icon" class="h-8 w-8">
+										<Trash2 class="h-3 w-3" />
 									</Button>
-									<form method="POST" action="?/deletePromo">
-										<input type="hidden" name="promoId" value={promo.id} />
-										<Button type="submit" variant="ghost" size="icon" class="h-8 w-8">
-											<Trash2 class="h-3 w-3" />
-										</Button>
-									</form>
-								</div>
+								</form>
 							</div>
 						</div>
 					{/each}
-
-					{#if promos.length === 0}
-						<div class="text-center py-8 text-sm text-muted-foreground">
-							No promotions yet. Create promo codes or automatic discounts.
-						</div>
-					{/if}
 				</div>
-			</Tabs.Content>
-		</Tabs.Root>
-	</Card.Content>
-</Card.Root>
+			{:else}
+				<p class="text-center py-4 text-sm text-muted-foreground">
+					No packages set. Add half-day or full-day packages if you offer them.
+				</p>
+			{/if}
+		</Card.Content>
+	</Card.Root>
 
-<!-- Conditional Pricing Dialog -->
-<Dialog.Root bind:open={isConditionalDialogOpen}>
-	<Dialog.Content class="max-w-lg">
+	<!-- Promo Codes -->
+	<Card.Root>
+		<Card.Header>
+			<div class="flex items-center justify-between">
+				<div>
+					<Card.Title class="flex items-center gap-2">
+						<Tag class="h-5 w-5" />
+						Promo Codes
+					</Card.Title>
+					<Card.Description>Discount codes for special offers (optional)</Card.Description>
+				</div>
+				<Button size="sm" onclick={handleCreatePromo}>
+					<Plus class="mr-2 h-4 w-4" />
+					Add Code
+				</Button>
+			</div>
+		</Card.Header>
+		<Card.Content>
+			{#if promoCodes.length > 0}
+				<div class="space-y-2">
+					{#each promoCodes as promo}
+						<div class="flex items-center justify-between rounded-lg border p-3">
+							<div>
+								<div class="flex items-center gap-2 mb-1">
+									<span class="font-mono font-bold text-sm">{promo.code}</span>
+									<Badge variant="secondary" class="text-xs">{promo.discountPercent}% off</Badge>
+								</div>
+								<div class="flex items-center gap-3 text-xs text-muted-foreground">
+									{#if promo.validUntil}
+										<span>Valid until {new Date(promo.validUntil).toLocaleDateString()}</span>
+									{/if}
+									{#if promo.maxUses}
+										<span>Max {promo.maxUses} uses</span>
+									{/if}
+								</div>
+							</div>
+							<div class="flex gap-1">
+								<Button variant="ghost" size="icon" class="h-8 w-8" onclick={() => handleEditPromo(promo)}>
+									<Pencil class="h-3 w-3" />
+								</Button>
+								<form method="POST" action="?/deletePromoCode">
+									<input type="hidden" name="promoId" value={promo.id} />
+									<Button type="submit" variant="ghost" size="icon" class="h-8 w-8">
+										<Trash2 class="h-3 w-3" />
+									</Button>
+								</form>
+							</div>
+						</div>
+					{/each}
+				</div>
+			{:else}
+				<p class="text-center py-4 text-sm text-muted-foreground">
+					No promo codes. Add codes to offer special discounts.
+				</p>
+			{/if}
+		</Card.Content>
+	</Card.Root>
+</div>
+
+<!-- Group Tier Dialog -->
+<Dialog.Root bind:open={isGroupTierDialogOpen}>
+	<Dialog.Content class="max-w-md">
 		<Dialog.Header>
-			<Dialog.Title>{selectedRule ? 'Edit' : 'Create'} Pricing Rule</Dialog.Title>
+			<Dialog.Title>{selectedTier ? 'Edit' : 'Add'} Group Pricing Tier</Dialog.Title>
 		</Dialog.Header>
-
-		<form method="POST" action={selectedRule ? '?/updateConditional' : '?/createConditional'} class="space-y-4">
-			{#if selectedRule}
-				<input type="hidden" name="ruleId" value={selectedRule.id} />
+		<form method="POST" action={selectedTier ? '?/updateGroupTier' : '?/createGroupTier'} class="space-y-4">
+			{#if selectedTier}
+				<input type="hidden" name="tierId" value={selectedTier.id} />
 			{/if}
 			<input type="hidden" name="lessonId" value={lesson.id} />
 
+			<div class="grid grid-cols-2 gap-4">
+				<div class="space-y-2">
+					<Label>Min Students</Label>
+					<Input name="minStudents" type="number" min="1" bind:value={groupTierForm.minStudents} required />
+				</div>
+				<div class="space-y-2">
+					<Label>Max Students</Label>
+					<Input name="maxStudents" type="number" min="1" bind:value={groupTierForm.maxStudents} required />
+				</div>
+			</div>
+
 			<div class="space-y-2">
-				<Label>Condition Type</Label>
-				<Select.Root name="conditionType" value={conditionalForm.conditionType}>
-					<Select.Trigger>
-						<Select.Value />
-					</Select.Trigger>
-					<Select.Content>
-						<Select.Item value="students">Number of Students</Select.Item>
-						<Select.Item value="duration">Duration (hours)</Select.Item>
-					</Select.Content>
-				</Select.Root>
-			</div>
-
-			<div class="grid grid-cols-2 gap-4">
-				<div class="space-y-2">
-					<Label>Min (optional)</Label>
-					<Input name="minValue" type="number" placeholder="e.g., 2" bind:value={conditionalForm.minValue} />
-				</div>
-				<div class="space-y-2">
-					<Label>Max (optional)</Label>
-					<Input name="maxValue" type="number" placeholder="e.g., 10" bind:value={conditionalForm.maxValue} />
-				</div>
-			</div>
-
-			<Separator />
-
-			<div class="grid grid-cols-2 gap-4">
-				<div class="space-y-2">
-					<Label>Adjustment Type</Label>
-					<Select.Root name="adjustmentType" value={conditionalForm.adjustmentType}>
-						<Select.Trigger>
-							<Select.Value />
-						</Select.Trigger>
-						<Select.Content>
-							<Select.Item value="percentage">Percentage</Select.Item>
-							<Select.Item value="fixed_amount">Fixed Amount (€)</Select.Item>
-							<Select.Item value="multiplier">Multiplier</Select.Item>
-						</Select.Content>
-					</Select.Root>
-				</div>
-				<div class="space-y-2">
-					<Label>Value</Label>
-					<Input 
-						name="adjustmentValue" 
-						type="number" 
-						step="0.01"
-						placeholder="-10"
-						bind:value={conditionalForm.adjustmentValue}
-						required 
-					/>
-				</div>
-			</div>
-
-			<div class="flex items-center justify-between">
-				<div class="flex items-center space-x-2">
-					<Switch name="isActive" bind:checked={conditionalForm.isActive} />
-					<Label>Active</Label>
-				</div>
-				<input type="hidden" name="priority" value={conditionalForm.priority} />
+				<Label>Price per Hour ({lesson.currency})</Label>
+				<Input name="pricePerHour" type="number" min="0" bind:value={groupTierForm.pricePerHour} required />
+				<p class="text-xs text-muted-foreground">
+					Lower than base price ({lesson.basePrice}{lesson.currency}/hr) to offer a discount
+				</p>
 			</div>
 
 			<Dialog.Footer>
-				<Button type="button" variant="outline" onclick={() => isConditionalDialogOpen = false}>Cancel</Button>
-				<Button type="submit">{selectedRule ? 'Update' : 'Create'}</Button>
+				<Button type="button" variant="outline" onclick={() => isGroupTierDialogOpen = false}>Cancel</Button>
+				<Button type="submit">{selectedTier ? 'Update' : 'Create'}</Button>
 			</Dialog.Footer>
 		</form>
 	</Dialog.Content>
 </Dialog.Root>
 
-<!-- Promotional Pricing Dialog -->
-<Dialog.Root bind:open={isPromoDialogOpen}>
-	<Dialog.Content class="max-w-lg">
+<!-- Duration Package Dialog -->
+<Dialog.Root bind:open={isDurationDialogOpen}>
+	<Dialog.Content class="max-w-md">
 		<Dialog.Header>
-			<Dialog.Title>{selectedPromo ? 'Edit' : 'Create'} Promotion</Dialog.Title>
+			<Dialog.Title>{selectedPackage ? 'Edit' : 'Add'} Duration Package</Dialog.Title>
 		</Dialog.Header>
+		<form method="POST" action={selectedPackage ? '?/updateDurationPackage' : '?/createDurationPackage'} class="space-y-4">
+			{#if selectedPackage}
+				<input type="hidden" name="packageId" value={selectedPackage.id} />
+			{/if}
+			<input type="hidden" name="lessonId" value={lesson.id} />
 
-		<form method="POST" action={selectedPromo ? '?/updatePromo' : '?/createPromo'} class="space-y-4">
+			<div class="space-y-2">
+				<Label>Package Name</Label>
+				<Input name="name" placeholder="e.g., Half Day, Full Day" bind:value={durationForm.name} required />
+			</div>
+
+			<div class="grid grid-cols-2 gap-4">
+				<div class="space-y-2">
+					<Label>Hours</Label>
+					<Input name="hours" type="number" min="1" step="0.5" bind:value={durationForm.hours} required />
+				</div>
+				<div class="space-y-2">
+					<Label>Price ({lesson.currency})</Label>
+					<Input name="price" type="number" min="0" bind:value={durationForm.price} required />
+				</div>
+			</div>
+
+			<div class="space-y-2">
+				<Label>Description (optional)</Label>
+				<Input name="description" placeholder="e.g., 4 hours on the slopes" bind:value={durationForm.description} />
+			</div>
+
+			<Dialog.Footer>
+				<Button type="button" variant="outline" onclick={() => isDurationDialogOpen = false}>Cancel</Button>
+				<Button type="submit">{selectedPackage ? 'Update' : 'Create'}</Button>
+			</Dialog.Footer>
+		</form>
+	</Dialog.Content>
+</Dialog.Root>
+
+<!-- Promo Code Dialog -->
+<Dialog.Root bind:open={isPromoDialogOpen}>
+	<Dialog.Content class="max-w-md">
+		<Dialog.Header>
+			<Dialog.Title>{selectedPromo ? 'Edit' : 'Add'} Promo Code</Dialog.Title>
+		</Dialog.Header>
+		<form method="POST" action={selectedPromo ? '?/updatePromoCode' : '?/createPromoCode'} class="space-y-4">
 			{#if selectedPromo}
 				<input type="hidden" name="promoId" value={selectedPromo.id} />
 			{/if}
 			<input type="hidden" name="lessonId" value={lesson.id} />
 
 			<div class="space-y-2">
-				<Label>Promo Code (optional)</Label>
+				<Label>Promo Code</Label>
 				<Input 
 					name="code" 
-					placeholder="WINTER2025"
+					placeholder="WINTER2025" 
 					class="font-mono uppercase"
 					bind:value={promoForm.code}
+					required 
 				/>
-				<p class="text-xs text-muted-foreground">Leave empty for automatic discount</p>
+			</div>
+
+			<div class="space-y-2">
+				<Label>Discount Percentage</Label>
+				<Input name="discountPercent" type="number" min="1" max="100" bind:value={promoForm.discountPercent} required />
 			</div>
 
 			<div class="grid grid-cols-2 gap-4">
 				<div class="space-y-2">
-					<Label>Discount Type</Label>
-					<Select.Root name="discountType" value={promoForm.discountType}>
-						<Select.Trigger>
-							<Select.Value />
-						</Select.Trigger>
-						<Select.Content>
-							<Select.Item value="percentage">Percentage</Select.Item>
-							<Select.Item value="fixed_amount">Fixed Amount (€)</Select.Item>
-						</Select.Content>
-					</Select.Root>
+					<Label>Valid Until (optional)</Label>
+					<Input name="validUntil" type="date" bind:value={promoForm.validUntil} />
 				</div>
 				<div class="space-y-2">
-					<Label>Value</Label>
-					<Input 
-						name="discountValue" 
-						type="number" 
-						step="0.01"
-						placeholder="20"
-						bind:value={promoForm.discountValue}
-						required 
-					/>
+					<Label>Max Uses (optional)</Label>
+					<Input name="maxUses" type="number" min="1" bind:value={promoForm.maxUses} />
 				</div>
-			</div>
-
-			<div class="grid grid-cols-2 gap-4">
-				<div class="space-y-2">
-					<Label>Start Date</Label>
-					<Input name="startDate" type="date" bind:value={promoForm.startDate} />
-				</div>
-				<div class="space-y-2">
-					<Label>End Date</Label>
-					<Input name="endDate" type="date" bind:value={promoForm.endDate} />
-				</div>
-			</div>
-
-			<div class="grid grid-cols-2 gap-4">
-				<div class="space-y-2">
-					<Label>Max Uses</Label>
-					<Input name="maxUses" type="number" placeholder="Unlimited" bind:value={promoForm.maxUses} />
-				</div>
-				<div class="space-y-2">
-					<Label>Min Purchase (€)</Label>
-					<Input 
-						name="minPurchaseAmount" 
-						type="number" 
-						step="0.01"
-						placeholder="No min"
-						bind:value={promoForm.minPurchaseAmount}
-					/>
-				</div>
-			</div>
-
-			<div class="flex items-center space-x-2">
-				<Switch name="isActive" bind:checked={promoForm.isActive} />
-				<Label>Active</Label>
 			</div>
 
 			<Dialog.Footer>

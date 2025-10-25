@@ -134,6 +134,13 @@
       "when": 1761385518054,
       "tag": "0018_legal_george_stacy",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1761400973160,
+      "tag": "0019_lessons_migration",
+      "breakpoints": true
     }
   ]
 }
