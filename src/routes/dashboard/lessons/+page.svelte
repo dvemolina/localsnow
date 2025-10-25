@@ -1,4 +1,3 @@
-<!-- src/routes/dashboard/lessons/+page.svelte -->
 <script lang="ts">
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { Button } from '$src/lib/components/ui/button';
@@ -7,6 +6,7 @@
 	import * as Form from '$src/lib/components/ui/form';
 	import SportsCheckboxes from '$src/features/Sports/components/SportsCheckboxes.svelte';
 	import CurrencySelect from '$src/lib/components/shared/CurrencySelect.svelte';
+	import LessonPricingManager from '$src/features/Pricing/components/LessonPricingManager.svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { lessonSchema } from '$src/features/Lessons/lib/lessonSchema';
@@ -118,6 +118,15 @@
 				</div>
 			</Card.Content>
 		</Card.Root>
+
+		<!-- Pricing Manager - Only show if base lesson exists -->
+		<div class="mt-6">
+			<LessonPricingManager 
+				lesson={baseLesson}
+				conditionalRules={data.conditionalRules}
+				promos={data.promos}
+			/>
+		</div>
 	{:else}
 		<!-- Edit/Create Form -->
 		<Card.Root>

@@ -5,6 +5,9 @@ import { fail, redirect } from "@sveltejs/kit";
 import { lessonSchema } from "$src/features/Lessons/lib/lessonSchema";
 import { LessonService } from "$src/features/Lessons/lib/lessonService";
 import { requireAuth } from "$src/lib/utils/auth";
+import { db } from '$lib/server/db';
+import { conditionalPricing, promotionalPricing } from '$lib/server/db/schema';
+import { eq, and } from 'drizzle-orm';
 
 const lessonService = new LessonService();
 
@@ -15,16 +18,45 @@ export const load: PageServerLoad = async (event) => {
     
     // Get the base lesson if user is an instructor
     let baseLesson = null;
+    let conditionalRules: any[] = [];
+    let promos: any[] = [];
+    
     if (user.role === 'instructor-independent' || user.role === 'instructor-school') {
         try {
             const lessons = await lessonService.listLessonsByInstructor(user.id);
             baseLesson = lessons.find(lesson => lesson.isBaseLesson) ?? null;
+            
+            // If base lesson exists, load pricing rules
+            if (baseLesson) {
+                // Load conditional pricing rules
+                conditionalRules = await db
+                    .select()
+                    .from(conditionalPricing)
+                    .where(eq(conditionalPricing.lessonId, baseLesson.id))
+                    .orderBy(conditionalPricing.priority);
+                
+                // Load promotional pricing
+                promos = await db
+                    .select()
+                    .from(promotionalPricing)
+                    .where(
+                        and(
+                            eq(promotionalPricing.instructorId, user.id),
+                            eq(promotionalPricing.lessonId, baseLesson.id)
+                        )
+                    );
+            }
         } catch (error) {
-            console.error('Error fetching base lesson:', error);
+            console.error('Error fetching lessons and pricing:', error);
         }
     }
     
-    return { lessonForm, baseLesson };
+    return { 
+        lessonForm, 
+        baseLesson,
+        conditionalRules,
+        promos
+    };
 };
 
 export const actions: Actions = {
@@ -94,6 +126,202 @@ export const actions: Actions = {
                 form, 
                 message: 'Failed to save lesson. Please try again.' 
             });
+        }
+    },
+
+    // Conditional Pricing Actions
+    createConditional: async ({ request, locals }) => {
+        const user = locals.user;
+        if (!user) {
+            return fail(401, { message: 'Unauthorized' });
+        }
+
+        const formData = await request.formData();
+        const lessonId = parseInt(formData.get('lessonId') as string);
+        const conditionType = formData.get('conditionType') as string;
+        const minValue = formData.get('minValue') as string;
+        const maxValue = formData.get('maxValue') as string;
+        const adjustmentType = formData.get('adjustmentType') as string;
+        const adjustmentValue = formData.get('adjustmentValue') as string;
+        const priority = parseInt(formData.get('priority') as string) || 0;
+        const isActive = formData.get('isActive') === 'on';
+
+        try {
+            await db.insert(conditionalPricing).values({
+                lessonId,
+                conditionType,
+                minValue: minValue ? parseInt(minValue) : null,
+                maxValue: maxValue ? parseInt(maxValue) : null,
+                adjustmentType,
+                adjustmentValue,
+                priority,
+                isActive
+            });
+
+            return { success: true };
+        } catch (error) {
+            console.error('Error creating conditional pricing:', error);
+            return fail(500, { message: 'Failed to create rule' });
+        }
+    },
+
+    updateConditional: async ({ request, locals }) => {
+        const user = locals.user;
+        if (!user) {
+            return fail(401, { message: 'Unauthorized' });
+        }
+
+        const formData = await request.formData();
+        const ruleId = parseInt(formData.get('ruleId') as string);
+        const conditionType = formData.get('conditionType') as string;
+        const minValue = formData.get('minValue') as string;
+        const maxValue = formData.get('maxValue') as string;
+        const adjustmentType = formData.get('adjustmentType') as string;
+        const adjustmentValue = formData.get('adjustmentValue') as string;
+        const priority = parseInt(formData.get('priority') as string) || 0;
+        const isActive = formData.get('isActive') === 'on';
+
+        try {
+            await db
+                .update(conditionalPricing)
+                .set({
+                    conditionType,
+                    minValue: minValue ? parseInt(minValue) : null,
+                    maxValue: maxValue ? parseInt(maxValue) : null,
+                    adjustmentType,
+                    adjustmentValue,
+                    priority,
+                    isActive,
+                    updatedAt: new Date()
+                })
+                .where(eq(conditionalPricing.id, ruleId));
+
+            return { success: true };
+        } catch (error) {
+            console.error('Error updating conditional pricing:', error);
+            return fail(500, { message: 'Failed to update rule' });
+        }
+    },
+
+    deleteConditional: async ({ request, locals }) => {
+        const user = locals.user;
+        if (!user) {
+            return fail(401, { message: 'Unauthorized' });
+        }
+
+        const formData = await request.formData();
+        const ruleId = parseInt(formData.get('ruleId') as string);
+
+        try {
+            await db
+                .delete(conditionalPricing)
+                .where(eq(conditionalPricing.id, ruleId));
+
+            return { success: true };
+        } catch (error) {
+            console.error('Error deleting conditional pricing:', error);
+            return fail(500, { message: 'Failed to delete rule' });
+        }
+    },
+
+    // Promotional Pricing Actions
+    createPromo: async ({ request, locals }) => {
+        const user = locals.user;
+        if (!user) {
+            return fail(401, { message: 'Unauthorized' });
+        }
+
+        const formData = await request.formData();
+        const lessonId = parseInt(formData.get('lessonId') as string);
+        const code = formData.get('code') as string;
+        const discountType = formData.get('discountType') as string;
+        const discountValue = formData.get('discountValue') as string;
+        const startDate = formData.get('startDate') as string;
+        const endDate = formData.get('endDate') as string;
+        const maxUses = formData.get('maxUses') as string;
+        const minPurchaseAmount = formData.get('minPurchaseAmount') as string;
+        const isActive = formData.get('isActive') === 'on';
+
+        try {
+            await db.insert(promotionalPricing).values({
+                lessonId,
+                instructorId: user.id,
+                code: code || null,
+                discountType,
+                discountValue,
+                startDate: startDate ? new Date(startDate) : null,
+                endDate: endDate ? new Date(endDate) : null,
+                maxUses: maxUses ? parseInt(maxUses) : null,
+                currentUses: 0,
+                minPurchaseAmount: minPurchaseAmount || null,
+                isActive
+            });
+
+            return { success: true };
+        } catch (error) {
+            console.error('Error creating promo:', error);
+            return fail(500, { message: 'Failed to create promotion' });
+        }
+    },
+
+    updatePromo: async ({ request, locals }) => {
+        const user = locals.user;
+        if (!user) {
+            return fail(401, { message: 'Unauthorized' });
+        }
+
+        const formData = await request.formData();
+        const promoId = parseInt(formData.get('promoId') as string);
+        const code = formData.get('code') as string;
+        const discountType = formData.get('discountType') as string;
+        const discountValue = formData.get('discountValue') as string;
+        const startDate = formData.get('startDate') as string;
+        const endDate = formData.get('endDate') as string;
+        const maxUses = formData.get('maxUses') as string;
+        const minPurchaseAmount = formData.get('minPurchaseAmount') as string;
+        const isActive = formData.get('isActive') === 'on';
+
+        try {
+            await db
+                .update(promotionalPricing)
+                .set({
+                    code: code || null,
+                    discountType,
+                    discountValue,
+                    startDate: startDate ? new Date(startDate) : null,
+                    endDate: endDate ? new Date(endDate) : null,
+                    maxUses: maxUses ? parseInt(maxUses) : null,
+                    minPurchaseAmount: minPurchaseAmount || null,
+                    isActive,
+                    updatedAt: new Date()
+                })
+                .where(eq(promotionalPricing.id, promoId));
+
+            return { success: true };
+        } catch (error) {
+            console.error('Error updating promo:', error);
+            return fail(500, { message: 'Failed to update promotion' });
+        }
+    },
+
+    deletePromo: async ({ request, locals }) => {
+        const user = locals.user;
+        if (!user) {
+            return fail(401, { message: 'Unauthorized' });
+        }
+
+        const formData = await request.formData();
+        const promoId = parseInt(formData.get('promoId') as string);
+
+        try {
+            await db
+                .delete(promotionalPricing)
+                .where(eq(promotionalPricing.id, promoId));
+
+            return { success: true };
+        } catch (error) {
+            console.error('Error deleting promo:', error);
+            return fail(500, { message: 'Failed to delete promotion' });
         }
     }
 };

@@ -121,11 +121,12 @@ export const lessons = pgTable('lessons', {
 	description: text('description'),
 	basePrice: integer('base_price'),
 	currency: varchar('currency', { length: 50 }),
-	duration: varchar('duration', { length: 50 }), // e.g. '2h', 'half-day'
+	duration: varchar('duration', { length: 50 }),
 	instructorId: integer('instructor_id').references(() => users.id),
 	schoolId: integer('school_id').references(() => schools.id),
 	isPublished: boolean('is_published').default(true),
-	isBaseLesson: boolean('is_base_lesson').default(false)
+	isBaseLesson: boolean('is_base_lesson').default(false),
+	...timestamps 
 });
 
 

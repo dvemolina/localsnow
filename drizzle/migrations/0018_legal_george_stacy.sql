@@ -1,3 +1,5 @@
+ALTER TABLE lessons ADD PRIMARY KEY (id);
+
 CREATE TYPE "public"."pricing_mode" AS ENUM('per_hour', 'per_session', 'per_day');--> statement-breakpoint
 CREATE TABLE "conditional_pricing" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "conditional_pricing_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
@@ -45,12 +47,9 @@ CREATE TABLE "promotional_pricing" (
 	CONSTRAINT "promotional_pricing_code_unique" UNIQUE("code")
 );
 --> statement-breakpoint
+ALTER TABLE "lessons" ADD COLUMN "created_at" timestamp DEFAULT now() NOT NULL;--> statement-breakpoint
+ALTER TABLE "lessons" ADD COLUMN "updated_at" timestamp;--> statement-breakpoint
+ALTER TABLE "lessons" ADD COLUMN "deleted_at" timestamp;--> statement-breakpoint
 ALTER TABLE "conditional_pricing" ADD CONSTRAINT "conditional_pricing_lesson_id_lessons_id_fk" FOREIGN KEY ("lesson_id") REFERENCES "public"."lessons"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "promotional_pricing" ADD CONSTRAINT "promotional_pricing_lesson_id_lessons_id_fk" FOREIGN KEY ("lesson_id") REFERENCES "public"."lessons"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "promotional_pricing" ADD CONSTRAINT "promotional_pricing_instructor_id_users_id_fk" FOREIGN KEY ("instructor_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
-
--- Insert default pricing modes
-INSERT INTO "pricing_modes" ("mode", "label", "description") VALUES 
-	('per_hour', 'Per Hour', 'Price calculated per hour of instruction'),
-	('per_session', 'Per Session', 'Fixed price per session regardless of duration'),
-	('per_day', 'Per Day', 'Price calculated per day (half-day, full-day)');
