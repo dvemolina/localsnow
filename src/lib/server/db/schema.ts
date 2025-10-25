@@ -170,6 +170,56 @@ export const promotionalPricing = pgTable('promotional_pricing', {
 	...timestamps
 });
 
+export const profileVisits = pgTable('profile_visits', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+    instructorId: integer('instructor_id').notNull(),
+    visitorIp: varchar('visitor_ip', { length: 45 }).notNull(),
+    yearMonth: varchar('year_month', { length: 7 }).notNull(),
+    createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const session = pgTable('session', {
+	id: text('id').primaryKey(),
+	userId: integer('user_id')
+	.notNull()
+	.references(() => users.id, { onDelete: 'cascade' }),
+	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull()
+});
+
+// Group Pricing Tiers Table
+export const groupPricingTiers = pgTable('group_pricing_tiers', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	lessonId: integer('lesson_id').notNull().references(() => lessons.id, { onDelete: 'cascade' }),
+	minStudents: integer('min_students').notNull(),
+	maxStudents: integer('max_students').notNull(),
+	pricePerHour: integer('price_per_hour').notNull(),
+	...timestamps
+});
+
+// Duration Packages Table
+export const durationPackages = pgTable('duration_packages', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	lessonId: integer('lesson_id').notNull().references(() => lessons.id, { onDelete: 'cascade' }),
+	name: varchar('name', { length: 100 }).notNull(),
+	hours: numeric('hours', { precision: 4, scale: 1 }).notNull(),
+	price: integer('price').notNull(),
+	description: text('description'),
+	...timestamps
+});
+
+// Promo Codes Table
+export const promoCodes = pgTable('promo_codes', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	instructorId: integer('instructor_id').references(() => users.id, { onDelete: 'cascade' }),
+	lessonId: integer('lesson_id').references(() => lessons.id, { onDelete: 'cascade' }),
+	code: varchar('code', { length: 50 }).notNull().unique(),
+	discountPercent: integer('discount_percent').notNull(),
+	validUntil: timestamp('valid_until'),
+	maxUses: integer('max_uses'),
+	currentUses: integer('current_uses').default(0),
+	...timestamps
+});
+
 
 // --- Lesson Sports Junction Table ---
 export const lessonSports = pgTable('lesson_sports', {
@@ -222,55 +272,7 @@ export const schoolInstructorHistory = pgTable('school_instructor_history', {
 	isIndependent: boolean('is_independent').default(false) // True if the instructor worked independently
 });
 
-export const profileVisits = pgTable('profile_visits', {
-	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
-    instructorId: integer('instructor_id').notNull(),
-    visitorIp: varchar('visitor_ip', { length: 45 }).notNull(),
-    yearMonth: varchar('year_month', { length: 7 }).notNull(),
-    createdAt: timestamp('created_at').defaultNow(),
-});
 
-export const session = pgTable('session', {
-	id: text('id').primaryKey(),
-	userId: integer('user_id')
-	.notNull()
-	.references(() => users.id, { onDelete: 'cascade' }),
-	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull()
-});
-
-// Group Pricing Tiers Table
-export const groupPricingTiers = pgTable('group_pricing_tiers', {
-	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
-	lessonId: integer('lesson_id').notNull().references(() => lessons.id, { onDelete: 'cascade' }),
-	minStudents: integer('min_students').notNull(),
-	maxStudents: integer('max_students').notNull(),
-	pricePerHour: integer('price_per_hour').notNull(),
-	...timestamps
-});
-
-// Duration Packages Table
-export const durationPackages = pgTable('duration_packages', {
-	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
-	lessonId: integer('lesson_id').notNull().references(() => lessons.id, { onDelete: 'cascade' }),
-	name: varchar('name', { length: 100 }).notNull(),
-	hours: numeric('hours', { precision: 4, scale: 1 }).notNull(),
-	price: integer('price').notNull(),
-	description: text('description'),
-	...timestamps
-});
-
-// Promo Codes Table
-export const promoCodes = pgTable('promo_codes', {
-	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
-	instructorId: integer('instructor_id').references(() => users.id, { onDelete: 'cascade' }),
-	lessonId: integer('lesson_id').references(() => lessons.id, { onDelete: 'cascade' }),
-	code: varchar('code', { length: 50 }).notNull().unique(),
-	discountPercent: integer('discount_percent').notNull(),
-	validUntil: timestamp('valid_until'),
-	maxUses: integer('max_uses'),
-	currentUses: integer('current_uses').default(0),
-	...timestamps
-});
 
 // Type exports
 export type GroupPricingTier = typeof groupPricingTiers.$inferSelect;
