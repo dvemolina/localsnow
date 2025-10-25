@@ -39,6 +39,24 @@ export const promoCodeSchema = z.object({
     maxUses: z.coerce.number().int().optional(),
 });
 
+export type LessonWithSports = {
+    id: number;
+    uuid: string;
+    title: string | null;
+    description: string | null;
+    basePrice: number;
+    currency: string;
+    duration: string;
+    instructorId: number | null;
+    schoolId: number | null;
+    isPublished: boolean;
+    isBaseLesson: boolean;
+    createdAt: Date;
+    updatedAt: Date | null;
+    deletedAt: Date | null;
+    sports: number[];
+};
+
 // Update Lesson Schema
 export const lessonUpdateSchema = lessonSchema.partial();
 

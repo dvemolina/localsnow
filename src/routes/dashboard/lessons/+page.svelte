@@ -120,13 +120,16 @@
 		</Card.Root>
 
 		<!-- Pricing Manager - Only show if base lesson exists -->
-		<div class="mt-6">
-			<LessonPricingManager 
-				lesson={baseLesson}
-				conditionalRules={data.conditionalRules}
-				promos={data.promos}
-			/>
-		</div>
+		{#if hasBaseLesson}
+			<div class="mt-6">
+				<LessonPricingManager 
+					lesson={baseLesson}
+					groupTiers={data.groupTiers || []}
+					durationPackages={data.durationPackages || []}
+					promoCodes={data.promoCodes || []}
+				/>
+			</div>
+		{/if}
 	{:else}
 		<!-- Edit/Create Form -->
 		<Card.Root>
