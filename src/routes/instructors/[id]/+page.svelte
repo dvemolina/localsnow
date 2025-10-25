@@ -5,6 +5,7 @@
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { Button } from '$src/lib/components/ui/button';
 	import BookingRequestDialog from '$src/features/Bookings/components/BookingRequestDialog.svelte';
+	import SimplePriceDisplay from '$src/features/Pricing/components/SimplePriceDisplay.svelte';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 
@@ -194,6 +195,13 @@
 						Base rate for private lessons
 					</p>
 				</div>
+			{/if}
+			{#if data.groupTiers?.length > 0 || data.durationPackages?.length > 0}
+				<SimplePriceDisplay 
+					lesson={data.baseLesson}
+					groupTiers={data.groupTiers}
+					durationPackages={data.durationPackages}
+				/>
 			{/if}
 		</div>
 
