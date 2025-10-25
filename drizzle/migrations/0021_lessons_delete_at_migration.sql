@@ -1,3 +1,0 @@
-ALTER TABLE group_pricing_tiers ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMP;
-ALTER TABLE duration_packages ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMP;
-ALTER TABLE promo_codes ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMP;
