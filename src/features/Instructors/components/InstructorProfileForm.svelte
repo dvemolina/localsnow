@@ -1,4 +1,3 @@
-<!-- src/features/Instructors/components/InstructorProfileForm.svelte -->
 <script lang="ts">
 	import SuperDebug, {
 		type SuperValidated,
@@ -15,11 +14,17 @@
 	import { instructorProfileSchema, type InstructorProfileSchema } from '../lib/instructorSchemas';
 	import SearchResort from '$src/features/Resorts/components/SearchResort.svelte';
 	import SportsCheckboxes from '$src/features/Sports/components/SportsCheckboxes.svelte';
-	import { onDestroy } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import CountryCodeSelect from '$src/lib/components/shared/CountryCodeSelect.svelte';
 	import { toast } from 'svelte-sonner';
 
-	let { instructorForm }: { instructorForm: SuperValidated<Infer<InstructorProfileSchema>> } = $props();
+	let { 
+		instructorForm,
+		currentProfileImageUrl 
+	}: { 
+		instructorForm: SuperValidated<Infer<InstructorProfileSchema>>;
+		currentProfileImageUrl?: string | null;
+	} = $props();
 
 	const form = superForm(instructorForm, {
 		validators: zodClient(instructorProfileSchema),
@@ -43,6 +48,9 @@
 	// File Preview Logic
 	let profilePreviewUrl: string | null = $state(null);
 	let qualificationPreviewUrl: string | null = $state(null);
+
+	// Computed value for displaying image (preview or existing)
+	const displayImageUrl = $derived(profilePreviewUrl || currentProfileImageUrl || '/local-snow-head.png');
 
 	onDestroy(() => {
 		if (profilePreviewUrl) URL.revokeObjectURL(profilePreviewUrl);
@@ -99,6 +107,26 @@
 							<Form.Description class="text-xs">
 								This image will appear on your instructor card. Recommended: 400x400px, max 5MB
 							</Form.Description>
+							
+							<!-- Current/Preview Image Display -->
+							<div class="mb-3 flex items-center gap-3">
+								<div class="size-24 overflow-hidden rounded-full border-2 border-border">
+									<img
+										src={displayImageUrl}
+										alt="Profile"
+										class="h-full w-full object-cover object-center"
+									/>
+								</div>
+								<div class="flex flex-col gap-1">
+									<p class="text-sm font-medium">
+										{profilePreviewUrl ? 'New Image Preview' : currentProfileImageUrl ? 'Current Profile Image' : 'Default Image'}
+									</p>
+									<p class="text-xs text-muted-foreground">
+										Upload a new image to replace
+									</p>
+								</div>
+							</div>
+
 							<Input
 								{...props}
 								bind:files={$profileImageProxy}
@@ -107,18 +135,6 @@
 								accept="image/jpeg,image/png,image/webp"
 								disabled={$delayed}
 							/>
-							{#if profilePreviewUrl}
-								<div class="mt-3 flex items-center gap-3">
-									<div class="size-20 overflow-hidden rounded-full border-2 border-border">
-										<img
-											src={profilePreviewUrl}
-											alt="Preview"
-											class="h-full w-full object-cover object-center"
-										/>
-									</div>
-									<p class="text-sm text-muted-foreground">Preview of new image</p>
-								</div>
-							{/if}
 						{/snippet}
 					</Form.Control>
 					<Form.FieldErrors />

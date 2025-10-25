@@ -133,4 +133,13 @@ export class InstructorService {
             throw new Error('Failed to search instructors');
         }
     }
+
+    async getInstructorWithLessons(instructorId: number) {
+        try {
+            return await this.instructorRepository.getInstructorWithLessons(instructorId);
+        } catch (error) {
+            console.error('Error fetching instructor with lessons:', error);
+            throw new Error('Failed to fetch instructor details');
+        }
+    }
 }

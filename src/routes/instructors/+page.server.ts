@@ -1,11 +1,12 @@
 // src/routes/instructors/+page.server.ts
 import type { PageServerLoad } from './$types';
 import { InstructorService } from '$src/features/Instructors/lib/instructorService';
+import { LessonService } from '$src/features/Lessons/lib/lessonService';
 
+const lessonService = new LessonService();
 const instructorService = new InstructorService();
 
 export const load: PageServerLoad = async ({ url }) => {
-    // Get filter parameters from URL
     const resortId = url.searchParams.get('resort');
     const sportId = url.searchParams.get('sport');
     const searchQuery = url.searchParams.get('q');
@@ -17,8 +18,28 @@ export const load: PageServerLoad = async ({ url }) => {
             searchQuery: searchQuery || undefined
         });
 
+        // Fetch base lessons for all instructors
+        const instructorsWithLessons = await Promise.all(
+            instructors.map(async (instructor) => {
+                try {
+                    const lessons = await lessonService.listLessonsByInstructor(instructor.id);
+                    const baseLesson = lessons.find(l => l.isBaseLesson) || null;
+                    return {
+                        ...instructor,
+                        baseLesson
+                    };
+                } catch (error) {
+                    console.error(`Error fetching lessons for instructor ${instructor.id}:`, error);
+                    return {
+                        ...instructor,
+                        baseLesson: null
+                    };
+                }
+            })
+        );
+
         return {
-            instructors,
+            instructors: instructorsWithLessons,
             filters: {
                 resort: resortId,
                 sport: sportId,

@@ -180,7 +180,24 @@
 					<span class="text-sm">24h response time</span>
 				</div>
 			</div>
+			{#if data.baseLesson}
+				<div class="mt-4 w-full rounded-lg border border-primary/20 bg-primary/5 p-4">
+					<div class="mb-2 flex items-center justify-between">
+						<span class="text-sm font-medium">Hourly Rate</span>
+						<Badge variant="secondary" class="text-xs">From</Badge>
+					</div>
+					<div class="flex items-baseline gap-2">
+						<span class="text-2xl font-bold text-primary">{data.baseLesson.basePrice}</span>
+						<span class="text-sm text-muted-foreground">{data.baseLesson.currency}/hour</span>
+					</div>
+					<p class="mt-2 text-xs text-muted-foreground">
+						Base rate for private lessons
+					</p>
+				</div>
+			{/if}
 		</div>
+
+
 
 		<!-- Right Column - Detailed Info -->
 		<div class="flex flex-1 flex-col space-y-6 rounded-lg border border-border bg-card p-6">

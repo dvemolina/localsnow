@@ -83,7 +83,10 @@
 							</div>
 						{/if}
 					</div>
-					<InstructorProfileForm instructorForm={data.instructorForm} />
+					<InstructorProfileForm 
+	instructorForm={data.instructorForm} 
+	currentProfileImageUrl={data.user.profileImageUrl}
+/>
 				</div>
 			</Tabs.Content>
 		{/if}

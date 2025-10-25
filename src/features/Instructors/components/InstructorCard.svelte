@@ -4,9 +4,8 @@
 	import { Badge, badgeVariants } from '$src/lib/components/ui/badge';
 	import { Button } from '$src/lib/components/ui/button';
 
-	let { instructorData } = $props();
-	console.log('InstructorData', instructorData )
-
+	let { instructorData, baseLesson = null } = $props();
+	
 	// Map sport IDs to labels
 	const sportLabels = {
 		1: 'Ski',
@@ -15,7 +14,6 @@
 	};
 	
 	const isIndependent = instructorData.role === 'instructor-independent';
-
 </script>
 
 <a
@@ -85,6 +83,18 @@
 				instruction for all levels.
 			{/if}
 		</p>
+		{#if baseLesson}
+			<div class="flex w-full items-center justify-between rounded-md border border-border bg-muted/50 px-3 py-2">
+				<div class="flex flex-col">
+					<span class="text-xs text-muted-foreground">From</span>
+					<div class="flex items-baseline gap-1">
+						<span class="text-lg font-bold">{baseLesson.basePrice}</span>
+						<span class="text-xs text-muted-foreground">{baseLesson.currency}/hr</span>
+					</div>
+				</div>
+				<Badge variant="secondary" class="text-xs">Base rate</Badge>
+			</div>
+		{/if}
 		<Button variant="outline" class="group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
 			View Profile
 		</Button>

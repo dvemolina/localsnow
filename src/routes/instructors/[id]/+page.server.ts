@@ -17,9 +17,10 @@ export const load: PageServerLoad = async (event) => {
     }
 
     try {
-        const instructorData = await instructorService.getInstructorWithRelations(instructorId);
+        // Get instructor with relations AND base lesson
+        const instructorData = await instructorService.getInstructorWithLessons(instructorId);
         
-        if (!instructorData.instructor) {
+        if (!instructorData || !instructorData.instructor) {
             throw error(404, 'Instructor not found');
         }
 
@@ -27,6 +28,12 @@ export const load: PageServerLoad = async (event) => {
         if (!instructorData.instructor.role?.includes('instructor')) {
             throw error(404, 'Instructor not found');
         }
+
+        // Get sports and resorts
+        const [sports, resorts] = await Promise.all([
+            instructorService.getInstructorSports(instructorId),
+            instructorService.getInstructorResorts(instructorId)
+        ]);
 
         // Track profile visit (async, don't wait)
         const visitorIP = getClientIP(event);
@@ -38,8 +45,9 @@ export const load: PageServerLoad = async (event) => {
 
         return {
             instructor: instructorData.instructor,
-            sports: instructorData.sports,
-            resorts: instructorData.resorts,
+            baseLesson: instructorData.baseLesson,
+            sports,
+            resorts,
             user: event.locals.user ?? null
         };
     } catch (err) {

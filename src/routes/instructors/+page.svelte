@@ -132,12 +132,15 @@
 
 	<!-- Instructors Grid -->
 	{#if data.instructors.length > 0}
-		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
-			{#each data.instructors as instructor}
-				<InstructorCard instructorData={instructor} />
-			{/each}
-		</div>
-	{:else}
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
+        {#each data.instructors as instructor}
+            <InstructorCard 
+                instructorData={instructor} 
+                baseLesson={instructor.baseLesson}
+            />
+        {/each}
+    </div>
+{:else}
 		<!-- Empty State -->
 		<div class="flex flex-col items-center justify-center rounded-lg border border-border bg-card p-12 text-center">
 			<svg

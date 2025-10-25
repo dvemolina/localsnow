@@ -3,6 +3,9 @@ import { users, instructorSports, instructorResorts } from "$src/lib/server/db/s
 import type { InsertUser, User } from "$src/lib/server/db/schema";
 import { eq, and, or } from "drizzle-orm";
 import type { InstructorSignupData } from "./instructorSchemas";
+import { lessons, lessonSports } from "$src/lib/server/db/schema";
+
+
 
 export interface InstructorData {
     userId: number;
@@ -275,6 +278,49 @@ export class InstructorRepository {
             return instructorsList;
         } catch (error) {
             console.error('Error in searchInstructors:', error);
+            throw error;
+        }
+    }
+
+    async getInstructorWithLessons(instructorId: number) {
+        try {
+            // Get instructor basic info
+            const instructor = await this.getInstructorById(instructorId);
+            if (!instructor) return null;
+
+            // Get instructor's base lesson
+            const instructorLessons = await db
+                .select()
+                .from(lessons)
+                .where(
+                    and(
+                        eq(lessons.instructorId, instructorId),
+                        eq(lessons.isBaseLesson, true)
+                    )
+                );
+
+            const baseLesson = instructorLessons[0] || null;
+
+            // If there's a base lesson, get its sports
+            let lessonSports: number[] = [];
+            if (baseLesson) {
+                const sports = await db
+                    .select({ sportId: lessonSports.sportId })
+                    .from(lessonSports)
+                    .where(eq(lessonSports.lessonId, baseLesson.id));
+                
+                lessonSports = sports.map(s => s.sportId);
+            }
+
+            return {
+                instructor,
+                baseLesson: baseLesson ? {
+                    ...baseLesson,
+                    sports: lessonSports
+                } : null
+            };
+        } catch (error) {
+            console.error('Error fetching instructor with lessons:', error);
             throw error;
         }
     }
