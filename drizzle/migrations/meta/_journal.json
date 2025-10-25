@@ -141,6 +141,13 @@
       "when": 1761400973160,
       "tag": "0019_lessons_migration",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1761402819889,
+      "tag": "0020_gifted_blindfold",
+      "breakpoints": true
     }
   ]
 }
