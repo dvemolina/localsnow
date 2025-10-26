@@ -5,7 +5,6 @@
 	import * as Dialog from '$src/lib/components/ui/dialog';
 	import { Input } from '$src/lib/components/ui/input';
 	import { Label } from '$src/lib/components/ui/label';
-	import { Separator } from '$src/lib/components/ui/separator';
 	import { Plus, Pencil, Trash2, Users, Clock, Tag } from '@lucide/svelte';
 
 	let {
@@ -115,25 +114,6 @@
 </script>
 
 <div class="space-y-6">
-	<!-- Base Price Display -->
-	<Card.Root>
-		<Card.Header>
-			<Card.Title class="flex items-center gap-2">
-				<Clock class="h-5 w-5" />
-				Base Hourly Rate
-			</Card.Title>
-			<Card.Description>Your standard rate for 1-2 students</Card.Description>
-		</Card.Header>
-		<Card.Content>
-			<div class="rounded-lg bg-muted p-4">
-				<div class="flex items-baseline gap-2">
-					<span class="text-3xl font-bold">{lesson.basePrice}</span>
-					<span class="text-lg text-muted-foreground">{lesson.currency}/hour</span>
-				</div>
-				<p class="mt-1 text-sm text-muted-foreground">For 1-2 students per hour</p>
-			</div>
-		</Card.Content>
-	</Card.Root>
 
 	<!-- Group Pricing Tiers -->
 	<Card.Root>

@@ -63,74 +63,91 @@
 	</div>
 
 	{#if hasBaseLesson && !isEditing}
-		<!-- Display existing base lesson -->
-		<Card.Root class="border-2">
-			<Card.Header>
-				<div class="flex items-start justify-between">
-					<div>
-						<Card.Title class="flex items-center gap-2">
-							Base Lesson Rate
-							<Badge variant="secondary" class="text-xs">Standard</Badge>
-						</Card.Title>
-						<Card.Description class="mt-1">
-							Your hourly rate for private lessons
-						</Card.Description>
-					</div>
-					<Button 
-						variant="outline" 
-						size="sm"
-						onclick={() => isEditing = true}
-					>
-						<svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-						</svg>
-						Edit
-					</Button>
+	<!-- Unified Base Lesson Display -->
+	<Card.Root class="border-2">
+		<Card.Header>
+			<div class="flex items-start justify-between">
+				<div>
+					<Card.Title class="flex items-center gap-2">
+						Base Lesson Configuration
+						<Badge variant="secondary" class="text-xs">Active</Badge>
+					</Card.Title>
+					<Card.Description class="mt-1">
+						Your standard hourly rate and available sports
+					</Card.Description>
 				</div>
-			</Card.Header>
-			<Card.Content class="space-y-4">
-				<!-- Price Display -->
+				<Button 
+					variant="outline" 
+					size="sm"
+					onclick={() => isEditing = true}
+				>
+					<svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+					</svg>
+					Edit
+				</Button>
+			</div>
+		</Card.Header>
+		<Card.Content class="space-y-6">
+			<!-- Price Display -->
+			<div>
+				<h3 class="mb-3 text-sm font-medium flex items-center gap-2">
+					<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+					</svg>
+					Hourly Rate
+				</h3>
 				<div class="rounded-lg bg-muted p-4">
 					<div class="flex items-baseline gap-2">
-						<span class="text-3xl font-bold">{baseLesson.basePrice}</span>
-						<span class="text-lg text-muted-foreground">{baseLesson.currency}/hour</span>
+						<span class="text-3xl font-bold">{baseLesson?.basePrice}</span>
+						<span class="text-lg text-muted-foreground">{baseLesson?.currency}/hour</span>
 					</div>
-					<p class="mt-1 text-sm text-muted-foreground">Base hourly rate</p>
+					<p class="mt-1 text-sm text-muted-foreground">For 1-2 students per hour</p>
 				</div>
-
-				<!-- Sports Display -->
-				<div>
-					<h3 class="mb-2 text-sm font-medium">Available Sports</h3>
-					<div class="flex flex-wrap gap-2">
-						{#each baseLesson.sports as sportId}
-							<Badge variant="outline" class="text-sm">
-								{getSportName(sportId)}
-							</Badge>
-						{/each}
-					</div>
-				</div>
-
-				<!-- Info Box -->
-				<div class="rounded-md bg-blue-50 p-3 ">
-					<p class="text-sm text-blue-800 ">
-						<strong>Note:</strong> This is your base rate. You can discuss custom pricing directly with clients for longer sessions or group lessons.
-					</p>
-				</div>
-			</Card.Content>
-		</Card.Root>
-
-		<!-- Pricing Manager - Only show if base lesson exists -->
-		{#if hasBaseLesson}
-			<div class="mt-6">
-				<LessonPricingManager 
-					lesson={baseLesson}
-					groupTiers={data.groupTiers || []}
-					durationPackages={data.durationPackages || []}
-					promoCodes={data.promoCodes || []}
-				/>
 			</div>
-		{/if}
-	{:else}
+
+			<!-- Sports Display -->
+			<div>
+				<h3 class="mb-3 text-sm font-medium flex items-center gap-2">
+					<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+					</svg>
+					Available Sports
+				</h3>
+				<div class="flex flex-wrap gap-2">
+					{#each baseLesson?.sports as sportId}
+						<Badge variant="outline" class="text-sm">
+							{getSportName(sportId)}
+						</Badge>
+					{/each}
+				</div>
+			</div>
+
+			<!-- Info Box -->
+			<div class="rounded-md bg-blue-50 p-3">
+				<p class="text-sm text-blue-800">
+					<strong>💡 Flexible Pricing:</strong> This base rate applies to all your sports. You can offer group discounts and special packages below, or discuss custom pricing directly with clients.
+				</p>
+			</div>
+		</Card.Content>
+	</Card.Root>
+
+	<!-- Pricing Manager - Advanced Options -->
+	<div class="mt-6">
+		<div class="mb-4">
+			<h2 class="title3 mb-1">Advanced Pricing Options</h2>
+			<p class="text-sm text-muted-foreground">
+				Add group discounts, duration packages, and promo codes (all optional)
+			</p>
+		</div>
+		<LessonPricingManager 
+			lesson={baseLesson}
+			groupTiers={data.groupTiers || []}
+			durationPackages={data.durationPackages || []}
+			promoCodes={data.promoCodes || []}
+		/>
+	</div>
+{:else}
 		<!-- Edit/Create Form -->
 		<Card.Root>
 			<Card.Header>
