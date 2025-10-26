@@ -232,7 +232,7 @@
 							<label class="mb-1.5 block text-sm font-medium">
 								Hours per Day <span class="text-red-500">*</span>
 							</label>
-							<Input type="number" min="0.5" max="12" step="0.5" bind:value={$formData.hoursPerDay} required disabled={isSubmitting || submitSuccess} />
+							<Input type="number" min="1" max="6" step="1" bind:value={$formData.hoursPerDay} required disabled={isSubmitting || submitSuccess} />
 						</div>
 					</div>
 
@@ -245,7 +245,7 @@
 						</div>
 						<div>
 							<label class="mb-1.5 block text-sm font-medium">
-								End Date (optional, for multi-day bookings)
+								End Date (optional)
 							</label>
 							<Input type="date" min={$formData.startDate || minDate} bind:value={$formData.endDate} disabled={isSubmitting || submitSuccess} />
 						</div>

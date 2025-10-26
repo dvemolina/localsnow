@@ -166,8 +166,8 @@
 
 		<!-- Right Column - Detailed Info -->
 		<div class="flex flex-1 flex-col space-y-6">
-			{#if data.baseLesson && data.groupTiers?.length < 0 && data.durationPackages?.length < 0}
-				<div class="mt-4 w-full rounded-lg border border-primary/20 bg-primary/5 p-4">
+			{#if data.baseLesson && !data.groupTiers?.length && !data.durationPackages?.length }
+				<div class="w-full rounded-lg border border-primary/20 bg-card p-4">
 					<div class="mb-2 flex items-center justify-between">
 						<span class="text-sm font-medium">Hourly Rate</span>
 						<Badge variant="secondary" class="text-xs">From</Badge>
@@ -177,7 +177,7 @@
 						<span class="text-sm text-muted-foreground">{data.baseLesson.currency}/hour</span>
 					</div>
 					<p class="mt-2 text-xs text-muted-foreground">
-						Base rate for private lessons
+						Base rate for private lessons (1 - 2 students)
 					</p>
 				</div>
 			{/if}
@@ -440,7 +440,9 @@
 </section>
 <BookingRequestDialog 
 	bind:open={showBookingDialog}
-	instructorId={instructor.id} 
+	instructorId={instructor.id}
+	lessonId={data.baseLesson?.id}
 	instructorName={instructor.name}
+	baseLesson={data.baseLesson}
 	isAuthenticated={isAuthenticated}
 />

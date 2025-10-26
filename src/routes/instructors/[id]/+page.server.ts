@@ -85,9 +85,13 @@ export const actions: Actions = {
             const data = await request.json();
             
             // Validate required fields
-            if (!data.clientName || !data.clientEmail || !data.preferredDate || !data.skillLevel) {
+            if (!data.clientName || !data.clientEmail || !data.startDate || !data.skillLevel || !data.numberOfStudents || !data.hoursPerDay) {
                 return fail(400, { message: 'Missing required fields' });
             }
+
+            // Parse dates
+            const startDate = new Date(data.startDate);
+            const endDate = data.endDate ? new Date(data.endDate) : null;
 
             // Create booking request
             await bookingRequestService.createBookingRequest({
@@ -95,11 +99,16 @@ export const actions: Actions = {
                 clientName: data.clientName,
                 clientEmail: data.clientEmail,
                 clientPhone: data.clientPhone || null,
-                preferredDate: new Date(data.preferredDate),
-                lessonType: data.lessonType,
-                numberOfPeople: Number(data.numberOfPeople) || 1,
+                numberOfStudents: Number(data.numberOfStudents),
+                startDate,
+                endDate,
+                hoursPerDay: Number(data.hoursPerDay),
                 skillLevel: data.skillLevel,
-                message: data.message || null
+                message: data.message || null,
+                promoCode: data.promoCode || null,
+                estimatedPrice: data.estimatedPrice || null,
+                currency: data.currency || null,
+                sports: data.sports || []
             });
 
             return json({ success: true });
@@ -108,4 +117,5 @@ export const actions: Actions = {
             return fail(500, { message: 'Failed to submit booking request' });
         }
     }
+
 };
