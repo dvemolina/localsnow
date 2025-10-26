@@ -1,5 +1,5 @@
 {
-  "id": "68132ddc-5e5b-4ca5-8058-b60cd785b19d",
+  "id": "37e98485-be60-4f44-8346-7b630c1c6858",
   "prevId": "76d1ed4a-53ca-435c-91e4-df0afd2ac905",
   "version": "7",
   "dialect": "postgresql",
@@ -56,24 +56,30 @@
           "primaryKey": false,
           "notNull": false
         },
-        "preferred_date": {
-          "name": "preferred_date",
+        "number_of_students": {
+          "name": "number_of_students",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 1
+        },
+        "start_date": {
+          "name": "start_date",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true
         },
-        "lesson_type": {
-          "name": "lesson_type",
-          "type": "varchar(100)",
+        "end_date": {
+          "name": "end_date",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": false
         },
-        "number_of_people": {
-          "name": "number_of_people",
-          "type": "integer",
+        "hours_per_day": {
+          "name": "hours_per_day",
+          "type": "numeric(4, 1)",
           "primaryKey": false,
-          "notNull": false,
-          "default": 1
+          "notNull": true
         },
         "skill_level": {
           "name": "skill_level",
@@ -84,6 +90,24 @@
         "message": {
           "name": "message",
           "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "promo_code": {
+          "name": "promo_code",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "estimated_price": {
+          "name": "estimated_price",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "currency": {
+          "name": "currency",
+          "type": "varchar(50)",
           "primaryKey": false,
           "notNull": false
         },

@@ -100,14 +100,27 @@ export const bookingRequests = pgTable('booking_requests', {
     id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
     uuid: uuid('uuid').defaultRandom().unique().notNull(),
     instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    
+    // Client info
     clientName: varchar('client_name', { length: 100 }).notNull(),
     clientEmail: varchar('client_email', { length: 255 }).notNull(),
     clientPhone: varchar('client_phone', { length: 50 }),
-    preferredDate: timestamp('preferred_date').notNull(),
-    lessonType: varchar('lesson_type', { length: 100 }),
-    numberOfPeople: integer('number_of_people').default(1),
+    
+    // Lesson details
+    numberOfStudents: integer('number_of_students').notNull().default(1),
+    startDate: timestamp('start_date').notNull(),
+    endDate: timestamp('end_date'), // null for single-day bookings
+    hoursPerDay: numeric('hours_per_day', { precision: 4, scale: 1 }).notNull(),
+    
+    // Additional info
     skillLevel: varchar('skill_level', { length: 50 }),
     message: text('message'),
+    promoCode: varchar('promo_code', { length: 50 }),
+    
+    // Pricing estimate (for reference)
+    estimatedPrice: integer('estimated_price'),
+    currency: varchar('currency', { length: 50 }),
+    
     status: varchar('status', { length: 50 }).default('pending'),
     ...timestamps
 });
@@ -221,13 +234,18 @@ export const promoCodes = pgTable('promo_codes', {
 });
 
 
-// --- Lesson Sports Junction Table ---
+// --- Many-to-Many Relationships ---
+
 export const lessonSports = pgTable('lesson_sports', {
 	lessonId: integer('lesson_id').notNull().references(() => lessons.id, { onDelete: 'cascade' }),
 	sportId: integer('sport_id').notNull().references(() => sports.id, { onDelete: 'cascade' })
 });
 
-// --- Many-to-Many Relationships ---
+export const bookingRequestSports = pgTable('booking_request_sports', {
+    bookingRequestId: integer('booking_request_id').notNull().references(() => bookingRequests.id, { onDelete: 'cascade' }),
+    sportId: integer('sport_id').notNull().references(() => sports.id, { onDelete: 'cascade' })
+});
+
 export const instructorSports = pgTable('instructor_sports', {
 	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
 	sportId: integer('sport_id').notNull().references(() => sports.id)
@@ -235,27 +253,27 @@ export const instructorSports = pgTable('instructor_sports', {
 
 export const instructorResorts = pgTable('instructor_resorts', {
 	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-	resortId: integer('resort_id').notNull().references(() => resorts.id)
+	resortId: integer('resort_id').notNull().references(() => resorts.id, { onDelete: 'cascade' })
 });
 
 export const schoolSports = pgTable('school_sports', {
-	schoolId: integer('school_id').notNull().references(() => schools.id),
-	sportId: integer('sport_id').notNull().references(() => sports.id)
+	schoolId: integer('school_id').notNull().references(() => schools.id, { onDelete: 'cascade' }),
+	sportId: integer('sport_id').notNull().references(() => sports.id, { onDelete: 'cascade' })
 });
 
 export const schoolResorts = pgTable('school_resorts', {
-	schoolId: integer('school_id').notNull().references(() => schools.id),
-	resortId: integer('resort_id').notNull().references(() => resorts.id)
+	schoolId: integer('school_id').notNull().references(() => schools.id, { onDelete: 'cascade' }),
+	resortId: integer('resort_id').notNull().references(() => resorts.id, { onDelete: 'cascade' })
 });
 
 export const schoolAdmins = pgTable('school_admins', {
-	schoolId: integer('school_id').notNull().references(() => schools.id),
-	userId: integer('user_id').notNull().references(() => users.id),
+	schoolId: integer('school_id').notNull().references(() => schools.id, { onDelete: 'cascade' }),
+	userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
 	isAccepted: boolean('is_accepted').default(false)
 });
 
 export const schoolInstructors = pgTable('school_instructors', {
-	schoolId: integer('school_id').notNull().references(() => schools.id),
+	schoolId: integer('school_id').notNull().references(() => schools.id, { onDelete: 'cascade' }),
 	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
 	isAcceptedBySchool: boolean('is_accepted_by_school').default(false),
 	isActive: boolean('is_active').default(true)

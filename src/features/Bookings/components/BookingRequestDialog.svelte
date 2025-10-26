@@ -5,46 +5,54 @@
 	import { Textarea } from '$src/lib/components/ui/textarea';
 	import { Button } from '$src/lib/components/ui/button';
 	import * as Select from '$src/lib/components/ui/select';
-	import GoogleBtn from '$src/lib/components/shared/GoogleBtn.svelte';
+	import { Badge } from '$src/lib/components/ui/badge';
 	import { Separator } from '$src/lib/components/ui/separator';
+	import GoogleBtn from '$src/lib/components/shared/GoogleBtn.svelte';
+	import SportsCheckboxes from '$src/features/Sports/components/SportsCheckboxes.svelte';
+	import { superForm } from 'sveltekit-superforms';
+	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { bookingRequestSchema } from '$src/features/Bookings/lib/bookingRequestSchema';
 
 	let { 
-		instructorId, 
+		instructorId,
+		lessonId,
 		instructorName,
+		baseLesson,
 		open = $bindable(false),
 		isAuthenticated = false
 	}: {
 		instructorId: number;
+		lessonId: number;
 		instructorName: string;
+		baseLesson: any;
 		open: boolean;
 		isAuthenticated: boolean;
 	} = $props();
 
 	let currentView = $state<'login' | 'signup' | 'booking'>('booking');
+	let priceEstimate = $state<any>(null);
+	let isCalculatingPrice = $state(false);
 
-	let loginData = $state({
-		email: '',
-		password: ''
-	});
-
-	let signupData = $state({
-		name: '',
-		lastName: '',
-		email: '',
-		password: '',
-		confirmPassword: ''
-	});
-
-	let bookingData = $state({
+	const form = superForm({
+		instructorId,
+		numberOfStudents: 1,
+		startDate: '',
+		endDate: '',
+		hoursPerDay: 1,
+		sports: baseLesson?.sports || [],
+		skillLevel: 'intermediate',
 		clientName: '',
 		clientEmail: '',
 		clientPhone: '',
-		preferredDate: '',
-		lessonType: 'private',
-		numberOfPeople: '1',
-		skillLevel: '',
-		message: ''
+		message: '',
+		promoCode: ''
+	}, {
+		validators: zodClient(bookingRequestSchema),
+		SPA: true,
+		dataType: 'json'
 	});
+
+	const { form: formData, enhance } = form;
 
 	let isSubmitting = $state(false);
 	let submitSuccess = $state(false);
@@ -62,90 +70,43 @@
 		}
 	});
 
-	async function handleLogin(e: Event) {
-		e.preventDefault();
-		isSubmitting = true;
-		submitError = '';
-
-		try {
-			const response = await fetch('/api/auth/login', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(loginData)
-			});
-
-			if (response.ok) {
-				const data = await response.json();
-				// Pre-fill booking form with user data
-				bookingData.clientName = data.user.name || '';
-				bookingData.clientEmail = data.user.email || '';
-				
-				// Switch to booking view instead of reloading
-				currentView = 'booking';
-				isAuthenticated = true;
-				
-				// Reset login form
-				loginData = { email: '', password: '' };
-			} else {
-				const error = await response.json();
-				submitError = error.message || 'Invalid credentials';
-			}
-		} catch (err) {
-			submitError = 'An error occurred. Please try again.';
-		} finally {
-			isSubmitting = false;
+	// Calculate price estimate whenever relevant fields change
+	$effect(() => {
+		if (
+			$formData.numberOfStudents &&
+			$formData.startDate &&
+			$formData.hoursPerDay &&
+			baseLesson
+		) {
+			calculatePriceEstimate();
 		}
-	}
+	});
 
-	async function handleSignup(e: Event) {
-		e.preventDefault();
-		isSubmitting = true;
-		submitError = '';
-
-		if (signupData.password !== signupData.confirmPassword) {
-			submitError = 'Passwords do not match';
-			isSubmitting = false;
-			return;
-		}
-
+	async function calculatePriceEstimate() {
+		isCalculatingPrice = true;
 		try {
-			const response = await fetch('/api/auth/signup', {
+			const response = await fetch(`/api/pricing/calculate`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					name: signupData.name,
-					lastName: signupData.lastName,
-					email: signupData.email,
-					password: signupData.password
+					lessonId: baseLesson.id,
+					basePrice: baseLesson.basePrice,
+					currency: baseLesson.currency,
+					numberOfStudents: $formData.numberOfStudents,
+					startDate: $formData.startDate,
+					endDate: $formData.endDate || null,
+					hoursPerDay: $formData.hoursPerDay,
+					promoCode: $formData.promoCode || null
 				})
 			});
 
 			if (response.ok) {
-				const data = await response.json();
-				// Pre-fill booking form with user data
-				bookingData.clientName = `${data.user.name}` || '';
-				bookingData.clientEmail = data.user.email || '';
-				
-				// Switch to booking view instead of reloading
-				currentView = 'booking';
-				isAuthenticated = true;
-				
-				// Reset signup form
-				signupData = {
-					name: '',
-					lastName: '',
-					email: '',
-					password: '',
-					confirmPassword: ''
-				};
-			} else {
-				const error = await response.json();
-				submitError = error.message || 'Signup failed';
+				priceEstimate = await response.json();
 			}
-		} catch (err) {
-			submitError = 'An error occurred. Please try again.';
+		} catch (error) {
+			console.error('Error calculating price:', error);
 		} finally {
-			isSubmitting = false;
+			isCalculatingPrice = false;
 		}
 	}
 
@@ -160,24 +121,14 @@
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					...bookingData,
-					instructorId
+					...$formData,
+					estimatedPrice: priceEstimate?.totalPrice,
+					currency: baseLesson.currency
 				})
 			});
 
 			if (response.ok) {
 				submitSuccess = true;
-				bookingData = {
-					clientName: '',
-					clientEmail: '',
-					clientPhone: '',
-					preferredDate: '',
-					lessonType: 'private',
-					numberOfPeople: '1',
-					skillLevel: '',
-					message: ''
-				};
-				
 				setTimeout(() => {
 					open = false;
 					submitSuccess = false;
@@ -192,13 +143,6 @@
 			isSubmitting = false;
 		}
 	}
-
-	const lessonTypes = [
-		{ value: 'private', label: 'Private Lesson' },
-		{ value: 'group', label: 'Group Lesson' },
-		{ value: 'half-day', label: 'Half Day' },
-		{ value: 'full-day', label: 'Full Day' }
-	];
 
 	const skillLevels = [
 		{ value: 'beginner', label: 'Beginner' },
@@ -217,48 +161,172 @@
 		class="max-h-[90vh] overflow-y-auto sm:max-w-[600px]"
 		onInteractOutside={(e) => e.preventDefault()}
 	>
-		{#if currentView === 'login'}
+		{#if currentView === 'booking'}
 			<Dialog.Header>
-				<Dialog.Title>Login to Request Lesson</Dialog.Title>
+				<Dialog.Title>Request a Lesson with {instructorName}</Dialog.Title>
 				<Dialog.Description>
-					Sign in to your account to book a lesson with {instructorName}
+					Fill out the details below to get an accurate price estimate and send your booking request.
 				</Dialog.Description>
 			</Dialog.Header>
 
+			{#if submitSuccess}
+				<div class="my-4 rounded-lg bg-green-50 p-4 text-green-800">
+					<div class="flex items-start gap-3">
+						<svg class="size-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+						</svg>
+						<div>
+							<p class="font-semibold">Request Sent Successfully!</p>
+							<p class="mt-1 text-sm">{instructorName} will contact you to confirm details.</p>
+						</div>
+					</div>
+				</div>
+			{/if}
+
 			{#if submitError}
-				<div class="my-4 rounded-lg bg-red-50 p-4 text-red-800 dark:bg-red-900/20 dark:text-red-200">
+				<div class="my-4 rounded-lg bg-red-50 p-4 text-red-800">
 					<p class="text-sm">{submitError}</p>
 				</div>
 			{/if}
 
-			<form onsubmit={handleLogin} class="space-y-4">
-				<div>
-					<label for="login-email" class="mb-1.5 block text-sm font-medium">
-						Email <span class="text-red-500">*</span>
-					</label>
-					<Input
-						id="login-email"
-						type="email"
-						bind:value={loginData.email}
-						required
-						disabled={isSubmitting}
-						placeholder="your@email.com"
-					/>
+			<form onsubmit={handleBooking} use:enhance class="space-y-6">
+				<!-- Personal Info -->
+				<div class="space-y-4">
+					<h3 class="font-medium">Your Information</h3>
+					
+					<div class="grid gap-4 sm:grid-cols-2">
+						<div>
+							<label class="mb-1.5 block text-sm font-medium">
+								Name <span class="text-red-500">*</span>
+							</label>
+							<Input bind:value={$formData.clientName} required disabled={isSubmitting || submitSuccess} />
+						</div>
+						<div>
+							<label class="mb-1.5 block text-sm font-medium">
+								Email <span class="text-red-500">*</span>
+							</label>
+							<Input type="email" bind:value={$formData.clientEmail} required disabled={isSubmitting || submitSuccess} />
+						</div>
+					</div>
+
+					<div>
+						<label class="mb-1.5 block text-sm font-medium">Phone Number</label>
+						<Input type="tel" bind:value={$formData.clientPhone} disabled={isSubmitting || submitSuccess} />
+					</div>
 				</div>
 
-				<div>
-					<label for="login-password" class="mb-1.5 block text-sm font-medium">
-						Password <span class="text-red-500">*</span>
-					</label>
-					<Input
-						id="login-password"
-						type="password"
-						bind:value={loginData.password}
-						required
-						disabled={isSubmitting}
-						placeholder="••••••••"
-					/>
+				<Separator />
+
+				<!-- Lesson Details -->
+				<div class="space-y-4">
+					<h3 class="font-medium">Lesson Details</h3>
+
+					<div class="grid gap-4 sm:grid-cols-2">
+						<div>
+							<label class="mb-1.5 block text-sm font-medium">
+								Number of Students <span class="text-red-500">*</span>
+							</label>
+							<Input type="number" min="1" max="20" bind:value={$formData.numberOfStudents} required disabled={isSubmitting || submitSuccess} />
+						</div>
+						<div>
+							<label class="mb-1.5 block text-sm font-medium">
+								Hours per Day <span class="text-red-500">*</span>
+							</label>
+							<Input type="number" min="0.5" max="12" step="0.5" bind:value={$formData.hoursPerDay} required disabled={isSubmitting || submitSuccess} />
+						</div>
+					</div>
+
+					<div class="grid gap-4 sm:grid-cols-2">
+						<div>
+							<label class="mb-1.5 block text-sm font-medium">
+								Start Date <span class="text-red-500">*</span>
+							</label>
+							<Input type="date" min={minDate} bind:value={$formData.startDate} required disabled={isSubmitting || submitSuccess} />
+						</div>
+						<div>
+							<label class="mb-1.5 block text-sm font-medium">
+								End Date (optional, for multi-day bookings)
+							</label>
+							<Input type="date" min={$formData.startDate || minDate} bind:value={$formData.endDate} disabled={isSubmitting || submitSuccess} />
+						</div>
+					</div>
+
+					<div>
+						<label class="mb-1.5 block text-sm font-medium">
+							Sports <span class="text-red-500">*</span>
+						</label>
+						<SportsCheckboxes {form} name="sports" />
+					</div>
+
+					<div>
+						<label class="mb-1.5 block text-sm font-medium">
+							Skill Level <span class="text-red-500">*</span>
+						</label>
+						<Select.Root bind:value={$formData.skillLevel} disabled={isSubmitting || submitSuccess}>
+							<Select.Trigger class="w-full">
+								<Select.Value placeholder="Select level" />
+							</Select.Trigger>
+							<Select.Content>
+								{#each skillLevels as level}
+									<Select.Item value={level.value}>{level.label}</Select.Item>
+								{/each}
+							</Select.Content>
+						</Select.Root>
+					</div>
+
+					<div>
+						<label class="mb-1.5 block text-sm font-medium">Promo Code (optional)</label>
+						<Input bind:value={$formData.promoCode} placeholder="Enter promo code" disabled={isSubmitting || submitSuccess} />
+					</div>
+
+					<div>
+						<label class="mb-1.5 block text-sm font-medium">Additional Information</label>
+						<Textarea
+							bind:value={$formData.message}
+							placeholder="Tell the instructor about your goals, experience, or special requirements..."
+							rows={4}
+							disabled={isSubmitting || submitSuccess}
+						/>
+					</div>
 				</div>
+
+				<!-- Price Estimate -->
+				{#if priceEstimate}
+					<div class="rounded-lg border-2 border-primary/20 bg-primary/5 p-4">
+						<div class="mb-3 flex items-center justify-between">
+							<h3 class="font-medium">Estimated Price</h3>
+							{#if isCalculatingPrice}
+								<Badge variant="secondary">Calculating...</Badge>
+							{/if}
+						</div>
+
+						<div class="space-y-2 text-sm">
+							{#each priceEstimate.breakdown as item}
+								<div class="flex justify-between">
+									<span class="text-muted-foreground">{item.description}</span>
+									<span class={item.amount < 0 ? 'text-green-600 font-medium' : ''}>
+										{item.amount > 0 ? '+' : ''}{item.amount}{priceEstimate.currency}
+									</span>
+								</div>
+							{/each}
+							<Separator class="my-2" />
+							<div class="flex justify-between text-lg font-bold">
+								<span>Total</span>
+								<span class="text-primary">{priceEstimate.totalPrice}{priceEstimate.currency}</span>
+							</div>
+							<div class="text-xs text-muted-foreground text-center">
+								{priceEstimate.pricePerPerson}{priceEstimate.currency} per person
+								{#if priceEstimate.numberOfDays > 1}
+									 × {priceEstimate.numberOfDays} days
+								{/if}
+							</div>
+						</div>
+
+						<p class="mt-3 text-xs text-muted-foreground italic">
+							💡 This is an estimate. Final price will be confirmed by the instructor.
+						</p>
+					</div>
+				{/if}
 
 				<div class="flex gap-3 pt-4">
 					<Button 
@@ -270,31 +338,25 @@
 					>
 						Cancel
 					</Button>
-					<Button type="submit" class="flex-1" disabled={isSubmitting}>
+					<Button 
+						type="submit" 
+						class="flex-1" 
+						disabled={isSubmitting || submitSuccess}
+					>
 						{#if isSubmitting}
-							Logging in...
+							Sending...
+						{:else if submitSuccess}
+							Sent!
 						{:else}
-							Login
+							Send Request
 						{/if}
 					</Button>
 				</div>
+
+				<p class="text-center text-xs text-muted-foreground pt-2">
+					By submitting, you agree the instructor will contact you directly.
+				</p>
 			</form>
-
-			<div class="my-4 flex flex-col items-center">
-				<Separator class="w-full" />
-				<span class="my-2 text-xs text-muted-foreground">or</span>
-				<GoogleBtn>Continue with Google</GoogleBtn>
-			</div>
-
-			<div class="text-center">
-				<button
-					onclick={() => currentView = 'signup'}
-					class="text-sm text-primary hover:underline"
-				>
-					Don't have an account? Sign up
-				</button>
-			</div>
-
 		{:else if currentView === 'signup'}
 			<Dialog.Header>
 				<Dialog.Title>Create Account</Dialog.Title>
