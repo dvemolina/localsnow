@@ -12,6 +12,7 @@
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { bookingRequestSchema } from '$src/features/Bookings/lib/bookingRequestSchema';
+	import CountryCodeSelect from '$src/lib/components/shared/CountryCodeSelect.svelte';
 
 	let { 
 		instructorId,
@@ -34,23 +35,24 @@
 	let isCalculatingPrice = $state(false);
 
 	const form = superForm({
-		instructorId,
-		numberOfStudents: 1,
-		startDate: '',
-		endDate: '',
-		hoursPerDay: 1,
-		sports: baseLesson?.sports || [],
-		skillLevel: 'intermediate',
-		clientName: '',
-		clientEmail: '',
-		clientPhone: '',
-		message: '',
-		promoCode: ''
-	}, {
-		validators: zodClient(bookingRequestSchema),
-		SPA: true,
-		dataType: 'json'
-	});
+        instructorId,
+        numberOfStudents: 1,
+        startDate: '',
+        endDate: '',
+        hoursPerDay: 1,
+        sports: baseLesson?.sports || [],
+        skillLevel: 'intermediate',
+        clientName: '',
+        clientEmail: '',
+        clientCountryCode: 34, // Default to Spain
+        clientPhone: '',
+        message: '',
+        promoCode: ''
+    }, {
+        validators: zodClient(bookingRequestSchema),
+        SPA: true,
+        dataType: 'json'
+    });
 
 	const { form: formData, enhance } = form;
 
@@ -154,6 +156,15 @@
 	const tomorrow = new Date();
 	tomorrow.setDate(tomorrow.getDate() + 1);
 	const minDate = tomorrow.toISOString().split('T')[0];
+
+	let availableSports = $derived(baseLesson?.sports || []);
+    
+    // Map sport IDs to names
+    const sportNames: Record<number, string> = {
+        1: 'Ski',
+        2: 'Snowboard',
+        3: 'Telemark'
+    };
 </script>
 
 <Dialog.Root bind:open modal={true}>
@@ -209,9 +220,20 @@
 						</div>
 					</div>
 
-					<div>
-						<label class="mb-1.5 block text-sm font-medium">Phone Number</label>
-						<Input type="tel" bind:value={$formData.clientPhone} disabled={isSubmitting || submitSuccess} />
+					<div class="flex w-full flex-col gap-2 sm:flex-row">
+						<CountryCodeSelect {form} name="clientCountryCode" />
+						<div class="w-full">
+							<label class="mb-1.5 block text-sm font-medium">
+								Phone Number <span class="text-red-500">*</span>
+							</label>
+							<Input 
+								type="tel" 
+								bind:value={$formData.clientPhone} 
+								required 
+								disabled={isSubmitting || submitSuccess}
+								placeholder="123 456 7890"
+							/>
+						</div>
 					</div>
 				</div>
 
@@ -255,7 +277,30 @@
 						<label class="mb-1.5 block text-sm font-medium">
 							Sports <span class="text-red-500">*</span>
 						</label>
-						<SportsCheckboxes {form} name="sports" />
+						<div class="flex flex-wrap gap-3">
+							{#each availableSports as sportId}
+								<label class="flex items-center gap-2 cursor-pointer">
+									<input
+										type="checkbox"
+										value={sportId}
+										checked={$formData.sports.includes(sportId)}
+										onchange={(e) => {
+											if (e.currentTarget.checked) {
+												$formData.sports = [...$formData.sports, sportId];
+											} else {
+												$formData.sports = $formData.sports.filter(id => id !== sportId);
+											}
+										}}
+										disabled={isSubmitting || submitSuccess}
+										class="h-4 w-4 rounded border-gray-300"
+									/>
+									<span class="text-sm">{sportNames[sportId]}</span>
+								</label>
+							{/each}
+						</div>
+						{#if $formData.sports.length === 0}
+							<p class="mt-1 text-xs text-red-600">Please select at least one sport</p>
+						{/if}
 					</div>
 
 					<div>

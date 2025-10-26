@@ -4,7 +4,8 @@ export const bookingRequestSchema = z.object({
     instructorId: z.number().int().positive(),
     clientName: z.string().min(1, "Name is required"),
     clientEmail: z.string().email("Valid email is required"),
-    clientPhone: z.string().optional(),
+    clientCountryCode: z.coerce.number().min(1, "Country code is required"),
+    clientPhone: z.string().min(1, "Phone number is required"),
     
     // Lesson details
     numberOfStudents: z.coerce.number().int().min(1).max(20),

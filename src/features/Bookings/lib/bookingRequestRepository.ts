@@ -6,6 +6,7 @@ export interface BookingRequestData {
     instructorId: number;
     clientName: string;
     clientEmail: string;
+    clientCountryCode: string;
     clientPhone?: string | null;
     numberOfStudents: number;
     startDate: Date;
@@ -28,6 +29,7 @@ export class BookingRequestRepository {
                 clientName: data.clientName,
                 clientEmail: data.clientEmail,
                 clientPhone: data.clientPhone || null,
+                clientCountryCode: data.clientCountryCode,
                 numberOfStudents: data.numberOfStudents,
                 startDate: data.startDate,
                 endDate: data.endDate || null,

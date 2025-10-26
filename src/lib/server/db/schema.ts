@@ -104,6 +104,7 @@ export const bookingRequests = pgTable('booking_requests', {
     // Client info
     clientName: varchar('client_name', { length: 100 }).notNull(),
     clientEmail: varchar('client_email', { length: 255 }).notNull(),
+	clientCountryCode: varchar('client_country_code', { length: 4 }),
     clientPhone: varchar('client_phone', { length: 50 }),
     
     // Lesson details

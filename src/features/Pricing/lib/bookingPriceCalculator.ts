@@ -123,12 +123,19 @@ export class BookingPriceCalculator {
         const pricePerPerson = Math.round(totalPrice / numberOfStudents);
 
         // Build breakdown
-        const breakdown: Array<{ description: string; amount: number }> = [
-            {
-                description: `Base rate: ${basePrice}${currency}/hr × ${totalHours} hours`,
-                amount: basePrice * totalHours
-            }
-        ];
+        const breakdown: Array<{ description: string; amount: number }> = [];
+
+        if (numberOfDays > 1) {
+            breakdown.push({
+                description: `${hoursPerDay}hr/day × ${numberOfDays} days = ${totalHours} hours`,
+                amount: 0 // Just informational
+            });
+        }
+
+        breakdown.push({
+            description: `Base rate: ${basePrice}${currency}/hr × ${totalHours} hours`,
+            amount: basePrice * totalHours
+        });
 
         if (groupDiscount > 0) {
             breakdown.push({
