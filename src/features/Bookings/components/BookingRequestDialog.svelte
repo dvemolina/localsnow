@@ -74,6 +74,15 @@
 
 	// Calculate price estimate whenever relevant fields change
 	$effect(() => {
+		// Create a dependency on all fields that affect pricing
+		const deps = [
+			$formData.numberOfStudents,
+			$formData.startDate,
+			$formData.endDate,
+			$formData.hoursPerDay,
+			$formData.promoCode
+		];
+		
 		if (
 			$formData.numberOfStudents &&
 			$formData.startDate &&
