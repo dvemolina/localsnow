@@ -7,18 +7,32 @@ export const POST: RequestHandler = async ({ request }) => {
         const data = await request.json();
         
         const calculator = new BookingPriceCalculator();
-        const priceBreakdown = await calculator.calculateBookingPrice({
+        
+        // Convert date strings to Date objects
+        const startDate = new Date(data.startDate);
+        const endDate = data.endDate ? new Date(data.endDate) : undefined;
+        
+        // Validate dates
+        if (isNaN(startDate.getTime())) {
+            return json({ error: 'Invalid start date' }, { status: 400 });
+        }
+        
+        if (endDate && isNaN(endDate.getTime())) {
+            return json({ error: 'Invalid end date' }, { status: 400 });
+        }
+        
+        const result = await calculator.calculateBookingPrice({
             lessonId: data.lessonId,
             basePrice: data.basePrice,
             currency: data.currency,
             numberOfStudents: data.numberOfStudents,
-            startDate: data.startDate,
-            endDate: data.endDate,
+            startDate: startDate,
+            endDate: endDate,
             hoursPerDay: data.hoursPerDay,
             promoCode: data.promoCode
         });
 
-        return json(priceBreakdown);
+        return json(result);
     } catch (error) {
         console.error('Error calculating price:', error);
         return json({ error: 'Failed to calculate price' }, { status: 500 });
