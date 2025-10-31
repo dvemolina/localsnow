@@ -1,207 +1,241 @@
-import { PricingService } from "$src/features/Pricing/lib/pricingService";
+import type { DurationPackage, GroupPricingTier, PromoCode } from "$src/features/Lessons/lib/lessonSchema";
 
-export interface BookingPriceParams {
-    lessonId: number;
-    basePrice: number;
-    currency: string;
-    numberOfStudents: number;
-    startDate: Date;
-    endDate?: Date;
-    hoursPerDay: number;
-    promoCode?: string;
+export interface PricingInput {
+	baseHourlyRate: number;
+	numStudents: number;
+	hoursPerDay: number;
+	numDays: number;
+	durationPackages?: DurationPackage[];
+	groupPricingTiers?: GroupPricingTier[];
+	promoCode?: PromoCode | null;
 }
 
 export interface PriceBreakdown {
-    basePrice: number;
-    currency: string;
-    numberOfDays: number;
-    totalHours: number;
-    hoursPerDay: number;
-    pricePerDay: number;
-    groupDiscount: number;
-    groupDiscountPerDay: number;
-    durationPackageApplied: boolean;
-    durationPackageName?: string;
-    promoDiscount: number;
-    promoCode?: string;
-    subtotal: number;
-    totalPrice: number;
-    pricePerPerson: number;
-    breakdown: Array<{
-        description: string;
-        amount: number;
-    }>;
+	baseRate: number;
+	regularRate: number;
+	packageDiscount: number;
+	groupDiscount: number;
+	promoDiscount: number;
+	finalPrice: number;
+	pricePerDay: number;
+	effectiveHourlyRate: number;
+	appliedPackage?: DurationPackage;
+	appliedTier?: GroupPricingTier;
+	appliedPromo?: PromoCode;
+	breakdown: string[];
 }
 
 export class BookingPriceCalculator {
-    private pricingService: PricingService;
+	private input: PricingInput;
 
-    constructor() {
-        this.pricingService = new PricingService();
-    }
+	constructor(input: PricingInput) {
+		this.input = input;
+	}
 
-    async calculateBookingPrice(params: BookingPriceParams): Promise<PriceBreakdown> {
-        const {
-            lessonId,
-            basePrice,
-            currency,
-            numberOfStudents,
-            startDate,
-            endDate,
-            hoursPerDay,
-            promoCode
-        } = params;
+	/**
+	 * Main calculation method - calculates price per day first, then multiplies by number of days
+	 */
+	calculate(): PriceBreakdown {
+		const {
+			baseHourlyRate,
+			numStudents,
+			hoursPerDay,
+			numDays,
+			durationPackages = [],
+			groupPricingTiers = [],
+			promoCode
+		} = this.input;
 
-        // Calculate number of days
-        const numberOfDays = endDate 
-            ? Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1
-            : 1;
+		const breakdown: string[] = [];
+		const totalHours = hoursPerDay * numDays;
 
-        const totalHours = hoursPerDay * numberOfDays;
+		// Base calculation (hourly rate × hours per day × number of students)
+		const baseRatePerDay = baseHourlyRate * hoursPerDay * numStudents;
+		const baseRate = baseRatePerDay * numDays;
 
-        // Get pricing data
-        const pricingData = await this.pricingService.getLessonPricingData(lessonId);
+		breakdown.push(`Base: ${baseHourlyRate}€/hr × ${hoursPerDay}hr/day × ${numStudents} student${numStudents > 1 ? 's' : ''} × ${numDays} day${numDays > 1 ? 's' : ''}`);
 
-        // STEP 1: Calculate price PER DAY (this is key!)
-        let pricePerDay = basePrice * hoursPerDay;
-        let groupDiscountPerDay = 0;
-        let durationPackageApplied = false;
-        let durationPackageName: string | undefined;
+		// Find best price per day (either from package or group tier)
+		let pricePerDay = baseRatePerDay;
+		let regularRate = baseRate;
+		let packageDiscount = 0;
+		let groupDiscount = 0;
+		let appliedPackage: DurationPackage | undefined;
+		let appliedTier: GroupPricingTier | undefined;
 
-        // Check for duration packages (applies per day)
-        const applicablePackage = pricingData.durationPackages.find(
-            pkg => Math.abs(Number(pkg.hours) - hoursPerDay) < 0.5 // Allow 0.5 hour tolerance
-        );
+		// Check for applicable duration package
+		const applicablePackage = this.findApplicablePackage(hoursPerDay, numStudents, durationPackages);
+		
+		if (applicablePackage) {
+			const packagePricePerDay = applicablePackage.price;
+			pricePerDay = packagePricePerDay;
+			regularRate = baseRate;
+			packageDiscount = (baseRatePerDay - packagePricePerDay) * numDays;
+			appliedPackage = applicablePackage;
+			
+			breakdown.push(`Package "${applicablePackage.name}": ${packagePricePerDay}€/day`);
+			if (numDays > 1) {
+				breakdown.push(`Multi-day: ${packagePricePerDay}€ × ${numDays} days`);
+			}
+		} else {
+			// Check for applicable group tier
+			const applicableTier = this.findApplicableTier(numStudents, groupPricingTiers);
+			
+			if (applicableTier) {
+				const tierPricePerDay = this.calculateTierPrice(
+					applicableTier,
+					baseHourlyRate,
+					hoursPerDay,
+					numStudents
+				);
+				pricePerDay = tierPricePerDay;
+				regularRate = baseRate;
+				groupDiscount = (baseRatePerDay - tierPricePerDay) * numDays;
+				appliedTier = applicableTier;
 
-        if (applicablePackage) {
-            const packagePrice = applicablePackage.price;
-            const regularDayPrice = basePrice * hoursPerDay;
-            
-            // Only apply package if it's cheaper
-            if (packagePrice < regularDayPrice) {
-                pricePerDay = packagePrice;
-                durationPackageApplied = true;
-                durationPackageName = applicablePackage.name;
-            }
-        }
+				const discountDisplay = applicableTier.discountType === 'percentage'
+					? `${applicableTier.discountValue}% off`
+					: `${applicableTier.discountValue}€ off`;
+				
+				breakdown.push(`Group discount (${numStudents} students): ${discountDisplay}`);
+				breakdown.push(`Per day: ${tierPricePerDay.toFixed(2)}€`);
+				if (numDays > 1) {
+					breakdown.push(`Multi-day: ${tierPricePerDay.toFixed(2)}€ × ${numDays} days`);
+				}
+			} else {
+				// No package or tier, use base rate
+				if (numDays > 1) {
+					breakdown.push(`Multi-day: ${baseRatePerDay.toFixed(2)}€/day × ${numDays} days`);
+				}
+			}
+		}
 
-        // Check for group pricing tiers (applies per day)
-        const applicableTier = pricingData.groupTiers.find(
-            tier => numberOfStudents >= tier.minStudents && numberOfStudents <= tier.maxStudents
-        );
+		// Calculate subtotal before promo
+		let subtotal = pricePerDay * numDays;
+		
+		// Apply promo code
+		let promoDiscount = 0;
+		let appliedPromo: PromoCode | undefined;
 
-        if (applicableTier) {
-            // If we have a package deal, compare tier pricing with package
-            if (durationPackageApplied) {
-                const tierDayPrice = applicableTier.pricePerHour * hoursPerDay;
-                
-                // Use whichever is cheaper: package deal or group tier
-                if (tierDayPrice < pricePerDay) {
-                    groupDiscountPerDay = pricePerDay - tierDayPrice;
-                    pricePerDay = tierDayPrice;
-                    durationPackageApplied = false; // Group tier is better
-                    durationPackageName = undefined;
-                }
-            } else {
-                // No package, just apply group tier
-                const regularDayPrice = basePrice * hoursPerDay;
-                const tierDayPrice = applicableTier.pricePerHour * hoursPerDay;
-                
-                if (tierDayPrice < regularDayPrice) {
-                    groupDiscountPerDay = regularDayPrice - tierDayPrice;
-                    pricePerDay = tierDayPrice;
-                }
-            }
-        }
+		if (promoCode && this.isPromoCodeValid(promoCode)) {
+			promoDiscount = this.calculatePromoDiscount(promoCode, subtotal);
+			appliedPromo = promoCode;
+			
+			const promoDisplay = promoCode.discountType === 'percentage'
+				? `${promoCode.discountValue}% off`
+				: `${promoCode.discountValue}€ off`;
+			
+			breakdown.push(`Promo "${promoCode.code}": ${promoDisplay}`);
+		}
 
-        // STEP 2: Calculate total by multiplying the per-day price by number of days
-        const subtotal = pricePerDay * numberOfDays;
-        const totalGroupDiscount = groupDiscountPerDay * numberOfDays;
+		const finalPrice = Math.max(0, subtotal - promoDiscount);
+		const effectiveHourlyRate = finalPrice / totalHours / numStudents;
 
-        // STEP 3: Apply promo codes to the total
-        let promoDiscount = 0;
-        let validPromoCode: string | undefined;
+		return {
+			baseRate,
+			regularRate,
+			packageDiscount,
+			groupDiscount,
+			promoDiscount,
+			finalPrice,
+			pricePerDay,
+			effectiveHourlyRate,
+			appliedPackage,
+			appliedTier,
+			appliedPromo,
+			breakdown
+		};
+	}
 
-        if (promoCode) {
-            const applicablePromo = pricingData.promoCodes.find(
-                promo => promo.code.toUpperCase() === promoCode.toUpperCase()
-            );
+	/**
+	 * Find the applicable duration package for the given hours and students
+	 */
+	private findApplicablePackage(
+		hours: number,
+		students: number,
+		packages: DurationPackage[]
+	): DurationPackage | undefined {
+		return packages
+			.filter((pkg) => {
+				const hoursMatch = pkg.hours === hours;
+				const studentsInRange = 
+					students >= pkg.minStudents && 
+					students <= pkg.maxStudents;
+				return pkg.isActive && hoursMatch && studentsInRange;
+			})
+			.sort((a, b) => a.price - b.price)[0]; // Get cheapest if multiple match
+	}
 
-            if (applicablePromo) {
-                // Check validity
-                const now = new Date();
-                const isValid = 
-                    (!applicablePromo.validUntil || new Date(applicablePromo.validUntil) >= now) &&
-                    (!applicablePromo.maxUses || applicablePromo.currentUses < applicablePromo.maxUses);
+	/**
+	 * Find the applicable group pricing tier for the given number of students
+	 */
+	private findApplicableTier(
+		students: number,
+		tiers: GroupPricingTier[]
+	): GroupPricingTier | undefined {
+		return tiers
+			.filter((tier) => {
+				const inRange = students >= tier.minStudents && students <= tier.maxStudents;
+				return tier.isActive && inRange;
+			})
+			.sort((a, b) => b.priority - a.priority)[0]; // Get highest priority
+	}
 
-                if (isValid) {
-                    promoDiscount = Math.round(subtotal * (applicablePromo.discountPercent / 100));
-                    validPromoCode = applicablePromo.code;
-                }
-            }
-        }
+	/**
+	 * Calculate the price per day with tier discount applied
+	 */
+	private calculateTierPrice(
+		tier: GroupPricingTier,
+		baseHourlyRate: number,
+		hours: number,
+		students: number
+	): number {
+		const basePrice = baseHourlyRate * hours * students;
 
-        const totalPrice = subtotal - promoDiscount;
-        const pricePerPerson = Math.round(totalPrice / numberOfStudents);
+		if (tier.discountType === 'percentage') {
+			return basePrice * (1 - tier.discountValue / 100);
+		} else if (tier.discountType === 'fixed_amount') {
+			return Math.max(0, basePrice - tier.discountValue);
+		} else if (tier.discountType === 'price_override') {
+			return tier.discountValue;
+		}
 
-        // Build breakdown - make it crystal clear
-        const breakdown: Array<{ description: string; amount: number }> = [];
+		return basePrice;
+	}
 
-        // Show daily calculation first
-        if (durationPackageApplied && durationPackageName) {
-            breakdown.push({
-                description: `${durationPackageName} package (${hoursPerDay}hrs)`,
-                amount: pricePerDay
-            });
-        } else if (groupDiscountPerDay > 0) {
-            breakdown.push({
-                description: `Base rate: ${basePrice}${currency}/hr × ${hoursPerDay}hrs`,
-                amount: basePrice * hoursPerDay
-            });
-            breakdown.push({
-                description: `Group discount (${numberOfStudents} students)`,
-                amount: -groupDiscountPerDay
-            });
-        } else {
-            breakdown.push({
-                description: `Base rate: ${basePrice}${currency}/hr × ${hoursPerDay}hrs`,
-                amount: pricePerDay
-            });
-        }
+	/**
+	 * Check if promo code is valid and within usage limits
+	 */
+	private isPromoCodeValid(promo: PromoCode): boolean {
+		if (!promo.isActive) return false;
 
-        // Show multiplication by days if multi-day
-        if (numberOfDays > 1) {
-            breakdown.push({
-                description: `Price per day × ${numberOfDays} days`,
-                amount: subtotal - pricePerDay // Show the additional days cost
-            });
-        }
+		const now = new Date();
+		if (promo.validFrom && new Date(promo.validFrom) > now) return false;
+		if (promo.validUntil && new Date(promo.validUntil) < now) return false;
 
-        // Show promo discount if applicable
-        if (promoDiscount > 0 && validPromoCode) {
-            breakdown.push({
-                description: `Promo code: ${validPromoCode} (${Math.round((promoDiscount / subtotal) * 100)}% off)`,
-                amount: -promoDiscount
-            });
-        }
+		if (promo.maxUses && promo.currentUses >= promo.maxUses) return false;
 
-        return {
-            basePrice,
-            currency,
-            numberOfDays,
-            totalHours,
-            hoursPerDay,
-            pricePerDay,
-            groupDiscount: totalGroupDiscount,
-            groupDiscountPerDay,
-            durationPackageApplied,
-            durationPackageName,
-            promoDiscount,
-            promoCode: validPromoCode,
-            subtotal,
-            totalPrice,
-            pricePerPerson,
-            breakdown
-        };
-    }
+		return true;
+	}
+
+	/**
+	 * Calculate promo discount amount
+	 */
+	private calculatePromoDiscount(promo: PromoCode, subtotal: number): number {
+		if (promo.discountType === 'percentage') {
+			const discount = subtotal * (promo.discountValue / 100);
+			return promo.maxDiscountAmount ? Math.min(discount, promo.maxDiscountAmount) : discount;
+		} else if (promo.discountType === 'fixed_amount') {
+			return Math.min(promo.discountValue, subtotal);
+		}
+		return 0;
+	}
+
+	/**
+	 * Static helper to quick-calculate price without full breakdown
+	 */
+	static quickCalculate(input: PricingInput): number {
+		const calculator = new BookingPriceCalculator(input);
+		return calculator.calculate().finalPrice;
+	}
 }
