@@ -357,8 +357,10 @@
 						<div class="space-y-2 text-sm">
 							{#each priceEstimate.breakdown as item}
 								<div class="flex justify-between">
-									<span class="text-muted-foreground">{item.description}</span>
-									<span class={item.amount < 0 ? 'text-green-600 font-medium' : ''}>
+									<span class={item.isDiscount ? 'text-green-700 font-medium' : 'text-muted-foreground'}>
+										{item.description}
+									</span>
+									<span class={item.isDiscount ? 'text-green-600 font-bold' : item.amount < 0 ? 'text-green-600 font-medium' : ''}>
 										{item.amount > 0 ? '+' : ''}{item.amount}{priceEstimate.currency}
 									</span>
 								</div>
@@ -371,10 +373,23 @@
 							<div class="text-xs text-muted-foreground text-center">
 								{priceEstimate.pricePerPerson}{priceEstimate.currency} per person
 								{#if priceEstimate.numberOfDays > 1}
-									 × {priceEstimate.numberOfDays} days
+									× {priceEstimate.numberOfDays} days
 								{/if}
 							</div>
 						</div>
+						
+						<!-- Show savings if applicable -->
+						{#if priceEstimate.regularPricePerDay}
+							{@const regularTotal = priceEstimate.regularPricePerDay * priceEstimate.numberOfDays}
+							{@const actualSavings = regularTotal - priceEstimate.totalPrice - (priceEstimate.promoDiscount || 0)}
+							{#if actualSavings > 0}
+								<div class="mt-2 rounded-md bg-green-50 p-2 text-center">
+									<p class="text-xs font-medium text-green-800">
+										💚 You save {actualSavings}{priceEstimate.currency} compared to base rate!
+									</p>
+								</div>
+							{/if}
+						{/if}
 
 						<p class="mt-3 text-xs text-muted-foreground italic">
 							💡 This is an estimate. Final price will be confirmed by the instructor.

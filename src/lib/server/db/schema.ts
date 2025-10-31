@@ -217,6 +217,8 @@ export const durationPackages = pgTable('duration_packages', {
 	name: varchar('name', { length: 100 }).notNull(),
 	hours: numeric('hours', { precision: 4, scale: 1 }).notNull(),
 	price: integer('price').notNull(),
+	minStudents: integer('min_students').default(1),
+	maxStudents: integer('max_students').default(6),
 	description: text('description'),
 	...timestamps
 });

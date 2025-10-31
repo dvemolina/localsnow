@@ -1,7 +1,7 @@
 import { superValidate } from "sveltekit-superforms";
 import type { PageServerLoad, Actions } from "./$types";
 import { zod } from "sveltekit-superforms/adapters";
-import { fail, redirect } from "@sveltejs/kit";
+import { fail } from "@sveltejs/kit";
 import { lessonSchema } from "$src/features/Lessons/lib/lessonSchema";
 import { LessonService } from "$src/features/Lessons/lib/lessonService";
 import { requireAuth } from "$src/lib/utils/auth";
@@ -182,7 +182,7 @@ deleteGroupTier: async ({ request, locals }) => {
     }
 },
 
-createDurationPackage: async ({ request, locals }) => {
+ccreateDurationPackage: async ({ request, locals }) => {
     const user = locals.user;
     if (!user) return fail(401, { message: 'Unauthorized' });
 
@@ -191,11 +191,13 @@ createDurationPackage: async ({ request, locals }) => {
     const name = formData.get('name') as string;
     const hours = parseFloat(formData.get('hours') as string);
     const price = parseInt(formData.get('price') as string);
+    const minStudents = parseInt(formData.get('minStudents') as string) || 1;
+    const maxStudents = parseInt(formData.get('maxStudents') as string) || 6;
     const description = formData.get('description') as string;
 
     try {
         await db.insert(durationPackages).values({
-            lessonId, name, hours, price,
+            lessonId, name, hours, price, minStudents, maxStudents,
             description: description || null
         });
         return { success: true };
@@ -214,11 +216,13 @@ updateDurationPackage: async ({ request, locals }) => {
     const name = formData.get('name') as string;
     const hours = parseFloat(formData.get('hours') as string);
     const price = parseInt(formData.get('price') as string);
+    const minStudents = parseInt(formData.get('minStudents') as string) || 1;
+    const maxStudents = parseInt(formData.get('maxStudents') as string) || 6;
     const description = formData.get('description') as string;
 
     try {
         await db.update(durationPackages)
-            .set({ name, hours, price, description: description || null, updatedAt: new Date() })
+            .set({ name, hours, price, minStudents, maxStudents, description: description || null, updatedAt: new Date() })
             .where(eq(durationPackages.id, packageId));
         return { success: true };
     } catch (error) {
