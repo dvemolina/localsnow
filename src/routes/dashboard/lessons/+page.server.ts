@@ -182,7 +182,7 @@ deleteGroupTier: async ({ request, locals }) => {
     }
 },
 
-ccreateDurationPackage: async ({ request, locals }) => {
+createDurationPackage: async ({ request, locals }) => {
     const user = locals.user;
     if (!user) return fail(401, { message: 'Unauthorized' });
 
