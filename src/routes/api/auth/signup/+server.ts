@@ -3,7 +3,7 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { UserService } from '$src/features/Users/lib/UserService';
 import { createSession, generateSessionToken, setSessionTokenCookie } from '$src/lib/server/session';
-import { sendSignupEmail } from '$src/lib/server/webhooks/email-n8n';
+import { sendSignupEmail } from '$src/lib/server/webhooks/n8n/email-n8n';
 
 const userService = new UserService();
 

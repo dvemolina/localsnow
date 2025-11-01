@@ -6,10 +6,13 @@ import { PricingService } from '$src/features/Pricing/lib/pricingService';
 import { BookingRequestService } from '$src/features/Bookings/lib/bookingRequestService';
 import { trackProfileVisit } from '$src/features/Dashboard/lib/utils';
 import { getClientIP } from '$src/lib/utils/auth';
+import { sendBookingNotificationToInstructor, sendBookingConfirmationToClient } from '$src/lib/server/webhooks/n8n/email-n8n';
 
 const instructorService = new InstructorService();
 const pricingService = new PricingService();
 const bookingRequestService = new BookingRequestService();
+
+const LEAD_PRICE = 5; // €5 per lead
 
 export const load: PageServerLoad = async (event) => {
     const instructorId = Number(event.params.id);
@@ -74,7 +77,7 @@ export const load: PageServerLoad = async (event) => {
 };
 
 export const actions: Actions = {
-    default: async ({ request, params }) => {
+    default: async ({ request, params, url }) => {
         const instructorId = Number(params.id);
         
         if (isNaN(instructorId)) {
@@ -94,11 +97,12 @@ export const actions: Actions = {
             const endDate = data.endDate ? new Date(data.endDate) : null;
 
             // Create booking request
-            await bookingRequestService.createBookingRequest({
+            const bookingRequest = await bookingRequestService.createBookingRequest({
                 instructorId,
                 clientName: data.clientName,
                 clientEmail: data.clientEmail,
                 clientPhone: data.clientPhone || null,
+                clientCountryCode: data.clientCountryCode,
                 numberOfStudents: Number(data.numberOfStudents),
                 startDate,
                 endDate,
@@ -110,6 +114,41 @@ export const actions: Actions = {
                 currency: data.currency || null,
                 sports: data.sports || []
             });
+
+            // Get instructor details for email
+            const instructorData = await instructorService.getInstructorWithLessons(instructorId);
+            const instructor = instructorData?.instructor;
+
+            if (instructor?.email) {
+                // Build payment URL
+                const baseUrl = url.origin;
+                const paymentUrl = `${baseUrl}/leads/payment/${bookingRequest.id}`;
+
+                // Send notification to instructor (with payment link)
+                sendBookingNotificationToInstructor({
+                    instructorEmail: instructor.email,
+                    instructorName: instructor.name,
+                    bookingRequestId: bookingRequest.id,
+                    clientName: data.clientName,
+                    numberOfStudents: data.numberOfStudents,
+                    startDate: data.startDate,
+                    leadPrice: LEAD_PRICE,
+                    paymentUrl
+                }).catch(err => console.error('Failed to send instructor notification:', err));
+            }
+
+            // Send confirmation to client
+            sendBookingConfirmationToClient({
+                clientEmail: data.clientEmail,
+                clientName: data.clientName,
+                instructorName: instructor?.name || 'Your instructor',
+                numberOfStudents: data.numberOfStudents,
+                startDate: data.startDate,
+                endDate: data.endDate,
+                hoursPerDay: data.hoursPerDay,
+                estimatedPrice: data.estimatedPrice,
+                currency: data.currency
+            }).catch(err => console.error('Failed to send client confirmation:', err));
 
             return json({ success: true });
         } catch (err) {

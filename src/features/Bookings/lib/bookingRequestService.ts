@@ -1,6 +1,7 @@
 import { BookingRequestRepository, type BookingRequestData } from "./bookingRequestRepository";
 
 export class BookingRequestService {
+    
     private repository: BookingRequestRepository;
 
     constructor() {
@@ -17,5 +18,13 @@ export class BookingRequestService {
 
     async updateRequestStatus(id: number, status: string) {
         return await this.repository.updateRequestStatus(id, status);
+    }
+
+    async getBookingRequestById(bookingRequestId: number) {
+        return await this.repository.getBookingRequestById(bookingRequestId)
+    }
+
+    async getBookingRequestSports(bookingRequestId: number): Promise<number[]> {
+        return await this.repository.getBookingRequestSports(bookingRequestId);
     }
 }

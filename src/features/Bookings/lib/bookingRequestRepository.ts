@@ -73,4 +73,12 @@ export class BookingRequestRepository {
             .returning();
         return result[0] ?? null;
     }
+
+    async getBookingRequestSports(bookingRequestId: number): Promise<number[]> {
+        const results = await db.select({ sportId: bookingRequestSports.sportId })
+            .from(bookingRequestSports)
+            .where(eq(bookingRequestSports.bookingRequestId, bookingRequestId));
+        
+        return results.map(r => r.sportId);
+    }
 }

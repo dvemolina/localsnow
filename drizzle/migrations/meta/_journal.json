@@ -162,6 +162,13 @@
       "when": 1761906729916,
       "tag": "0022_open_vanisher",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1761962971101,
+      "tag": "0023_lazy_skin",
+      "breakpoints": true
     }
   ]
 }

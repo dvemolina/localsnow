@@ -7,7 +7,7 @@ import { UserService } from "$src/features/Users/lib/UserService.js";
 import { RefillingTokenBucket } from "$src/lib/server/rate-limit.js";
 import { createSession, generateSessionToken, setSessionTokenCookie } from "$src/lib/server/session.js";
 import { getClientIP } from "$src/lib/utils/auth.js";
-import { sendSignupEmail } from "$src/lib/server/webhooks/email-n8n.js";
+import { sendSignupEmail } from "$src/lib/server/webhooks/n8n/email-n8n.js";
 
 const userService = new UserService()
 const ipBucket = new RefillingTokenBucket<string>(3, 10);

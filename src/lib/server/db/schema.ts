@@ -1,4 +1,5 @@
-import { pgTable, text, integer, timestamp, varchar, uuid, boolean, pgEnum, numeric } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
+import { pgTable, text, integer, timestamp, varchar, uuid, boolean, pgEnum, numeric, serial, decimal } from 'drizzle-orm/pg-core';
 
 export const userRoleEnum = pgEnum('user_role', ['admin', 'instructor-independent','instructor-school', 'school-admin', 'client']);
 export const sportsEnum = pgEnum('sport', ['Ski', 'Snowboard', 'Telemark'])
@@ -121,6 +122,9 @@ export const bookingRequests = pgTable('booking_requests', {
     // Pricing estimate (for reference)
     estimatedPrice: integer('estimated_price'),
     currency: varchar('currency', { length: 50 }),
+
+	//Lead info after payment
+	contactInfoUnlocked: boolean('contact_info_unlocked').notNull().default(false),
     
     status: varchar('status', { length: 50 }).default('pending'),
     ...timestamps
@@ -235,6 +239,32 @@ export const promoCodes = pgTable('promo_codes', {
 	currentUses: integer('current_uses').default(0),
 	...timestamps
 });
+
+//Lead Payments
+export const leadPayments = pgTable('lead_payments', {
+	id: serial('id').primaryKey(),
+	bookingRequestId: integer('booking_request_id').notNull().references(() => bookingRequests.id),
+	instructorId: integer('instructor_id').notNull().references(() => users.id),
+	amount: decimal('amount', { precision: 10, scale: 2 }).notNull(),
+	currency: varchar('currency', { length: 3 }).notNull().default('EUR'),
+	stripePaymentIntentId: varchar('stripe_payment_intent_id', { length: 255 }),
+	stripeCheckoutSessionId: varchar('stripe_checkout_session_id', { length: 255 }),
+	status: varchar('status', { length: 50 }).notNull().default('pending'), // pending, paid, failed, refunded
+	paidAt: timestamp('paid_at'),
+	createdAt: timestamp('created_at').notNull().defaultNow(),
+	updatedAt: timestamp('updated_at').notNull().defaultNow()
+});
+
+export const leadPaymentsRelations = relations(leadPayments, ({ one }) => ({
+	bookingRequest: one(bookingRequests, {
+		fields: [leadPayments.bookingRequestId],
+		references: [bookingRequests.id]
+	}),
+	instructor: one(users, {
+		fields: [leadPayments.instructorId],
+		references: [users.id]
+	})
+}));
 
 
 // --- Many-to-Many Relationships ---
