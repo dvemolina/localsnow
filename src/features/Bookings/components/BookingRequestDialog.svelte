@@ -8,7 +8,6 @@
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { Separator } from '$src/lib/components/ui/separator';
 	import GoogleBtn from '$src/lib/components/shared/GoogleBtn.svelte';
-	import SportsCheckboxes from '$src/features/Sports/components/SportsCheckboxes.svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { bookingRequestSchema } from '$src/features/Bookings/lib/bookingRequestSchema';
@@ -34,27 +33,41 @@
 	let priceEstimate = $state<any>(null);
 	let isCalculatingPrice = $state(false);
 
-	const form = superForm({
-        instructorId,
-        numberOfStudents: 1,
-        startDate: '',
-        endDate: '',
-        hoursPerDay: 1,
-        sports: baseLesson?.sports || [],
-        skillLevel: 'intermediate',
-        clientName: '',
-        clientEmail: '',
-        clientCountryCode: 34, // Default to Spain
-        clientPhone: '',
-        message: '',
-        promoCode: ''
-    }, {
-        validators: zodClient(bookingRequestSchema),
-        SPA: true,
-        dataType: 'json'
-    });
+	const { form: formData, enhance } = superForm({
+		instructorId,
+		numberOfStudents: 1,
+		startDate: '',
+		endDate: '',
+		hoursPerDay: 1,
+		sports: baseLesson?.sports || [],
+		skillLevel: 'intermediate',
+		clientName: '',
+		clientEmail: '',
+		clientCountryCode: 34,
+		clientPhone: '',
+		message: '',
+		promoCode: ''
+	}, {
+		validators: zodClient(bookingRequestSchema),
+		//SPA: false, 
+		dataType: 'json',
+		onSubmit: () => {
+			isSubmitting = true;
+		},
+		onResult: ({ result }) => {
+			isSubmitting = false;
+			if (result.type === 'success') {
+				submitSuccess = true;
+				setTimeout(() => {
+					open = false;
+					submitSuccess = false;
+				}, 2500);
+			} else if (result.type === 'failure') {
+				submitError = result.data?.message || 'Failed to submit request';
+			}
+		}
+	});
 
-	const { form: formData, enhance } = form;
 
 	let isSubmitting = $state(false);
 	let submitSuccess = $state(false);
@@ -122,7 +135,6 @@
 	}
 
 	async function handleBooking(e: Event) {
-		e.preventDefault();
 		isSubmitting = true;
 		submitError = '';
 		submitSuccess = false;
