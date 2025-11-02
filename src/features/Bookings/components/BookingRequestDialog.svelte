@@ -208,7 +208,7 @@
 				</div>
 			{/if}
 
-			<form onsubmit={handleBooking} use:enhance class="space-y-6">
+			<form onsubmit={handleBooking} class="space-y-6">
 				<!-- Personal Info -->
 				<div class="space-y-4">
 					<h3 class="font-medium">Your Information</h3>

@@ -102,7 +102,7 @@ export const actions: Actions = {
                 clientName: data.clientName,
                 clientEmail: data.clientEmail,
                 clientPhone: data.clientPhone || null,
-                clientCountryCode: data.clientCountryCode,
+                clientCountryCode: String(data.clientCountryCode),
                 numberOfStudents: Number(data.numberOfStudents),
                 startDate,
                 endDate,
