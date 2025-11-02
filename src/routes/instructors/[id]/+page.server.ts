@@ -85,7 +85,22 @@ export const actions: Actions = {
         }
 
         try {
-            const data = await request.json();
+            // Check content type and parse accordingly
+            const contentType = request.headers.get('content-type');
+            let data;
+
+            if (contentType?.includes('application/json')) {
+                // Handle JSON submission
+                data = await request.json();
+            } else {
+                // Handle form-encoded submission (fallback)
+                const formData = await request.formData();
+                data = Object.fromEntries(formData);
+                // Parse sports array if it exists
+                if (typeof data.sports === 'string') {
+                    data.sports = JSON.parse(data.sports);
+                }
+            }
             
             // Validate required fields
             if (!data.clientName || !data.clientEmail || !data.startDate || !data.skillLevel || !data.numberOfStudents || !data.hoursPerDay) {
@@ -156,5 +171,4 @@ export const actions: Actions = {
             return fail(500, { message: 'Failed to submit booking request' });
         }
     }
-
 };

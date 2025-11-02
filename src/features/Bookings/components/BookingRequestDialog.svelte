@@ -127,7 +127,7 @@
 		submitSuccess = false;
 
 		try {
-			const response = await fetch(`/instructors/${instructorId}`, {
+			const response = await fetch(`/api/bookings/${instructorId}`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
