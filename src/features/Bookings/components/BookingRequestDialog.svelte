@@ -1,4 +1,3 @@
-<!-- src/features/Bookings/components/BookingRequestDialog.svelte -->
 <script lang="ts">
 	import * as Dialog from '$src/lib/components/ui/dialog';
 	import { Input } from '$src/lib/components/ui/input';
@@ -8,6 +7,7 @@
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { Separator } from '$src/lib/components/ui/separator';
 	import GoogleBtn from '$src/lib/components/shared/GoogleBtn.svelte';
+	import SportsCheckboxes from '$src/features/Sports/components/SportsCheckboxes.svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { bookingRequestSchema } from '$src/features/Bookings/lib/bookingRequestSchema';
@@ -33,41 +33,27 @@
 	let priceEstimate = $state<any>(null);
 	let isCalculatingPrice = $state(false);
 
-	const { form: formData, enhance } = superForm({
-		instructorId,
-		numberOfStudents: 1,
-		startDate: '',
-		endDate: '',
-		hoursPerDay: 1,
-		sports: baseLesson?.sports || [],
-		skillLevel: 'intermediate',
-		clientName: '',
-		clientEmail: '',
-		clientCountryCode: 34,
-		clientPhone: '',
-		message: '',
-		promoCode: ''
-	}, {
-		validators: zodClient(bookingRequestSchema),
-		//SPA: false, 
-		dataType: 'json',
-		onSubmit: () => {
-			isSubmitting = true;
-		},
-		onResult: ({ result }) => {
-			isSubmitting = false;
-			if (result.type === 'success') {
-				submitSuccess = true;
-				setTimeout(() => {
-					open = false;
-					submitSuccess = false;
-				}, 2500);
-			} else if (result.type === 'failure') {
-				submitError = result.data?.message || 'Failed to submit request';
-			}
-		}
-	});
+	const form = superForm({
+        instructorId,
+        numberOfStudents: 1,
+        startDate: '',
+        endDate: '',
+        hoursPerDay: 1,
+        sports: baseLesson?.sports || [],
+        skillLevel: 'intermediate',
+        clientName: '',
+        clientEmail: '',
+        clientCountryCode: 34, // Default to Spain
+        clientPhone: '',
+        message: '',
+        promoCode: ''
+    }, {
+        validators: zodClient(bookingRequestSchema),
+        SPA: true,
+        dataType: 'json'
+    });
 
+	const { form: formData, enhance } = form;
 
 	let isSubmitting = $state(false);
 	let submitSuccess = $state(false);
@@ -135,6 +121,7 @@
 	}
 
 	async function handleBooking(e: Event) {
+		e.preventDefault();
 		isSubmitting = true;
 		submitError = '';
 		submitSuccess = false;
@@ -242,7 +229,7 @@
 					</div>
 
 					<div class="flex w-full flex-col gap-2 sm:flex-row">
-						<CountryCodeSelect form={formData} name="clientCountryCode" />
+						<CountryCodeSelect {form} name="clientCountryCode" />
 						<div class="w-full">
 							<label class="mb-1.5 block text-sm font-medium">
 								Phone Number <span class="text-red-500">*</span>
@@ -369,10 +356,8 @@
 						<div class="space-y-2 text-sm">
 							{#each priceEstimate.breakdown as item}
 								<div class="flex justify-between">
-									<span class={item.isDiscount ? 'text-green-700 font-medium' : 'text-muted-foreground'}>
-										{item.description}
-									</span>
-									<span class={item.isDiscount ? 'text-green-600 font-bold' : item.amount < 0 ? 'text-green-600 font-medium' : ''}>
+									<span class="text-muted-foreground">{item.description}</span>
+									<span class={item.amount < 0 ? 'text-green-600 font-medium' : ''}>
 										{item.amount > 0 ? '+' : ''}{item.amount}{priceEstimate.currency}
 									</span>
 								</div>
@@ -385,23 +370,10 @@
 							<div class="text-xs text-muted-foreground text-center">
 								{priceEstimate.pricePerPerson}{priceEstimate.currency} per person
 								{#if priceEstimate.numberOfDays > 1}
-									× {priceEstimate.numberOfDays} days
+									 × {priceEstimate.numberOfDays} days
 								{/if}
 							</div>
 						</div>
-						
-						<!-- Show savings if applicable -->
-						{#if priceEstimate.regularPricePerDay}
-							{@const regularTotal = priceEstimate.regularPricePerDay * priceEstimate.numberOfDays}
-							{@const actualSavings = regularTotal - priceEstimate.totalPrice - (priceEstimate.promoDiscount || 0)}
-							{#if actualSavings > 0}
-								<div class="mt-2 rounded-md bg-green-50 p-2 text-center">
-									<p class="text-xs font-medium text-green-800">
-										💚 You save {actualSavings}{priceEstimate.currency} compared to base rate!
-									</p>
-								</div>
-							{/if}
-						{/if}
 
 						<p class="mt-3 text-xs text-muted-foreground italic">
 							💡 This is an estimate. Final price will be confirmed by the instructor.
@@ -600,7 +572,7 @@
 				</div>
 			{/if}
 
-			<form onsubmit={handleBooking} class="space-y-4" use:enhance>
+			<form onsubmit={handleBooking} class="space-y-4">
 				<div class="w-full">
 					<label for="clientName" class="mb-1.5 block text-sm font-medium">
 						Your Name <span class="text-red-500">*</span>
