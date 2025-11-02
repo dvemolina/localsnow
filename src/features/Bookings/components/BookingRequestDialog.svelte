@@ -242,7 +242,7 @@
 					</div>
 
 					<div class="flex w-full flex-col gap-2 sm:flex-row">
-						<CountryCodeSelect {form} name="clientCountryCode" />
+						<CountryCodeSelect form={formData} name="clientCountryCode" />
 						<div class="w-full">
 							<label class="mb-1.5 block text-sm font-medium">
 								Phone Number <span class="text-red-500">*</span>
@@ -600,7 +600,7 @@
 				</div>
 			{/if}
 
-			<form onsubmit={handleBooking} class="space-y-4">
+			<form onsubmit={handleBooking} class="space-y-4" use:enhance>
 				<div class="w-full">
 					<label for="clientName" class="mb-1.5 block text-sm font-medium">
 						Your Name <span class="text-red-500">*</span>
