@@ -3,7 +3,7 @@
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { enhance } from '$app/forms';
 
-	let { data } = $props();
+	let { data, form } = $props();
 	
 	const booking = data.bookingRequest;
 	const leadPrice = data.leadPrice;
@@ -137,6 +137,12 @@
 				One-time payment to access client email, phone number, and full details.
 			</p>
 		</div>
+
+		{#if form?.message}
+			<div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:border-red-900 dark:bg-red-900/20 dark:text-red-200">
+				<p class="text-sm">{form.message}</p>
+			</div>
+		{/if}
 
 		<form method="POST" action="?/createCheckout" use:enhance={() => {
 			isProcessing = true;

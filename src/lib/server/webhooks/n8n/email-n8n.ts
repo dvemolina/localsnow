@@ -1,6 +1,6 @@
 import { env } from "$env/dynamic/private";
 
-const N8N_BASE_URL = 'https://automation.personalflow.net/webhook';
+const N8N_BASE_URL = 'https://automation.personalflow.net/webhook'; //Delete the "-test" for production
 const EMAIL_SECRET = env.EMAIL_HEADER_SECRET;
 
 export async function sendSignupEmail(name: string, email: string) {
