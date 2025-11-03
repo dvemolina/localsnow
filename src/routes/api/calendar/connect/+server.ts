@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { getAuthUrl, disconnectCalendar, isCalendarConnected } from '$lib/server/google/oauth';
+import { getCalendarAuthUrl, disconnectCalendar, isCalendarConnected } from '$lib/server/google/oauth';
 import { triggerManualSync } from '$lib/server/google/sync';
 import type { RequestHandler } from './$types';
 
@@ -18,8 +18,8 @@ export const GET: RequestHandler = async ({ locals }) => {
 		return json({ connected: true });
 	}
 	
-	// Generate OAuth URL
-	const authUrl = getAuthUrl(user.id);
+	// Generate OAuth URL for calendar
+	const authUrl = getCalendarAuthUrl(user.id);
 	
 	return json({ authUrl });
 };
