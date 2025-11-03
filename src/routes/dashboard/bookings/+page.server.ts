@@ -1,9 +1,6 @@
 import { requireAuth } from "$src/lib/utils/auth";
 import { redirect, fail, type Actions } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
-import { db } from "$lib/server/db";
-import { bookingRequests, leadPayments, bookingRequestSports, sports } from "$lib/server/db/schema";
-import { eq, desc, and } from "drizzle-orm";
 import { BookingRequestService } from "$src/features/Bookings/lib/bookingRequestService";
 
 const bookingService = new BookingRequestService();
@@ -19,69 +16,11 @@ export const load: PageServerLoad = async (event) => {
     const statusFilter = event.url.searchParams.get('status') || 'all';
     
     try {
-        // Get all booking requests for this instructor with payment info
-    const bookingsQuery = await db
-        .select({
-            id: bookingRequests.id,
-            clientName: bookingRequests.clientName,
-            clientEmail: bookingRequests.clientEmail,
-            clientPhone: bookingRequests.clientPhone,
-            clientCountryCode: bookingRequests.clientCountryCode,
-            numberOfStudents: bookingRequests.numberOfStudents,
-            startDate: bookingRequests.startDate,
-            endDate: bookingRequests.endDate,
-            hoursPerDay: bookingRequests.hoursPerDay,
-            skillLevel: bookingRequests.skillLevel,
-            message: bookingRequests.message,
-            estimatedPrice: bookingRequests.estimatedPrice,
-            currency: bookingRequests.currency,
-            status: bookingRequests.status,
-            contactInfoUnlocked: bookingRequests.contactInfoUnlocked,
-            createdAt: bookingRequests.createdAt,
-            paymentStatus: leadPayments.status,
-            paymentId: leadPayments.id
-        })
-        .from(bookingRequests)
-        .leftJoin(leadPayments, 
-            and(
-                eq(bookingRequests.id, leadPayments.bookingRequestId),
-                eq(leadPayments.instructorId, user.id)
-            )
-        )
-        .where(eq(bookingRequests.instructorId, user.id))
-        .orderBy(desc(bookingRequests.createdAt));
-        
-        // Get sports for each booking
-        const bookingsWithSports = await Promise.all(
-            bookingsQuery.map(async (booking) => {
-                const bookingSports = await db
-                    .select({
-                        sportId: sports.id,
-                        sportName: sports.sport
-                    })
-                    .from(bookingRequestSports)
-                    .innerJoin(sports, eq(bookingRequestSports.sportId, sports.id))
-                    .where(eq(bookingRequestSports.bookingRequestId, booking.id));
-                
-                return {
-                    ...booking,
-                    sports: bookingSports
-                };
-            })
-        );
-        
-        // Filter based on status
-        let filteredBookings = bookingsWithSports;
-        if (statusFilter === 'pending') {
-            filteredBookings = bookingsWithSports.filter(b => !b.contactInfoUnlocked && b.status === 'pending');
-        } else if (statusFilter === 'unlocked') {
-            filteredBookings = bookingsWithSports.filter(b => b.contactInfoUnlocked);
-        } else if (statusFilter === 'rejected') {
-            filteredBookings = bookingsWithSports.filter(b => b.status === 'rejected');
-        }
+        // Delegate to service layer
+        const bookings = await bookingService.getBookingsWithDetailsForInstructor(user.id, statusFilter);
         
         return {
-            bookings: filteredBookings,
+            bookings,
             currentFilter: statusFilter
         };
     } catch (error) {

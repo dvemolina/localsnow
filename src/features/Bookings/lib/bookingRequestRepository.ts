@@ -1,6 +1,6 @@
 import { db } from "$lib/server/db";
-import { bookingRequests, bookingRequestSports } from "$src/lib/server/db/schema";
-import { eq } from "drizzle-orm";
+import { bookingRequests, leadPayments, bookingRequestSports, sports } from "$lib/server/db/schema";
+import { eq, desc, and, sql } from "drizzle-orm";
 
 export interface BookingRequestData {
     instructorId: number;
@@ -80,5 +80,63 @@ export class BookingRequestRepository {
             .where(eq(bookingRequestSports.bookingRequestId, bookingRequestId));
         
         return results.map(r => r.sportId);
+    }
+
+    async getBookingsWithDetailsForInstructor(instructorId: number) {
+        const bookingsQuery = await db
+            .select({
+                id: bookingRequests.id,
+                clientName: bookingRequests.clientName,
+                clientEmail: bookingRequests.clientEmail,
+                clientPhone: bookingRequests.clientPhone,
+                clientCountryCode: bookingRequests.clientCountryCode,
+                numberOfStudents: bookingRequests.numberOfStudents,
+                startDate: bookingRequests.startDate,
+                endDate: bookingRequests.endDate,
+                hoursPerDay: bookingRequests.hoursPerDay,
+                skillLevel: bookingRequests.skillLevel,
+                message: bookingRequests.message,
+                estimatedPrice: bookingRequests.estimatedPrice,
+                currency: bookingRequests.currency,
+                status: bookingRequests.status,
+                contactInfoUnlocked: bookingRequests.contactInfoUnlocked,
+                createdAt: bookingRequests.createdAt,
+                paymentStatus: leadPayments.status,
+                paymentId: leadPayments.id
+            })
+            .from(bookingRequests)
+            .leftJoin(leadPayments, 
+                and(
+                    eq(bookingRequests.id, leadPayments.bookingRequestId),
+                    eq(leadPayments.instructorId, instructorId)
+                )
+            )
+            .where(eq(bookingRequests.instructorId, instructorId))
+            .orderBy(desc(bookingRequests.createdAt));
+        
+        // Get sports for each booking
+        const bookingsWithSports = await Promise.all(
+            bookingsQuery.map(async (booking) => {
+                const bookingSports = await this.getBookingRequestSports(booking.id);
+                
+                // Get sport names
+                const sportsWithNames = await db
+                    .select({
+                        sportId: sports.id,
+                        sportName: sports.sport
+                    })
+                    .from(sports)
+                    .where(
+                        sql`${sports.id} IN (${sql.join(bookingSports, sql`, `)})`
+                    );
+                
+                return {
+                    ...booking,
+                    sports: sportsWithNames
+                };
+            })
+        );
+        
+        return bookingsWithSports;
     }
 }

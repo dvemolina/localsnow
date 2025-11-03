@@ -27,4 +27,19 @@ export class BookingRequestService {
     async getBookingRequestSports(bookingRequestId: number): Promise<number[]> {
         return await this.repository.getBookingRequestSports(bookingRequestId);
     }
+
+    async getBookingsWithDetailsForInstructor(instructorId: number, statusFilter: string = 'all') {
+        const allBookings = await this.repository.getBookingsWithDetailsForInstructor(instructorId);
+        
+        // Apply filtering
+        if (statusFilter === 'pending') {
+            return allBookings.filter(b => !b.contactInfoUnlocked && b.status === 'pending');
+        } else if (statusFilter === 'unlocked') {
+            return allBookings.filter(b => b.contactInfoUnlocked);
+        } else if (statusFilter === 'rejected') {
+            return allBookings.filter(b => b.status === 'rejected');
+        }
+        
+        return allBookings;
+    }
 }
