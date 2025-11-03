@@ -3,8 +3,8 @@ import { redirect } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { isCalendarConnected } from "$lib/server/google/oauth";
 import { db } from "$lib/server/db";
-import { instructorGoogleTokens } from "$lib/server/db/schema";
 import { eq } from "drizzle-orm";
+import { instructorGoogleTokens } from "$src/lib/server/db/schema";
 
 export const load: PageServerLoad = async (event) => {
     const user = requireAuth(event, 'Login to access availability settings');
