@@ -3,7 +3,7 @@ import { redirect, fail, type Actions } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { db } from "$lib/server/db";
 import { bookingRequests, leadPayments, bookingRequestSports, sports } from "$lib/server/db/schema";
-import { eq, desc, and, sql } from "drizzle-orm";
+import { eq, desc, and } from "drizzle-orm";
 import { BookingRequestService } from "$src/features/Bookings/lib/bookingRequestService";
 
 const bookingService = new BookingRequestService();
@@ -20,31 +20,36 @@ export const load: PageServerLoad = async (event) => {
     
     try {
         // Get all booking requests for this instructor with payment info
-        const bookingsQuery = await db
-            .select({
-                id: bookingRequests.id,
-                clientName: bookingRequests.clientName,
-                clientEmail: bookingRequests.clientEmail,
-                clientPhone: bookingRequests.clientPhone,
-                clientCountryCode: bookingRequests.clientCountryCode,
-                numberOfStudents: bookingRequests.numberOfStudents,
-                startDate: bookingRequests.startDate,
-                endDate: bookingRequests.endDate,
-                hoursPerDay: bookingRequests.hoursPerDay,
-                skillLevel: bookingRequests.skillLevel,
-                message: bookingRequests.message,
-                estimatedPrice: bookingRequests.estimatedPrice,
-                currency: bookingRequests.currency,
-                status: bookingRequests.status,
-                contactInfoUnlocked: bookingRequests.contactInfoUnlocked,
-                createdAt: bookingRequests.createdAt,
-                paymentStatus: leadPayments.status,
-                paymentId: leadPayments.id
-            })
-            .from(bookingRequests)
-            .leftJoin(leadPayments, eq(bookingRequests.id, leadPayments.bookingRequestId))
-            .where(eq(bookingRequests.instructorId, user.id))
-            .orderBy(desc(bookingRequests.createdAt));
+    const bookingsQuery = await db
+        .select({
+            id: bookingRequests.id,
+            clientName: bookingRequests.clientName,
+            clientEmail: bookingRequests.clientEmail,
+            clientPhone: bookingRequests.clientPhone,
+            clientCountryCode: bookingRequests.clientCountryCode,
+            numberOfStudents: bookingRequests.numberOfStudents,
+            startDate: bookingRequests.startDate,
+            endDate: bookingRequests.endDate,
+            hoursPerDay: bookingRequests.hoursPerDay,
+            skillLevel: bookingRequests.skillLevel,
+            message: bookingRequests.message,
+            estimatedPrice: bookingRequests.estimatedPrice,
+            currency: bookingRequests.currency,
+            status: bookingRequests.status,
+            contactInfoUnlocked: bookingRequests.contactInfoUnlocked,
+            createdAt: bookingRequests.createdAt,
+            paymentStatus: leadPayments.status,
+            paymentId: leadPayments.id
+        })
+        .from(bookingRequests)
+        .leftJoin(leadPayments, 
+            and(
+                eq(bookingRequests.id, leadPayments.bookingRequestId),
+                eq(leadPayments.instructorId, user.id)
+            )
+        )
+        .where(eq(bookingRequests.instructorId, user.id))
+        .orderBy(desc(bookingRequests.createdAt));
         
         // Get sports for each booking
         const bookingsWithSports = await Promise.all(
