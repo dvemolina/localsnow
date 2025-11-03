@@ -169,6 +169,13 @@
       "when": 1761962971101,
       "tag": "0023_lazy_skin",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1762163627417,
+      "tag": "0024_brief_giant_girl",
+      "breakpoints": true
     }
   ]
 }

@@ -266,6 +266,51 @@ export const leadPaymentsRelations = relations(leadPayments, ({ one }) => ({
 	})
 }));
 
+// --- Availability System Tables ---
+
+// Working Hours (one-time setup per instructor)
+export const instructorWorkingHours = pgTable('instructor_working_hours', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	uuid: uuid('uuid').defaultRandom().unique().notNull(),
+	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	dayOfWeek: integer('day_of_week').notNull(), // 0=Sunday, 6=Saturday
+	startTime: varchar('start_time', { length: 5 }).notNull(), // "09:00"
+	endTime: varchar('end_time', { length: 5 }).notNull(), // "17:00"
+	seasonStart: varchar('season_start', { length: 10 }), // "2024-12-01" (optional)
+	seasonEnd: varchar('season_end', { length: 10 }), // "2025-04-30" (optional)
+	isActive: boolean('is_active').default(true),
+	...timestamps
+});
+
+// Calendar Blocks (synced from Google + booking blocks)
+export const instructorCalendarBlocks = pgTable('instructor_calendar_blocks', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	uuid: uuid('uuid').defaultRandom().unique().notNull(),
+	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	startDatetime: timestamp('start_datetime').notNull(),
+	endDatetime: timestamp('end_datetime').notNull(),
+	allDay: boolean('all_day').default(false),
+	source: varchar('source', { length: 50 }).notNull(), // 'google_calendar' | 'booking_pending' | 'booking_confirmed' | 'manual'
+	bookingRequestId: integer('booking_request_id').references(() => bookingRequests.id, { onDelete: 'cascade' }),
+	googleEventId: varchar('google_event_id', { length: 255 }),
+	title: varchar('title', { length: 255 }),
+	expiresAt: timestamp('expires_at'), // For pending bookings (48h)
+	...timestamps
+});
+
+// Google OAuth Tokens (encrypted storage)
+export const instructorGoogleTokens = pgTable('instructor_google_tokens', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	instructorId: integer('instructor_id').notNull().unique().references(() => users.id, { onDelete: 'cascade' }),
+	accessToken: text('access_token').notNull(), // Encrypted
+	refreshToken: text('refresh_token').notNull(), // Encrypted
+	tokenExpiry: timestamp('token_expiry').notNull(),
+	calendarId: varchar('calendar_id', { length: 255 }).default('primary'),
+	lastSyncAt: timestamp('last_sync_at'),
+	syncEnabled: boolean('sync_enabled').default(true),
+	...timestamps
+});
+
 
 // --- Many-to-Many Relationships ---
 
@@ -333,7 +378,6 @@ export type InsertDurationPackage = typeof durationPackages.$inferInsert;
 export type PromoCode = typeof promoCodes.$inferSelect;
 export type InsertPromoCode = typeof promoCodes.$inferInsert;
 
-
 //User
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
@@ -358,3 +402,11 @@ export type InsertPromotionalPricing = typeof promotionalPricing.$inferInsert;
 //Bookings
 export type BookingRequest = typeof bookingRequests.$inferSelect;
 export type InsertBookingRequest = typeof bookingRequests.$inferInsert;
+
+//Availability
+export type InstructorWorkingHours = typeof instructorWorkingHours.$inferSelect;
+export type InsertInstructorWorkingHours = typeof instructorWorkingHours.$inferInsert;
+export type InstructorCalendarBlock = typeof instructorCalendarBlocks.$inferSelect;
+export type InsertInstructorCalendarBlock = typeof instructorCalendarBlocks.$inferInsert;
+export type InstructorGoogleToken = typeof instructorGoogleTokens.$inferSelect;
+export type InsertInstructorGoogleToken = typeof instructorGoogleTokens.$inferInsert;
