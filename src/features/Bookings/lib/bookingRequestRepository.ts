@@ -1,6 +1,6 @@
 import { db } from "$lib/server/db";
 import { bookingRequests, leadPayments, bookingRequestSports, sports } from "$lib/server/db/schema";
-import { eq, desc, and, sql } from "drizzle-orm";
+import { eq, desc, and, inArray } from "drizzle-orm";
 
 export interface BookingRequestData {
     instructorId: number;
@@ -117,18 +117,19 @@ export class BookingRequestRepository {
         // Get sports for each booking
         const bookingsWithSports = await Promise.all(
             bookingsQuery.map(async (booking) => {
-                const bookingSports = await this.getBookingRequestSports(booking.id);
+                const bookingSportIds = await this.getBookingRequestSports(booking.id);
                 
-                // Get sport names
-                const sportsWithNames = await db
-                    .select({
-                        sportId: sports.id,
-                        sportName: sports.sport
-                    })
-                    .from(sports)
-                    .where(
-                        sql`${sports.id} IN (${sql.join(bookingSports, sql`, `)})`
-                    );
+                // Get sport names only if there are sports
+                let sportsWithNames: { sportId: number; sportName: "Ski" | "Snowboard" | "Telemark"; }[] = [];
+                if (bookingSportIds.length > 0) {
+                    sportsWithNames = await db
+                        .select({
+                            sportId: sports.id,
+                            sportName: sports.sport
+                        })
+                        .from(sports)
+                        .where(inArray(sports.id, bookingSportIds));
+                }
                 
                 return {
                     ...booking,

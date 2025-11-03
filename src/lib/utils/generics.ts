@@ -55,6 +55,6 @@ export function slugifyString(text: string): string {
         .trim()
         .replace(/[^\w\s-]/g, '')
         .replace(/[\s_-]+/g, '-')
-		.replace(/[^a-z0-9\-]/g, '') // remove special characters
+		.replace(/[^a-z0-9-]/g, '') // remove special characters
         .replace(/^-+|-+$/g, '');
 }
