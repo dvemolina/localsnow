@@ -21,7 +21,7 @@
 		pending: { label: 'Pending Payment', color: 'bg-yellow-100 text-yellow-800' },
 		unlocked: { label: 'Unlocked', color: 'bg-blue-100 text-blue-800' },
 		accepted: { label: 'Accepted', color: 'bg-green-100 text-green-800' },
-		rejected: { label: 'Rejected', color: 'bg-gray-100 text-gray-800' }
+		rejected: { label: 'Rejected', color: 'bg-red-100 text-red-800' }
 	};
 
 	const getStatus = () => {

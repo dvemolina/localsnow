@@ -14,7 +14,7 @@
 
 	const statusConfig = {
 		pending: {
-			label: 'Pending Payment',
+			label: 'Pending',
 			variant: 'secondary' as const,
 			color: 'bg-yellow-100 text-yellow-800 border-yellow-200'
 		},
@@ -31,7 +31,7 @@
 		rejected: {
 			label: 'Rejected',
 			variant: 'outline' as const,
-			color: 'bg-gray-100 text-gray-800 border-gray-200'
+			color: 'bg-red-100 text-red-800 border-red-200'
 		}
 	};
 
@@ -113,7 +113,7 @@
 			{/if}
 
 			<!-- Actions -->
-			<div class="flex gap-2 pt-2">
+			<div class="flex flex-col gap-2 pt-2">
 				<Button onclick={onViewDetails} class="flex-1" variant="outline">
 					View Details
 				</Button>
