@@ -24,13 +24,13 @@ export class LeadPaymentService {
                                 name: 'Booking Request Contact Information',
                                 description: `Unlock contact details for booking request #${bookingRequestId}`,
                             },
-                            unit_amount: LEAD_PRICE * 100, // Stripe uses cents
+                            unit_amount: LEAD_PRICE * 100,
                         },
                         quantity: 1,
                     },
                 ],
                 mode: 'payment',
-                success_url: successUrl,
+                success_url: `${successUrl}?session_id={CHECKOUT_SESSION_ID}`,
                 cancel_url: cancelUrl,
                 metadata: {
                     bookingRequestId: bookingRequestId.toString(),
@@ -39,7 +39,6 @@ export class LeadPaymentService {
                 }
             });
 
-            // Create payment record in database
             await db.insert(leadPayments).values({
                 bookingRequestId,
                 instructorId,

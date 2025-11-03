@@ -49,12 +49,12 @@
 	</div>
 
 	<!-- Success Message -->
-	<div class="mb-6 rounded-lg border border-green-200 bg-green-50 p-6 dark:border-green-900 dark:bg-green-900/20">
+	<div class="mb-6 rounded-lg border border-green-200 bg-green-50 p-6 ">
 		<div class="flex items-start gap-4">
-			<div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/50">
+			<div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-green-100 ">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
-					class="size-6 text-green-600 dark:text-green-400"
+					class="size-6 text-green-600 "
 					fill="none"
 					viewBox="0 0 24 24"
 					stroke="currentColor"
@@ -68,8 +68,8 @@
 				</svg>
 			</div>
 			<div class="flex-1">
-				<h1 class="mb-2 text-xl font-bold text-green-900 dark:text-green-100">Payment Successful!</h1>
-				<p class="text-green-700 dark:text-green-300">
+				<h1 class="mb-2 text-xl font-bold text-green-900 ">Payment Successful!</h1>
+				<p class="text-green-700 ">
 					You've unlocked the contact information for this booking request. The details have also been sent to your email.
 				</p>
 			</div>
