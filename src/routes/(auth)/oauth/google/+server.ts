@@ -1,7 +1,7 @@
 // UPDATE: src/routes/(auth)/oauth/google/+server.ts
 
 import { generateState, generateCodeVerifier } from "arctic";
-import { google } from "$src/lib/server/google/oauth/google";
+import { google } from "$src/lib/server/google/oauth";
 import type { RequestEvent } from "@sveltejs/kit";
 
 export async function GET(event: RequestEvent): Promise<Response> {

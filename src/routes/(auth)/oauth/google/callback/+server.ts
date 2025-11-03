@@ -1,7 +1,7 @@
 // UPDATE: src/routes/(auth)/oauth/google/callback/+server.ts
 
 import { generateSessionToken, createSession, setSessionTokenCookie } from "$src/lib/server/session";
-import { google, type GoogleClaims } from "$src/lib/server/google/oauth/google";
+import { google, type GoogleClaims } from "$src/lib/server/google/oauth";
 import { decodeIdToken } from "arctic";
 import type { RequestEvent } from "@sveltejs/kit";
 import type { OAuth2Tokens } from "arctic";

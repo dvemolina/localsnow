@@ -24,7 +24,7 @@ export function isCurrentPath(href: string, currentPath: string) {
 	return cleanHref.replace(/\/$/, '') === cleanCurrent.replace(/\/$/, '');
 }
 
-import type { GoogleClaims } from '../server/google/oauth/google';
+import type { GoogleClaims } from '../server/google/oauth';
 
 export function generateUsernameFromGoogle(claims: GoogleClaims) {
     // Extract last 3 digits from sub
