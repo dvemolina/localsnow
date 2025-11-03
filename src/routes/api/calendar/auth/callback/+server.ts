@@ -18,13 +18,12 @@ export const GET: RequestHandler = async ({ url }) => {
 	
 	try {
 		const { instructorId } = JSON.parse(state);
-		
 		await handleCalendarOAuthCallback(code, instructorId);
-		
-		throw redirect(303, '/dashboard/availability?success=connected');
 		
 	} catch (err) {
 		console.error('Calendar OAuth callback error:', err);
 		throw redirect(303, '/dashboard/availability?error=connection_failed');
 	}
+
+	throw redirect(303, '/dashboard/availability?success=connected');
 };

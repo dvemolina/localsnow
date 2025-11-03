@@ -109,10 +109,11 @@ export async function syncInstructorCalendar(instructorId: number) {
  * Sync all active instructors (for cron job)
  */
 export async function syncAllInstructorCalendars() {
-	const activeTokens = await db.query.instructorGoogleTokens.findMany({
-		where: eq(instructorGoogleTokens.syncEnabled, true),
-		columns: { instructorId: true }
-	});
+	// Use select() instead of db.query
+	const activeTokens = await db
+		.select({ instructorId: instructorGoogleTokens.instructorId })
+		.from(instructorGoogleTokens)
+		.where(eq(instructorGoogleTokens.syncEnabled, true));
 	
 	const results = {
 		total: activeTokens.length,

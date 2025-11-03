@@ -20,14 +20,18 @@ export const load: PageServerLoad = async (event) => {
     // Get sync details if connected
     let syncDetails = null;
     if (connected) {
-        syncDetails = await db.query.instructorGoogleTokens.findFirst({
-            where: eq(instructorGoogleTokens.instructorId, user.id),
-            columns: {
-                lastSyncAt: true,
-                syncEnabled: true,
-                calendarId: true
-            }
-        });
+        // Use select() instead of db.query
+        const result = await db
+            .select({
+                lastSyncAt: instructorGoogleTokens.lastSyncAt,
+                syncEnabled: instructorGoogleTokens.syncEnabled,
+                calendarId: instructorGoogleTokens.calendarId
+            })
+            .from(instructorGoogleTokens)
+            .where(eq(instructorGoogleTokens.instructorId, user.id))
+            .limit(1);
+        
+        syncDetails = result[0] || null;
     }
     
     // Check for success/error messages from OAuth callback

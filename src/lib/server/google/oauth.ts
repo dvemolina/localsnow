@@ -8,7 +8,7 @@ import { eq } from 'drizzle-orm';
 import { decrypt, encrypt } from '$src/lib/utils/encryption';
 
 // ============================================
-// EUser Authentication OAuth
+// User Authentication OAuth
 // ============================================
 let callbackUrl: string;
 
@@ -136,9 +136,14 @@ export async function handleCalendarOAuthCallback(code: string, instructorId: nu
  * Get valid OAuth2 client for instructor (auto-refreshes if needed)
  */
 export async function getInstructorCalendarClient(instructorId: number) {
-	const tokenData = await db.query.instructorGoogleTokens.findFirst({
-		where: eq(instructorGoogleTokens.instructorId, instructorId)
-	});
+	// Use select() instead of db.query
+	const tokenDataArray = await db
+		.select()
+		.from(instructorGoogleTokens)
+		.where(eq(instructorGoogleTokens.instructorId, instructorId))
+		.limit(1);
+	
+	const tokenData = tokenDataArray[0];
 	
 	if (!tokenData) {
 		throw new Error('Calendar not connected');
@@ -193,10 +198,12 @@ export async function disconnectCalendar(instructorId: number) {
  * Check if instructor has calendar connected
  */
 export async function isCalendarConnected(instructorId: number): Promise<boolean> {
-	const tokenData = await db.query.instructorGoogleTokens.findFirst({
-		where: eq(instructorGoogleTokens.instructorId, instructorId),
-		columns: { id: true, syncEnabled: true }
-	});
+	// Use select() instead of db.query
+	const tokenData = await db
+		.select({ id: instructorGoogleTokens.id, syncEnabled: instructorGoogleTokens.syncEnabled })
+		.from(instructorGoogleTokens)
+		.where(eq(instructorGoogleTokens.instructorId, instructorId))
+		.limit(1);
 	
-	return !!tokenData && tokenData.syncEnabled;
+	return tokenData.length > 0 && tokenData[0].syncEnabled;
 }
