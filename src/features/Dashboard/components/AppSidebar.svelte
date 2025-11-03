@@ -17,6 +17,11 @@
 			url: '/dashboard/lessons',
 			icon: '/icons/service.svg'
 
+		},
+		{
+			title: 'Bookings',
+			url: '/dashboard/bookings',
+			icon: '/icons/notebook.svg'
 		}
 		
 	];

@@ -38,9 +38,23 @@ export function generateUsernameFromGoogle(claims: GoogleClaims) {
     return `${formattedName}${firstLetterSurname}${lastThreeDigits}`;
 }
 
-export function slugifyString(string: string) :string {
-	return string.trim()
-	.toLowerCase()
-	.replace(/\s+/g, '-')        // spaces to dashes
-	.replace(/[^a-z0-9\-]/g, ''); // remove special characters
+
+//Format a date to a readable string
+export function formatDate(date: Date): string {
+    return new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    }).format(date);
+}
+
+//Convert a string to a URL-friendly slug
+export function slugifyString(text: string): string {
+    return text
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/[\s_-]+/g, '-')
+		.replace(/[^a-z0-9\-]/g, '') // remove special characters
+        .replace(/^-+|-+$/g, '');
 }
