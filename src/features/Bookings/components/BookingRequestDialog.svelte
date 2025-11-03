@@ -7,11 +7,21 @@
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { Separator } from '$src/lib/components/ui/separator';
 	import GoogleBtn from '$src/lib/components/shared/GoogleBtn.svelte';
-	import SportsCheckboxes from '$src/features/Sports/components/SportsCheckboxes.svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { bookingRequestSchema } from '$src/features/Bookings/lib/bookingRequestSchema';
 	import CountryCodeSelect from '$src/lib/components/shared/CountryCodeSelect.svelte';
+	import AvailabilityCalendar from '$src/features/Availability/components/AvailabilityCalendar.svelte';
+	import { toast } from 'svelte-sonner';
+
+	function handleSlotSelection(date: string, startTime: string, endTime: string) {
+		$formData.startDate = date;
+		// Store time for submission (you may want to add these to formData)
+		selectedTimeSlot = { startTime, endTime };
+		toast.success(`Selected: ${date} at ${startTime}`);
+	}
+
+	let selectedTimeSlot = $state<{ startTime: string; endTime: string } | null>(null);
 
 	let { 
 		instructorId,
@@ -122,6 +132,10 @@
 
 	async function handleBooking(e: Event) {
 		e.preventDefault();
+		if (!selectedTimeSlot) {
+			toast.error('Please select a date and time from the calendar');
+			return;
+		}
 		isSubmitting = true;
 		submitError = '';
 		submitSuccess = false;
@@ -132,6 +146,8 @@
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					...$formData,
+					startTime: selectedTimeSlot?.startTime,
+    				endTime: selectedTimeSlot?.endTime,
 					estimatedPrice: priceEstimate?.totalPrice,
 					currency: baseLesson.currency
 				})
@@ -251,7 +267,26 @@
 				<div class="space-y-4">
 					<h3 class="font-medium">Lesson Details</h3>
 
+					<div class="mb-6">
+						<AvailabilityCalendar 
+							{instructorId} 
+							onSlotSelect={handleSlotSelection} 
+						/>
+					</div>
+
 					<div class="grid gap-4 sm:grid-cols-2">
+						<div>
+							<label class="mb-1.5 block text-sm font-medium">
+								Selected Date <span class="text-red-500">*</span>
+							</label>
+							<Input 
+								type="date" 
+								value={$formData.startDate} 
+								readonly
+								class="bg-muted"
+								required 
+							/>
+						</div>
 						<div>
 							<label class="mb-1.5 block text-sm font-medium">
 								Number of Students <span class="text-red-500">*</span>

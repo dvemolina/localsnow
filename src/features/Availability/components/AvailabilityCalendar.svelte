@@ -143,7 +143,7 @@
 
 <Card.Root class="w-full">
 	<Card.Header>
-		<div class="flex items-center justify-between">
+		<div class="flex flex-col sm:flex-row items-center justify-between">
 			<Card.Title>Available Times</Card.Title>
 			<div class="flex items-center gap-2">
 				<Button variant="outline" size="icon" onclick={previousMonth} disabled={loading}>

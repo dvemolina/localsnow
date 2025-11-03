@@ -4,6 +4,7 @@
 	import { Badge } from '$src/lib/components/ui/badge';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { goto } from '$app/navigation';
+	import { isMobile } from '$src/lib/hooks/is-mobile.svelte.js';
 
 	let { data } = $props();
 
@@ -67,8 +68,8 @@
 	</div>
 
 	<!-- Filter Tabs -->
-	<Tabs.Root value={data.currentFilter} class="mb-6">
-		<Tabs.List class="grid w-full grid-cols-4">
+	<Tabs.Root value={data.currentFilter} class="mb-6" orientation={ isMobile ? 'vertical' : 'horizontal' }>
+		<Tabs.List class="grid w-full h-full grid-cols-2 md:grid-cols-4">
 			<Tabs.Trigger value="all" onclick={() => changeFilter('all')}>
 				All
 				{#if counts.all > 0}
