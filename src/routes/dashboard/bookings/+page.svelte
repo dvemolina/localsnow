@@ -3,7 +3,6 @@
 	import BookingDetailDialog from '$src/features/Bookings/components/BookingDetailDialog.svelte';
 	import { Badge } from '$src/lib/components/ui/badge';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 
 	let { data } = $props();
@@ -26,6 +25,19 @@
 		goto(url.pathname + url.search);
 	};
 
+	// Add console logging to debug the data
+	$effect(() => {
+		console.log('Bookings data:', data.bookings);
+		console.log('Booking IDs:', data.bookings.map((b: any) => b.id));
+		
+		// Check for duplicates
+		const ids = data.bookings.map((b: any) => b.id);
+		const duplicates = ids.filter((id: number, index: number) => ids.indexOf(id) !== index);
+		if (duplicates.length > 0) {
+			console.error('Duplicate booking IDs found:', duplicates);
+		}
+	});
+
 	// Count bookings by status
 	const counts = $derived({
 		all: data.bookings.length,
@@ -35,6 +47,14 @@
 		unlocked: data.bookings.filter((b: any) => b.contactInfoUnlocked).length,
 		rejected: data.bookings.filter((b: any) => b.status === 'rejected').length
 	});
+
+	// Create unique keys for each booking to avoid duplicate key errors
+	const bookingsWithUniqueKeys = $derived(
+		data.bookings.map((booking: any, index: number) => ({
+			...booking,
+			uniqueKey: `${booking.id}-${index}`
+		}))
+	);
 </script>
 
 <div class="container mx-auto max-w-7xl">
@@ -81,7 +101,7 @@
 	</Tabs.Root>
 
 	<!-- Bookings List -->
-	{#if data.bookings.length === 0}
+	{#if bookingsWithUniqueKeys.length === 0}
 		<div class="rounded-lg border-2 border-dashed border-border p-12 text-center">
 			<div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
 				<svg class="h-8 w-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -108,14 +128,14 @@
 		</div>
 	{:else}
 		<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-			{#each data.bookings as booking (booking.id)}
+			{#each bookingsWithUniqueKeys as booking (booking.uniqueKey)}
 				<BookingCard {booking} onViewDetails={() => handleViewDetails(booking)} />
 			{/each}
 		</div>
 	{/if}
 
 	<!-- Info Box -->
-	{#if data.bookings.length > 0 && counts.pending > 0}
+	{#if bookingsWithUniqueKeys.length > 0 && counts.pending > 0}
 		<div class="mt-6 rounded-lg border-2 border-blue-200 bg-blue-50 p-4">
 			<div class="flex gap-3">
 				<svg

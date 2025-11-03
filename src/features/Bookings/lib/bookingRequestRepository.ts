@@ -114,6 +114,15 @@ export class BookingRequestRepository {
             .where(eq(bookingRequests.instructorId, instructorId))
             .orderBy(desc(bookingRequests.createdAt));
         
+        // Debug: Check for duplicate IDs
+        const ids = bookingsQuery.map(b => b.id);
+        const uniqueIds = new Set(ids);
+        if (ids.length !== uniqueIds.size) {
+            console.error('WARNING: Duplicate booking IDs detected in query results!');
+            console.error('All IDs:', ids);
+            console.error('Unique IDs:', Array.from(uniqueIds));
+        }
+        
         // Get sports for each booking
         const bookingsWithSports = await Promise.all(
             bookingsQuery.map(async (booking) => {
@@ -137,6 +146,24 @@ export class BookingRequestRepository {
                 };
             })
         );
+        
+        // Final check for duplicates
+        const finalIds = bookingsWithSports.map(b => b.id);
+        const finalUniqueIds = new Set(finalIds);
+        if (finalIds.length !== finalUniqueIds.size) {
+            console.error('ERROR: Duplicate IDs in final bookings array!');
+            // Remove duplicates while preserving order
+            const seen = new Set();
+            const uniqueBookings = bookingsWithSports.filter(booking => {
+                if (seen.has(booking.id)) {
+                    console.error(`Removing duplicate booking with ID: ${booking.id}`);
+                    return false;
+                }
+                seen.add(booking.id);
+                return true;
+            });
+            return uniqueBookings;
+        }
         
         return bookingsWithSports;
     }
