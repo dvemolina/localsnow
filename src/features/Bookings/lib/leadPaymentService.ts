@@ -1,5 +1,5 @@
 import { db } from "$lib/server/db";
-import { leadPayments } from "$lib/server/db/schema";
+import { bookingRequests, leadPayments } from "$lib/server/db/schema";
 import { eq } from "drizzle-orm";
 import Stripe from 'stripe';
 import { env } from '$env/dynamic/private';
@@ -77,10 +77,9 @@ export class LeadPaymentService {
                     .where(eq(leadPayments.stripeCheckoutSessionId, sessionId));
                 
                 // Mark booking request as unlocked
-                // You'll need to import bookingRequests from your schema
-                // await db.update(bookingRequests)
-                //     .set({ contactInfoUnlocked: true })
-                //     .where(eq(bookingRequests.id, bookingRequestId));
+                await db.update(bookingRequests)
+                    .set({ contactInfoUnlocked: true })
+                    .where(eq(bookingRequests.id, bookingRequestId));
                 
                 return {
                     success: true,

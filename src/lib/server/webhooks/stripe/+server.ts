@@ -1,4 +1,4 @@
-// src/routes/api/webhooks/stripe/+server.ts
+
 import { json, error, type RequestHandler } from '@sveltejs/kit';
 import Stripe from 'stripe';
 import { env } from '$env/dynamic/private';
