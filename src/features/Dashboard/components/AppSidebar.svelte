@@ -22,6 +22,11 @@
 			title: 'Bookings',
 			url: '/dashboard/bookings',
 			icon: '/icons/notebook.svg'
+		},
+		{
+			title: 'Availability',
+			url: '/dashboard/availability',
+			icon: '/icons/calendar.svg'
 		}
 		
 	];
