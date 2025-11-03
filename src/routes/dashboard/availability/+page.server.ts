@@ -5,6 +5,9 @@ import { isCalendarConnected } from "$lib/server/google/oauth";
 import { db } from "$lib/server/db";
 import { eq } from "drizzle-orm";
 import { instructorGoogleTokens } from "$src/lib/server/db/schema";
+import { WorkingHoursService } from "$src/features/Availability/lib/workingHoursService";
+
+const workingHoursService = new WorkingHoursService();
 
 export const load: PageServerLoad = async (event) => {
     const user = requireAuth(event, 'Login to access availability settings');
@@ -17,10 +20,12 @@ export const load: PageServerLoad = async (event) => {
     // Check connection status
     const connected = await isCalendarConnected(user.id);
     
+    // Check if working hours are configured
+    const workingHoursConfigured = await workingHoursService.hasWorkingHours(user.id);
+    
     // Get sync details if connected
     let syncDetails = null;
     if (connected) {
-        // Use select() instead of db.query
         const result = await db
             .select({
                 lastSyncAt: instructorGoogleTokens.lastSyncAt,
@@ -41,6 +46,7 @@ export const load: PageServerLoad = async (event) => {
     return {
         connected,
         syncDetails,
+        workingHoursConfigured,
         successMessage: success === 'connected' ? 'Calendar connected successfully!' : null,
         errorMessage: error ? getErrorMessage(error) : null
     };

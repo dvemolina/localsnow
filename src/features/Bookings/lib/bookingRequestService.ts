@@ -42,4 +42,8 @@ export class BookingRequestService {
         
         return allBookings;
     }
+
+    async updateBookingStatus(bookingRequestId: number, status: string) {
+        return await this.repository.updateBookingStatus(bookingRequestId, status);
+    }
 }

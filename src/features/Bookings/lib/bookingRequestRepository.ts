@@ -167,4 +167,15 @@ export class BookingRequestRepository {
         
         return bookingsWithSports;
     }
+    //Update booking request status
+    async updateBookingStatus(bookingRequestId: number, status: string) {
+        return await db
+            .update(bookingRequests)
+            .set({
+                status,
+                updatedAt: new Date()
+            })
+            .where(eq(bookingRequests.id, bookingRequestId))
+            .returning();
+    }
 }

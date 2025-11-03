@@ -269,8 +269,8 @@
 		</Card.Content>
 	</Card.Root>
 
-	<!-- Coming Soon Card - Working Hours -->
-	<Card.Root class="mt-6 opacity-60">
+	<!-- Working Hours Card -->
+	<Card.Root class="mt-6 border-2">
 		<Card.Header>
 			<Card.Title class="flex items-center gap-2">
 				<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -282,17 +282,66 @@
 					/>
 				</svg>
 				Working Hours
-				<Badge variant="secondary">Coming Soon</Badge>
+				{#if data.workingHoursConfigured}
+					<Badge variant="default" class="bg-green-600">Configured</Badge>
+				{:else}
+					<Badge variant="secondary">Not Set</Badge>
+				{/if}
 			</Card.Title>
 			<Card.Description>
 				Set your regular working hours and seasonal availability
 			</Card.Description>
 		</Card.Header>
-		<Card.Content>
-			<p class="text-sm text-muted-foreground">
-				This feature is coming in Phase 2. You'll be able to define your standard working hours
-				for each day of the week.
-			</p>
+		<Card.Content class="space-y-4">
+			{#if data.workingHoursConfigured}
+				<div class="rounded-lg bg-green-50 p-4">
+					<div class="flex items-start gap-3">
+						<svg
+							class="h-5 w-5 flex-shrink-0 text-green-600"
+							fill="currentColor"
+							viewBox="0 0 20 20"
+						>
+							<path
+								fill-rule="evenodd"
+								d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+								clip-rule="evenodd"
+							/>
+						</svg>
+						<div class="text-sm text-green-800">
+							<p class="font-medium">Working Hours Set</p>
+							<p class="mt-1">
+								You have configured your working hours. Clients can now book lessons during your
+								available times.
+							</p>
+						</div>
+					</div>
+				</div>
+			{:else}
+				<div class="rounded-lg border-2 border-dashed border-border p-6 text-center">
+					<div
+						class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted"
+					>
+						<svg class="h-8 w-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+							/>
+						</svg>
+					</div>
+					<h3 class="mb-2 font-semibold text-lg">Set Your Working Hours</h3>
+					<p class="mb-4 text-muted-foreground">
+						Define your available hours for each day of the week to let clients know when they can
+						book lessons
+					</p>
+				</div>
+			{/if}
 		</Card.Content>
+		<Card.Footer>
+			<Button href="/dashboard/availability/working-hours" class="w-full">
+				{data.workingHoursConfigured ? 'Edit Working Hours' : 'Set Working Hours'}
+			</Button>
+		</Card.Footer>
 	</Card.Root>
 </div>
