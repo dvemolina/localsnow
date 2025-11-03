@@ -1,8 +1,20 @@
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import 'dotenv/config'
+import { drizzle } from 'drizzle-orm/node-postgres';
+import * as schema from './schema.js'; // or .ts depending on setup
+import 'dotenv/config';
+import pg from 'pg';
 
-if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
+const { Pool } = pg;
 
-const client = postgres(process.env.DATABASE_URL);
-export const db = drizzle(client);
+const PGPOOLSIZE = 10
+
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL is not set');
+}
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  max: PGPOOLSIZE ? Number(process.env.PGPOOLSIZE) : 10
+});
+
+export const db = drizzle(pool, { schema });
