@@ -25,6 +25,11 @@ export const POST: RequestHandler = async ({ request, params, url }) => {
             throw error(400, 'Missing required fields');
         }
 
+        // Validate time slots
+        if (!data.timeSlots || !Array.isArray(data.timeSlots) || data.timeSlots.length === 0) {
+            throw error(400, 'Please select at least one time slot');
+        }
+
         // Parse dates
         const startDate = new Date(data.startDate);
         const endDate = data.endDate ? new Date(data.endDate) : null;
@@ -48,7 +53,7 @@ export const POST: RequestHandler = async ({ request, params, url }) => {
             sports: data.sports || []
         });
 
-        // Create tentative booking blocks (with race condition protection)
+        // Create tentative booking blocks for each day and time slot
         try {
             await tentativeBookingService.createTentativeBlock(bookingRequest.id);
         } catch (tentativeError) {

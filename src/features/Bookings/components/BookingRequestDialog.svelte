@@ -6,22 +6,12 @@
 	import * as Select from '$src/lib/components/ui/select';
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { Separator } from '$src/lib/components/ui/separator';
-	import GoogleBtn from '$src/lib/components/shared/GoogleBtn.svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { bookingRequestSchema } from '$src/features/Bookings/lib/bookingRequestSchema';
 	import CountryCodeSelect from '$src/lib/components/shared/CountryCodeSelect.svelte';
 	import AvailabilityCalendar from '$src/features/Availability/components/AvailabilityCalendar.svelte';
 	import { toast } from 'svelte-sonner';
-
-	function handleSlotSelection(date: string, startTime: string, endTime: string) {
-		$formData.startDate = date;
-		// Store time for submission (you may want to add these to formData)
-		selectedTimeSlot = { startTime, endTime };
-		toast.success(`Selected: ${date} at ${startTime}`);
-	}
-
-	let selectedTimeSlot = $state<{ startTime: string; endTime: string } | null>(null);
 
 	let { 
 		instructorId,
@@ -39,9 +29,14 @@
 		isAuthenticated: boolean;
 	} = $props();
 
-	let currentView = $state<'login' | 'signup' | 'booking'>('booking');
 	let priceEstimate = $state<any>(null);
 	let isCalculatingPrice = $state(false);
+	let calendarSelection = $state<{
+		startDate: string;
+		endDate: string;
+		timeSlots: string[];
+		totalHours: number;
+	} | null>(null);
 
 	const form = superForm({
         instructorId,
@@ -53,7 +48,7 @@
         skillLevel: 'intermediate',
         clientName: '',
         clientEmail: '',
-        clientCountryCode: 34, // Default to Spain
+        clientCountryCode: 34,
         clientPhone: '',
         message: '',
         promoCode: ''
@@ -69,40 +64,36 @@
 	let submitSuccess = $state(false);
 	let submitError = $state('');
 
+	function handleCalendarChange(selection: {
+		startDate: string;
+		endDate: string;
+		timeSlots: string[];
+		totalHours: number;
+	}) {
+		calendarSelection = selection;
+		
+		// Update form data
+		$formData.startDate = selection.startDate;
+		$formData.endDate = selection.endDate;
+		$formData.hoursPerDay = selection.timeSlots.length;
+
+		// Trigger price calculation
+		if (selection.timeSlots.length > 0) {
+			calculatePriceEstimate();
+		}
+	}
+
 	$effect(() => {
 		if (open) {
-			if (!isAuthenticated) {
-				currentView = 'login';
-			} else {
-				currentView = 'booking';
-			}
 			submitSuccess = false;
 			submitError = '';
-		}
-	});
-
-	// Calculate price estimate whenever relevant fields change
-	$effect(() => {
-		// Create a dependency on all fields that affect pricing
-		const deps = [
-			$formData.numberOfStudents,
-			$formData.startDate,
-			$formData.endDate,
-			$formData.hoursPerDay,
-			$formData.promoCode
-		];
-		
-		if (
-			$formData.numberOfStudents &&
-			$formData.startDate &&
-			$formData.hoursPerDay &&
-			baseLesson
-		) {
-			calculatePriceEstimate();
+			calendarSelection = null;
 		}
 	});
 
 	async function calculatePriceEstimate() {
+		if (!calendarSelection || calendarSelection.timeSlots.length === 0 || !baseLesson) return;
+
 		isCalculatingPrice = true;
 		try {
 			const response = await fetch(`/api/pricing/calculate`, {
@@ -113,9 +104,9 @@
 					basePrice: baseLesson.basePrice,
 					currency: baseLesson.currency,
 					numberOfStudents: $formData.numberOfStudents,
-					startDate: $formData.startDate,
-					endDate: $formData.endDate || null,
-					hoursPerDay: $formData.hoursPerDay,
+					startDate: calendarSelection.startDate,
+					endDate: calendarSelection.endDate,
+					hoursPerDay: calendarSelection.timeSlots.length,
 					promoCode: $formData.promoCode || null
 				})
 			});
@@ -130,12 +121,22 @@
 		}
 	}
 
+	// Recalculate when students or promo code changes
+	$effect(() => {
+		const deps = [$formData.numberOfStudents, $formData.promoCode];
+		if (calendarSelection && calendarSelection.timeSlots.length > 0) {
+			calculatePriceEstimate();
+		}
+	});
+
 	async function handleBooking(e: Event) {
 		e.preventDefault();
-		if (!selectedTimeSlot) {
-			toast.error('Please select a date and time from the calendar');
+		
+		if (!calendarSelection || calendarSelection.timeSlots.length === 0) {
+			toast.error('Please select dates and time slots from the calendar');
 			return;
 		}
+
 		isSubmitting = true;
 		submitError = '';
 		submitSuccess = false;
@@ -146,8 +147,10 @@
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					...$formData,
-					startTime: selectedTimeSlot?.startTime,
-    				endTime: selectedTimeSlot?.endTime,
+					startDate: calendarSelection.startDate,
+					endDate: calendarSelection.endDate,
+					hoursPerDay: calendarSelection.timeSlots.length,
+					timeSlots: calendarSelection.timeSlots,
 					estimatedPrice: priceEstimate?.totalPrice,
 					currency: baseLesson.currency
 				})
@@ -177,173 +180,107 @@
 		{ value: 'expert', label: 'Expert' }
 	];
 
-	const tomorrow = new Date();
-	tomorrow.setDate(tomorrow.getDate() + 1);
-	const minDate = tomorrow.toISOString().split('T')[0];
-
 	let availableSports = $derived(baseLesson?.sports || []);
     
-    // Map sport IDs to names
-    const sportNames: Record<number, string> = {
-        1: 'Ski',
-        2: 'Snowboard',
-        3: 'Telemark'
-    };
+	const sportNames: Record<number, string> = {
+		1: 'Ski',
+		2: 'Snowboard',
+		3: 'Telemark'
+	};
 </script>
 
 <Dialog.Root bind:open modal={true}>
 	<Dialog.Content 
-		class="max-h-[90vh] overflow-y-auto sm:max-w-[600px]"
+		class="max-h-[90vh] overflow-y-auto sm:max-w-[700px]"
 		onInteractOutside={(e) => e.preventDefault()}
 	>
-		{#if currentView === 'booking'}
-			<Dialog.Header>
-				<Dialog.Title>Request a Lesson with {instructorName}</Dialog.Title>
-				<Dialog.Description>
-					Fill out the details below to get an accurate price estimate and send your booking request.
-				</Dialog.Description>
-			</Dialog.Header>
+		<Dialog.Header>
+			<Dialog.Title>Request a Lesson with {instructorName}</Dialog.Title>
+			<Dialog.Description>
+				Select your preferred dates and times, then complete your details.
+			</Dialog.Description>
+		</Dialog.Header>
 
-			{#if submitSuccess}
-				<div class="my-4 rounded-lg bg-green-50 p-4 text-green-800">
-					<div class="flex items-start gap-3">
-						<svg class="size-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-						</svg>
-						<div>
-							<p class="font-semibold">Request Sent Successfully!</p>
-							<p class="mt-1 text-sm">{instructorName} will contact you to confirm details.</p>
-						</div>
+		{#if submitSuccess}
+			<div class="my-4 rounded-lg bg-green-50 p-4 text-green-800">
+				<div class="flex items-start gap-3">
+					<svg class="size-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+					</svg>
+					<div>
+						<p class="font-semibold">Request Sent Successfully!</p>
+						<p class="mt-1 text-sm">{instructorName} will contact you to confirm details.</p>
 					</div>
 				</div>
-			{/if}
+			</div>
+		{/if}
 
-			{#if submitError}
-				<div class="my-4 rounded-lg bg-red-50 p-4 text-red-800">
-					<p class="text-sm">{submitError}</p>
-				</div>
-			{/if}
+		{#if submitError}
+			<div class="my-4 rounded-lg bg-red-50 p-4 text-red-800">
+				<p class="text-sm">{submitError}</p>
+			</div>
+		{/if}
 
-			<form onsubmit={handleBooking} class="space-y-6">
-				<!-- Personal Info -->
-				<div class="space-y-4">
-					<h3 class="font-medium">Your Information</h3>
-					
-					<div class="grid gap-4 sm:grid-cols-2">
-						<div>
-							<label class="mb-1.5 block text-sm font-medium">
-								Name <span class="text-red-500">*</span>
-							</label>
-							<Input bind:value={$formData.clientName} required disabled={isSubmitting || submitSuccess} />
-						</div>
-						<div>
-							<label class="mb-1.5 block text-sm font-medium">
-								Email <span class="text-red-500">*</span>
-							</label>
-							<Input type="email" bind:value={$formData.clientEmail} required disabled={isSubmitting || submitSuccess} />
-						</div>
-					</div>
+		<form onsubmit={handleBooking} class="space-y-6">
+			<!-- Calendar Selection -->
+			<div class="space-y-4">
+				<h3 class="font-medium">When do you need lessons?</h3>
+				<AvailabilityCalendar 
+					{instructorId} 
+					onSelectionChange={handleCalendarChange}
+				/>
+			</div>
 
-					<div class="flex w-full flex-col gap-2 sm:flex-row">
-						<CountryCodeSelect {form} name="clientCountryCode" />
-						<div class="w-full">
-							<label class="mb-1.5 block text-sm font-medium">
-								Phone Number <span class="text-red-500">*</span>
-							</label>
-							<Input 
-								type="tel" 
-								bind:value={$formData.clientPhone} 
-								required 
-								disabled={isSubmitting || submitSuccess}
-								placeholder="123 456 7890"
-							/>
-						</div>
-					</div>
-				</div>
+			<Separator />
 
-				<Separator />
-
-				<!-- Lesson Details -->
-				<div class="space-y-4">
-					<h3 class="font-medium">Lesson Details</h3>
-
-					<div class="mb-6">
-						<AvailabilityCalendar 
-							{instructorId} 
-							onSlotSelect={handleSlotSelection} 
-						/>
-					</div>
-
-					<div class="grid gap-4 sm:grid-cols-2">
-						<div>
-							<label class="mb-1.5 block text-sm font-medium">
-								Selected Date <span class="text-red-500">*</span>
-							</label>
-							<Input 
-								type="date" 
-								value={$formData.startDate} 
-								readonly
-								class="bg-muted"
-								required 
-							/>
-						</div>
-						<div>
-							<label class="mb-1.5 block text-sm font-medium">
-								Number of Students <span class="text-red-500">*</span>
-							</label>
-							<Input type="number" min="1" max="20" bind:value={$formData.numberOfStudents} required disabled={isSubmitting || submitSuccess} />
-						</div>
-						<div>
-							<label class="mb-1.5 block text-sm font-medium">
-								Hours per Day <span class="text-red-500">*</span>
-							</label>
-							<Input type="number" min="1" max="6" step="1" bind:value={$formData.hoursPerDay} required disabled={isSubmitting || submitSuccess} />
-						</div>
-					</div>
-
-					<div class="grid gap-4 sm:grid-cols-2">
-						<div>
-							<label class="mb-1.5 block text-sm font-medium">
-								Start Date <span class="text-red-500">*</span>
-							</label>
-							<Input type="date" min={minDate} bind:value={$formData.startDate} required disabled={isSubmitting || submitSuccess} />
-						</div>
-						<div>
-							<label class="mb-1.5 block text-sm font-medium">
-								End Date (optional)
-							</label>
-							<Input type="date" min={$formData.startDate || minDate} bind:value={$formData.endDate} disabled={isSubmitting || submitSuccess} />
-						</div>
-					</div>
-
+			<!-- Personal Info -->
+			<div class="space-y-4">
+				<h3 class="font-medium">Your Information</h3>
+				
+				<div class="grid gap-4 sm:grid-cols-2">
 					<div>
 						<label class="mb-1.5 block text-sm font-medium">
-							Sports <span class="text-red-500">*</span>
+							Name <span class="text-red-500">*</span>
 						</label>
-						<div class="flex flex-wrap gap-3">
-							{#each availableSports as sportId}
-								<label class="flex items-center gap-2 cursor-pointer">
-									<input
-										type="checkbox"
-										value={sportId}
-										checked={$formData.sports.includes(sportId)}
-										onchange={(e) => {
-											if (e.currentTarget.checked) {
-												$formData.sports = [...$formData.sports, sportId];
-											} else {
-												$formData.sports = $formData.sports.filter(id => id !== sportId);
-											}
-										}}
-										disabled={isSubmitting || submitSuccess}
-										class="h-4 w-4 rounded border-gray-300"
-									/>
-									<span class="text-sm">{sportNames[sportId]}</span>
-								</label>
-							{/each}
-						</div>
-						{#if $formData.sports.length === 0}
-							<p class="mt-1 text-xs text-red-600">Please select at least one sport</p>
-						{/if}
+						<Input bind:value={$formData.clientName} required disabled={isSubmitting || submitSuccess} />
+					</div>
+					<div>
+						<label class="mb-1.5 block text-sm font-medium">
+							Email <span class="text-red-500">*</span>
+						</label>
+						<Input type="email" bind:value={$formData.clientEmail} required disabled={isSubmitting || submitSuccess} />
+					</div>
+				</div>
+
+				<div class="flex w-full flex-col gap-2 sm:flex-row">
+					<CountryCodeSelect {form} name="clientCountryCode" />
+					<div class="w-full">
+						<label class="mb-1.5 block text-sm font-medium">
+							Phone Number <span class="text-red-500">*</span>
+						</label>
+						<Input 
+							type="tel" 
+							bind:value={$formData.clientPhone} 
+							required 
+							disabled={isSubmitting || submitSuccess}
+							placeholder="123 456 7890"
+						/>
+					</div>
+				</div>
+			</div>
+
+			<Separator />
+
+			<!-- Lesson Details -->
+			<div class="space-y-4">
+				<h3 class="font-medium">Lesson Details</h3>
+
+				<div class="grid gap-4 sm:grid-cols-2">
+					<div>
+						<label class="mb-1.5 block text-sm font-medium">
+							Number of Students <span class="text-red-500">*</span>
+						</label>
+						<Input type="number" min="1" max="20" bind:value={$formData.numberOfStudents} required disabled={isSubmitting || submitSuccess} />
 					</div>
 
 					<div>
@@ -361,398 +298,120 @@
 							</Select.Content>
 						</Select.Root>
 					</div>
-
-					<div>
-						<label class="mb-1.5 block text-sm font-medium">Promo Code (optional)</label>
-						<Input bind:value={$formData.promoCode} placeholder="Enter promo code" disabled={isSubmitting || submitSuccess} />
-					</div>
-
-					<div>
-						<label class="mb-1.5 block text-sm font-medium">Additional Information</label>
-						<Textarea
-							bind:value={$formData.message}
-							placeholder="Tell the instructor about your goals, experience, or special requirements..."
-							rows={4}
-							disabled={isSubmitting || submitSuccess}
-						/>
-					</div>
-				</div>
-
-				<!-- Price Estimate -->
-				{#if priceEstimate}
-					<div class="rounded-lg border-2 border-primary/20 bg-primary/5 p-4">
-						<div class="mb-3 flex items-center justify-between">
-							<h3 class="font-medium">Estimated Price</h3>
-							{#if isCalculatingPrice}
-								<Badge variant="secondary">Calculating...</Badge>
-							{/if}
-						</div>
-
-						<div class="space-y-2 text-sm">
-							{#each priceEstimate.breakdown as item}
-								<div class="flex justify-between">
-									<span class="text-muted-foreground">{item.description}</span>
-									<span class={item.amount < 0 ? 'text-green-600 font-medium' : ''}>
-										{item.amount > 0 ? '+' : ''}{item.amount}{priceEstimate.currency}
-									</span>
-								</div>
-							{/each}
-							<Separator class="my-2" />
-							<div class="flex justify-between text-lg font-bold">
-								<span>Total</span>
-								<span class="text-primary">{priceEstimate.totalPrice}{priceEstimate.currency}</span>
-							</div>
-							<div class="text-xs text-muted-foreground text-center">
-								{priceEstimate.pricePerPerson}{priceEstimate.currency} per person
-								{#if priceEstimate.numberOfDays > 1}
-									 × {priceEstimate.numberOfDays} days
-								{/if}
-							</div>
-						</div>
-
-						<p class="mt-3 text-xs text-muted-foreground italic">
-							💡 This is an estimate. Final price will be confirmed by the instructor.
-						</p>
-					</div>
-				{/if}
-
-				<div class="flex gap-3 pt-4">
-					<Button 
-						type="button" 
-						variant="outline" 
-						class="flex-1"
-						onclick={() => open = false}
-						disabled={isSubmitting}
-					>
-						Cancel
-					</Button>
-					<Button 
-						type="submit" 
-						class="flex-1" 
-						disabled={isSubmitting || submitSuccess}
-					>
-						{#if isSubmitting}
-							Sending...
-						{:else if submitSuccess}
-							Sent!
-						{:else}
-							Send Request
-						{/if}
-					</Button>
-				</div>
-
-				<p class="text-center text-xs text-muted-foreground pt-2">
-					By submitting, you agree the instructor will contact you directly.
-				</p>
-			</form>
-		{:else if currentView === 'signup'}
-			<Dialog.Header>
-				<Dialog.Title>Create Account</Dialog.Title>
-				<Dialog.Description>
-					Join Local Snow to book lessons with certified instructors
-				</Dialog.Description>
-			</Dialog.Header>
-
-			{#if submitError}
-				<div class="my-4 rounded-lg bg-red-50 p-4 text-red-800 dark:bg-red-900/20 dark:text-red-200">
-					<p class="text-sm">{submitError}</p>
-				</div>
-			{/if}
-
-			<form onsubmit={handleSignup} class="space-y-4">
-				<div class="grid gap-4 sm:grid-cols-2">
-					<div>
-						<label for="signup-name" class="mb-1.5 block text-sm font-medium">
-							First Name <span class="text-red-500">*</span>
-						</label>
-						<Input
-							id="signup-name"
-							bind:value={signupData.name}
-							required
-							disabled={isSubmitting}
-							placeholder="John"
-						/>
-					</div>
-					<div>
-						<label for="signup-lastname" class="mb-1.5 block text-sm font-medium">
-							Last Name <span class="text-red-500">*</span>
-						</label>
-						<Input
-							id="signup-lastname"
-							bind:value={signupData.lastName}
-							required
-							disabled={isSubmitting}
-							placeholder="Doe"
-						/>
-					</div>
 				</div>
 
 				<div>
-					<label for="signup-email" class="mb-1.5 block text-sm font-medium">
-						Email <span class="text-red-500">*</span>
+					<label class="mb-1.5 block text-sm font-medium">
+						Sports <span class="text-red-500">*</span>
 					</label>
-					<Input
-						id="signup-email"
-						type="email"
-						bind:value={signupData.email}
-						required
-						disabled={isSubmitting}
-						placeholder="your@email.com"
-					/>
+					<div class="flex flex-wrap gap-3">
+						{#each availableSports as sportId}
+							<label class="flex items-center gap-2 cursor-pointer">
+								<input
+									type="checkbox"
+									value={sportId}
+									checked={$formData.sports.includes(sportId)}
+									onchange={(e) => {
+										if (e.currentTarget.checked) {
+											$formData.sports = [...$formData.sports, sportId];
+										} else {
+											$formData.sports = $formData.sports.filter(id => id !== sportId);
+										}
+									}}
+									disabled={isSubmitting || submitSuccess}
+									class="h-4 w-4 rounded border-gray-300"
+								/>
+								<span class="text-sm">{sportNames[sportId]}</span>
+							</label>
+						{/each}
+					</div>
+					{#if $formData.sports.length === 0}
+						<p class="mt-1 text-xs text-red-600">Please select at least one sport</p>
+					{/if}
 				</div>
 
 				<div>
-					<label for="signup-password" class="mb-1.5 block text-sm font-medium">
-						Password <span class="text-red-500">*</span>
-					</label>
-					<Input
-						id="signup-password"
-						type="password"
-						bind:value={signupData.password}
-						required
-						disabled={isSubmitting}
-						placeholder="••••••••"
-						minlength="8"
-					/>
-					<p class="mt-1 text-xs text-muted-foreground">At least 8 characters</p>
+					<label class="mb-1.5 block text-sm font-medium">Promo Code (optional)</label>
+					<Input bind:value={$formData.promoCode} placeholder="Enter promo code" disabled={isSubmitting || submitSuccess} />
 				</div>
 
 				<div>
-					<label for="signup-confirm" class="mb-1.5 block text-sm font-medium">
-						Confirm Password <span class="text-red-500">*</span>
-					</label>
-					<Input
-						id="signup-confirm"
-						type="password"
-						bind:value={signupData.confirmPassword}
-						required
-						disabled={isSubmitting}
-						placeholder="••••••••"
-					/>
-				</div>
-
-				<div class="flex gap-3 pt-4">
-					<Button 
-						type="button" 
-						variant="outline" 
-						class="flex-1"
-						onclick={() => open = false}
-						disabled={isSubmitting}
-					>
-						Cancel
-					</Button>
-					<Button type="submit" class="flex-1" disabled={isSubmitting}>
-						{#if isSubmitting}
-							Creating account...
-						{:else}
-							Sign Up
-						{/if}
-					</Button>
-				</div>
-			</form>
-
-			<div class="my-4 flex flex-col items-center">
-				<Separator class="w-full" />
-				<span class="my-2 text-xs text-muted-foreground">or</span>
-				<GoogleBtn>Sign up with Google</GoogleBtn>
-			</div>
-
-			<div class="text-center">
-				<button
-					onclick={() => currentView = 'login'}
-					class="text-sm text-primary hover:underline"
-				>
-					Already have an account? Login
-				</button>
-			</div>
-
-		{:else}
-			<Dialog.Header>
-				<Dialog.Title>Request a Lesson with {instructorName}</Dialog.Title>
-				<Dialog.Description>
-					Fill out the form below and {instructorName} will get back to you within 24 hours.
-				</Dialog.Description>
-			</Dialog.Header>
-
-			{#if submitSuccess}
-				<div class="my-4 rounded-lg bg-green-50 p-4 text-green-800 dark:bg-green-900/20 dark:text-green-200">
-					<div class="flex items-start gap-3">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							class="size-6 shrink-0"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-							/>
-						</svg>
-						<div>
-							<p class="font-semibold">Request Sent Successfully!</p>
-							<p class="mt-1 text-sm">
-								{instructorName} will contact you to confirm details.
-							</p>
-						</div>
-					</div>
-				</div>
-			{/if}
-
-			{#if submitError}
-				<div class="my-4 rounded-lg bg-red-50 p-4 text-red-800 dark:bg-red-900/20 dark:text-red-200">
-					<p class="text-sm">{submitError}</p>
-				</div>
-			{/if}
-
-			<form onsubmit={handleBooking} class="space-y-4">
-				<div class="w-full">
-					<label for="clientName" class="mb-1.5 block text-sm font-medium">
-						Your Name <span class="text-red-500">*</span>
-					</label>
-					<Input
-						id="clientName"
-						bind:value={bookingData.clientName}
-						required
-						placeholder="John Doe"
-						disabled={isSubmitting || submitSuccess}
-					/>
-				</div>
-
-				<div class="grid gap-4 sm:grid-cols-2">
-					<div>
-						<label for="clientEmail" class="mb-1.5 block text-sm font-medium">
-							Email <span class="text-red-500">*</span>
-						</label>
-						<Input
-							id="clientEmail"
-							type="email"
-							bind:value={bookingData.clientEmail}
-							required
-							placeholder="john@example.com"
-							disabled={isSubmitting || submitSuccess}
-						/>
-					</div>
-					<div>
-						<label for="clientPhone" class="mb-1.5 block text-sm font-medium">
-							Phone Number
-						</label>
-						<Input
-							id="clientPhone"
-							type="tel"
-							bind:value={bookingData.clientPhone}
-							placeholder="+1 234 567 8900"
-							disabled={isSubmitting || submitSuccess}
-						/>
-					</div>
-				</div>
-
-				<div class="grid gap-4 sm:grid-cols-2">
-					<div>
-						<label for="preferredDate" class="mb-1.5 block text-sm font-medium">
-							Preferred Date <span class="text-red-500">*</span>
-						</label>
-						<Input
-							id="preferredDate"
-							type="date"
-							bind:value={bookingData.preferredDate}
-							required
-							disabled={isSubmitting || submitSuccess}
-							min={minDate}
-						/>
-					</div>
-					<div>
-						<label for="lessonType" class="mb-1.5 block text-sm font-medium">
-							Lesson Type <span class="text-red-500">*</span>
-						</label>
-						<Select.Root bind:value={bookingData.lessonType} disabled={isSubmitting || submitSuccess}>
-							<Select.Trigger id="lessonType" class="w-full">
-								<Select.Value placeholder="Select type" />
-							</Select.Trigger>
-							<Select.Content>
-								{#each lessonTypes as type}
-									<Select.Item value={type.value}>{type.label}</Select.Item>
-								{/each}
-							</Select.Content>
-						</Select.Root>
-					</div>
-				</div>
-
-				<div class="grid gap-4 sm:grid-cols-2">
-					<div>
-						<label for="numberOfPeople" class="mb-1.5 block text-sm font-medium">
-							Number of People
-						</label>
-						<Input
-							id="numberOfPeople"
-							type="number"
-							bind:value={bookingData.numberOfPeople}
-							min="1"
-							max="10"
-							disabled={isSubmitting || submitSuccess}
-						/>
-					</div>
-					<div>
-						<label for="skillLevel" class="mb-1.5 block text-sm font-medium">
-							Skill Level <span class="text-red-500">*</span>
-						</label>
-						<Select.Root bind:value={bookingData.skillLevel} disabled={isSubmitting || submitSuccess}>
-							<Select.Trigger id="skillLevel" class="w-full">
-								<Select.Value placeholder="Select level" />
-							</Select.Trigger>
-							<Select.Content>
-								{#each skillLevels as level}
-									<Select.Item value={level.value}>{level.label}</Select.Item>
-								{/each}
-							</Select.Content>
-						</Select.Root>
-					</div>
-				</div>
-
-				<div>
-					<label for="message" class="mb-1.5 block text-sm font-medium">
-						Additional Information
-					</label>
+					<label class="mb-1.5 block text-sm font-medium">Additional Information</label>
 					<Textarea
-						id="message"
-						bind:value={bookingData.message}
+						bind:value={$formData.message}
 						placeholder="Tell the instructor about your goals, experience, or special requirements..."
 						rows={4}
 						disabled={isSubmitting || submitSuccess}
 					/>
 				</div>
+			</div>
 
-				<div class="flex gap-3 pt-4">
-					<Button 
-						type="button" 
-						variant="outline" 
-						class="flex-1"
-						onclick={() => open = false}
-						disabled={isSubmitting}
-					>
-						Cancel
-					</Button>
-					<Button 
-						type="submit" 
-						class="flex-1" 
-						disabled={isSubmitting || submitSuccess}
-					>
-						{#if isSubmitting}
-							Sending...
-						{:else if submitSuccess}
-							Sent!
-						{:else}
-							Send Request
+			<!-- Price Estimate -->
+			{#if priceEstimate}
+				<div class="rounded-lg border-2 border-primary/20 bg-primary/5 p-4">
+					<div class="mb-3 flex items-center justify-between">
+						<h3 class="font-medium">Estimated Price</h3>
+						{#if isCalculatingPrice}
+							<Badge variant="secondary">Calculating...</Badge>
 						{/if}
-					</Button>
-				</div>
+					</div>
 
-				<p class="text-center text-xs text-muted-foreground pt-2">
-					By submitting, you agree the instructor will contact you directly.
-				</p>
-			</form>
-		{/if}
+					<div class="space-y-2 text-sm">
+						{#each priceEstimate.breakdown as item}
+							<div class="flex justify-between">
+								<span class="text-muted-foreground">{item.description}</span>
+								<span class={item.amount < 0 ? 'text-green-600 font-medium' : ''}>
+									{item.amount > 0 ? '+' : ''}{item.amount}{priceEstimate.currency}
+								</span>
+							</div>
+						{/each}
+						<Separator class="my-2" />
+						<div class="flex justify-between text-lg font-bold">
+							<span>Total</span>
+							<span class="text-primary">{priceEstimate.totalPrice}{priceEstimate.currency}</span>
+						</div>
+						<div class="text-xs text-muted-foreground text-center">
+							{priceEstimate.pricePerPerson}{priceEstimate.currency} per person
+							{#if priceEstimate.numberOfDays > 1}
+								 × {priceEstimate.numberOfDays} days
+							{/if}
+						</div>
+					</div>
+
+					<p class="mt-3 text-xs text-muted-foreground italic">
+						💡 This is an estimate. Final price will be confirmed by the instructor.
+					</p>
+				</div>
+			{/if}
+
+			<div class="flex gap-3 pt-4">
+				<Button 
+					type="button" 
+					variant="outline" 
+					class="flex-1"
+					onclick={() => open = false}
+					disabled={isSubmitting}
+				>
+					Cancel
+				</Button>
+				<Button 
+					type="submit" 
+					class="flex-1" 
+					disabled={isSubmitting || submitSuccess || !calendarSelection || calendarSelection.timeSlots.length === 0}
+				>
+					{#if isSubmitting}
+						Sending...
+					{:else if submitSuccess}
+						Sent!
+					{:else}
+						Send Request
+					{/if}
+				</Button>
+			</div>
+
+			<p class="text-center text-xs text-muted-foreground pt-2">
+				By submitting, you agree the instructor will contact you directly.
+			</p>
+		</form>
 	</Dialog.Content>
 </Dialog.Root>

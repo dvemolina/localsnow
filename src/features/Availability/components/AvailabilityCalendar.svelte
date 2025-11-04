@@ -20,16 +20,22 @@
 
 	let {
 		instructorId,
-		onSlotSelect
+		onSelectionChange
 	}: {
 		instructorId: number;
-		onSlotSelect?: (date: string, startTime: string, endTime: string) => void;
+		onSelectionChange?: (selection: {
+			startDate: string;
+			endDate: string;
+			timeSlots: string[];
+			totalHours: number;
+		}) => void;
 	} = $props();
 
 	let currentMonth = $state(new Date());
 	let loading = $state(false);
 	let availability = $state<DayAvailability[]>([]);
-	let selectedSlot = $state<{ date: string; startTime: string; endTime: string } | null>(null);
+	let dateRange = $state<{ start: Date | null; end: Date | null }>({ start: null, end: null });
+	let selectedTimeSlots = $state<string[]>([]); // Array of "HH:MM" start times
 
 	const monthNames = [
 		'January',
@@ -58,12 +64,10 @@
 
 		const days: (Date | null)[] = [];
 
-		// Add empty cells for days before the month starts
 		for (let i = 0; i < startingDayOfWeek; i++) {
 			days.push(null);
 		}
 
-		// Add all days of the month
 		for (let day = 1; day <= daysInMonth; day++) {
 			days.push(new Date(year, month, day));
 		}
@@ -107,71 +111,136 @@
 			const startDate = new Date(year, month, 1);
 			const endDate = new Date(year, month + 1, 0);
 
-			console.log('📅 Loading availability for:', {
-				instructorId,
-				startDate: formatDate(startDate),
-				endDate: formatDate(endDate)
-			});
-
 			const res = await fetch(
 				`/api/availability/${instructorId}?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}&slotDuration=60`
 			);
 
 			if (res.ok) {
 				const data = await res.json();
-				console.log('📊 Availability response:', data);
 				availability = data.availability || [];
-				
-				// DEBUG: Show which days have slots
-				const daysWithSlots = availability.filter(d => d.isWorkingDay && d.slots.length > 0);
-				console.log('✅ Days with available slots:', 
-					daysWithSlots.map(d => ({
-						date: d.date,
-						totalSlots: d.slots.length,
-						availableSlots: d.slots.filter(s => s.status === 'available').length
-					}))
-				);
-
-				if (daysWithSlots.length === 0) {
-					console.warn('⚠️ No days with slots found! Check:');
-					console.warn('   1. Are working hours configured for this instructor?');
-					console.warn('   2. Are the working hours active (is_active = true)?');
-					console.warn('   3. Do the day_of_week values match (0=Sun, 1=Mon, etc)?');
-				}
 			} else {
-				const errorData = await res.json();
-				console.error('❌ API Error:', errorData);
 				toast.error('Failed to load availability');
 			}
 		} catch (error) {
 			toast.error('Failed to load availability');
-			console.error('❌ Error loading availability:', error);
+			console.error('Error loading availability:', error);
 		} finally {
 			loading = false;
 		}
 	}
 
-	function selectSlot(date: string, startTime: string, endTime: string) {
-		selectedSlot = { date, startTime, endTime };
-		console.log('✅ Slot selected:', { date, startTime, endTime });
-		if (onSlotSelect) {
-			onSlotSelect(date, startTime, endTime);
+	function handleDateClick(day: Date) {
+		const isPast = day < new Date(new Date().setHours(0, 0, 0, 0));
+		const hasSlots = hasAvailableSlots(day);
+
+		if (isPast || !hasSlots) return;
+
+		// Multi-day range selection logic
+		if (!dateRange.start || (dateRange.start && dateRange.end)) {
+			// Start new selection
+			dateRange = { start: day, end: null };
+			selectedTimeSlots = []; // Reset time slots when starting new selection
+		} else {
+			// Complete the range
+			if (day < dateRange.start) {
+				// Clicked before start - swap them
+				dateRange = { start: day, end: dateRange.start };
+			} else {
+				dateRange = { start: dateRange.start, end: day };
+			}
 		}
+
+		notifySelectionChange();
 	}
 
-	// Load availability when component mounts or month changes
+	function toggleTimeSlot(startTime: string) {
+		if (selectedTimeSlots.includes(startTime)) {
+			selectedTimeSlots = selectedTimeSlots.filter((t) => t !== startTime);
+		} else {
+			selectedTimeSlots = [...selectedTimeSlots, startTime].sort();
+		}
+		notifySelectionChange();
+	}
+
+	function notifySelectionChange() {
+		if (!dateRange.start || !onSelectionChange) return;
+
+		const endDate = dateRange.end || dateRange.start;
+		const totalDays = Math.ceil(
+			(endDate.getTime() - dateRange.start.getTime()) / (1000 * 60 * 60 * 24)
+		) + 1;
+
+		onSelectionChange({
+			startDate: formatDate(dateRange.start),
+			endDate: formatDate(endDate),
+			timeSlots: selectedTimeSlots,
+			totalHours: selectedTimeSlots.length * totalDays
+		});
+	}
+
+	function isDateInRange(date: Date): boolean {
+		if (!dateRange.start) return false;
+		if (!dateRange.end) return date.toDateString() === dateRange.start.toDateString();
+		return date >= dateRange.start && date <= dateRange.end;
+	}
+
+	function clearSelection() {
+		dateRange = { start: null, end: null };
+		selectedTimeSlots = [];
+		notifySelectionChange();
+	}
+
+	// Get common available time slots across selected date range
+	function getCommonTimeSlots(): string[] {
+		if (!dateRange.start) return [];
+
+		const endDate = dateRange.end || dateRange.start;
+		const dates: Date[] = [];
+		const current = new Date(dateRange.start);
+
+		while (current <= endDate) {
+			dates.push(new Date(current));
+			current.setDate(current.getDate() + 1);
+		}
+
+		// Get availability for all dates in range
+		const allAvailability = dates
+			.map((d) => getDayAvailability(d))
+			.filter((a): a is DayAvailability => a !== undefined && a.isWorkingDay);
+
+		if (allAvailability.length === 0) return [];
+
+		// Find time slots available on ALL selected days
+		const firstDaySlots = allAvailability[0].slots
+			.filter((s) => s.status === 'available')
+			.map((s) => s.startTime);
+
+		return firstDaySlots.filter((time) =>
+			allAvailability.every((day) =>
+				day.slots.some((slot) => slot.startTime === time && slot.status === 'available')
+			)
+		);
+	}
+
 	$effect(() => {
 		loadAvailability();
 	});
 
 	let monthDays = $derived(getMonthDays(currentMonth));
-	let selectedDate = $state<Date | null>(null);
+	let commonTimeSlots = $derived(getCommonTimeSlots());
+	let totalDays = $derived(
+		dateRange.start && dateRange.end
+			? Math.ceil((dateRange.end.getTime() - dateRange.start.getTime()) / (1000 * 60 * 60 * 24)) + 1
+			: dateRange.start
+				? 1
+				: 0
+	);
 </script>
 
 <Card.Root class="w-full">
 	<Card.Header>
 		<div class="flex flex-col sm:flex-row items-center justify-between gap-2">
-			<Card.Title>Available Times</Card.Title>
+			<Card.Title>Select Dates & Times</Card.Title>
 			<div class="flex items-center gap-2">
 				<Button variant="outline" size="icon" onclick={previousMonth} disabled={loading}>
 					<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -225,41 +294,69 @@
 				</svg>
 			</div>
 		{:else}
+			<!-- Selection Summary -->
+			{#if dateRange.start}
+				<div class="rounded-lg bg-primary/10 border border-primary/20 p-3">
+					<div class="flex items-center justify-between mb-2">
+						<span class="text-sm font-semibold">Selected Period</span>
+						<Button variant="ghost" size="sm" onclick={clearSelection}>
+							Clear
+						</Button>
+					</div>
+					<div class="text-sm space-y-1">
+						<p>
+							<strong>Dates:</strong>
+							{dateRange.start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+							{#if dateRange.end && dateRange.end.toDateString() !== dateRange.start.toDateString()}
+								- {dateRange.end.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+								<Badge variant="secondary" class="ml-2">{totalDays} days</Badge>
+							{/if}
+						</p>
+						{#if selectedTimeSlots.length > 0}
+							<p>
+								<strong>Time slots per day:</strong>
+								{selectedTimeSlots.length} × 1h
+								<Badge variant="secondary" class="ml-2">
+									{selectedTimeSlots.length * totalDays}h total
+								</Badge>
+							</p>
+						{/if}
+					</div>
+				</div>
+			{:else}
+				<div class="rounded-lg bg-muted p-3 text-sm text-muted-foreground text-center">
+					Click a start date, then click an end date (or same date for single day)
+				</div>
+			{/if}
+
 			<!-- Calendar Grid -->
 			<div class="grid grid-cols-7 gap-2">
-				<!-- Day headers -->
 				{#each dayNames as dayName}
 					<div class="text-center text-sm font-semibold text-muted-foreground py-2">
 						{dayName}
 					</div>
 				{/each}
 
-				<!-- Calendar days -->
 				{#each monthDays as day}
 					{#if day === null}
 						<div class="aspect-square"></div>
 					{:else}
-						{@const isToday =
-							day.toDateString() === new Date().toDateString()}
+						{@const isToday = day.toDateString() === new Date().toDateString()}
 						{@const isPast = day < new Date(new Date().setHours(0, 0, 0, 0))}
 						{@const hasSlots = hasAvailableSlots(day)}
-						{@const isSelected = selectedDate?.toDateString() === day.toDateString()}
+						{@const inRange = isDateInRange(day)}
 
 						<button
 							type="button"
 							class="aspect-square rounded-lg border p-2 text-sm transition-colors
-                {isSelected
+                {inRange
 								? 'border-primary bg-primary text-primary-foreground'
 								: isPast || !hasSlots
 									? 'border-muted bg-muted text-muted-foreground cursor-not-allowed'
 									: 'border-border hover:border-primary hover:bg-accent cursor-pointer'}
-                {isToday && !isSelected ? 'border-primary border-2' : ''}"
+                {isToday && !inRange ? 'border-primary border-2' : ''}"
 							disabled={isPast || !hasSlots}
-							onclick={() => {
-								if (!isPast && hasSlots) {
-									selectedDate = day;
-								}
-							}}
+							onclick={() => handleDateClick(day)}
 						>
 							<div class="flex flex-col items-center justify-center h-full">
 								<span class="font-medium">{day.getDate()}</span>
@@ -272,42 +369,38 @@
 				{/each}
 			</div>
 
-			<!-- Time Slots for Selected Date -->
-			{#if selectedDate}
-				{@const dayAvail = getDayAvailability(selectedDate)}
-				{#if dayAvail && dayAvail.isWorkingDay}
-					<div class="border-t pt-4 mt-4">
-						<h3 class="font-semibold mb-3">
-							Available times on {selectedDate.toLocaleDateString('en-US', {
-								weekday: 'long',
-								month: 'long',
-								day: 'numeric'
-							})}
-						</h3>
+			<!-- Time Slots Selection -->
+			{#if dateRange.start}
+				<div class="border-t pt-4 mt-4">
+					<h3 class="font-semibold mb-3">
+						Select time slots
+						{#if totalDays > 1}
+							<span class="text-sm font-normal text-muted-foreground">
+								(available on all {totalDays} days)
+							</span>
+						{/if}
+					</h3>
+
+					{#if commonTimeSlots.length > 0}
 						<div class="grid grid-cols-3 gap-2">
-							{#each dayAvail.slots as slot}
-								{#if slot.status === 'available'}
-									{@const isSelectedSlot =
-										selectedSlot?.date === slot.date &&
-										selectedSlot?.startTime === slot.startTime}
-									<Button
-										variant={isSelectedSlot ? 'default' : 'outline'}
-										size="sm"
-										class="justify-center"
-										onclick={() => selectSlot(slot.date, slot.startTime, slot.endTime)}
-									>
-										{slot.startTime}
-									</Button>
-								{/if}
+							{#each commonTimeSlots as time}
+								<Button
+									variant={selectedTimeSlots.includes(time) ? 'default' : 'outline'}
+									size="sm"
+									class="justify-center"
+									onclick={() => toggleTimeSlot(time)}
+								>
+									{time}
+								</Button>
 							{/each}
 						</div>
-						{#if dayAvail.slots.filter((s) => s.status === 'available').length === 0}
-							<p class="text-sm text-muted-foreground text-center py-4">
-								No available time slots for this day
-							</p>
-						{/if}
-					</div>
-				{/if}
+					{:else}
+						<p class="text-sm text-muted-foreground text-center py-4">
+							No common time slots available across all selected dates. Try selecting fewer days or
+							different dates.
+						</p>
+					{/if}
+				</div>
 			{/if}
 
 			<!-- Legend -->
@@ -319,6 +412,10 @@
 				<div class="flex items-center gap-1">
 					<div class="w-3 h-3 rounded border border-muted bg-muted"></div>
 					<span>Unavailable</span>
+				</div>
+				<div class="flex items-center gap-1">
+					<div class="w-3 h-3 rounded bg-primary"></div>
+					<span>Selected</span>
 				</div>
 			</div>
 		{/if}
