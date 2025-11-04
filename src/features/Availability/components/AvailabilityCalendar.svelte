@@ -107,19 +107,45 @@
 			const startDate = new Date(year, month, 1);
 			const endDate = new Date(year, month + 1, 0);
 
+			console.log('📅 Loading availability for:', {
+				instructorId,
+				startDate: formatDate(startDate),
+				endDate: formatDate(endDate)
+			});
+
 			const res = await fetch(
 				`/api/availability/${instructorId}?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}&slotDuration=60`
 			);
 
 			if (res.ok) {
 				const data = await res.json();
+				console.log('📊 Availability response:', data);
 				availability = data.availability || [];
+				
+				// DEBUG: Show which days have slots
+				const daysWithSlots = availability.filter(d => d.isWorkingDay && d.slots.length > 0);
+				console.log('✅ Days with available slots:', 
+					daysWithSlots.map(d => ({
+						date: d.date,
+						totalSlots: d.slots.length,
+						availableSlots: d.slots.filter(s => s.status === 'available').length
+					}))
+				);
+
+				if (daysWithSlots.length === 0) {
+					console.warn('⚠️ No days with slots found! Check:');
+					console.warn('   1. Are working hours configured for this instructor?');
+					console.warn('   2. Are the working hours active (is_active = true)?');
+					console.warn('   3. Do the day_of_week values match (0=Sun, 1=Mon, etc)?');
+				}
 			} else {
+				const errorData = await res.json();
+				console.error('❌ API Error:', errorData);
 				toast.error('Failed to load availability');
 			}
 		} catch (error) {
 			toast.error('Failed to load availability');
-			console.error(error);
+			console.error('❌ Error loading availability:', error);
 		} finally {
 			loading = false;
 		}
@@ -127,6 +153,7 @@
 
 	function selectSlot(date: string, startTime: string, endTime: string) {
 		selectedSlot = { date, startTime, endTime };
+		console.log('✅ Slot selected:', { date, startTime, endTime });
 		if (onSlotSelect) {
 			onSlotSelect(date, startTime, endTime);
 		}
@@ -143,7 +170,7 @@
 
 <Card.Root class="w-full">
 	<Card.Header>
-		<div class="flex flex-col sm:flex-row items-center justify-between">
+		<div class="flex flex-col sm:flex-row items-center justify-between gap-2">
 			<Card.Title>Available Times</Card.Title>
 			<div class="flex items-center gap-2">
 				<Button variant="outline" size="icon" onclick={previousMonth} disabled={loading}>

@@ -24,8 +24,6 @@
 		isEnabled: boolean;
 		startTime: string;
 		endTime: string;
-		seasonStart: string;
-		seasonEnd: string;
 	};
 
 	let workingDays = $state<WorkingDay[]>(
@@ -35,9 +33,7 @@
 				dayOfWeek: day.value,
 				isEnabled: !!existing,
 				startTime: existing?.startTime || '09:00',
-				endTime: existing?.endTime || '17:00',
-				seasonStart: existing?.seasonStart || '',
-				seasonEnd: existing?.seasonEnd || ''
+				endTime: existing?.endTime || '17:00'
 			};
 		})
 	);
@@ -54,8 +50,8 @@
 					dayOfWeek: day.dayOfWeek,
 					startTime: day.startTime,
 					endTime: day.endTime,
-					seasonStart: day.seasonStart || null,
-					seasonEnd: day.seasonEnd || null
+					seasonStart: null, // Removed for now
+					seasonEnd: null    // Removed for now
 				}));
 
 			const res = await fetch('/api/availability/working-hours', {
@@ -195,42 +191,6 @@
 								/>
 							</div>
 						</div>
-
-						<!-- Optional: Seasonal Availability -->
-						<details class="mt-4">
-							<summary class="cursor-pointer text-sm text-muted-foreground">
-								Seasonal availability (optional)
-							</summary>
-							<div class="mt-3 grid grid-cols-2 gap-4">
-								<div>
-									<Label for="season-start-{index}" class="text-xs">
-										Season Start (MM-DD)
-									</Label>
-									<Input
-										id="season-start-{index}"
-										type="text"
-										placeholder="12-01"
-										bind:value={day.seasonStart}
-										class="mt-1"
-									/>
-								</div>
-								<div>
-									<Label for="season-end-{index}" class="text-xs">
-										Season End (MM-DD)
-									</Label>
-									<Input
-										id="season-end-{index}"
-										type="text"
-										placeholder="04-30"
-										bind:value={day.seasonEnd}
-										class="mt-1"
-									/>
-								</div>
-							</div>
-							<p class="mt-2 text-xs text-muted-foreground">
-								Leave empty if you're available all year round
-							</p>
-						</details>
 					{/if}
 				</div>
 			{/each}
@@ -290,8 +250,11 @@
 						<li>• These are your base available hours for each day</li>
 						<li>• Clients will only see slots within these hours</li>
 						<li>• Google Calendar blocks will further restrict availability</li>
-						<li>• You can add seasonal dates (e.g., winter season only)</li>
+						<li>• All times are in your local resort timezone</li>
 					</ul>
+					<p class="mt-3 text-xs font-medium">
+						💡 Seasonal availability coming soon! You'll be able to set specific date ranges when you're available (e.g., Dec 1 - Apr 30)
+					</p>
 				</div>
 			</div>
 		</Card.Content>

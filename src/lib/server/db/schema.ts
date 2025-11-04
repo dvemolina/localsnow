@@ -276,8 +276,8 @@ export const instructorWorkingHours = pgTable('instructor_working_hours', {
 	dayOfWeek: integer('day_of_week').notNull(), // 0=Sunday, 6=Saturday
 	startTime: varchar('start_time', { length: 5 }).notNull(), // "09:00"
 	endTime: varchar('end_time', { length: 5 }).notNull(), // "17:00"
-	seasonStart: varchar('season_start', { length: 10 }), // "2024-12-01" (optional)
-	seasonEnd: varchar('season_end', { length: 10 }), // "2025-04-30" (optional)
+	seasonStart: timestamp('season_start'), 
+	seasonEnd: timestamp('season_end'),
 	isActive: boolean('is_active').default(true),
 	...timestamps
 });
