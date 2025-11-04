@@ -12,6 +12,7 @@
 	import CountryCodeSelect from '$src/lib/components/shared/CountryCodeSelect.svelte';
 	import AvailabilityCalendar from '$src/features/Availability/components/AvailabilityCalendar.svelte';
 	import { toast } from 'svelte-sonner';
+	import { getSportName } from '$src/features/Sports/lib/sportsConstants';
 
 	let { 
 		instructorId,
@@ -48,7 +49,7 @@
         hoursPerDay: 1,
         sports: baseLesson?.sports || [],
         skillLevel: 'intermediate',
-        clientName: isAuthenticated && user ? `${user.name} ${user.lastName || ''}` : '',
+        clientName: isAuthenticated && user ? `${user.name} ${user.lastName}` : '',
         clientEmail: isAuthenticated && user ? user.email : '',
         clientCountryCode: isAuthenticated && user?.countryCode ? user.countryCode : 34,
         clientPhone: isAuthenticated && user?.phone ? user.phone : '',
@@ -183,12 +184,6 @@
 	];
 
 	let availableSports = $derived(baseLesson?.sports || []);
-    
-	const sportNames: Record<number, string> = {
-		1: 'Ski',
-		2: 'Snowboard',
-		3: 'Telemark'
-	};
 </script>
 
 <Dialog.Root bind:open modal={true}>
@@ -432,7 +427,7 @@
 										disabled={isSubmitting || submitSuccess}
 										class="h-4 w-4 rounded border-gray-300"
 									/>
-									<span class="text-sm">{sportNames[sportId]}</span>
+									<span class="text-sm">{getSportName(sportId)}</span>
 								</label>
 							{/each}
 						</div>

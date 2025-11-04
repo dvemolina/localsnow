@@ -5,6 +5,7 @@ import { InstructorService } from '$src/features/Instructors/lib/instructorServi
 import { PricingService } from '$src/features/Pricing/lib/pricingService';
 import { BookingRequestService } from '$src/features/Bookings/lib/bookingRequestService';
 import { UserService } from '$src/features/Users/lib/UserService';
+import { SportsService } from '$src/features/Sports/lib/sportsService';
 import { trackProfileVisit } from '$src/features/Dashboard/lib/utils';
 import { getClientIP } from '$src/lib/utils/auth';
 import { sendBookingNotificationToInstructor, sendBookingConfirmationToClient } from '$src/lib/server/webhooks/n8n/email-n8n';
@@ -13,6 +14,7 @@ const instructorService = new InstructorService();
 const pricingService = new PricingService();
 const bookingRequestService = new BookingRequestService();
 const userService = new UserService();
+const sportsService = new SportsService();
 
 const LEAD_PRICE = 5; // €5 per lead
 
@@ -37,10 +39,13 @@ export const load: PageServerLoad = async (event) => {
         }
 
         // Get sports and resorts
-        const [sports, resorts] = await Promise.all([
+        const [sportIds, resorts] = await Promise.all([
             instructorService.getInstructorSports(instructorId),
             instructorService.getInstructorResorts(instructorId)
         ]);
+
+        // Get sport names from IDs
+        const sports = await sportsService.getSportsByIds(sportIds);
 
         // ✅ Load pricing data if base lesson exists
         let groupTiers = [];

@@ -35,13 +35,6 @@
 		}
 	});
 	
-	// Map sport IDs to labels
-	const sportLabels: Record<number, string> = {
-		1: 'Ski',
-		2: 'Snowboard',
-		3: 'Telemark'
-	};
-
 	const isIndependent = instructor.role === 'instructor-independent';
 </script>
 
@@ -213,9 +206,9 @@
 						Sports Offered
 					</h2>
 					<div class="flex flex-wrap gap-2">
-						{#each sports as sportId}
+						{#each sports as sport}
 							<Badge variant="outline" class="text-sm">
-								{sportLabels[sportId] || 'Unknown Sport'}
+								{sport.name}
 							</Badge>
 						{/each}
 					</div>
