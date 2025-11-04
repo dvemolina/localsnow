@@ -60,7 +60,8 @@ export const actions: Actions = {
         const session = await createSession(sessionToken, user.id);
         await setSessionTokenCookie(event, sessionToken, session.expiresAt);
         
-        return redirect(302, '/dashboard')
+        const returnTo = event.url.searchParams.get('returnTo') || '/dashboard';
+        return redirect(302, returnTo);
         
     }
 };  

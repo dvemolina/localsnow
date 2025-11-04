@@ -19,19 +19,22 @@
 	const isAuthenticated = !!data.user; // Will be true if user exists
 
 	$effect(() => {
-		// Check if auth_success parameter exists
+		// Check if we should open the booking dialog
 		const authSuccess = page.url.searchParams.get('auth_success');
+		const openBooking = page.url.searchParams.get('openBooking');
 		
-		if (authSuccess === 'true' && isAuthenticated) {
-			// Open the dialog automatically
+		// Open dialog if user just authenticated or if openBooking param is present
+		if ((authSuccess === 'true' || openBooking === 'true') && isAuthenticated) {
 			showBookingDialog = true;
 			
-			// Clean up the URL by removing the auth_success parameter
+			// Clean up the URL
 			const newUrl = new URL(page.url);
 			newUrl.searchParams.delete('auth_success');
+			newUrl.searchParams.delete('openBooking');
 			goto(newUrl.pathname + newUrl.search, { replaceState: true, noScroll: true });
 		}
 	});
+	
 	// Map sport IDs to labels
 	const sportLabels: Record<number, string> = {
 		1: 'Ski',
@@ -467,4 +470,5 @@
 	instructorName={instructor.name}
 	baseLesson={data.baseLesson}
 	isAuthenticated={isAuthenticated}
+	user={data.user}
 />
