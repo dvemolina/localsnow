@@ -7,8 +7,10 @@ export class TentativeBookingService {
 
 	/**
 	 * Create tentative block for pending booking (with race condition protection)
+	 * @param bookingRequestId - The booking request ID
+	 * @param timeSlots - Array of time slots in "HH:MM" format (e.g., ["09:00", "10:00", "14:00"])
 	 */
-	async createTentativeBlock(bookingRequestId: number) {
+	async createTentativeBlock(bookingRequestId: number, timeSlots?: string[]) {
 		// Get booking request details
 		const booking = await db.query.bookingRequests.findFirst({
 			where: eq(bookingRequests.id, bookingRequestId)
@@ -26,17 +28,36 @@ export class TentativeBookingService {
 		const currentDate = new Date(startDate);
 
 		while (currentDate <= endDate) {
-			const dayStart = new Date(currentDate);
-			dayStart.setHours(9, 0, 0, 0); // Default 9am start
+			if (timeSlots && timeSlots.length > 0) {
+				// Create individual blocks for each time slot
+				for (const timeSlot of timeSlots) {
+					const [hours, minutes] = timeSlot.split(':').map(Number);
+					
+					const slotStart = new Date(currentDate);
+					slotStart.setHours(hours, minutes, 0, 0);
+					
+					const slotEnd = new Date(slotStart);
+					slotEnd.setHours(slotStart.getHours() + 1, minutes, 0, 0); // Each slot is 1 hour
+					
+					blocksToCreate.push({
+						startDatetime: slotStart,
+						endDatetime: slotEnd
+					});
+				}
+			} else {
+				// Fallback: Create continuous block (legacy behavior)
+				const dayStart = new Date(currentDate);
+				dayStart.setHours(9, 0, 0, 0); // Default 9am start
 
-			const dayEnd = new Date(currentDate);
-			const hours = Number(booking.hoursPerDay);
-			dayEnd.setHours(9 + hours, 0, 0, 0); // Add hours to start time
+				const dayEnd = new Date(currentDate);
+				const hours = Number(booking.hoursPerDay);
+				dayEnd.setHours(9 + hours, 0, 0, 0); // Add hours to start time
 
-			blocksToCreate.push({
-				startDatetime: dayStart,
-				endDatetime: dayEnd
-			});
+				blocksToCreate.push({
+					startDatetime: dayStart,
+					endDatetime: dayEnd
+				});
+			}
 
 			currentDate.setDate(currentDate.getDate() + 1);
 		}

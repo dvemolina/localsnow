@@ -2,6 +2,8 @@
 	import { Button } from '$src/lib/components/ui/button';
 	import * as Card from '$src/lib/components/ui/card';
 	import { Badge } from '$src/lib/components/ui/badge';
+	import { Switch } from '$src/lib/components/ui/switch';
+	import { Label } from '$src/lib/components/ui/label';
 	import { toast } from 'svelte-sonner';
 
 	type TimeSlot = {
@@ -36,6 +38,7 @@
 	let availability = $state<DayAvailability[]>([]);
 	let dateRange = $state<{ start: Date | null; end: Date | null }>({ start: null, end: null });
 	let selectedTimeSlots = $state<string[]>([]); // Array of "HH:MM" start times
+	let sameTimesEveryDay = $state(true); // Toggle for consistent times across all days
 
 	const monthNames = [
 		'January',
@@ -372,33 +375,64 @@
 			<!-- Time Slots Selection -->
 			{#if dateRange.start}
 				<div class="border-t pt-4 mt-4">
-					<h3 class="font-semibold mb-3">
-						Select time slots
+					<div class="flex items-center justify-between mb-3">
+						<h3 class="font-semibold">
+							Select time slots
+							{#if totalDays > 1 && sameTimesEveryDay}
+								<span class="text-sm font-normal text-muted-foreground">
+									(same times on all {totalDays} days)
+								</span>
+							{/if}
+						</h3>
+						
 						{#if totalDays > 1}
-							<span class="text-sm font-normal text-muted-foreground">
-								(available on all {totalDays} days)
-							</span>
+							<div class="flex items-center gap-2">
+								<Switch 
+									id="same-times" 
+									bind:checked={sameTimesEveryDay}
+									onCheckedChange={() => {
+										if (!sameTimesEveryDay) {
+											toast.info('Different times per day coming soon!');
+										}
+									}}
+								/>
+								<Label for="same-times" class="text-xs cursor-pointer">Same times daily</Label>
+							</div>
 						{/if}
-					</h3>
+					</div>
 
-					{#if commonTimeSlots.length > 0}
+					{#if sameTimesEveryDay && commonTimeSlots.length > 0}
 						<div class="grid grid-cols-3 gap-2">
 							{#each commonTimeSlots as time}
+								{@const [hour, minute] = time.split(':').map(Number)}
+								{@const endHour = String(hour + 1).padStart(2, '0')}
+								{@const displayTime = `${time} - ${endHour}:${minute.toString().padStart(2, '0')}`}
+								
 								<Button
 									variant={selectedTimeSlots.includes(time) ? 'default' : 'outline'}
 									size="sm"
-									class="justify-center"
+									class="justify-center text-xs"
 									onclick={() => toggleTimeSlot(time)}
 								>
-									{time}
+									{displayTime}
 								</Button>
 							{/each}
 						</div>
-					{:else}
+					{:else if sameTimesEveryDay}
 						<p class="text-sm text-muted-foreground text-center py-4">
 							No common time slots available across all selected dates. Try selecting fewer days or
 							different dates.
 						</p>
+					{:else}
+						<!-- Future: Different times per day UI -->
+						<div class="rounded-lg border-2 border-dashed border-border p-6 text-center">
+							<p class="text-sm text-muted-foreground mb-2">
+								🚧 Different times per day feature coming soon!
+							</p>
+							<p class="text-xs text-muted-foreground">
+								For now, please use the same time slots for all days.
+							</p>
+						</div>
 					{/if}
 				</div>
 			{/if}

@@ -55,7 +55,10 @@ export const POST: RequestHandler = async ({ request, params, url }) => {
 
         // Create tentative booking blocks for each day and time slot
         try {
-            await tentativeBookingService.createTentativeBlock(bookingRequest.id);
+            await tentativeBookingService.createTentativeBlock(
+                bookingRequest.id, 
+                data.timeSlots // Pass the exact time slots
+            );
         } catch (tentativeError) {
             // If slots are no longer available, update booking status and notify
             await bookingRequestService.updateBookingStatus(bookingRequest.id, 'expired');
