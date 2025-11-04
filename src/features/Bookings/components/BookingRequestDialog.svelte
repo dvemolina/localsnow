@@ -48,7 +48,7 @@
         hoursPerDay: 1,
         sports: baseLesson?.sports || [],
         skillLevel: 'intermediate',
-        clientName: isAuthenticated && user ? `${user.name} ${user.lastName}` : '',
+        clientName: isAuthenticated && user ? `${user.name} ${user.lastName || ''}` : '',
         clientEmail: isAuthenticated && user ? user.email : '',
         clientCountryCode: isAuthenticated && user?.countryCode ? user.countryCode : 34,
         clientPhone: isAuthenticated && user?.phone ? user.phone : '',

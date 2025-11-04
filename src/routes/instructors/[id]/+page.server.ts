@@ -4,6 +4,7 @@ import type { PageServerLoad, Actions } from './$types';
 import { InstructorService } from '$src/features/Instructors/lib/instructorService';
 import { PricingService } from '$src/features/Pricing/lib/pricingService';
 import { BookingRequestService } from '$src/features/Bookings/lib/bookingRequestService';
+import { UserService } from '$src/features/Users/lib/UserService';
 import { trackProfileVisit } from '$src/features/Dashboard/lib/utils';
 import { getClientIP } from '$src/lib/utils/auth';
 import { sendBookingNotificationToInstructor, sendBookingConfirmationToClient } from '$src/lib/server/webhooks/n8n/email-n8n';
@@ -11,6 +12,7 @@ import { sendBookingNotificationToInstructor, sendBookingConfirmationToClient } 
 const instructorService = new InstructorService();
 const pricingService = new PricingService();
 const bookingRequestService = new BookingRequestService();
+const userService = new UserService();
 
 const LEAD_PRICE = 5; // €5 per lead
 
@@ -60,6 +62,12 @@ export const load: PageServerLoad = async (event) => {
             );
         }
 
+        // Fetch complete user data if authenticated
+        let completeUser = null;
+        if (event.locals.user) {
+            completeUser = await userService.getUserById(event.locals.user.id);
+        }
+
         return {
             instructor: instructorData.instructor,
             baseLesson: instructorData.baseLesson,
@@ -68,7 +76,7 @@ export const load: PageServerLoad = async (event) => {
             promoCodes,
             sports,
             resorts,
-            user: event.locals.user ?? null
+            user: completeUser
         };
     } catch (err) {
         console.error('Error loading instructor profile:', err);
