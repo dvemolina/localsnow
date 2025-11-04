@@ -1,5 +1,7 @@
 <script lang="ts">
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+	import { isMobile } from '$src/lib/hooks/is-mobile.svelte';
+	import { get } from 'svelte/store';
 
 	const items = [
 		{
@@ -30,6 +32,17 @@
 		}
 		
 	];
+	
+	const sidebar = Sidebar.useSidebar();
+	
+	function handleClick() {
+		// Only close on mobile
+		if (get(isMobile)) {
+			// Use the sidebar API correctly
+			sidebar.setOpenMobile(false);
+		}
+	}
+
 </script>
 
 <Sidebar.Root class="bg-background" >
@@ -56,7 +69,7 @@
 					<Sidebar.MenuItem>
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}
-								<a href={item.url} {...props}>
+								<a href={item.url} {...props} onclick={handleClick}>
 									<img src={item.icon} alt={item.title} class="size-5">
 									<span>{item.title}</span>
 								</a>

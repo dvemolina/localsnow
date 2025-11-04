@@ -393,12 +393,17 @@
 							<label class="mb-1.5 block text-sm font-medium">
 								Skill Level <span class="text-red-500">*</span>
 							</label>
-							<Select.Root bind:value={$formData.skillLevel} disabled={isSubmitting || submitSuccess}>
+							<Select.Root type='single' bind:value={$formData.skillLevel} disabled={isSubmitting || submitSuccess}>
 								<Select.Trigger class="w-full">
-									<Select.Value placeholder="Select level" />
+									{#if $formData.skillLevel}
+										{skillLevels.find((lvl) => lvl.value === $formData.skillLevel)?.label}
+									{:else}
+										Select skill level
+									{/if}
 								</Select.Trigger>
+
 								<Select.Content>
-									{#each skillLevels as level}
+									{#each skillLevels as level (level.value)}
 										<Select.Item value={level.value}>{level.label}</Select.Item>
 									{/each}
 								</Select.Content>
@@ -490,7 +495,7 @@
 					</div>
 				{/if}
 
-				<div class="flex gap-3 pt-4">
+				<div class="flex flex-col-reverse sm:flex-row gap-3 pt-4">
 					<Button 
 						type="button" 
 						variant="outline" 
