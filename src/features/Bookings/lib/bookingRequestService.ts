@@ -1,5 +1,8 @@
 import { BookingRequestRepository, type BookingRequestData } from "./bookingRequestRepository";
 
+const MAX_FREE_REQUESTS = 3; // Free limit
+const ADDITIONAL_REQUEST_FEE = 2; // €2 per additional request
+
 export class BookingRequestService {
     
     private repository: BookingRequestRepository;
@@ -45,5 +48,40 @@ export class BookingRequestService {
 
     async updateBookingStatus(bookingRequestId: number, status: string) {
         return await this.repository.updateBookingStatus(bookingRequestId, status);
+    }
+
+
+    async validateBookingRequest(instructorId: number, clientEmail: string): Promise<{
+        allowed: boolean;
+        reason?: string;
+        requiresPayment?: boolean;
+        activeCount?: number;
+    }> {
+        // Check if already requested from this instructor
+        const existingRequest = await this.repository.checkExistingRequest(instructorId, clientEmail);
+        if (existingRequest) {
+            return {
+                allowed: false,
+                reason: 'You already have an active request with this instructor'
+            };
+        }
+
+        // Check total active requests
+        const activeCount = await this.repository.getActiveRequestCount(clientEmail);
+        
+        if (activeCount >= MAX_FREE_REQUESTS) {
+            return {
+                allowed: false,
+                requiresPayment: true,
+                reason: `You have ${activeCount} active requests. To send more requests, you need to pay €${ADDITIONAL_REQUEST_FEE} per additional request or wait for instructors to respond.`,
+                activeCount
+            };
+        }
+
+        return { allowed: true, activeCount };
+    }
+
+    async markAsViewed(bookingRequestId: number) {
+        return await this.repository.markAsViewed(bookingRequestId);
     }
 }

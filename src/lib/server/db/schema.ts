@@ -6,6 +6,7 @@ export const sportsEnum = pgEnum('sport', ['Ski', 'Snowboard', 'Telemark'])
 export const sportSlugEnum = pgEnum('sport_slug', ['ski', 'snowboard', 'telemark']);
 export const modalitySlugEnum = pgEnum('modality_slug', ['piste', 'off-piste', 'freeride', 'freestyle', 'touring', 'adaptive']);
 export const pricingModeEnum = pgEnum('pricing_mode', ['per_hour', 'per_session', 'per_day']);
+export const bookingStatusEnum = pgEnum('status', ['pending', 'viewed', 'accepted', 'rejected']);
 
 export const timestamps = {
     createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -126,9 +127,30 @@ export const bookingRequests = pgTable('booking_requests', {
 	//Lead info after payment
 	contactInfoUnlocked: boolean('contact_info_unlocked').notNull().default(false),
     
-    status: varchar('status', { length: 50 }).default('pending'),
+    status: bookingStatusEnum('status').default('pending'),
     ...timestamps
 });
+
+// User Booking Request Limits - Track how many active requests a user has
+export const userBookingLimits = pgTable('user_booking_limits', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }),
+	clientEmail: varchar('client_email', { length: 255 }).notNull(), // For non-authenticated users
+	activeRequestsCount: integer('active_requests_count').default(0),
+	lastRequestAt: timestamp('last_request_at'),
+	...timestamps
+});
+
+// Add unique constraint on email
+export const userBookingLimitsRelations = relations(userBookingLimits, ({ one }) => ({
+	user: one(users, {
+		fields: [userBookingLimits.userId],
+		references: [users.id]
+	})
+}));
+
+export type UserBookingLimit = typeof userBookingLimits.$inferSelect;
+export type InsertUserBookingLimit = typeof userBookingLimits.$inferInsert;
 
 
 // --- Lessons ---

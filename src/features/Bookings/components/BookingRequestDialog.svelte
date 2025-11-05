@@ -184,6 +184,55 @@
 	];
 
 	let availableSports = $derived(baseLesson?.sports || []);
+
+	let validationError = $state<string | null>(null);
+let requiresPayment = $state(false);
+let activeRequestCount = $state(0);
+let isValidating = $state(false);
+
+// Validate when email changes (with debounce)
+let validationTimeout: ReturnType<typeof setTimeout>;
+$effect(() => {
+    if ($formData.clientEmail && $formData.clientEmail.includes('@')) {
+        clearTimeout(validationTimeout);
+        validationTimeout = setTimeout(() => {
+            validateBookingRequest();
+        }, 500);
+    }
+});
+
+async function validateBookingRequest() {
+    if (!$formData.clientEmail) return;
+    
+    isValidating = true;
+    validationError = null;
+    requiresPayment = false;
+
+    try {
+        const response = await fetch('/api/bookings/validate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                instructorId,
+                clientEmail: $formData.clientEmail
+            })
+        });
+
+        const result = await response.json();
+        
+        if (!result.allowed) {
+            validationError = result.reason;
+            requiresPayment = result.requiresPayment || false;
+            activeRequestCount = result.activeCount || 0;
+        } else {
+            activeRequestCount = result.activeCount || 0;
+        }
+    } catch (error) {
+        console.error('Validation error:', error);
+    } finally {
+        isValidating = false;
+    }
+}
 </script>
 
 <Dialog.Root bind:open modal={true}>
@@ -495,6 +544,36 @@
 					</div>
 				{/if}
 
+				<!-- Add validation warning before submit button -->
+				{#if validationError}
+					<div class="rounded-lg border-2 border-yellow-200 bg-yellow-50 p-4 text-yellow-800">
+						<div class="flex items-start gap-3">
+							<svg class="size-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+							</svg>
+							<div>
+								<p class="font-semibold">Request Limit Reached</p>
+								<p class="mt-1 text-sm">{validationError}</p>
+								{#if requiresPayment}
+									<Button class="mt-3" size="sm" onclick={() => window.location.href = '/pricing/additional-request'}>
+										Pay €2 for Additional Request
+									</Button>
+								{/if}
+							</div>
+						</div>
+					</div>
+				{/if}
+
+				<!-- Request counter -->
+				{#if activeRequestCount > 0 && !validationError}
+					<div class="rounded-lg bg-blue-50 p-3 text-blue-800">
+						<p class="text-sm">
+							📊 You have {activeRequestCount} active request{activeRequestCount === 1 ? '' : 's'}. 
+							{3 - activeRequestCount} free request{3 - activeRequestCount === 1 ? '' : 's'} remaining.
+						</p>
+					</div>
+				{/if}
+
 				<div class="flex flex-col-reverse sm:flex-row gap-3 pt-4">
 					<Button 
 						type="button" 
@@ -508,9 +587,18 @@
 					<Button 
 						type="submit" 
 						class="flex-1" 
-						disabled={isSubmitting || submitSuccess || !calendarSelection || calendarSelection.timeSlots.length === 0}
+						disabled={
+							isSubmitting || 
+							submitSuccess || 
+							!calendarSelection || 
+							calendarSelection.timeSlots.length === 0 ||
+							!!validationError ||
+							isValidating
+						}
 					>
-						{#if isSubmitting}
+						{#if isValidating}
+							Validating...
+						{:else if isSubmitting}
 							Sending...
 						{:else if submitSuccess}
 							Sent!
@@ -520,10 +608,10 @@
 					</Button>
 				</div>
 
-				<p class="text-center text-xs text-muted-foreground pt-2">
-					By submitting, you agree the instructor will contact you directly.
-				</p>
-			</form>
-		{/if}
+								<p class="text-center text-xs text-muted-foreground pt-2">
+									By submitting, you agree the instructor will contact you directly.
+								</p>
+							</form>
+						{/if}
 	</Dialog.Content>
 </Dialog.Root>

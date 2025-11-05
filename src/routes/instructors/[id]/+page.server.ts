@@ -120,6 +120,19 @@ export const actions: Actions = {
                 return fail(400, { message: 'Missing required fields' });
             }
 
+            // ✅ NEW: Validate booking limits
+            const validation = await bookingRequestService.validateBookingRequest(
+                instructorId,
+                data.clientEmail
+            );
+
+            if (!validation.allowed) {
+                return fail(400, { 
+                    message: validation.reason,
+                    requiresPayment: validation.requiresPayment
+                });
+            }
+
             // Parse dates
             const startDate = new Date(data.startDate);
             const endDate = data.endDate ? new Date(data.endDate) : null;

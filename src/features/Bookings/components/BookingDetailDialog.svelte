@@ -50,17 +50,12 @@
 		</Dialog.Header>
 
 		<div class="space-y-6 py-4">
-			<!-- Contact Information -->
+			<!-- Contact Information / Payment Section -->
 			{#if booking.contactInfoUnlocked}
 				<div class="rounded-lg border-2 border-primary/20 bg-primary/5 p-4">
 					<h3 class="mb-3 font-semibold flex items-center gap-2">
 						<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-							/>
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
 						</svg>
 						Client Contact Information
 					</h3>
@@ -81,10 +76,7 @@
 							<div>
 								<span class="text-muted-foreground">Phone:</span>
 								<p class="font-medium">
-									<a
-										href="tel:+{booking.clientCountryCode}{booking.clientPhone}"
-										class="text-primary hover:underline"
-									>
+									<a href="tel:+{booking.clientCountryCode}{booking.clientPhone}" class="text-primary hover:underline">
 										+{booking.clientCountryCode} {booking.clientPhone}
 									</a>
 								</p>
@@ -93,16 +85,44 @@
 					</div>
 				</div>
 			{:else}
+				<!-- Preview with blur effect -->
 				<div class="rounded-lg border-2 border-yellow-200 bg-yellow-50 p-4">
-					<p class="text-sm text-yellow-800 mb-3">
-						🔒 Contact information is locked. Pay €5 to unlock and contact this client.
-					</p>
-					<Button
-						onclick={() => (window.location.href = `/leads/payment/${booking.id}`)}
-						size="sm"
-					>
-						Pay €5 to Unlock Contact Info
-					</Button>
+					<div class="mb-3 flex items-center justify-between">
+						<h3 class="font-semibold text-yellow-800">🔒 Contact Information Locked</h3>
+						<Badge variant="secondary">€5 to unlock</Badge>
+					</div>
+					
+					<!-- Blurred preview -->
+					<div class="relative mb-4 rounded bg-white p-3 text-sm">
+						<div class="absolute inset-0 backdrop-blur-sm bg-white/60 rounded flex items-center justify-center">
+							<svg class="h-12 w-12 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+							</svg>
+						</div>
+						<div class="space-y-2 blur-sm select-none">
+							<p><strong>Name:</strong> John D***</p>
+							<p><strong>Email:</strong> j***@e***.com</p>
+							<p><strong>Phone:</strong> +** *** ****</p>
+						</div>
+					</div>
+
+					<div class="space-y-3">
+						<p class="text-sm text-yellow-800">
+							💡 Review the lesson details below. If interested, pay €5 to unlock contact information and connect with this client.
+						</p>
+						
+						<Button
+							onclick={() => (window.location.href = `/leads/payment/${booking.id}`)}
+							class="w-full"
+							size="lg"
+						>
+							Pay €5 to Unlock Contact Info
+						</Button>
+
+						<p class="text-xs text-center text-muted-foreground">
+							The client will be notified when you unlock their contact information
+						</p>
+					</div>
 				</div>
 			{/if}
 

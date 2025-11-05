@@ -178,4 +178,40 @@ export class BookingRequestRepository {
             .where(eq(bookingRequests.id, bookingRequestId))
             .returning();
     }
+
+    async checkExistingRequest(instructorId: number, clientEmail: string): Promise<boolean> {
+    const result = await db.select()
+        .from(bookingRequests)
+        .where(
+            and(
+                eq(bookingRequests.instructorId, instructorId),
+                eq(bookingRequests.clientEmail, clientEmail),
+                inArray(bookingRequests.status, ['pending', 'viewed', 'accepted'])
+            )
+        );
+    return result.length > 0;
+}
+
+    async getActiveRequestCount(clientEmail: string): Promise<number> {
+        const result = await db.select()
+            .from(bookingRequests)
+            .where(
+                and(
+                    eq(bookingRequests.clientEmail, clientEmail),
+                    inArray(bookingRequests.status, ['pending', 'viewed'])
+                )
+            );
+        return result.length;
+    }
+
+    async markAsViewed(bookingRequestId: number) {
+        return await db
+            .update(bookingRequests)
+            .set({ 
+                status: 'viewed',
+                updatedAt: new Date() 
+            })
+            .where(eq(bookingRequests.id, bookingRequestId))
+            .returning();
+    }
 }
