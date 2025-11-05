@@ -149,7 +149,7 @@
 				</div>
 
 				<!-- Sync Actions -->
-				<div class="flex gap-3">
+				<div class="flex flex-col sm:flex-row gap-3">
 					<Button onclick={syncNow} disabled={syncing} variant="outline">
 						{#if syncing}
 							<svg
@@ -189,7 +189,7 @@
 						onclick={disconnectCalendar}
 						disabled={disconnecting}
 						variant="destructive"
-						class="ml-auto"
+						class="sm:ml-auto"
 					>
 						{#if disconnecting}
 							Disconnecting...

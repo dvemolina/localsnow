@@ -143,7 +143,7 @@
 				<div class="space-y-2">
 					{#each groupTiers as tier}
 						<div class="flex items-center justify-between rounded-lg border p-3">
-							<div class="flex items-center gap-4">
+							<div class="flex flex-col sm:flex-row items-center gap-4">
 								<div class="flex items-center gap-2 text-sm">
 									<Users class="h-4 w-4 text-muted-foreground" />
 									<span class="font-medium">{tier.minStudents}-{tier.maxStudents} students</span>
@@ -211,7 +211,7 @@
 					{#each durationPackages as pkg}
 						<div class="flex items-center justify-between rounded-lg border p-3">
 							<div>
-								<div class="flex items-center gap-2 mb-1">
+								<div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 mb-1">
 									<span class="font-medium">{pkg.name}</span>
 									<Badge variant="outline" class="text-xs">{pkg.hours}h</Badge>
 									{#if pkg.minStudents || pkg.maxStudents}
