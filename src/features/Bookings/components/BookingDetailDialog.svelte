@@ -19,7 +19,7 @@
 
 	const statusConfig = {
 		pending: { label: 'Pending Payment', color: 'bg-yellow-100 text-yellow-800' },
-		unlocked: { label: 'Unlocked', color: 'bg-blue-100 text-blue-800' },
+		unlocked: { label: 'Unlocked', color: 'bg-green-100 text-green-800' },
 		accepted: { label: 'Accepted', color: 'bg-green-100 text-green-800' },
 		rejected: { label: 'Rejected', color: 'bg-red-100 text-red-800' }
 	};
@@ -204,6 +204,45 @@
 			{/if}
 
 			<!-- Actions -->
+			 {#if !booking.contactInfoUnlocked && booking.status === 'pending'}
+			<div class="flex gap-3 pt-4">
+				<form
+					method="POST"
+					action="?/rejectBooking"
+					class="flex-1"
+					use:enhance={() => {
+						isSubmitting = true;
+						return async ({ result, update }) => {
+							isSubmitting = false;
+							if (result.type === 'success') {
+								actionResult = { success: true, message: 'Booking rejected' };
+								setTimeout(() => {
+									open = false;
+									window.location.reload();
+								}, 1500);
+							}
+							await update();
+						};
+					}}
+				>
+					<input type="hidden" name="bookingId" value={booking.id} />
+					<Button type="submit" variant="outline" class="w-full" disabled={isSubmitting}>
+						Not Interested
+					</Button>
+				</form>
+
+				<Button
+					onclick={() => (window.location.href = `/leads/payment/${booking.id}`)}
+					class="flex-1"
+				>
+					Pay €5 to Unlock
+				</Button>
+			</div>
+
+			<p class="text-xs text-center text-muted-foreground mt-2">
+				💡 Review details first. Only pay if you're interested in this booking.
+			</p>
+		{/if}
 			{#if booking.contactInfoUnlocked && booking.status !== 'accepted' && booking.status !== 'rejected'}
 				<div class="flex gap-3 pt-4">
 					<form
