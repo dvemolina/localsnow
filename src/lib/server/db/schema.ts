@@ -288,6 +288,32 @@ export const leadPaymentsRelations = relations(leadPayments, ({ one }) => ({
 	})
 }));
 
+// Client Deposits
+export const clientDeposits = pgTable('client_deposits', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	uuid: uuid('uuid').defaultRandom().unique().notNull(),
+	bookingRequestId: integer('booking_request_id').notNull().references(() => bookingRequests.id, { onDelete: 'cascade' }),
+	clientEmail: varchar('client_email', { length: 255 }).notNull(),
+	amount: decimal('amount', { precision: 10, scale: 2 }).notNull(),
+	currency: varchar('currency', { length: 3 }).notNull().default('EUR'),
+	stripePaymentIntentId: varchar('stripe_payment_intent_id', { length: 255 }),
+	status: varchar('status', { length: 50 }).notNull().default('pending'), // pending, held, refunded, forfeited, expired
+	refundedAt: timestamp('refunded_at'),
+	forfeitedAt: timestamp('forfeited_at'),
+	expiresAt: timestamp('expires_at').notNull(), // 48h from creation
+	...timestamps
+});
+
+export const clientDepositsRelations = relations(clientDeposits, ({ one }) => ({
+	bookingRequest: one(bookingRequests, {
+		fields: [clientDeposits.bookingRequestId],
+		references: [bookingRequests.id]
+	})
+}));
+
+export type ClientDeposit = typeof clientDeposits.$inferSelect;
+export type InsertClientDeposit = typeof clientDeposits.$inferInsert;
+
 // --- Availability System Tables ---
 
 // Working Hours (one-time setup per instructor)

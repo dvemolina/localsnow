@@ -183,6 +183,13 @@
       "when": 1762315868983,
       "tag": "0025_charming_morbius",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1762338339491,
+      "tag": "0026_grey_magneto",
+      "breakpoints": true
     }
   ]
 }
