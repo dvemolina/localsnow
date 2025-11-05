@@ -29,8 +29,13 @@ export async function sendBookingNotificationToInstructor(data: {
 	clientName: string;
 	numberOfStudents: number;
 	startDate: string;
+	endDate?: string;
+	hoursPerDay: number;
+	estimatedPrice?: number;
+	currency?: string;
 	leadPrice: number;
 	paymentUrl: string;
+	dashboardUrl?: string;
 }) {
 	try {
 		const response = await fetch(`${N8N_BASE_URL}/booking-notification-instructor`, {
@@ -41,7 +46,8 @@ export async function sendBookingNotificationToInstructor(data: {
 			},
 			body: JSON.stringify({
 				type: 'instructor_notification',
-				...data
+				...data,
+				dashboardUrl: data.dashboardUrl || 'https://localsnow.org/dashboard'
 			})
 		});
 

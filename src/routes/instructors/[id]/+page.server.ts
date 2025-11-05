@@ -173,8 +173,13 @@ export const actions: Actions = {
                     clientName: data.clientName,
                     numberOfStudents: data.numberOfStudents,
                     startDate: data.startDate,
+                    endDate: data.endDate,
+                    hoursPerDay: data.hoursPerDay,
+                    estimatedPrice: data.estimatedPrice,
+                    currency: data.currency,
                     leadPrice: LEAD_PRICE,
-                    paymentUrl
+                    paymentUrl,
+                    dashboardUrl: `${baseUrl}/dashboard`
                 }).catch(err => console.error('Failed to send instructor notification:', err));
             }
 
