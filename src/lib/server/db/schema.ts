@@ -6,7 +6,7 @@ export const sportsEnum = pgEnum('sport', ['Ski', 'Snowboard', 'Telemark'])
 export const sportSlugEnum = pgEnum('sport_slug', ['ski', 'snowboard', 'telemark']);
 export const modalitySlugEnum = pgEnum('modality_slug', ['piste', 'off-piste', 'freeride', 'freestyle', 'touring', 'adaptive']);
 export const pricingModeEnum = pgEnum('pricing_mode', ['per_hour', 'per_session', 'per_day']);
-export const bookingStatusEnum = pgEnum('status', ['pending', 'viewed', 'accepted', 'rejected']);
+export const bookingStatusEnum = pgEnum('status', ['pending', 'viewed', 'accepted', 'rejected', 'expired', 'completed', 'no_show']);
 
 export const timestamps = {
     createdAt: timestamp('created_at').defaultNow().notNull(),

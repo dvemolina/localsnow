@@ -145,7 +145,8 @@
 		submitSuccess = false;
 
 		try {
-			const response = await fetch(`/api/bookings/${instructorId}`, {
+			// Step 1: Create booking request
+			const bookingResponse = await fetch(`/api/bookings/${instructorId}`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
@@ -159,15 +160,37 @@
 				})
 			});
 
-			if (response.ok) {
-				submitSuccess = true;
-				setTimeout(() => {
-					open = false;
-					submitSuccess = false;
-				}, 2500);
-			} else {
-				const error = await response.json();
+			if (!bookingResponse.ok) {
+				const error = await bookingResponse.json();
 				submitError = error.message || 'Failed to submit request';
+				return;
+			}
+
+			const bookingResult = await bookingResponse.json();
+			const bookingRequestId = bookingResult.bookingId;
+
+			// Step 2: Create deposit payment
+			const depositResponse = await fetch('/api/deposits/create', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					bookingRequestId,
+					clientEmail: $formData.clientEmail
+				})
+			});
+
+			if (!depositResponse.ok) {
+				submitError = 'Booking created but failed to process deposit. Please contact support.';
+				return;
+			}
+
+			const depositResult = await depositResponse.json();
+			
+			// Step 3: Redirect to Stripe
+			if (depositResult.url) {
+				window.location.href = depositResult.url;
+			} else {
+				submitError = 'Failed to create payment session';
 			}
 		} catch (err) {
 			submitError = 'An error occurred. Please try again.';
@@ -186,53 +209,53 @@
 	let availableSports = $derived(baseLesson?.sports || []);
 
 	let validationError = $state<string | null>(null);
-let requiresPayment = $state(false);
-let activeRequestCount = $state(0);
-let isValidating = $state(false);
+	let requiresPayment = $state(false);
+	let activeRequestCount = $state(0);
+	let isValidating = $state(false);
 
-// Validate when email changes (with debounce)
-let validationTimeout: ReturnType<typeof setTimeout>;
-$effect(() => {
-    if ($formData.clientEmail && $formData.clientEmail.includes('@')) {
-        clearTimeout(validationTimeout);
-        validationTimeout = setTimeout(() => {
-            validateBookingRequest();
-        }, 500);
-    }
-});
+	// Validate when email changes (with debounce)
+	let validationTimeout: ReturnType<typeof setTimeout>;
+	$effect(() => {
+		if ($formData.clientEmail && $formData.clientEmail.includes('@')) {
+			clearTimeout(validationTimeout);
+			validationTimeout = setTimeout(() => {
+				validateBookingRequest();
+			}, 500);
+		}
+	});
 
-async function validateBookingRequest() {
-    if (!$formData.clientEmail) return;
-    
-    isValidating = true;
-    validationError = null;
-    requiresPayment = false;
+	async function validateBookingRequest() {
+		if (!$formData.clientEmail) return;
+		
+		isValidating = true;
+		validationError = null;
+		requiresPayment = false;
 
-    try {
-        const response = await fetch('/api/bookings/validate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                instructorId,
-                clientEmail: $formData.clientEmail
-            })
-        });
+		try {
+			const response = await fetch('/api/bookings/validate', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					instructorId,
+					clientEmail: $formData.clientEmail
+				})
+			});
 
-        const result = await response.json();
-        
-        if (!result.allowed) {
-            validationError = result.reason;
-            requiresPayment = result.requiresPayment || false;
-            activeRequestCount = result.activeCount || 0;
-        } else {
-            activeRequestCount = result.activeCount || 0;
-        }
-    } catch (error) {
-        console.error('Validation error:', error);
-    } finally {
-        isValidating = false;
-    }
-}
+			const result = await response.json();
+			
+			if (!result.allowed) {
+				validationError = result.reason;
+				requiresPayment = result.requiresPayment || false;
+				activeRequestCount = result.activeCount || 0;
+			} else {
+				activeRequestCount = result.activeCount || 0;
+			}
+		} catch (error) {
+			console.error('Validation error:', error);
+		} finally {
+			isValidating = false;
+		}
+	}
 </script>
 
 <Dialog.Root bind:open modal={true}>
@@ -543,6 +566,37 @@ async function validateBookingRequest() {
 						</p>
 					</div>
 				{/if}
+
+				<!-- Deposit Information -->
+				<div class="rounded-lg border-2 border-blue-200 bg-blue-50 p-4">
+					<div class="mb-3 flex items-center gap-2">
+						<svg class="size-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+						</svg>
+						<h3 class="font-medium text-blue-900">€15 Refundable Deposit Required</h3>
+					</div>
+					
+					<div class="space-y-2 text-sm text-blue-800">
+						<p class="flex items-start gap-2">
+							<svg class="mt-0.5 size-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+								<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+							</svg>
+							<span>Fully refundable if no instructor accepts within 48 hours</span>
+						</p>
+						<p class="flex items-start gap-2">
+							<svg class="mt-0.5 size-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+								<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+							</svg>
+							<span>Refunded after lesson completion</span>
+						</p>
+						<p class="flex items-start gap-2">
+							<svg class="mt-0.5 size-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+								<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+							</svg>
+							<span>Protects against no-shows</span>
+						</p>
+					</div>
+				</div>
 
 				<!-- Add validation warning before submit button -->
 				{#if validationError}

@@ -33,6 +33,30 @@
 
 	const currentStatus = $derived(getStatus());
 	const statusInfo = $derived(statusConfig[currentStatus]);
+
+	let depositStatus = $state<any>(null);
+	let isLoadingDeposit = $state(false);
+
+	// Load deposit status when dialog opens
+	$effect(() => {
+		if (open && booking.id) {
+			loadDepositStatus();
+		}
+	});
+
+	async function loadDepositStatus() {
+		isLoadingDeposit = true;
+		try {
+			const response = await fetch(`/api/deposits/status/${booking.id}`);
+			if (response.ok) {
+				depositStatus = await response.json();
+			}
+		} catch (error) {
+			console.error('Error loading deposit status:', error);
+		} finally {
+			isLoadingDeposit = false;
+		}
+	}
 </script>
 
 <Dialog.Root bind:open>
@@ -122,6 +146,33 @@
 						<p class="text-xs text-center text-muted-foreground">
 							The client will be notified when you unlock their contact information
 						</p>
+					</div>
+				</div>
+			{/if}
+
+			<!-- Deposit Status -->
+			{#if depositStatus?.exists}
+				<div class="rounded-lg border-2 {depositStatus.status === 'held' ? 'border-green-200 bg-green-50' : depositStatus.status === 'refunded' ? 'border-blue-200 bg-blue-50' : 'border-gray-200 bg-gray-50'} p-4">
+					<h3 class="mb-3 font-semibold flex items-center gap-2">
+						<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+						</svg>
+						Client Deposit Status
+					</h3>
+					<div class="grid gap-3 text-sm">
+						<div>
+							<span class="text-muted-foreground">Status:</span>
+							<p class="font-medium capitalize">{depositStatus.status}</p>
+						</div>
+						<div>
+							<span class="text-muted-foreground">Amount:</span>
+							<p class="font-medium">{depositStatus.amount} {depositStatus.currency.toUpperCase()}</p>
+						</div>
+						{#if depositStatus.status === 'held'}
+							<div class="rounded bg-green-100 p-2 text-green-800">
+								<p class="text-xs">✓ Client paid deposit - shows serious commitment</p>
+							</div>
+						{/if}
 					</div>
 				</div>
 			{/if}
