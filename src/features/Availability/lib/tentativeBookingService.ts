@@ -215,6 +215,27 @@ export class TentativeBookingService {
 	}
 
 	/**
+	 * Delete tentative blocks for a specific booking
+	 */
+	async deleteTentativeBlocksForBooking(bookingRequestId: number) {
+		try {
+			await db.delete(instructorCalendarBlocks)
+				.where(
+					and(
+						eq(instructorCalendarBlocks.bookingRequestId, bookingRequestId),
+						eq(instructorCalendarBlocks.source, 'booking_pending')
+					)
+				);
+			
+			console.log(`Deleted tentative blocks for booking ${bookingRequestId}`);
+			return { success: true };
+		} catch (error) {
+			console.error('Error deleting tentative blocks:', error);
+			throw new Error('Failed to delete tentative blocks');
+		}
+	}
+
+	/**
 	 * Check if instructor can accept booking (no conflicts with confirmed bookings)
 	 */
 	async canAcceptBooking(bookingRequestId: number): Promise<{

@@ -1,4 +1,7 @@
+import { TentativeBookingService } from "$src/features/Availability/lib/tentativeBookingService";
 import { BookingRequestRepository, type BookingRequestData } from "./bookingRequestRepository";
+
+const tentativeBookingService = new TentativeBookingService();
 
 const MAX_FREE_REQUESTS = 3; // Free limit
 const ADDITIONAL_REQUEST_FEE = 2; // €2 per additional request
@@ -47,7 +50,16 @@ export class BookingRequestService {
     }
 
     async updateBookingStatus(bookingRequestId: number, status: string) {
-        return await this.repository.updateBookingStatus(bookingRequestId, status);
+        const result = await this.repository.updateBookingStatus(bookingRequestId, status);
+        
+        // Clean up tentative blocks when booking is rejected or expired
+        if (status === 'rejected' || status === 'expired') {
+            await tentativeBookingService.deleteTentativeBlocksForBooking(bookingRequestId).catch(err => {
+                console.error('Failed to cleanup tentative blocks:', err);
+            });
+        }
+        
+        return result;
     }
 
 
