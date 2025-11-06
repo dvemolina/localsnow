@@ -6,7 +6,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const sessionId = url.searchParams.get('session_id');
 
     if (!sessionId) {
-        throw redirect(303, '/booking-error?reason=no_session');
+        throw redirect(303, '/booking/booking-error?reason=no_session');
     }
 
     try {
@@ -15,12 +15,12 @@ export const GET: RequestHandler = async ({ url }) => {
 
         if (result.success) {
             // Redirect to success page with booking ID
-            throw redirect(303, `/booking-success?bookingId=${result.bookingRequestId}`);
+            throw redirect(303, `/booking/booking-success?bookingId=${result.bookingRequestId}`);
         } else {
-            throw redirect(303, '/booking-error?reason=payment_failed');
+            throw redirect(303, '/booking/booking-error?reason=payment_failed');
         }
     } catch (error) {
         console.error('Error handling deposit success:', error);
-        throw redirect(303, '/booking-error?reason=processing_error');
+        throw redirect(303, '/booking/booking-error?reason=processing_error');
     }
 };
