@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		
 	} catch (err) {
 		console.error('Calendar OAuth callback error:', err);
-		throw redirect(303, '/dashboard/availability?error=connection_failed');
+		redirect(303, '/dashboard/availability?error=connection_failed');
 	}
 
 	redirect(303, '/dashboard/availability?success=connected');
