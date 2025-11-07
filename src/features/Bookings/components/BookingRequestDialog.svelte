@@ -145,7 +145,7 @@
 
 		try {
 			// ✅ NEW: Single API call that returns checkout URL
-			const response = await fetch(`/api/bookings/${instructorId}`, {
+			const response = await fetch(`/api/bookings/create`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({

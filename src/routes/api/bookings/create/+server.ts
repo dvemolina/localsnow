@@ -9,15 +9,15 @@ const stripe = new Stripe(env.STRIPE_SECRET_KEY!, {
     apiVersion: '2025-10-29.clover'
 });
 
-export const POST: RequestHandler = async ({ request, params, url }) => {
-    const instructorId = Number(params.instructorId);
-    
-    if (isNaN(instructorId)) {
-        throw error(400, 'Invalid instructor ID');
-    }
-
+export const POST: RequestHandler = async ({ request, url }) => {
     try {
         const data = await request.json();
+        
+        const instructorId = Number(data.instructorId);
+        
+        if (isNaN(instructorId)) {
+            throw error(400, 'Invalid instructor ID');
+        }
         
         // Validate required fields
         if (!data.clientName || !data.clientEmail || !data.startDate || 
@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ request, params, url }) => {
             startDate,
             endDate,
             hoursPerDay: Number(data.hoursPerDay),
-            timeSlots: data.timeSlots, // ⚠️ ADD THIS
+            timeSlots: data.timeSlots,
             skillLevel: data.skillLevel,
             message: data.message || null,
             promoCode: data.promoCode || null,
@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request, params, url }) => {
                 capture_method: 'manual',
                 metadata: {
                     type: 'client_deposit',
-                    bookingRequestId: bookingRequest.id.toString() // ⚠️ ONLY STORE ID
+                    bookingRequestId: bookingRequest.id.toString()
                 }
             },
             success_url: `${baseUrl}/api/bookings/webhooks/deposit-paid?session_id={CHECKOUT_SESSION_ID}`,
