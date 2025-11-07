@@ -2,6 +2,7 @@ import { redirect } from '@sveltejs/kit';
 import { BookingRequestService } from '$src/features/Bookings/lib/bookingRequestService';
 import { TentativeBookingService } from '$src/features/Availability/lib/tentativeBookingService';
 import { ClientDepositService } from '$src/features/Bookings/lib/clientDepositService';
+import { ClientDepositRepository } from '$src/features/Bookings/lib/clientDepositRepository';
 import { InstructorService } from '$src/features/Instructors/lib/instructorService';
 import { sendBookingNotificationToInstructor, sendBookingConfirmationToClient } from '$src/lib/server/webhooks/n8n/email-n8n';
 import type { RequestHandler } from './$types';
@@ -9,7 +10,7 @@ import Stripe from 'stripe';
 import { env } from '$env/dynamic/private';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2024-11-20.acacia'
+    apiVersion: '2025-10-29.clover'
 });
 
 const bookingService = new BookingRequestService();
@@ -25,7 +26,6 @@ export const GET: RequestHandler = async ({ url }) => {
     }
 
     try {
-        // Retrieve Stripe session
         const session = await stripe.checkout.sessions.retrieve(sessionId, {
             expand: ['payment_intent']
         });
@@ -35,97 +35,89 @@ export const GET: RequestHandler = async ({ url }) => {
         }
 
         const metadata = (session.payment_intent as Stripe.PaymentIntent)?.metadata;
-        if (!metadata || metadata.type !== 'client_deposit') {
+        const bookingRequestId = parseInt(metadata?.bookingRequestId || '0');
+
+        if (!bookingRequestId) {
             throw redirect(303, '/booking/booking-error?reason=invalid_session');
         }
 
-        // ✅ Parse booking data from metadata
-        const bookingData = {
-            instructorId: parseInt(metadata.instructorId),
-            clientName: metadata.clientName,
-            clientEmail: metadata.clientEmail,
-            clientPhone: metadata.clientPhone || null,
-            clientCountryCode: metadata.clientCountryCode,
-            numberOfStudents: parseInt(metadata.numberOfStudents),
-            startDate: new Date(metadata.startDate),
-            endDate: metadata.endDate ? new Date(metadata.endDate) : null,
-            hoursPerDay: parseFloat(metadata.hoursPerDay),
-            skillLevel: metadata.skillLevel,
-            message: metadata.message || null,
-            promoCode: metadata.promoCode || null,
-            estimatedPrice: parseFloat(metadata.estimatedPrice) || null,
-            currency: metadata.currency || null,
-            sports: JSON.parse(metadata.sports || '[]')
-        };
+        // ✅ Get booking data from database (not metadata)
+        const booking = await bookingService.getBookingRequestById(bookingRequestId);
 
-        const timeSlots = JSON.parse(metadata.timeSlots || '[]');
+        if (!booking) {
+            throw redirect(303, '/booking/booking-error?reason=booking_not_found');
+        }
 
-        // ✅ NOW create booking in database
-        const bookingRequest = await bookingService.createBookingRequest(bookingData);
+        // Get time slots from database
+        const timeSlots = booking.timeSlots ? JSON.parse(booking.timeSlots) : [];
 
-        // ✅ Create deposit record
+        // ✅ Create deposit record using repository directly (since repository is private)
+        const depositRepo = new ClientDepositRepository();
         const expiresAt = new Date();
         expiresAt.setHours(expiresAt.getHours() + 48);
 
-        const deposit = await depositService.repository.createDeposit({
-            bookingRequestId: bookingRequest.id,
-            clientEmail: metadata.clientEmail,
+        const deposit = await depositRepo.createDeposit({
+            bookingRequestId: booking.id,
+            clientEmail: booking.clientEmail,
             amount: '15',
             currency: 'eur',
             expiresAt
         });
 
-        // Update with payment intent ID
-        await depositService.repository.updateDepositStatus(deposit.id, 'held', {
+        await depositRepo.updateDepositStatus(deposit.id, 'held', {
             stripePaymentIntentId: (session.payment_intent as Stripe.PaymentIntent).id
         });
 
-        // ✅ Create tentative blocks (with race condition protection)
+        // ✅ Create tentative blocks with race condition protection
         try {
-            await tentativeService.createTentativeBlock(bookingRequest.id, timeSlots);
+            await tentativeService.createTentativeBlock(booking.id, timeSlots);
         } catch (tentativeError) {
-            console.error('Race condition: Slots taken between payment and block creation', tentativeError);
+            console.error('Race condition detected:', tentativeError);
             
             // Refund deposit immediately
             await depositService.refundDeposit(deposit.id, 'slots_no_longer_available');
             
             // Mark booking as expired
-            await bookingService.updateBookingStatus(bookingRequest.id, 'expired');
+            await bookingService.updateBookingStatus(booking.id, 'expired');
             
             throw redirect(303, '/booking/booking-error?reason=slots_taken');
         }
 
-        // ✅ Send notification emails
-        const instructorData = await instructorService.getInstructorWithLessons(bookingData.instructorId);
+        // ✅ Send notification emails using booking data from database
+        const instructorData = await instructorService.getInstructorWithLessons(booking.instructorId);
         
         if (instructorData?.instructor?.email) {
             const baseUrl = url.origin;
             sendBookingNotificationToInstructor({
                 instructorEmail: instructorData.instructor.email,
                 instructorName: instructorData.instructor.name,
-                bookingRequestId: bookingRequest.id,
-                clientName: metadata.clientName,
-                numberOfStudents: parseInt(metadata.numberOfStudents),
-                startDate: metadata.startDate,
+                bookingRequestId: booking.id,
+                clientName: booking.clientName,
+                numberOfStudents: booking.numberOfStudents,
+                startDate: booking.startDate.toISOString(),
+                endDate: booking.endDate?.toISOString(),
+                hoursPerDay: Number(booking.hoursPerDay),
+                estimatedPrice: booking.estimatedPrice || undefined,
+                currency: booking.currency || undefined,
                 leadPrice: 5,
-                paymentUrl: `${baseUrl}/leads/payment/${bookingRequest.id}`
+                paymentUrl: `${baseUrl}/leads/payment/${booking.id}`
             }).catch(err => console.error('Email error:', err));
         }
 
         sendBookingConfirmationToClient({
-            clientEmail: metadata.clientEmail,
-            clientName: metadata.clientName,
+            clientEmail: booking.clientEmail,
+            clientName: booking.clientName,
             instructorName: instructorData?.instructor?.name || 'Your instructor',
-            numberOfStudents: parseInt(metadata.numberOfStudents),
-            startDate: metadata.startDate,
-            endDate: metadata.endDate || undefined,
-            hoursPerDay: parseFloat(metadata.hoursPerDay),
-            estimatedPrice: parseFloat(metadata.estimatedPrice) || undefined,
-            currency: metadata.currency || undefined
+            numberOfStudents: booking.numberOfStudents,
+            startDate: booking.startDate.toISOString(),
+            endDate: booking.endDate?.toISOString(),
+            hoursPerDay: Number(booking.hoursPerDay),
+            estimatedPrice: booking.estimatedPrice || undefined,
+            currency: booking.currency || undefined
         }).catch(err => console.error('Email error:', err));
 
         // ✅ Redirect to success
-        throw redirect(303, `/booking/booking-success?bookingId=${bookingRequest.id}`);
+        throw redirect(303, `/booking/booking-success?bookingId=${booking.id}`);
     } catch (error) {
         console.error('Error in deposit webhook:', error);
         

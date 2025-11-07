@@ -3,9 +3,10 @@ import type { RequestHandler } from './$types';
 import { SlotGenerationService } from '$src/features/Availability/lib/slotGenerationService';
 import Stripe from 'stripe';
 import { env } from '$env/dynamic/private';
+import { BookingRequestService } from '$src/features/Bookings/lib/bookingRequestService';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2024-11-20.acacia'
+    apiVersion: '2025-10-29.clover'
 });
 
 export const POST: RequestHandler = async ({ request, params, url }) => {
@@ -66,7 +67,28 @@ export const POST: RequestHandler = async ({ request, params, url }) => {
             currentDate.setDate(currentDate.getDate() + 1);
         }
 
-        // ✅ Create Stripe Checkout Session (store booking data in metadata)
+        // ✅ CREATE BOOKING FIRST (get booking ID)
+        const bookingService = new BookingRequestService();
+        const bookingRequest = await bookingService.createBookingRequest({
+            instructorId,
+            clientName: data.clientName,
+            clientEmail: data.clientEmail,
+            clientPhone: data.clientPhone || null,
+            clientCountryCode: String(data.clientCountryCode),
+            numberOfStudents: Number(data.numberOfStudents),
+            startDate,
+            endDate,
+            hoursPerDay: Number(data.hoursPerDay),
+            timeSlots: data.timeSlots, // ⚠️ ADD THIS
+            skillLevel: data.skillLevel,
+            message: data.message || null,
+            promoCode: data.promoCode || null,
+            estimatedPrice: data.estimatedPrice || null,
+            currency: data.currency || null,
+            sports: data.sports || []
+        });
+
+        // ✅ Create Stripe session with minimal metadata (just booking ID)
         const baseUrl = url.origin;
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
@@ -75,42 +97,26 @@ export const POST: RequestHandler = async ({ request, params, url }) => {
                     currency: 'eur',
                     product_data: {
                         name: 'Booking Request Deposit',
-                        description: '€15 refundable deposit - automatically refunded if no instructor accepts within 48h',
+                        description: '€15 refundable deposit',
                     },
-                    unit_amount: 1500, // €15
+                    unit_amount: 1500,
                 },
                 quantity: 1,
             }],
             mode: 'payment',
             payment_intent_data: {
-                capture_method: 'manual', // Hold funds, don't capture yet
+                capture_method: 'manual',
                 metadata: {
                     type: 'client_deposit',
-                    // Store ALL booking data
-                    instructorId: instructorId.toString(),
-                    clientName: data.clientName,
-                    clientEmail: data.clientEmail,
-                    clientPhone: data.clientPhone || '',
-                    clientCountryCode: String(data.clientCountryCode),
-                    numberOfStudents: String(data.numberOfStudents),
-                    startDate: startDate.toISOString(),
-                    endDate: endDate?.toISOString() || '',
-                    hoursPerDay: String(data.hoursPerDay),
-                    timeSlots: JSON.stringify(data.timeSlots),
-                    skillLevel: data.skillLevel,
-                    message: data.message || '',
-                    promoCode: data.promoCode || '',
-                    estimatedPrice: String(data.estimatedPrice || 0),
-                    currency: data.currency || 'EUR',
-                    sports: JSON.stringify(data.sports || [])
+                    bookingRequestId: bookingRequest.id.toString() // ⚠️ ONLY STORE ID
                 }
             },
             success_url: `${baseUrl}/api/bookings/webhooks/deposit-paid?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${baseUrl}/booking-request-cancelled`,
+            cancel_url: `${baseUrl}/booking-request-cancelled?bookingId=${bookingRequest.id}`,
             customer_email: data.clientEmail,
             metadata: {
                 type: 'client_deposit',
-                instructorId: instructorId.toString()
+                bookingRequestId: bookingRequest.id.toString()
             }
         });
 

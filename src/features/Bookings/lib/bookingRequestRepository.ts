@@ -12,6 +12,7 @@ export interface BookingRequestData {
     startDate: Date;
     endDate?: Date | null;
     hoursPerDay: number;
+    timeSlots?: string[];
     skillLevel: string;
     message?: string | null;
     promoCode?: string | null;
@@ -34,6 +35,7 @@ export class BookingRequestRepository {
                 startDate: data.startDate,
                 endDate: data.endDate || null,
                 hoursPerDay: data.hoursPerDay.toString(),
+                timeSlots: JSON.stringify(data.timeSlots || []), 
                 skillLevel: data.skillLevel,
                 message: data.message || null,
                 promoCode: data.promoCode || null,
@@ -41,6 +43,7 @@ export class BookingRequestRepository {
                 currency: data.currency || null,
                 status: 'pending'
             }).returning();
+
 
             // Insert sports relationships
             if (data.sports && data.sports.length > 0) {

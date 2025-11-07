@@ -5,7 +5,7 @@ import { env } from '$env/dynamic/private';
 import { LeadPaymentService } from '$src/features/Bookings/lib/leadPaymentService';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2024-11-20.acacia'
+    apiVersion: '2025-10-29.clover'
 });
 
 const paymentService = new LeadPaymentService();

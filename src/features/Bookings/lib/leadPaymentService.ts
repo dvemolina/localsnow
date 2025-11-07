@@ -5,7 +5,7 @@ import Stripe from 'stripe';
 import { env } from '$env/dynamic/private';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2024-11-20.acacia'
+    apiVersion: '2025-10-29.clover'
 });
 
 const LEAD_PRICE = 5; // €5 per lead

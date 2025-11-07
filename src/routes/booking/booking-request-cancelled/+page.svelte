@@ -1,5 +1,22 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import { Button } from '$lib/components/ui/button';
+	import { onMount } from 'svelte';
+
+	const bookingId = page.url.searchParams.get('bookingId');
+
+	// Cleanup the booking if user cancelled
+	onMount(async () => {
+		if (bookingId) {
+			try {
+				await fetch(`/api/bookings/${bookingId}`, {
+					method: 'DELETE'
+				});
+			} catch (err) {
+				console.error('Failed to cleanup booking:', err);
+			}
+		}
+	});
 </script>
 
 <svelte:head>
