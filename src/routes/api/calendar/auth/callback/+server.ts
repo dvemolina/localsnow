@@ -9,11 +9,11 @@ export const GET: RequestHandler = async ({ url }) => {
 	
 	// Handle user denial
 	if (error) {
-		throw redirect(303, '/dashboard/availability?error=access_denied');
+		redirect(303, '/dashboard/availability?error=access_denied');
 	}
 	
 	if (!code || !state) {
-		throw redirect(303, '/dashboard/availability?error=invalid_request');
+		redirect(303, '/dashboard/availability?error=invalid_request');
 	}
 	
 	try {
@@ -25,5 +25,5 @@ export const GET: RequestHandler = async ({ url }) => {
 		throw redirect(303, '/dashboard/availability?error=connection_failed');
 	}
 
-	throw redirect(303, '/dashboard/availability?success=connected');
+	redirect(303, '/dashboard/availability?success=connected');
 };

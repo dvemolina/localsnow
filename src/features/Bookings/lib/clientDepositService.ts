@@ -20,6 +20,31 @@ export class ClientDepositService {
         this.repository = new ClientDepositRepository();
         this.bookingRepository = new BookingRequestRepository();
     }
+
+    /**
+     * Create a held deposit record and update with payment intent
+     * Used by webhook after successful payment
+     */
+    async createHeldDeposit(
+        bookingRequestId: number,
+        clientEmail: string,
+        paymentIntentId: string
+    ) {
+        const expiresAt = new Date();
+        expiresAt.setHours(expiresAt.getHours() + DEPOSIT_EXPIRY_HOURS);
+
+        const deposit = await this.repository.createDeposit({
+            bookingRequestId,
+            clientEmail,
+            amount: DEPOSIT_AMOUNT.toString(),
+            currency: CURRENCY,
+            expiresAt
+        });
+
+        return await this.repository.updateDepositStatus(deposit.id, 'held', {
+            stripePaymentIntentId: paymentIntentId
+        });
+    }
     
     /**
      * Create a Stripe Payment Intent for client deposit (held, not captured)
