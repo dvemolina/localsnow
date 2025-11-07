@@ -14,16 +14,11 @@
 
 	const statusConfig = {
 		pending: {
-			label: 'Pending',
+			label: 'Pending Review',
 			variant: 'secondary' as const,
 			color: 'bg-yellow-100 text-yellow-800 border-yellow-200'
 		},
-		unlocked: {
-			label: 'Unlocked',
-			variant: 'default' as const,
-			color: 'bg-green-100 text-green-800 border-green-200'
-		},
-		accepted: {
+		accepted: {  // Combined unlocked + accepted
 			label: 'Accepted',
 			variant: 'default' as const,
 			color: 'bg-green-100 text-green-800 border-green-200'
@@ -37,10 +32,10 @@
 
 	const getStatus = () => {
 		if (booking.status === 'rejected') return 'rejected';
-		if (booking.status === 'accepted') return 'accepted';
-		if (booking.contactInfoUnlocked) return 'unlocked';
+		if (booking.contactInfoUnlocked) return 'accepted';  // Payment = Accepted
 		return 'pending';
 	};
+
 
 	const currentStatus = $derived(getStatus());
 	const statusInfo = $derived(statusConfig[currentStatus]);

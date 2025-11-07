@@ -255,47 +255,10 @@
 			{/if}
 
 			<!-- Actions -->
-			 {#if !booking.contactInfoUnlocked && booking.status === 'pending'}
-			<div class="flex gap-3 pt-4">
-				<form
-					method="POST"
-					action="?/rejectBooking"
-					class="flex-1"
-					use:enhance={() => {
-						isSubmitting = true;
-						return async ({ result, update }) => {
-							isSubmitting = false;
-							if (result.type === 'success') {
-								actionResult = { success: true, message: 'Booking rejected' };
-								setTimeout(() => {
-									open = false;
-									window.location.reload();
-								}, 1500);
-							}
-							await update();
-						};
-					}}
-				>
-					<input type="hidden" name="bookingId" value={booking.id} />
-					<Button type="submit" variant="outline" class="w-full" disabled={isSubmitting}>
-						Not Interested
-					</Button>
-				</form>
-
-				<Button
-					onclick={() => (window.location.href = `/leads/payment/${booking.id}`)}
-					class="flex-1"
-				>
-					Pay €5 to Unlock
-				</Button>
-			</div>
-
-			<p class="text-xs text-center text-muted-foreground mt-2">
-				💡 Review details first. Only pay if you're interested in this booking.
-			</p>
-		{/if}
-			{#if booking.contactInfoUnlocked && booking.status !== 'accepted' && booking.status !== 'rejected'}
+			<!-- BEFORE PAYMENT: Two clear options -->
+			{#if !booking.contactInfoUnlocked && booking.status === 'pending'}
 				<div class="flex gap-3 pt-4">
+					<!-- Option 1: Free Reject -->
 					<form
 						method="POST"
 						action="?/rejectBooking"
@@ -310,8 +273,6 @@
 										open = false;
 										window.location.reload();
 									}, 1500);
-								} else {
-									actionResult = { success: false, message: 'Failed to reject booking' };
 								}
 								await update();
 							};
@@ -319,36 +280,36 @@
 					>
 						<input type="hidden" name="bookingId" value={booking.id} />
 						<Button type="submit" variant="outline" class="w-full" disabled={isSubmitting}>
-							Reject
+							Not Interested
 						</Button>
 					</form>
 
-					<form
-						method="POST"
-						action="?/acceptBooking"
+					<!-- Option 2: Pay & Accept (combined action) -->
+					<Button
+						onclick={() => (window.location.href = `/leads/payment/${booking.id}`)}
 						class="flex-1"
-						use:enhance={() => {
-							isSubmitting = true;
-							return async ({ result, update }) => {
-								isSubmitting = false;
-								if (result.type === 'success') {
-									actionResult = { success: true, message: 'Booking accepted!' };
-									setTimeout(() => {
-										open = false;
-										window.location.reload();
-									}, 1500);
-								} else {
-									actionResult = { success: false, message: 'Failed to accept booking' };
-								}
-								await update();
-							};
-						}}
 					>
-						<input type="hidden" name="bookingId" value={booking.id} />
-						<Button type="submit" class="w-full" disabled={isSubmitting}>
-							{isSubmitting ? 'Processing...' : 'Accept Booking'}
-						</Button>
-					</form>
+						Pay €5 & Accept Booking
+					</Button>
+				</div>
+
+				<p class="text-xs text-center text-muted-foreground mt-2">
+					💡 Only pay if you're ready to accept this booking
+				</p>
+			{/if}
+
+			<!-- AFTER PAYMENT: Show acceptance confirmation, NO MORE ACTIONS -->
+			{#if booking.contactInfoUnlocked}
+				<div class="rounded-lg border-2 border-green-200 bg-green-50 p-4 mb-4">
+					<div class="flex items-center gap-2 text-green-800">
+						<svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+							<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+						</svg>
+						<span class="font-semibold">Booking Accepted</span>
+					</div>
+					<p class="text-sm text-green-700 mt-1">
+						You've unlocked contact info and accepted this booking. Contact the client to arrange details.
+					</p>
 				</div>
 			{/if}
 		</div>

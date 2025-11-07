@@ -130,27 +130,28 @@
 		<!-- Payment Section -->
 		<div class="mb-6 rounded-lg bg-primary/5 p-4">
 			<div class="mb-2 flex items-center justify-between">
-				<span class="font-medium">Unlock Contact Info</span>
+				<span class="font-medium">Accept & Unlock Contact Info</span>
 				<span class="text-2xl font-bold text-primary">€{leadPrice}</span>
 			</div>
 			<p class="text-sm text-muted-foreground">
-				One-time payment to access client email, phone number, and full details.
+				By paying, you accept this booking and receive client's email, phone, and full details.
 			</p>
 		</div>
 
 		{#if form?.message}
-			<div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:border-red-900 dark:bg-red-900/20 dark:text-red-200">
-				<p class="text-sm">{form.message}</p>
-			</div>
-		{/if}
+					<div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:border-red-900 dark:bg-red-900/20 dark:text-red-200">
+						<p class="text-sm">{form.message}</p>
+					</div>
+				{/if}
+
 
 		<form method="POST" action="?/createCheckout" use:enhance={() => {
-			isProcessing = true;
-			return async ({ update }) => {
-				await update();
-				isProcessing = false;
-			};
-		}}>
+					isProcessing = true;
+					return async ({ update }) => {
+						await update();
+						isProcessing = false;
+					};
+				}}>
 			<Button 
 				type="submit" 
 				class="w-full" 
@@ -160,13 +161,13 @@
 				{#if isProcessing}
 					Processing...
 				{:else}
-					Pay €{leadPrice} & Unlock Contact Info
+					Pay €{leadPrice} & Accept Booking
 				{/if}
 			</Button>
 		</form>
 
 		<p class="mt-4 text-center text-xs text-muted-foreground">
-			🔒 Secure payment powered by Stripe
+			🔒 Payment confirms your acceptance of this booking request
 		</p>
 	</div>
 

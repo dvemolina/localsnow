@@ -136,17 +136,16 @@
 		e.preventDefault();
 		
 		if (!calendarSelection || calendarSelection.timeSlots.length === 0) {
-			toast.error('Please select dates and time slots from the calendar');
+			toast.error('Please select dates and time slots');
 			return;
 		}
 
 		isSubmitting = true;
 		submitError = '';
-		submitSuccess = false;
 
 		try {
-			// Step 1: Create booking request
-			const bookingResponse = await fetch(`/api/bookings/${instructorId}`, {
+			// ✅ NEW: Single API call that returns checkout URL
+			const response = await fetch(`/api/bookings/${instructorId}`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
@@ -160,35 +159,17 @@
 				})
 			});
 
-			if (!bookingResponse.ok) {
-				const error = await bookingResponse.json();
-				submitError = error.message || 'Failed to submit request';
+			if (!response.ok) {
+				const error = await response.json();
+				submitError = error.message || 'Failed to create booking';
 				return;
 			}
 
-			const bookingResult = await bookingResponse.json();
-			const bookingRequestId = bookingResult.bookingId;
-
-			// Step 2: Create deposit payment
-			const depositResponse = await fetch('/api/deposits/create', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					bookingRequestId,
-					clientEmail: $formData.clientEmail
-				})
-			});
-
-			if (!depositResponse.ok) {
-				submitError = 'Booking created but failed to process deposit. Please contact support.';
-				return;
-			}
-
-			const depositResult = await depositResponse.json();
+			const result = await response.json();
 			
-			// Step 3: Redirect to Stripe
-			if (depositResult.url) {
-				window.location.href = depositResult.url;
+			// ✅ Redirect to Stripe Checkout
+			if (result.checkoutUrl) {
+				window.location.href = result.checkoutUrl;
 			} else {
 				submitError = 'Failed to create payment session';
 			}

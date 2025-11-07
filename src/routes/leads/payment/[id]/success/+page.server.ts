@@ -4,6 +4,7 @@ import { BookingRequestService } from '$src/features/Bookings/lib/bookingRequest
 import { LeadPaymentService } from '$src/features/Bookings/lib/leadPaymentService';
 import { InstructorService } from '$src/features/Instructors/lib/instructorService';
 import { sendContactInfoToInstructor } from '$src/lib/server/webhooks/n8n/email-n8n';
+import { TentativeBookingService } from '$src/features/Availability/lib/tentativeBookingService';
 
 const bookingService = new BookingRequestService();
 const paymentService = new LeadPaymentService();
@@ -46,6 +47,21 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
     // Verify user is the instructor for this booking
     if (bookingRequest.instructorId !== user.id) {
         error(403, 'Unauthorized');
+    }
+
+    //Auto-accept the booking after payment
+    try {
+        // Update booking status to accepted
+        await bookingService.updateBookingStatus(bookingRequestId, 'accepted');
+        
+        // Convert tentative blocks to confirmed
+        const tentativeService = new TentativeBookingService();
+        await tentativeService.confirmBooking(bookingRequestId);
+        
+        console.log(`Booking ${bookingRequestId} auto-accepted after lead payment`);
+    } catch (error) {
+        console.error('Error auto-accepting booking:', error);
+        // Don't fail the whole flow - instructor still gets contact info
     }
 
     // Get instructor details
