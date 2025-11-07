@@ -114,6 +114,7 @@ export const bookingRequests = pgTable('booking_requests', {
     startDate: timestamp('start_date').notNull(),
     endDate: timestamp('end_date'), // null for single-day bookings
     hoursPerDay: numeric('hours_per_day', { precision: 4, scale: 1 }).notNull(),
+	timeSlots: text('time_slots'), // JSON array of time slots
     
     // Additional info
     skillLevel: varchar('skill_level', { length: 50 }),
