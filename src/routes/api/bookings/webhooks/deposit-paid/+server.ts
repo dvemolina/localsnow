@@ -52,6 +52,10 @@ export const GET: RequestHandler = async ({ url }) => {
             redirect(303, '/booking/booking-error?reason=booking_not_found');
         }
     } catch (error) {
+        // ⚠️ CRITICAL: Re-throw redirects, don't catch them!
+        if (error instanceof Response) {
+            throw error;
+        }
         console.error('Error retrieving session or booking:', error);
         redirect(303, '/booking/booking-error?reason=processing_error');
     }
@@ -64,6 +68,10 @@ export const GET: RequestHandler = async ({ url }) => {
             (session.payment_intent as Stripe.PaymentIntent).id
         );
     } catch (error) {
+        // ⚠️ Re-throw redirects
+        if (error instanceof Response) {
+            throw error;
+        }
         console.error('Error creating deposit:', error);
         redirect(303, '/booking/booking-error?reason=processing_error');
     }
@@ -74,6 +82,10 @@ export const GET: RequestHandler = async ({ url }) => {
     try {
         await tentativeService.createTentativeBlock(booking.id, timeSlots);
     } catch (tentativeError) {
+        // ⚠️ Re-throw redirects
+        if (tentativeError instanceof Response) {
+            throw tentativeError;
+        }
         console.error('Race condition detected:', tentativeError);
         
         // Cleanup: refund deposit and mark booking as expired
