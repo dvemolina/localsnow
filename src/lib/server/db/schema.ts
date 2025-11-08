@@ -315,6 +315,33 @@ export const clientDepositsRelations = relations(clientDeposits, ({ one }) => ({
 export type ClientDeposit = typeof clientDeposits.$inferSelect;
 export type InsertClientDeposit = typeof clientDeposits.$inferInsert;
 
+// Reviews
+export const reviews = pgTable('reviews', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	uuid: uuid('uuid').defaultRandom().unique().notNull(),
+	bookingRequestId: integer('booking_request_id').notNull().unique().references(() => bookingRequests.id, { onDelete: 'cascade' }), // One review per booking
+	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	clientEmail: varchar('client_email', { length: 255 }).notNull(),
+	rating: integer('rating').notNull(), // 1-5 stars
+	comment: text('comment'),
+	isVerified: boolean('is_verified').default(true), // All reviews are verified (require valid booking)
+	...timestamps
+});
+
+export const reviewsRelations = relations(reviews, ({ one }) => ({
+	bookingRequest: one(bookingRequests, {
+		fields: [reviews.bookingRequestId],
+		references: [bookingRequests.id]
+	}),
+	instructor: one(users, {
+		fields: [reviews.instructorId],
+		references: [users.id]
+	})
+}));
+
+export type Review = typeof reviews.$inferSelect;
+export type InsertReview = typeof reviews.$inferInsert;
+
 // --- Availability System Tables ---
 
 // Working Hours (one-time setup per instructor)

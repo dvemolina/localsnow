@@ -33,11 +33,4 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 };
 
-// Allow GET for manual testing (remove in production or add auth)
-export const GET: RequestHandler = async ({ request }) => {
-    // You can call POST handler or just return info
-    return json({ 
-        message: 'Use POST to process expired deposits',
-        endpoint: '/api/cron/process-deposits'
-    });
-};
+// GET endpoint removed for security - cron jobs should only use POST with Bearer token authentication

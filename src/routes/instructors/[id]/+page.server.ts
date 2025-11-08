@@ -6,6 +6,7 @@ import { PricingService } from '$src/features/Pricing/lib/pricingService';
 import { BookingRequestService } from '$src/features/Bookings/lib/bookingRequestService';
 import { UserService } from '$src/features/Users/lib/UserService';
 import { SportsService } from '$src/features/Sports/lib/sportsService';
+import { ReviewService } from '$src/features/Reviews/lib/reviewService';
 import { trackProfileVisit } from '$src/features/Dashboard/lib/utils';
 import { getClientIP } from '$src/lib/utils/auth';
 import { sendBookingNotificationToInstructor, sendBookingConfirmationToClient } from '$src/lib/server/webhooks/n8n/email-n8n';
@@ -15,6 +16,7 @@ const pricingService = new PricingService();
 const bookingRequestService = new BookingRequestService();
 const userService = new UserService();
 const sportsService = new SportsService();
+const reviewService = new ReviewService();
 
 const LEAD_PRICE = 5; // €5 per lead
 
@@ -38,10 +40,12 @@ export const load: PageServerLoad = async (event) => {
             throw error(404, 'Instructor not found');
         }
 
-        // Get sports and resorts
-        const [sportIds, resorts] = await Promise.all([
+        // Get sports, resorts, and reviews in parallel
+        const [sportIds, resorts, reviews, reviewStats] = await Promise.all([
             instructorService.getInstructorSports(instructorId),
-            instructorService.getInstructorResorts(instructorId)
+            instructorService.getInstructorResorts(instructorId),
+            reviewService.getInstructorReviews(instructorId, 10, 0),
+            reviewService.getInstructorStats(instructorId)
         ]);
 
         // Get sport names from IDs
@@ -51,7 +55,7 @@ export const load: PageServerLoad = async (event) => {
         let groupTiers = [];
         let durationPackages = [];
         let promoCodes = [];
-        
+
         if (instructorData.baseLesson) {
             const pricingData = await pricingService.getLessonPricingData(instructorData.baseLesson.id);
             groupTiers = pricingData.groupTiers;
@@ -81,6 +85,8 @@ export const load: PageServerLoad = async (event) => {
             promoCodes,
             sports,
             resorts,
+            reviews,
+            reviewStats,
             user: completeUser
         };
     } catch (err) {
