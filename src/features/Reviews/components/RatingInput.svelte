@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Star } from 'lucide-svelte';
+	import { Star } from '@lucide/svelte';
 
 	let { value = $bindable(0), readonly = false, size = 24 } = $props();
 
