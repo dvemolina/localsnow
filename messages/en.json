@@ -1,127 +1,159 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
-
-	"nav.home": "Home",
-	"nav.instructors": "Instructors",
-	"nav.about": "About",
-	"nav.contact": "Contact",
-	"nav.login": "Login",
-	"nav.signup": "Sign Up",
-	"nav.dashboard": "Dashboard",
-	"nav.logout": "Logout",
-
-	"common.search": "Search",
-	"common.filter": "Filter",
-	"common.filters": "Filters",
-	"common.apply": "Apply",
-	"common.clear": "Clear",
-	"common.cancel": "Cancel",
-	"common.save": "Save",
-	"common.edit": "Edit",
-	"common.delete": "Delete",
-	"common.view": "View",
-	"common.back": "Back",
-	"common.next": "Next",
-	"common.submit": "Submit",
-	"common.loading": "Loading...",
-	"common.error": "Error",
-	"common.success": "Success",
-	"common.per_hour": "per hour",
-	"common.currency.eur": "€",
-
-	"home.hero.title": "Find Your Perfect Ski & Snowboard Instructor",
-	"home.hero.subtitle": "Book directly with certified instructors at top resorts worldwide - no booking fees",
-	"home.hero.cta": "Browse Instructors",
-	"home.how_it_works": "How It Works",
-	"home.for_instructors": "Are you an instructor?",
-	"home.join_cta": "Join Local Snow",
-
-	"instructors.title": "Find Your Perfect Instructor",
-	"instructors.subtitle": "Connect directly with certified ski and snowboard instructors at top resorts",
-	"instructors.filters": "Filters",
-	"instructors.active_filters": "Active",
-	"instructors.clear_all": "Clear all",
-	"instructors.apply_filters": "Apply Filters",
-	"instructors.results.none": "No instructors found",
-	"instructors.results.one": "1 instructor found",
-	"instructors.results.many": "{count} instructors found",
-	"instructors.empty.title": "No Instructors Found",
-	"instructors.empty.with_filters": "Try adjusting your filters to see more results",
-	"instructors.empty.no_filters": "No instructors available at the moment",
-
-	"filter.sport": "Sport",
-	"filter.resort": "Resort",
-	"filter.dates": "Availability Dates",
-	"filter.date.from": "From",
-	"filter.date.to": "To",
-	"filter.price_range": "Price Range (€/hour)",
-	"filter.price.min": "Min",
-	"filter.price.max": "Max",
-	"filter.group_size": "Group Size",
-	"filter.group_size.description": "Number of students (shows instructors who can accommodate your group)",
-	"filter.select_sport": "Select sport",
-	"filter.select_resort": "Select resort",
-
-	"instructor.view_profile": "View Profile",
-	"instructor.book_now": "Book Now",
-	"instructor.from": "From",
-	"instructor.reviews": "reviews",
-	"instructor.review": "review",
-	"instructor.no_reviews": "No reviews yet",
-	"instructor.base_price": "Base Price",
-
-	"resort.instructors_in": "{sport} Instructors in {resort}",
-	"resort.typical_prices": "Typical Lesson Prices",
-	"resort.about_lessons": "About {sport} Lessons at {resort}",
-	"resort.no_instructors": "No Instructors Yet",
-	"resort.no_instructors_desc": "We don't have any {sport} instructors at {resort} yet.",
-	"resort.browse_all": "Browse All Instructors",
-	"resort.are_you_instructor": "Are you a {sport} instructor at {resort}?",
-	"resort.join_desc": "Join Local Snow and start receiving direct bookings from clients. No commissions, no fees.",
-	"resort.become_instructor": "Become an Instructor",
-	"resort.visit_website": "Visit resort website",
-	"resort.view_all_filters": "View All Filters",
-	"resort.instructors_available.none": "No Instructors Found",
-	"resort.instructors_available.one": "1 Instructor Available",
-	"resort.instructors_available.many": "{count} Instructors Available",
-
-	"booking.request_lesson": "Request Lesson",
-	"booking.student_info": "Student Information",
-	"booking.lesson_details": "Lesson Details",
-	"booking.contact_info": "Contact Information",
-	"booking.number_of_students": "Number of Students",
-	"booking.start_date": "Start Date",
-	"booking.end_date": "End Date",
-	"booking.hours_per_day": "Hours per Day",
-	"booking.skill_level": "Skill Level",
-	"booking.message": "Message to Instructor",
-	"booking.estimated_price": "Estimated Price",
-	"booking.submit_request": "Submit Booking Request",
-
-	"auth.email": "Email",
-	"auth.password": "Password",
-	"auth.name": "Name",
-	"auth.last_name": "Last Name",
-	"auth.phone": "Phone",
-	"auth.country_code": "Country Code",
-	"auth.accept_terms": "I accept the terms and conditions",
-	"auth.have_account": "Already have an account?",
-	"auth.no_account": "Don't have an account?",
-
-	"dashboard.title": "Dashboard",
-	"dashboard.bookings": "Bookings",
-	"dashboard.profile": "Profile",
-	"dashboard.lessons": "Lessons",
-	"dashboard.availability": "Availability",
-	"dashboard.working_hours": "Working Hours",
-
-	"reviews.submit": "Submit Review",
-	"reviews.rating": "Rating",
-	"reviews.comment": "Comment",
-	"reviews.thank_you": "Thank you for your review!",
-
-	"seo.meta.home.title": "Local Snow - Direct Booking Platform for Ski & Snowboard Instructors",
-	"seo.meta.home.description": "Find and book certified ski and snowboard instructors directly. No booking fees. Connect with professional instructors at top resorts worldwide.",
-	"seo.meta.instructors.title": "Find Ski & Snowboard Instructors | Local Snow",
-	"seo.meta.instructors.description": "Browse certified ski and snowboard instructors at top resorts worldwide. Book directly with professional instructors - no booking fees."
+	"hello_world": "Hello, {name} from en!",
+	"nav": {
+		"home": "Home",
+		"instructors": "Instructors",
+		"about": "About",
+		"contact": "Contact",
+		"login": "Login",
+		"signup": "Sign Up",
+		"dashboard": "Dashboard",
+		"logout": "Logout"
+	},
+	"common": {
+		"search": "Search",
+		"filter": "Filter",
+		"filters": "Filters",
+		"apply": "Apply",
+		"clear": "Clear",
+		"cancel": "Cancel",
+		"save": "Save",
+		"edit": "Edit",
+		"delete": "Delete",
+		"view": "View",
+		"back": "Back",
+		"next": "Next",
+		"submit": "Submit",
+		"loading": "Loading...",
+		"error": "Error",
+		"success": "Success",
+		"per_hour": "per hour",
+		"currency": {
+			"eur": "€"
+		}
+	},
+	"home": {
+		"hero": {
+			"title": "Find Your Perfect Ski & Snowboard Instructor",
+			"subtitle": "Book directly with certified instructors at top resorts worldwide - no booking fees",
+			"cta": "Browse Instructors"
+		},
+		"how_it_works": "How It Works",
+		"for_instructors": "Are you an instructor?",
+		"join_cta": "Join Local Snow"
+	},
+	"instructors": {
+		"title": "Find Your Perfect Instructor",
+		"subtitle": "Connect directly with certified ski and snowboard instructors at top resorts",
+		"filters": "Filters",
+		"active_filters": "Active",
+		"clear_all": "Clear all",
+		"apply_filters": "Apply Filters",
+		"results": {
+			"none": "No instructors found",
+			"one": "1 instructor found",
+			"many": "{count} instructors found"
+		},
+		"empty": {
+			"title": "No Instructors Found",
+			"with_filters": "Try adjusting your filters to see more results",
+			"no_filters": "No instructors available at the moment"
+		}
+	},
+	"filter": {
+		"sport": "Sport",
+		"resort": "Resort",
+		"dates": "Availability Dates",
+		"date": {
+			"from": "From",
+			"to": "To"
+		},
+		"price_range": "Price Range (€/hour)",
+		"price": {
+			"min": "Min",
+			"max": "Max"
+		},
+		"group_size": "Group Size",
+		"select_sport": "Select sport",
+		"select_resort": "Select resort"
+	},
+	"instructor": {
+		"view_profile": "View Profile",
+		"book_now": "Book Now",
+		"from": "From",
+		"reviews": "reviews",
+		"review": "review",
+		"no_reviews": "No reviews yet",
+		"base_price": "Base Price"
+	},
+	"resort": {
+		"instructors_in": "{sport} Instructors in {resort}",
+		"typical_prices": "Typical Lesson Prices",
+		"about_lessons": "About {sport} Lessons at {resort}",
+		"no_instructors": "No Instructors Yet",
+		"no_instructors_desc": "We don't have any {sport} instructors at {resort} yet.",
+		"browse_all": "Browse All Instructors",
+		"are_you_instructor": "Are you a {sport} instructor at {resort}?",
+		"join_desc": "Join Local Snow and start receiving direct bookings from clients. No commissions, no fees.",
+		"become_instructor": "Become an Instructor",
+		"visit_website": "Visit resort website",
+		"view_all_filters": "View All Filters",
+		"instructors_available": {
+			"none": "No Instructors Found",
+			"one": "1 Instructor Available",
+			"many": "{count} Instructors Available"
+		}
+	},
+	"booking": {
+		"request_lesson": "Request Lesson",
+		"student_info": "Student Information",
+		"lesson_details": "Lesson Details",
+		"contact_info": "Contact Information",
+		"number_of_students": "Number of Students",
+		"start_date": "Start Date",
+		"end_date": "End Date",
+		"hours_per_day": "Hours per Day",
+		"skill_level": "Skill Level",
+		"message": "Message to Instructor",
+		"estimated_price": "Estimated Price",
+		"submit_request": "Submit Booking Request"
+	},
+	"auth": {
+		"email": "Email",
+		"password": "Password",
+		"name": "Name",
+		"last_name": "Last Name",
+		"phone": "Phone",
+		"country_code": "Country Code",
+		"accept_terms": "I accept the terms and conditions",
+		"have_account": "Already have an account?",
+		"no_account": "Don't have an account?"
+	},
+	"dashboard": {
+		"title": "Dashboard",
+		"bookings": "Bookings",
+		"profile": "Profile",
+		"lessons": "Lessons",
+		"availability": "Availability",
+		"working_hours": "Working Hours"
+	},
+	"reviews": {
+		"submit": "Submit Review",
+		"rating": "Rating",
+		"comment": "Comment",
+		"thank_you": "Thank you for your review!"
+	},
+	"seo": {
+		"meta": {
+			"home": {
+				"title": "Local Snow - Direct Booking Platform for Ski & Snowboard Instructors",
+				"description": "Find and book certified ski and snowboard instructors directly. No booking fees. Connect with professional instructors at top resorts worldwide."
+			},
+			"instructors": {
+				"title": "Find Ski & Snowboard Instructors | Local Snow",
+				"description": "Browse certified ski and snowboard instructors at top resorts worldwide. Book directly with professional instructors - no booking fees."
+			}
+		}
+	}
 }

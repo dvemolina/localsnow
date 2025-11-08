@@ -1,127 +1,158 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
-
-	"nav.home": "Inicio",
-	"nav.instructors": "Instructores",
-	"nav.about": "Acerca de",
-	"nav.contact": "Contacto",
-	"nav.login": "Iniciar sesión",
-	"nav.signup": "Registrarse",
-	"nav.dashboard": "Panel",
-	"nav.logout": "Cerrar sesión",
-
-	"common.search": "Buscar",
-	"common.filter": "Filtrar",
-	"common.filters": "Filtros",
-	"common.apply": "Aplicar",
-	"common.clear": "Limpiar",
-	"common.cancel": "Cancelar",
-	"common.save": "Guardar",
-	"common.edit": "Editar",
-	"common.delete": "Eliminar",
-	"common.view": "Ver",
-	"common.back": "Atrás",
-	"common.next": "Siguiente",
-	"common.submit": "Enviar",
-	"common.loading": "Cargando...",
-	"common.error": "Error",
-	"common.success": "Éxito",
-	"common.per_hour": "por hora",
-	"common.currency.eur": "€",
-
-	"home.hero.title": "Encuentra tu Profesor de Esquí o Snowboard Perfecto",
-	"home.hero.subtitle": "Reserva directamente con instructores certificados en las mejores estaciones - sin comisiones",
-	"home.hero.cta": "Ver Instructores",
-	"home.how_it_works": "Cómo Funciona",
-	"home.for_instructors": "¿Eres instructor?",
-	"home.join_cta": "Únete a Local Snow",
-
-	"instructors.title": "Encuentra tu Instructor Perfecto",
-	"instructors.subtitle": "Conecta directamente con profesores certificados de esquí y snowboard en las mejores estaciones",
-	"instructors.filters": "Filtros",
-	"instructors.active_filters": "Activos",
-	"instructors.clear_all": "Limpiar todo",
-	"instructors.apply_filters": "Aplicar Filtros",
-	"instructors.results.none": "No se encontraron instructores",
-	"instructors.results.one": "1 instructor encontrado",
-	"instructors.results.many": "{count} instructores encontrados",
-	"instructors.empty.title": "No se Encontraron Instructores",
-	"instructors.empty.with_filters": "Intenta ajustar tus filtros para ver más resultados",
-	"instructors.empty.no_filters": "No hay instructores disponibles en este momento",
-
-	"filter.sport": "Deporte",
-	"filter.resort": "Estación",
-	"filter.dates": "Fechas de Disponibilidad",
-	"filter.date.from": "Desde",
-	"filter.date.to": "Hasta",
-	"filter.price_range": "Rango de Precio (€/hora)",
-	"filter.price.min": "Mín",
-	"filter.price.max": "Máx",
-	"filter.group_size": "Tamaño del Grupo",
-	"filter.group_size.description": "Número de estudiantes (muestra instructores que pueden acomodar tu grupo)",
-	"filter.select_sport": "Selecciona deporte",
-	"filter.select_resort": "Selecciona estación",
-
-	"instructor.view_profile": "Ver Perfil",
-	"instructor.book_now": "Reservar Ahora",
-	"instructor.from": "Desde",
-	"instructor.reviews": "reseñas",
-	"instructor.review": "reseña",
-	"instructor.no_reviews": "Sin reseñas aún",
-	"instructor.base_price": "Precio Base",
-
-	"resort.instructors_in": "Profesores de {sport} en {resort}",
-	"resort.typical_prices": "Precios Típicos de Clases",
-	"resort.about_lessons": "Acerca de las Clases de {sport} en {resort}",
-	"resort.no_instructors": "Sin Instructores Aún",
-	"resort.no_instructors_desc": "Todavía no tenemos instructores de {sport} en {resort}.",
-	"resort.browse_all": "Ver Todos los Instructores",
-	"resort.are_you_instructor": "¿Eres instructor de {sport} en {resort}?",
-	"resort.join_desc": "Únete a Local Snow y comienza a recibir reservas directas de clientes. Sin comisiones, sin tarifas.",
-	"resort.become_instructor": "Conviértete en Instructor",
-	"resort.visit_website": "Visitar sitio web de la estación",
-	"resort.view_all_filters": "Ver Todos los Filtros",
-	"resort.instructors_available.none": "No se Encontraron Instructores",
-	"resort.instructors_available.one": "1 Instructor Disponible",
-	"resort.instructors_available.many": "{count} Instructores Disponibles",
-
-	"booking.request_lesson": "Solicitar Clase",
-	"booking.student_info": "Información del Estudiante",
-	"booking.lesson_details": "Detalles de la Clase",
-	"booking.contact_info": "Información de Contacto",
-	"booking.number_of_students": "Número de Estudiantes",
-	"booking.start_date": "Fecha de Inicio",
-	"booking.end_date": "Fecha de Fin",
-	"booking.hours_per_day": "Horas por Día",
-	"booking.skill_level": "Nivel de Habilidad",
-	"booking.message": "Mensaje al Instructor",
-	"booking.estimated_price": "Precio Estimado",
-	"booking.submit_request": "Enviar Solicitud de Reserva",
-
-	"auth.email": "Correo Electrónico",
-	"auth.password": "Contraseña",
-	"auth.name": "Nombre",
-	"auth.last_name": "Apellido",
-	"auth.phone": "Teléfono",
-	"auth.country_code": "Código de País",
-	"auth.accept_terms": "Acepto los términos y condiciones",
-	"auth.have_account": "¿Ya tienes una cuenta?",
-	"auth.no_account": "¿No tienes cuenta?",
-
-	"dashboard.title": "Panel",
-	"dashboard.bookings": "Reservas",
-	"dashboard.profile": "Perfil",
-	"dashboard.lessons": "Clases",
-	"dashboard.availability": "Disponibilidad",
-	"dashboard.working_hours": "Horario de Trabajo",
-
-	"reviews.submit": "Enviar Reseña",
-	"reviews.rating": "Calificación",
-	"reviews.comment": "Comentario",
-	"reviews.thank_you": "¡Gracias por tu reseña!",
-
-	"seo.meta.home.title": "Local Snow - Plataforma de Reserva Directa para Profesores de Esquí y Snowboard",
-	"seo.meta.home.description": "Encuentra y reserva profesores certificados de esquí y snowboard directamente. Sin comisiones. Conecta con instructores profesionales en las mejores estaciones.",
-	"seo.meta.instructors.title": "Encuentra Profesores de Esquí y Snowboard | Local Snow",
-	"seo.meta.instructors.description": "Navega profesores certificados de esquí y snowboard en las mejores estaciones. Reserva directamente con instructores profesionales - sin comisiones."
+	"nav": {
+		"home": "Inicio",
+		"instructors": "Instructores",
+		"about": "Acerca de",
+		"contact": "Contacto",
+		"login": "Iniciar sesión",
+		"signup": "Registrarse",
+		"dashboard": "Panel",
+		"logout": "Cerrar sesión"
+	},
+	"common": {
+		"search": "Buscar",
+		"filter": "Filtrar",
+		"filters": "Filtros",
+		"apply": "Aplicar",
+		"clear": "Limpiar",
+		"cancel": "Cancelar",
+		"save": "Guardar",
+		"edit": "Editar",
+		"delete": "Eliminar",
+		"view": "Ver",
+		"back": "Atrás",
+		"next": "Siguiente",
+		"submit": "Enviar",
+		"loading": "Cargando...",
+		"error": "Error",
+		"success": "Éxito",
+		"per_hour": "por hora",
+		"currency": {
+			"eur": "€"
+		}
+	},
+	"home": {
+		"hero": {
+			"title": "Encuentra tu Profesor de Esquí o Snowboard Perfecto",
+			"subtitle": "Reserva directamente con instructores certificados en las mejores estaciones - sin comisiones",
+			"cta": "Ver Instructores"
+		},
+		"how_it_works": "Cómo Funciona",
+		"for_instructors": "¿Eres instructor?",
+		"join_cta": "Únete a Local Snow"
+	},
+	"instructors": {
+		"title": "Encuentra tu Instructor Perfecto",
+		"subtitle": "Conecta directamente con profesores certificados de esquí y snowboard en las mejores estaciones",
+		"filters": "Filtros",
+		"active_filters": "Activos",
+		"clear_all": "Limpiar todo",
+		"apply_filters": "Aplicar Filtros",
+		"results": {
+			"none": "No se encontraron instructores",
+			"one": "1 instructor encontrado",
+			"many": "{count} instructores encontrados"
+		},
+		"empty": {
+			"title": "No se Encontraron Instructores",
+			"with_filters": "Intenta ajustar tus filtros para ver más resultados",
+			"no_filters": "No hay instructores disponibles en este momento"
+		}
+	},
+	"filter": {
+		"sport": "Deporte",
+		"resort": "Estación",
+		"dates": "Fechas de Disponibilidad",
+		"date": {
+			"from": "Desde",
+			"to": "Hasta"
+		},
+		"price_range": "Rango de Precio (€/hora)",
+		"price": {
+			"min": "Mín",
+			"max": "Máx"
+		},
+		"group_size": "Tamaño del Grupo",
+		"select_sport": "Selecciona deporte",
+		"select_resort": "Selecciona estación"
+	},
+	"instructor": {
+		"view_profile": "Ver Perfil",
+		"book_now": "Reservar Ahora",
+		"from": "Desde",
+		"reviews": "reseñas",
+		"review": "reseña",
+		"no_reviews": "Sin reseñas aún",
+		"base_price": "Precio Base"
+	},
+	"resort": {
+		"instructors_in": "Profesores de {sport} en {resort}",
+		"typical_prices": "Precios Típicos de Clases",
+		"about_lessons": "Acerca de las Clases de {sport} en {resort}",
+		"no_instructors": "Sin Instructores Aún",
+		"no_instructors_desc": "Todavía no tenemos instructores de {sport} en {resort}.",
+		"browse_all": "Ver Todos los Instructores",
+		"are_you_instructor": "¿Eres instructor de {sport} en {resort}?",
+		"join_desc": "Únete a Local Snow y comienza a recibir reservas directas de clientes. Sin comisiones, sin tarifas.",
+		"become_instructor": "Conviértete en Instructor",
+		"visit_website": "Visitar sitio web de la estación",
+		"view_all_filters": "Ver Todos los Filtros",
+		"instructors_available": {
+			"none": "No se Encontraron Instructores",
+			"one": "1 Instructor Disponible",
+			"many": "{count} Instructores Disponibles"
+		}
+	},
+	"booking": {
+		"request_lesson": "Solicitar Clase",
+		"student_info": "Información del Estudiante",
+		"lesson_details": "Detalles de la Clase",
+		"contact_info": "Información de Contacto",
+		"number_of_students": "Número de Estudiantes",
+		"start_date": "Fecha de Inicio",
+		"end_date": "Fecha de Fin",
+		"hours_per_day": "Horas por Día",
+		"skill_level": "Nivel de Habilidad",
+		"message": "Mensaje al Instructor",
+		"estimated_price": "Precio Estimado",
+		"submit_request": "Enviar Solicitud de Reserva"
+	},
+	"auth": {
+		"email": "Correo Electrónico",
+		"password": "Contraseña",
+		"name": "Nombre",
+		"last_name": "Apellido",
+		"phone": "Teléfono",
+		"country_code": "Código de País",
+		"accept_terms": "Acepto los términos y condiciones",
+		"have_account": "¿Ya tienes una cuenta?",
+		"no_account": "¿No tienes cuenta?"
+	},
+	"dashboard": {
+		"title": "Panel",
+		"bookings": "Reservas",
+		"profile": "Perfil",
+		"lessons": "Clases",
+		"availability": "Disponibilidad",
+		"working_hours": "Horario de Trabajo"
+	},
+	"reviews": {
+		"submit": "Enviar Reseña",
+		"rating": "Calificación",
+		"comment": "Comentario",
+		"thank_you": "¡Gracias por tu reseña!"
+	},
+	"seo": {
+		"meta": {
+			"home": {
+				"title": "Local Snow - Plataforma de Reserva Directa para Profesores de Esquí y Snowboard",
+				"description": "Encuentra y reserva profesores certificados de esquí y snowboard directamente. Sin comisiones. Conecta con instructores profesionales en las mejores estaciones."
+			},
+			"instructors": {
+				"title": "Encuentra Profesores de Esquí y Snowboard | Local Snow",
+				"description": "Navega profesores certificados de esquí y snowboard en las mejores estaciones. Reserva directamente con instructores profesionales - sin comisiones."
+			}
+		}
+	}
 }

@@ -6,7 +6,7 @@
 	import { Label } from '$lib/components/ui/label';
 	import * as Select from '$lib/components/ui/select';
 	import { Badge } from '$lib/components/ui/badge';
-	import { Calendar } from 'lucide-svelte';
+	import { Calendar } from '@lucide/svelte';
 
 	let {
 		sports = [],
