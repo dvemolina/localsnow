@@ -1,6 +1,6 @@
 import { db } from '$src/lib/server/db';
 import { instructorCalendarBlocks, bookingRequests } from '$src/lib/server/db/schema';
-import { eq, and, or, gte, lte, lt } from 'drizzle-orm';
+import { eq, and, or, gte, lte, lt, ne } from 'drizzle-orm';
 
 export class TentativeBookingService {
 	private readonly EXPIRATION_HOURS = 48;
@@ -20,6 +20,16 @@ export class TentativeBookingService {
 			throw new Error('Booking request not found');
 		}
 
+		// ✅ FIRST: Delete any existing tentative blocks for this booking
+		// (in case this is a retry after payment)
+		await db.delete(instructorCalendarBlocks)
+			.where(
+				and(
+					eq(instructorCalendarBlocks.bookingRequestId, bookingRequestId),
+					eq(instructorCalendarBlocks.source, 'booking_pending')
+				)
+			);
+
 		const startDate = new Date(booking.startDate);
 		const endDate = booking.endDate ? new Date(booking.endDate) : startDate;
 
@@ -37,7 +47,7 @@ export class TentativeBookingService {
 					slotStart.setHours(hours, minutes, 0, 0);
 					
 					const slotEnd = new Date(slotStart);
-					slotEnd.setHours(slotStart.getHours() + 1, minutes, 0, 0); // Each slot is 1 hour
+					slotEnd.setHours(slotStart.getHours() + 1, minutes, 0, 0);
 					
 					blocksToCreate.push({
 						startDatetime: slotStart,
@@ -45,13 +55,13 @@ export class TentativeBookingService {
 					});
 				}
 			} else {
-				// Fallback: Create continuous block (legacy behavior)
+				// Fallback: Create continuous block
 				const dayStart = new Date(currentDate);
-				dayStart.setHours(9, 0, 0, 0); // Default 9am start
+				dayStart.setHours(9, 0, 0, 0);
 
 				const dayEnd = new Date(currentDate);
 				const hours = Number(booking.hoursPerDay);
-				dayEnd.setHours(9 + hours, 0, 0, 0); // Add hours to start time
+				dayEnd.setHours(9 + hours, 0, 0, 0);
 
 				blocksToCreate.push({
 					startDatetime: dayStart,
@@ -62,9 +72,9 @@ export class TentativeBookingService {
 			currentDate.setDate(currentDate.getDate() + 1);
 		}
 
-		// Use transaction with row-level locking to prevent race conditions
+		// Use transaction with row-level locking
 		return await db.transaction(async (tx) => {
-			// Check for conflicting blocks WITH row lock
+			// Check for conflicting blocks (EXCLUDING our own booking)
 			for (const block of blocksToCreate) {
 				const conflicts = await tx
 					.select()
@@ -72,18 +82,17 @@ export class TentativeBookingService {
 					.where(
 						and(
 							eq(instructorCalendarBlocks.instructorId, booking.instructorId),
+							// ✅ Exclude blocks from THIS booking
+							ne(instructorCalendarBlocks.bookingRequestId, bookingRequestId),
 							or(
-								// Existing block starts during new block
 								and(
 									gte(instructorCalendarBlocks.startDatetime, block.startDatetime),
 									lt(instructorCalendarBlocks.startDatetime, block.endDatetime)
 								),
-								// Existing block ends during new block
 								and(
 									gte(instructorCalendarBlocks.endDatetime, block.startDatetime),
 									lte(instructorCalendarBlocks.endDatetime, block.endDatetime)
 								),
-								// Existing block spans entire new block
 								and(
 									lte(instructorCalendarBlocks.startDatetime, block.startDatetime),
 									gte(instructorCalendarBlocks.endDatetime, block.endDatetime)
@@ -91,7 +100,7 @@ export class TentativeBookingService {
 							)
 						)
 					)
-					.for('update'); // Row-level lock
+					.for('update');
 
 				if (conflicts.length > 0) {
 					throw new Error('Slots no longer available - another booking was just made');
