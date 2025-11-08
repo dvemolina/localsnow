@@ -88,26 +88,4 @@ export class SportsService {
             return acc;
         }, {} as Record<number, string>);
     }
-
-    /**
-     * Get sport by slug
-     */
-    async getSportBySlug(slug: string): Promise<SportWithDetails | null> {
-        const result = await db.select({
-            id: sports.id,
-            name: sports.sport,
-            slug: sports.sportSlug
-        })
-        .from(sports)
-        .where(eq(sports.sportSlug, slug))
-        .limit(1);
-
-        if (!result[0]) return null;
-
-        return {
-            id: result[0].id,
-            name: result[0].name,
-            slug: result[0].slug
-        };
-    }
 }

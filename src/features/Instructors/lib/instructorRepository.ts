@@ -176,9 +176,6 @@ export class InstructorRepository {
         resortId?: number;
         sportId?: number;
         searchQuery?: string;
-        minPrice?: number;
-        maxPrice?: number;
-        groupSize?: number;
     }) {
         try {
             let query = db
@@ -195,16 +192,11 @@ export class InstructorRepository {
                     qualificationUrl: users.qualificationUrl,
                     // Join data
                     sports: instructorSports.sportId,
-                    resorts: instructorResorts.resortId,
-                    basePrice: lessons.basePrice
+                    resorts: instructorResorts.resortId
                 })
                 .from(users)
                 .leftJoin(instructorSports, eq(users.id, instructorSports.instructorId))
                 .leftJoin(instructorResorts, eq(users.id, instructorResorts.instructorId))
-                .leftJoin(lessons, and(
-                    eq(lessons.instructorId, users.id),
-                    eq(lessons.isBaseLesson, true)
-                ))
                 .$dynamic();
 
             // Build WHERE conditions
@@ -246,19 +238,18 @@ export class InstructorRepository {
                         countryCode: row.countryCode,
                         role: row.role,
                         qualificationUrl: row.qualificationUrl,
-                        basePrice: row.basePrice,
                         sports: [],
                         resorts: []
                     });
                 }
 
                 const instructor = instructorsMap.get(row.id);
-
+                
                 // Add sport if exists and not already added
                 if (row.sports && !instructor.sports.includes(row.sports)) {
                     instructor.sports.push(row.sports);
                 }
-
+                
                 // Add resort if exists and not already added
                 if (row.resorts && !instructor.resorts.includes(row.resorts)) {
                     instructor.resorts.push(row.resorts);
@@ -271,27 +262,6 @@ export class InstructorRepository {
             if (filters.sportId) {
                 instructorsList = instructorsList.filter(instructor =>
                     instructor.sports.includes(filters.sportId)
-                );
-            }
-
-            // Filter by price range
-            if (filters.minPrice !== undefined) {
-                instructorsList = instructorsList.filter(instructor =>
-                    instructor.basePrice && instructor.basePrice >= filters.minPrice!
-                );
-            }
-
-            if (filters.maxPrice !== undefined) {
-                instructorsList = instructorsList.filter(instructor =>
-                    instructor.basePrice && instructor.basePrice <= filters.maxPrice!
-                );
-            }
-
-            // Filter by group size (for now, just ensure they have a base lesson)
-            // In future: Check groupPricingTiers table for instructors who can accommodate group size
-            if (filters.groupSize !== undefined) {
-                instructorsList = instructorsList.filter(instructor =>
-                    instructor.basePrice !== null // Has a base lesson
                 );
             }
 

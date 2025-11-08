@@ -3,7 +3,7 @@ name: Build and Deploy to Docker Swarm
 on:
   push:
     branches:
-      - production  # Changed from 'main' to 'production' - only deploy when ready
+      - main
   workflow_dispatch: # Allow manual triggers
 
 env:
