@@ -75,11 +75,11 @@
 	</div>
 
 	<!-- Filters Section -->
-	<div class="mb-8 rounded-lg border border-border bg-card p-6 shadow-md">
-		<h2 class="title4 mb-4">Filter Instructors</h2>
+	<div class="mb-6 rounded-lg border border-border bg-card p-4 shadow-sm">
+		<h2 class="mb-3 text-base font-semibold">Filter Instructors</h2>
 
-		<form onsubmit={applyFilters} class="space-y-4">
-			<div class="grid gap-4 md:grid-cols-3">
+		<form onsubmit={applyFilters} class="space-y-3">
+			<div class="grid gap-3 md:grid-cols-3">
 				<!-- Search by Name -->
 				<div>
 					<label for="search" class="mb-1 block text-sm font-medium">Search by Name</label>
