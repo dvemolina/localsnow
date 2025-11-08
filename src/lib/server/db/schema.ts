@@ -33,6 +33,9 @@ export const users = pgTable('users', {
 	qualificationUrl: varchar('qualification_url', { length: 255 }),
     isVerified: boolean('is_verified').default(false),
 	acceptedTerms: boolean('accepted_terms').notNull().default(false),
+	isSuspended: boolean('is_suspended').default(false),
+	suspensionReason: text('suspension_reason'),
+	suspendedAt: timestamp('suspended_at'),
 	...timestamps
 });
 // --- Sports ---
@@ -444,6 +447,29 @@ export const schoolInstructorHistory = pgTable('school_instructor_history', {
 	isIndependent: boolean('is_independent').default(false) // True if the instructor worked independently
 });
 
+// Admin Audit Log
+export const adminAuditLog = pgTable('admin_audit_log', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	uuid: uuid('uuid').defaultRandom().unique().notNull(),
+	adminId: integer('admin_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	action: varchar('action', { length: 100 }).notNull(), // 'verify_instructor', 'suspend_user', 'delete_review', etc.
+	targetType: varchar('target_type', { length: 50 }), // 'user', 'booking', 'review', 'resort', etc.
+	targetId: integer('target_id'), // ID of the affected entity
+	details: text('details'), // JSON string with action details
+	ipAddress: varchar('ip_address', { length: 45 }),
+	userAgent: text('user_agent'),
+	...timestamps
+});
+
+export const adminAuditLogRelations = relations(adminAuditLog, ({ one }) => ({
+	admin: one(users, {
+		fields: [adminAuditLog.adminId],
+		references: [users.id]
+	})
+}));
+
+export type AdminAuditLog = typeof adminAuditLog.$inferSelect;
+export type InsertAdminAuditLog = typeof adminAuditLog.$inferInsert;
 
 
 // Type exports

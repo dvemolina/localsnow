@@ -1,0 +1,156 @@
+<script lang="ts">
+	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+	import { Badge } from '$lib/components/ui/badge';
+	import { Button } from '$lib/components/ui/button';
+	import { Input } from '$lib/components/ui/input';
+	import * as Table from '$lib/components/ui/table';
+	import * as Select from '$lib/components/ui/select';
+	import { goto } from '$app/navigation';
+
+	let { data } = $props();
+
+	let searchValue = $state(data.filters.search || '');
+	let statusFilter = $state(data.filters.status || 'all');
+
+	function applyFilters() {
+		const params = new URLSearchParams();
+		if (searchValue) params.set('search', searchValue);
+		if (statusFilter !== 'all') params.set('status', statusFilter);
+		goto(`/admin/bookings?${params.toString()}`);
+	}
+
+	function formatDate(date: Date | string) {
+		return new Date(date).toLocaleDateString('en-US', {
+			month: 'short',
+			day: 'numeric',
+			year: 'numeric'
+		});
+	}
+
+	function getStatusColor(status: string) {
+		const colors: Record<string, string> = {
+			pending: 'bg-yellow-100 text-yellow-800',
+			viewed: 'bg-blue-100 text-blue-800',
+			accepted: 'bg-green-100 text-green-800',
+			completed: 'bg-green-600 text-white',
+			rejected: 'bg-red-100 text-red-800',
+			expired: 'bg-gray-100 text-gray-800'
+		};
+		return colors[status] || 'bg-gray-100 text-gray-800';
+	}
+</script>
+
+<div class="space-y-6">
+	<div>
+		<h1 class="text-3xl font-bold">Booking Management</h1>
+		<p class="text-muted-foreground">View and manage all platform bookings</p>
+	</div>
+
+	<!-- Filters -->
+	<Card>
+		<CardContent class="pt-6">
+			<div class="grid gap-4 md:grid-cols-3">
+				<div class="col-span-2">
+					<Input
+						bind:value={searchValue}
+						placeholder="Search client name or email..."
+						onkeydown={(e) => e.key === 'Enter' && applyFilters()}
+					/>
+				</div>
+				<Select.Root
+					selected={{ value: statusFilter }}
+					onSelectedChange={(v) => statusFilter = v?.value || 'all'}
+				>
+					<Select.Trigger>
+						<Select.Value placeholder="Status" />
+					</Select.Trigger>
+					<Select.Content>
+						<Select.Item value="all">All Statuses</Select.Item>
+						<Select.Item value="pending">Pending</Select.Item>
+						<Select.Item value="viewed">Viewed</Select.Item>
+						<Select.Item value="accepted">Accepted</Select.Item>
+						<Select.Item value="completed">Completed</Select.Item>
+						<Select.Item value="rejected">Rejected</Select.Item>
+					</Select.Content>
+				</Select.Root>
+			</div>
+			<Button onclick={applyFilters} class="mt-4">Apply Filters</Button>
+		</CardContent>
+	</Card>
+
+	<p class="text-sm text-muted-foreground">
+		Showing {data.bookings.length} of {data.pagination.total} bookings
+	</p>
+
+	<!-- Bookings Table -->
+	<Card>
+		<CardContent class="p-0">
+			<Table.Root>
+				<Table.Header>
+					<Table.Row>
+						<Table.Head>ID</Table.Head>
+						<Table.Head>Client</Table.Head>
+						<Table.Head>Instructor</Table.Head>
+						<Table.Head>Resort/Sport</Table.Head>
+						<Table.Head>Date</Table.Head>
+						<Table.Head>Students</Table.Head>
+						<Table.Head>Price</Table.Head>
+						<Table.Head>Status</Table.Head>
+						<Table.Head>Created</Table.Head>
+					</Table.Row>
+				</Table.Header>
+				<Table.Body>
+					{#each data.bookings as booking}
+						<Table.Row>
+							<Table.Cell class="font-mono text-xs">#{booking.id}</Table.Cell>
+							<Table.Cell>
+								<div>
+									<p class="font-medium">{booking.clientName}</p>
+									<p class="text-xs text-muted-foreground">{booking.clientEmail}</p>
+								</div>
+							</Table.Cell>
+							<Table.Cell>
+								{booking.instructor.name} {booking.instructor.lastName}
+							</Table.Cell>
+							<Table.Cell>
+								<div class="flex gap-1">
+									{#each booking.sports as { sport }}
+										<Badge variant="outline" class="text-xs">{sport.sport}</Badge>
+									{/each}
+								</div>
+							</Table.Cell>
+							<Table.Cell>{formatDate(booking.startDate)}</Table.Cell>
+							<Table.Cell>{booking.numberOfStudents}</Table.Cell>
+							<Table.Cell>€{booking.estimatedPrice}</Table.Cell>
+							<Table.Cell>
+								<Badge class={getStatusColor(booking.status)}>
+									{booking.status}
+								</Badge>
+							</Table.Cell>
+							<Table.Cell class="text-xs text-muted-foreground">
+								{formatDate(booking.createdAt)}
+							</Table.Cell>
+						</Table.Row>
+					{/each}
+				</Table.Body>
+			</Table.Root>
+		</CardContent>
+	</Card>
+
+	<!-- Pagination -->
+	{#if data.pagination.totalPages > 1}
+		<div class="flex items-center justify-center gap-2">
+			{#if data.pagination.page > 1}
+				<Button href="/admin/bookings?page={data.pagination.page - 1}" variant="outline" size="sm">
+					Previous
+				</Button>
+			{/if}
+			<span class="text-sm">Page {data.pagination.page} of {data.pagination.totalPages}</span>
+			{#if data.pagination.page < data.pagination.totalPages}
+				<Button href="/admin/bookings?page={data.pagination.page + 1}" variant="outline" size="sm">
+					Next
+				</Button>
+			{/if}
+		</div>
+	{/if}
+</div>
