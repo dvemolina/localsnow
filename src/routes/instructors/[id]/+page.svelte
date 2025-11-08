@@ -6,6 +6,7 @@
 	import { Button } from '$src/lib/components/ui/button';
 	import BookingRequestDialog from '$src/features/Bookings/components/BookingRequestDialog.svelte';
 	import SimplePriceDisplay from '$src/features/Pricing/components/SimplePriceDisplay.svelte';
+	import ReviewList from '$src/features/Reviews/components/ReviewList.svelte';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 
@@ -15,6 +16,8 @@
 	const instructor = data.instructor;
 	const sports = data.sports;
 	const resorts = data.resorts;
+	const reviews = data.reviews;
+	const reviewStats = data.reviewStats;
 
 	const isAuthenticated = !!data.user; // Will be true if user exists
 
@@ -92,11 +95,22 @@
 						{instructor.name}
 						{`${instructor.lastName[0]}.`}
 					</h1>
-					
-					<!-- Star Rating -->
-					<div class="flex justify-center">
-						<StarScore score={5} />
-					</div>
+
+					<!-- Star Rating - Show actual rating if reviews exist -->
+					{#if reviewStats && reviewStats.totalReviews > 0}
+						<div class="flex flex-col items-center gap-1">
+							<div class="flex justify-center">
+								<StarScore score={reviewStats.averageRating} />
+							</div>
+							<span class="text-xs text-muted-foreground">
+								{reviewStats.totalReviews} {reviewStats.totalReviews === 1 ? 'review' : 'reviews'}
+							</span>
+						</div>
+					{:else}
+						<div class="flex justify-center">
+							<span class="text-xs text-muted-foreground">No reviews yet</span>
+						</div>
+					{/if}
 				</div>
 					
 				<!-- Instructor Type Badge -->
@@ -433,28 +447,38 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- Reviews Section -->
+	<div class="mt-8">
+		<ReviewList
+			instructorId={instructor.id}
+			initialReviews={reviews}
+			initialStats={reviewStats}
+		/>
+	</div>
+
 	<!-- Contact Button - Primary CTA -->
-			<Button 
-				onclick={() => (showBookingDialog = true)} 
-				class="mt-4 w-full"
-				size="lg"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="mr-2 size-5"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-					/>
-				</svg>
-				Request a Lesson
-			</Button>
+	<Button
+		onclick={() => (showBookingDialog = true)}
+		class="mt-8 w-full"
+		size="lg"
+	>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			class="mr-2 size-5"
+			fill="none"
+			viewBox="0 0 24 24"
+			stroke="currentColor"
+		>
+			<path
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				stroke-width="2"
+				d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+			/>
+		</svg>
+		Request a Lesson
+	</Button>
 </section>
 <BookingRequestDialog 
 	bind:open={showBookingDialog}
