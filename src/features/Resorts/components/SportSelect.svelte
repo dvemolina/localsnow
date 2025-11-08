@@ -6,11 +6,19 @@
 
 	let form = props.form;
 	let name = props.name;
-	const sports = [
-		{ label: 'Ski', value: 'ski' },
-		{ label: 'Snowboard', value: 'snowboard' },
-		{ label: 'Telemark', value: 'telemark' }
-	];
+	let useIds: boolean = props.useIds ?? false; // Use sport IDs (numbers) instead of slugs (strings)
+
+	const sports = useIds
+		? [
+				{ label: 'Ski', value: 1 },
+				{ label: 'Snowboard', value: 2 },
+				{ label: 'Telemark', value: 3 }
+			]
+		: [
+				{ label: 'Ski', value: 'ski' },
+				{ label: 'Snowboard', value: 'snowboard' },
+				{ label: 'Telemark', value: 'telemark' }
+			];
 	let isHero: boolean = props.isHero ?? false;
 
 	const formStore = form.form; //the reactive store for form values

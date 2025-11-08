@@ -15,7 +15,7 @@
 	// Simple filter schema for the search form
 	const filterSchema = z.object({
 		resort: z.number().optional(),
-		sport: z.string().optional(),
+		sport: z.number().optional(),
 		query: z.string().optional()
 	});
 
@@ -38,7 +38,7 @@
 		const params = new URLSearchParams();
 
 		if ($formData.resort) params.set('resort', $formData.resort.toString());
-		if ($formData.sport) params.set('sport', $formData.sport);
+		if ($formData.sport) params.set('sport', $formData.sport.toString());
 		if (searchQuery) params.set('q', searchQuery);
 
 		goto(`/instructors?${params.toString()}`);
@@ -99,7 +99,7 @@
 
 				<!-- Sport Filter -->
 				<div>
-					<SportSelect {form} name="sport" />
+					<SportSelect {form} name="sport" useIds={true} />
 				</div>
 			</div>
 
