@@ -125,6 +125,9 @@ export class InstructorService {
         resortId?: number;
         sportId?: number;
         searchQuery?: string;
+        minPrice?: number;
+        maxPrice?: number;
+        groupSize?: number;
     }): Promise<unknown[]> {
         try {
             return await this.instructorRepository.searchInstructors(filters);

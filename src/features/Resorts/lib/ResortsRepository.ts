@@ -21,4 +21,66 @@ export class ResortRepository {
 			.where(ilike(resorts.name, `%${query}%`))
 			.limit(limit);
 	}
+
+	async getAllResorts() {
+		return await db
+			.select({
+				id: resorts.id,
+				name: resorts.name,
+				slug: resorts.slug,
+				label: resorts.label,
+				minElevation: resorts.minElevation,
+				maxElevation: resorts.maxElevation,
+				lat: resorts.lat,
+				lon: resorts.lon,
+				website: resorts.website,
+				countryId: resorts.countryId,
+				regionId: resorts.regionId
+			})
+			.from(resorts);
+	}
+
+	async getResortBySlug(slug: string) {
+		const result = await db
+			.select({
+				id: resorts.id,
+				name: resorts.name,
+				slug: resorts.slug,
+				label: resorts.label,
+				minElevation: resorts.minElevation,
+				maxElevation: resorts.maxElevation,
+				lat: resorts.lat,
+				lon: resorts.lon,
+				website: resorts.website,
+				countryId: resorts.countryId,
+				regionId: resorts.regionId
+			})
+			.from(resorts)
+			.where(eq(resorts.slug, slug))
+			.limit(1);
+
+		return result[0] || null;
+	}
+
+	async getResortById(id: number) {
+		const result = await db
+			.select({
+				id: resorts.id,
+				name: resorts.name,
+				slug: resorts.slug,
+				label: resorts.label,
+				minElevation: resorts.minElevation,
+				maxElevation: resorts.maxElevation,
+				lat: resorts.lat,
+				lon: resorts.lon,
+				website: resorts.website,
+				countryId: resorts.countryId,
+				regionId: resorts.regionId
+			})
+			.from(resorts)
+			.where(eq(resorts.id, id))
+			.limit(1);
+
+		return result[0] || null;
+	}
 }
