@@ -1,5 +1,6 @@
 import { ClientDepositRepository } from "./clientDepositRepository";
 import { BookingRequestRepository } from "./bookingRequestRepository";
+import { ReviewService } from "$src/features/Reviews/lib/reviewService";
 import Stripe from 'stripe';
 import { env } from '$env/dynamic/private';
 
@@ -12,13 +13,15 @@ const CURRENCY = 'eur';
 const DEPOSIT_EXPIRY_HOURS = 48;
 
 export class ClientDepositService {
-    
+
     private repository: ClientDepositRepository;
     private bookingRepository: BookingRequestRepository;
+    private reviewService: ReviewService;
 
     constructor() {
         this.repository = new ClientDepositRepository();
         this.bookingRepository = new BookingRequestRepository();
+        this.reviewService = new ReviewService();
     }
 
     /**
@@ -190,6 +193,7 @@ export class ClientDepositService {
 
     /**
      * Refund deposit to client
+     * REQUIRES a review to be left before refunding (unless reason is automatic like 'expired_no_acceptance')
      */
     async refundDeposit(depositId: number, reason: string = 'lesson_completed') {
         try {
@@ -205,6 +209,19 @@ export class ClientDepositService {
 
             if (!deposit.stripePaymentIntentId) {
                 throw new Error('No payment intent ID found');
+            }
+
+            // Check if review is required for this refund
+            const automaticRefundReasons = ['expired_no_acceptance', 'booking_rejected'];
+            const requiresReview = !automaticRefundReasons.includes(reason);
+
+            if (requiresReview) {
+                // Check if review exists for this booking
+                const hasReview = await this.reviewService.hasReview(deposit.bookingRequestId);
+
+                if (!hasReview) {
+                    throw new Error('A review is required before the deposit can be refunded');
+                }
             }
 
             // Cancel the payment intent (releases the hold)
