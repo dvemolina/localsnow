@@ -24,9 +24,9 @@
 	}
 </script>
 
-<div class="space-y-6">
-	<div>
-		<h1 class="text-3xl font-bold">User Management</h1>
+<div class="container mx-auto max-w-7xl space-y-6">
+	<div class="mb-8">
+		<h1 class="title2 mb-2">User Management</h1>
 		<p class="text-muted-foreground">Manage all platform users</p>
 	</div>
 

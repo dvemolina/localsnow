@@ -39,10 +39,10 @@
 	}
 </script>
 
-<div class="space-y-6">
+<div class="container mx-auto max-w-7xl space-y-6">
 	<!-- Page Header -->
-	<div>
-		<h1 class="text-3xl font-bold">Instructor Management</h1>
+	<div class="mb-8">
+		<h1 class="title2 mb-2">Instructor Management</h1>
 		<p class="text-muted-foreground">Manage and verify instructor accounts</p>
 	</div>
 

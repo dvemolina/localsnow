@@ -36,16 +36,16 @@
 	}
 </script>
 
-<div class="space-y-6">
+<div class="container mx-auto max-w-7xl space-y-6">
 	<!-- Back Button -->
 	<Button href="/admin/instructors" variant="outline" size="sm">
 		← Back to Instructors
 	</Button>
 
 	<!-- Instructor Header -->
-	<div class="flex items-start justify-between">
+	<div class="flex items-start justify-between mb-8">
 		<div>
-			<h1 class="text-3xl font-bold">
+			<h1 class="title2 mb-2">
 				{data.instructor.name} {data.instructor.lastName}
 			</h1>
 			<p class="text-muted-foreground">{data.instructor.email}</p>

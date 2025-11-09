@@ -6,9 +6,9 @@
 	let { data } = $props();
 </script>
 
-<div class="space-y-6">
-	<div>
-		<h1 class="text-3xl font-bold">Resort Management</h1>
+<div class="container mx-auto max-w-7xl space-y-6">
+	<div class="mb-8">
+		<h1 class="title2 mb-2">Resort Management</h1>
 		<p class="text-muted-foreground">View and manage ski resorts ({data.resorts.length} total)</p>
 	</div>
 

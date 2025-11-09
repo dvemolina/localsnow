@@ -15,9 +15,9 @@
 	}
 </script>
 
-<div class="space-y-6">
-	<div>
-		<h1 class="text-3xl font-bold">Review Management</h1>
+<div class="container mx-auto max-w-7xl space-y-6">
+	<div class="mb-8">
+		<h1 class="title2 mb-2">Review Management</h1>
 		<p class="text-muted-foreground">Monitor and moderate platform reviews</p>
 	</div>
 

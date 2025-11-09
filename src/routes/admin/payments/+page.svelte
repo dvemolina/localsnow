@@ -18,9 +18,9 @@
 	}
 </script>
 
-<div class="space-y-6">
-	<div>
-		<h1 class="text-3xl font-bold">Payment Overview</h1>
+<div class="container mx-auto max-w-7xl space-y-6">
+	<div class="mb-8">
+		<h1 class="title2 mb-2">Payment Overview</h1>
 		<p class="text-muted-foreground">Monitor platform revenue and transactions</p>
 	</div>
 
