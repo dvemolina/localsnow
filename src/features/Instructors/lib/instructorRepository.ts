@@ -30,8 +30,8 @@ export class InstructorRepository {
                     role: instructorData.instructorType,
                     profileImageUrl: instructorData.profileImageUrl,
                     qualificationUrl: instructorData.qualificationUrl,
-                    professionalCountryCode: instructorData.countryCode.toString(),
-                    professionalPhone: instructorData.phone,
+                    professionalCountryCode: instructorData.professionalCountryCode.toString(),
+                    professionalPhone: instructorData.professionalPhone,
                     bio: instructorData.bio,
                     updatedAt: new Date()
                 })
