@@ -471,6 +471,112 @@ export const adminAuditLogRelations = relations(adminAuditLog, ({ one }) => ({
 export type AdminAuditLog = typeof adminAuditLog.$inferSelect;
 export type InsertAdminAuditLog = typeof adminAuditLog.$inferInsert;
 
+// --- Additional Relations for Drizzle Queries ---
+
+// Users relations
+export const usersRelations = relations(users, ({ many }) => ({
+	resorts: many(instructorResorts),
+	sports: many(instructorSports),
+	lessons: many(lessons),
+	bookings: many(bookingRequests),
+	reviews: many(reviews)
+}));
+
+// Resorts relations
+export const resortsRelations = relations(resorts, ({ one, many }) => ({
+	country: one(countries, {
+		fields: [resorts.countryId],
+		references: [countries.id]
+	}),
+	region: one(regions, {
+		fields: [resorts.regionId],
+		references: [regions.id]
+	}),
+	instructors: many(instructorResorts)
+}));
+
+// Regions relations
+export const regionsRelations = relations(regions, ({ one, many }) => ({
+	country: one(countries, {
+		fields: [regions.countryId],
+		references: [countries.id]
+	}),
+	resorts: many(resorts)
+}));
+
+// Countries relations
+export const countriesRelations = relations(countries, ({ many }) => ({
+	regions: many(regions),
+	resorts: many(resorts)
+}));
+
+// Sports relations
+export const sportsRelations = relations(sports, ({ many }) => ({
+	instructors: many(instructorSports),
+	lessons: many(lessonSports),
+	bookingRequests: many(bookingRequestSports)
+}));
+
+// InstructorResorts relations
+export const instructorResortsRelations = relations(instructorResorts, ({ one }) => ({
+	instructor: one(users, {
+		fields: [instructorResorts.instructorId],
+		references: [users.id]
+	}),
+	resort: one(resorts, {
+		fields: [instructorResorts.resortId],
+		references: [resorts.id]
+	})
+}));
+
+// InstructorSports relations
+export const instructorSportsRelations = relations(instructorSports, ({ one }) => ({
+	instructor: one(users, {
+		fields: [instructorSports.instructorId],
+		references: [users.id]
+	}),
+	sport: one(sports, {
+		fields: [instructorSports.sportId],
+		references: [sports.id]
+	})
+}));
+
+// BookingRequests relations
+export const bookingRequestsRelations = relations(bookingRequests, ({ one, many }) => ({
+	instructor: one(users, {
+		fields: [bookingRequests.instructorId],
+		references: [users.id]
+	}),
+	sports: many(bookingRequestSports),
+	deposit: one(clientDeposits),
+	leadPayment: one(leadPayments),
+	review: one(reviews)
+}));
+
+// BookingRequestSports relations
+export const bookingRequestSportsRelations = relations(bookingRequestSports, ({ one }) => ({
+	bookingRequest: one(bookingRequests, {
+		fields: [bookingRequestSports.bookingRequestId],
+		references: [bookingRequests.id]
+	}),
+	sport: one(sports, {
+		fields: [bookingRequestSports.sportId],
+		references: [sports.id]
+	})
+}));
+
+// Lessons relations
+export const lessonsRelations = relations(lessons, ({ one, many }) => ({
+	instructor: one(users, {
+		fields: [lessons.instructorId],
+		references: [users.id]
+	}),
+	school: one(schools, {
+		fields: [lessons.schoolId],
+		references: [schools.id]
+	}),
+	sports: many(lessonSports)
+}));
 
 // Type exports
 export type GroupPricingTier = typeof groupPricingTiers.$inferSelect;
