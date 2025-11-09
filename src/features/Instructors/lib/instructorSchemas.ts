@@ -81,8 +81,8 @@ export interface InstructorSignupData {
 	instructorType: 'instructor-independent' | 'instructor-school';
 	profileImageUrl?: string | null;
 	qualificationUrl?: string | null;
-	countryCode: string;
-	phone: string;
+	professionalCountryCode: number;
+	professionalPhone: string;
 	bio?: string;
 	sports: number[];
 	basePrice: number;

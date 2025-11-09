@@ -33,6 +33,9 @@ export const users = pgTable('users', {
 	qualificationUrl: varchar('qualification_url', { length: 255 }),
     isVerified: boolean('is_verified').default(false),
 	acceptedTerms: boolean('accepted_terms').notNull().default(false),
+	isSuspended: boolean('is_suspended').default(false),
+	suspensionReason: text('suspension_reason'),
+	suspendedAt: timestamp('suspended_at'),
 	...timestamps
 });
 // --- Sports ---
@@ -444,7 +447,136 @@ export const schoolInstructorHistory = pgTable('school_instructor_history', {
 	isIndependent: boolean('is_independent').default(false) // True if the instructor worked independently
 });
 
+// Admin Audit Log
+export const adminAuditLog = pgTable('admin_audit_log', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	uuid: uuid('uuid').defaultRandom().unique().notNull(),
+	adminId: integer('admin_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	action: varchar('action', { length: 100 }).notNull(), // 'verify_instructor', 'suspend_user', 'delete_review', etc.
+	targetType: varchar('target_type', { length: 50 }), // 'user', 'booking', 'review', 'resort', etc.
+	targetId: integer('target_id'), // ID of the affected entity
+	details: text('details'), // JSON string with action details
+	ipAddress: varchar('ip_address', { length: 45 }),
+	userAgent: text('user_agent'),
+	...timestamps
+});
 
+export const adminAuditLogRelations = relations(adminAuditLog, ({ one }) => ({
+	admin: one(users, {
+		fields: [adminAuditLog.adminId],
+		references: [users.id]
+	})
+}));
+
+export type AdminAuditLog = typeof adminAuditLog.$inferSelect;
+export type InsertAdminAuditLog = typeof adminAuditLog.$inferInsert;
+
+// --- Additional Relations for Drizzle Queries ---
+
+// Users relations
+export const usersRelations = relations(users, ({ many }) => ({
+	resorts: many(instructorResorts),
+	sports: many(instructorSports),
+	lessons: many(lessons),
+	bookings: many(bookingRequests),
+	reviews: many(reviews)
+}));
+
+// Resorts relations
+export const resortsRelations = relations(resorts, ({ one, many }) => ({
+	country: one(countries, {
+		fields: [resorts.countryId],
+		references: [countries.id]
+	}),
+	region: one(regions, {
+		fields: [resorts.regionId],
+		references: [regions.id]
+	}),
+	instructors: many(instructorResorts)
+}));
+
+// Regions relations
+export const regionsRelations = relations(regions, ({ one, many }) => ({
+	country: one(countries, {
+		fields: [regions.countryId],
+		references: [countries.id]
+	}),
+	resorts: many(resorts)
+}));
+
+// Countries relations
+export const countriesRelations = relations(countries, ({ many }) => ({
+	regions: many(regions),
+	resorts: many(resorts)
+}));
+
+// Sports relations
+export const sportsRelations = relations(sports, ({ many }) => ({
+	instructors: many(instructorSports),
+	lessons: many(lessonSports),
+	bookingRequests: many(bookingRequestSports)
+}));
+
+// InstructorResorts relations
+export const instructorResortsRelations = relations(instructorResorts, ({ one }) => ({
+	instructor: one(users, {
+		fields: [instructorResorts.instructorId],
+		references: [users.id]
+	}),
+	resort: one(resorts, {
+		fields: [instructorResorts.resortId],
+		references: [resorts.id]
+	})
+}));
+
+// InstructorSports relations
+export const instructorSportsRelations = relations(instructorSports, ({ one }) => ({
+	instructor: one(users, {
+		fields: [instructorSports.instructorId],
+		references: [users.id]
+	}),
+	sport: one(sports, {
+		fields: [instructorSports.sportId],
+		references: [sports.id]
+	})
+}));
+
+// BookingRequests relations
+export const bookingRequestsRelations = relations(bookingRequests, ({ one, many }) => ({
+	instructor: one(users, {
+		fields: [bookingRequests.instructorId],
+		references: [users.id]
+	}),
+	sports: many(bookingRequestSports),
+	deposit: one(clientDeposits),
+	leadPayment: one(leadPayments),
+	review: one(reviews)
+}));
+
+// BookingRequestSports relations
+export const bookingRequestSportsRelations = relations(bookingRequestSports, ({ one }) => ({
+	bookingRequest: one(bookingRequests, {
+		fields: [bookingRequestSports.bookingRequestId],
+		references: [bookingRequests.id]
+	}),
+	sport: one(sports, {
+		fields: [bookingRequestSports.sportId],
+		references: [sports.id]
+	})
+}));
+
+// Lessons relations
+export const lessonsRelations = relations(lessons, ({ one, many }) => ({
+	instructor: one(users, {
+		fields: [lessons.instructorId],
+		references: [users.id]
+	}),
+	school: one(schools, {
+		fields: [lessons.schoolId],
+		references: [schools.id]
+	}),
+	sports: many(lessonSports)
+}));
 
 // Type exports
 export type GroupPricingTier = typeof groupPricingTiers.$inferSelect;

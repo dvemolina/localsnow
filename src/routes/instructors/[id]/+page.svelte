@@ -81,7 +81,7 @@
 	>
 		<!-- Left Column - Avatar & Basic Info -->
 		<div class="flex flex-col items-center gap-4 md:w-1/3 rounded-lg border border-border bg-card p-6">
-			<Avatar.Root class="size-32 border-2 border-border shadow-sm sm:size-40">
+			<Avatar.Root class="size-36 border-2 border-border shadow-sm sm:size-50">
 				<Avatar.Image
 					src={instructor.profileImageUrl || '/local-snow-head.png'}
 					alt={`${instructor.name} ${instructor.lastName.charAt(0)}`}
@@ -266,8 +266,9 @@
 			</div>
 
 			<!-- Qualifications -->
+			 <!-- 
 			{#if instructor.qualificationUrl}
-				<div>
+				<div class="rounded-lg border border-border bg-card p-6 flex flex-col gap-4">
 					<h2 class="title4 mb-3 flex items-center gap-2">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -309,6 +310,7 @@
 					</a>
 				</div>
 			{/if}
+			-->
 		</div>
 	</div>
 

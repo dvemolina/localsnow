@@ -21,7 +21,7 @@
 	class="card group relative flex flex-col justify-between gap-3 rounded-md border border-border bg-card p-4 shadow-xs transition-shadow hover:shadow-md w-full min-w-[265px] sm:max-w-[717px] md:max-w-[435px]"
 >
 	<div class="flex w-full flex-row gap-3">
-		<Avatar.Root class="mt-2 size-24 border border-border sm:size-32">
+		<Avatar.Root class="mt-2 size-24 border border-border sm:size-36">
 			<Avatar.Image
 				src={instructorData.profileImageUrl || '/local-snow-head.png'}
 				alt={`${instructorData.name} ${instructorData.lastName}`}
@@ -102,6 +102,6 @@
 
 	<!-- Star Rating (Top Right) -->
 	<div class="absolute right-2 top-2">
-		<StarScore score={4.8} />
+		<StarScore score={instructorData.reviewStats?.averageRating || 'No reviews'} />
 	</div>
 </a>

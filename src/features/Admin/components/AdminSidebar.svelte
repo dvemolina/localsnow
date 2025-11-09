@@ -1,0 +1,116 @@
+<script lang="ts">
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+	import { isMobile } from '$src/lib/hooks/is-mobile.svelte';
+	import { get } from 'svelte/store';
+	import { page } from '$app/stores';
+
+	const items = [
+		{
+			title: 'Overview',
+			url: '/admin/dashboard',
+			icon: '/icons/home.svg'
+		},
+		{
+			title: 'Instructors',
+			url: '/admin/instructors',
+			icon: '/icons/service.svg'
+		},
+		{
+			title: 'Bookings',
+			url: '/admin/bookings',
+			icon: '/icons/notebook.svg'
+		},
+		{
+			title: 'Users',
+			url: '/admin/users',
+			icon: '/icons/ski-resort.svg'
+		},
+		{
+			title: 'Reviews',
+			url: '/admin/reviews',
+			icon: '/icons/calendar.svg'
+		},
+		{
+			title: 'Resorts',
+			url: '/admin/resorts',
+			icon: '/icons/ski-resort.svg'
+		},
+		{
+			title: 'Sports',
+			url: '/admin/sports',
+			icon: '/icons/service.svg'
+		},
+		{
+			title: 'Payments',
+			url: '/admin/payments',
+			icon: '/icons/notebook.svg'
+		}
+	];
+
+	const sidebar = Sidebar.useSidebar();
+
+	function handleClick() {
+		// Only close on mobile
+		if (get(isMobile)) {
+			sidebar.setOpenMobile(false);
+		}
+	}
+
+	// Function to check if path is active
+	function isActive(url: string): boolean {
+		const currentPath = get(page).url.pathname;
+		return currentPath === url || currentPath.startsWith(url + '/');
+	}
+</script>
+
+<Sidebar.Root class="bg-background">
+	<Sidebar.Header class="bg-white">
+		<a href="/" class="group flex flex-row items-center justify-center gap-1">
+			<div class="m-1 size-12 overflow-hidden object-cover">
+				<img
+					src="/local-snow-head-big.png"
+					alt="Local Snow Logo"
+					class="opacity-85 group-hover:opacity-100 group-focus:opacity-100"
+				/>
+			</div>
+			<div class="flex flex-col">
+				<p class="title4 mt-0 text-foreground/85 transition-all group-hover:text-foreground">
+					localsnow
+				</p>
+				<span class="text-xs text-muted-foreground">Admin Panel</span>
+			</div>
+		</a>
+	</Sidebar.Header>
+	<Sidebar.Content class="px-3 bg-white">
+		<Sidebar.Group />
+		<Sidebar.GroupLabel>Admin Dashboard</Sidebar.GroupLabel>
+		<Sidebar.GroupContent>
+			<Sidebar.Menu>
+				{#each items as item (item.title)}
+					<Sidebar.MenuItem>
+						<Sidebar.MenuButton>
+							{#snippet child({ props })}
+								<a
+									href={item.url}
+									{...props}
+									onclick={handleClick}
+									class:font-semibold={isActive(item.url)}
+									class:text-primary={isActive(item.url)}
+								>
+									<img src={item.icon} alt={item.title} class="size-5" />
+									<span>{item.title}</span>
+								</a>
+							{/snippet}
+						</Sidebar.MenuButton>
+					</Sidebar.MenuItem>
+				{/each}
+			</Sidebar.Menu>
+		</Sidebar.GroupContent>
+		<Sidebar.Group />
+	</Sidebar.Content>
+	<Sidebar.Footer class="bg-white p-4">
+		<a href="/dashboard" class="text-sm text-muted-foreground hover:text-foreground">
+			← Back to Dashboard
+		</a>
+	</Sidebar.Footer>
+</Sidebar.Root>
