@@ -9,10 +9,13 @@
 	import { Toaster } from 'svelte-sonner';
 
 	let { children } = $props();
-	let isDashboard = $state(page.url.pathname.includes('/dashboard'));
+	let isDashboard = $state(
+		page.url.pathname.includes('/dashboard') || page.url.pathname.includes('/admin')
+	);
 
 	$effect(() => {
-		isDashboard = page.url.pathname.includes('/dashboard');
+		isDashboard =
+			page.url.pathname.includes('/dashboard') || page.url.pathname.includes('/admin');
 	});
 </script>
 
