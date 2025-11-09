@@ -1,0 +1,397 @@
+uuid,id,country_id,country,region,region_slug,,,,
+,1,1,Albania,Southern Albania,southern-albania,,,,
+,2,2,Andorra,Sant Julia de Loria,sant-julia-de-loria,,,,
+,3,2,Andorra,Encamp,encamp,,,,
+,4,2,Andorra,Ordino,ordino,,,,
+,5,2,Andorra,La Massana,la-massana,,,,
+,6,3,Argentina,Chubut Province,chubut-province,,,,1
+,7,3,Argentina,Mendoza,mendoza,,,,1
+,8,3,Argentina,Neuquén Province,neuquen-province,,,,1
+,9,3,Argentina,Río Negro Province,rio-negro-province,,,,1
+,10,3,Argentina,Santa Cruz Province,santa-cruz-province,,,,1
+,11,3,Argentina,Tierra del Fuego Province,tierra-del-fuego-province,,,,1
+,12,3,Armenia,Aragatsotn Province,aragatsotn-province,,,,1
+,13,4,Armenia,Kotayk Province,kotayk-province,,,,1
+,14,5,Australia,Australian Capital Territory,australian-capital-territory,,,,1
+,15,5,Australia,New South Wales,new-south-wales,,,,1
+,16,5,Australia,Tasmania,tasmania,,,,1
+,17,5,Australia,Victoria,victoria,,,,1
+,18,6,Austria,Carinthia,carinthia,,,,1
+,19,6,Austria,Lower Austria,lower-austria,,,,1
+,20,6,Austria,Salzburg,salzburg,,,,1
+,21,6,Austria,Styria,styria,,,,1
+,22,6,Austria,Tyrol,tyrol,,,,1
+,23,6,Austria,Upper Austria,upper-austria,,,,1
+,24,6,Austria,Vienna,vienna,,,,1
+,25,6,Austria,Vorarlberg,vorarlberg,,,,1
+,26,7,Azerbaijan,Qusar District,qusar-district,,,,1
+,27,8,Belgium,Antwerp,antwerp,,,,1
+,28,8,Belgium,Wallonia,wallonia,,,,1
+,29,9,Bosnia and Herzegovina,Federation of Bosnia and Herzegovina,federation-of-bosnia-and-herzegovina,,,,1
+,30,9,Bosnia and Herzegovina,Republika Srpska,republika-srpska,,,,1
+,31,10,Brazil,Rio Grande do Sul,rio-grande-do-sul,,,,1
+,32,11,Bulgaria,Blagoevgrad,blagoevgrad,,,,1
+,33,11,Bulgaria,Kyustendil,kyustendil,,,,1
+,34,11,Bulgaria,Smolyan,smolyan,,,,1
+,35,11,Bulgaria,Sofia,sofia,,,,1
+,36,11,Bulgaria,Sofia-City,sofia-city,,,,1
+,37,12,Canada,Alberta,alberta,,,,1
+,38,12,Canada,British Columbia,british-columbia,,,,1
+,39,12,Canada,Manitoba,manitoba,,,,1
+,40,12,Canada,New Brunswick,new-brunswick,,,,1
+,41,12,Canada,Newfoundland and Labrador,newfoundland-and-labrador,,,,1
+,42,12,Canada,Northwest Territories,northwest-territories,,,,1
+,43,12,Canada,Nova Scotia,nova-scotia,,,,1
+,44,12,Canada,Ontario,ontario,,,,1
+,45,12,Canada,Prince Edward Island,prince-edward-island,,,,1
+,46,12,Canada,Quebec,quebec,,,,1
+,47,12,Canada,Saskatchewan,saskatchewan,,,,1
+,48,12,Canada,Yukon,yukon,,,,1
+,49,13,Chile,Araucania,araucania-region,,,,1
+,50,13,Chile,Aysen del General Carlos Ibanez del Campo,aysen-del-general-carlos-ibanez-del-campo-region,,,,1
+,51,13,Chile,Biobio Region,biobio-region,,,,1
+,52,13,Chile,Los Lagos Region,los-lagos-region,,,,1
+,53,13,Chile,Los Ríos,los-rios,,,,1
+,54,13,Chile,Magallanes and Chilean Antarctica Region,magallanes-and-chilean-antarctica-region,,,,1
+,55,13,Chile,Nuble Region,nuble-region,,,,1
+,56,13,Chile,Provincia de Cachapoal,provincia-de-cachapoal,,,,1
+,57,13,Chile,Santiago Metropolitan Region,santiago-metropolitan-region,,,,1
+,58,13,Chile,Valparaiso Region,valparaiso-region,,,,1
+,59,14,China,Beijing,beijing,,,,1
+,60,14,China,Hebei,hebei,,,,1
+,61,14,China,Heilongjiang,heilongjiang,,,,1
+,62,14,China,Jilin,jilin,,,,1
+,63,14,China,Shaanxi,shaanxi,,,,1
+,64,14,China,Shanxi,shanxi,,,,1
+,65,14,China,Xinjiang,xinjiang,,,,1
+,66,15,Croatia,Karlovac County,karlovac-county,,,,1
+,67,15,Croatia,Primorje-Gorski Kotar Count,primorje-gorski-kotar-count,,,,1
+,68,16,Cyprus,Limassol District,limassol-district,,,,1
+,69,17,Czechia, Vysočina Region,vysocina-region,,,,1
+,70,17,Czechia,Central Bohemia,central-bohemia,,,,1
+,71,17,Czechia,Central Moravia,central-moravia,,,,1
+,72,17,Czechia,Moravia-Silesia,moravia-silesia,,,,1
+,73,17,Czechia,Northeast,northeast,,,,1
+,74,17,Czechia,Northwest,northwest,,,,1
+,75,17,Czechia,Southeast,southeast,,,,1
+,76,17,Czechia,Southwest,southwest,,,,1
+,77,18,Denmark,Capital Region of Denmark,capital-region-of-denmark,,,,1
+,78,19,Estonia,Harju County,harju-county,,,,1
+,79,19,Estonia,Ida-Viru County,ida-viru-county,,,,1
+,80,19,Estonia,Valga County,valga-county,,,,1
+,81,19,Estonia,Võru County,voru-county,,,,1
+,82,20,Finland,Central Finland,central-finland,,,,1
+,83,20,Finland,Central Ostrobothnia,central-ostrobothnia,,,,1
+,84,20,Finland,Kainuu,kainuu,,,,1
+,85,20,Finland,Kanta-Häme,kanta-hame,,,,1
+,86,20,Finland,Kymenlaakso,kymenlaakso,,,,1
+,87,20,Finland,Lapland,lapland,,,,1
+,88,20,Finland,North Karelia,north-karelia,,,,1
+,89,20,Finland,North Ostrobothnia,north-ostrobothnia,,,,1
+,90,20,Finland,North Savo,north-savo,,,,1
+,91,20,Finland,Ostrobothnia,ostrobothnia,,,,1
+,92,20,Finland,Pirkanmaa,pirkanmaa,,,,1
+,93,20,Finland,Päijät-Häme,paijat-hame,,,,1
+,94,20,Finland,Satakunta,satakunta,,,,1
+,95,20,Finland,South Karelia,south-karelia,,,,1
+,96,20,Finland,South Ostrobothnia,south-ostrobothnia,,,,1
+,97,20,Finland,South Savo,south-savo,,,,1
+,98,20,Finland,Uusimaa,uusimaa,,,,1
+,99,20,Finland,Åland Islands,aland-islands,,,,1
+,100,21,France,Auvergne-Rhône-Alpes,auvergne-rhone-alpes,,,,1
+,101,21,France,Bourgogne – Franche-Comté,bourgogne-franche-comte,,,,1
+,102,21,France,Corsica,corsica,,,,1
+,103,21,France,Essone,essone,,,,1
+,104,21,France,Grand Est,grand-est,,,,1
+,105,21,France,Hauts-de-France,hauts-de-france,,,,1
+,106,21,France,Nouvelle-Aquitaine,nouvelle-aquitaine,,,,1
+,107,21,France,Occitania,occitania,,,,1
+,108,21,France,Provence-Alpes-Côte d'Azur,provence-alpes-cote-dazur,,,,1
+,109,22,Georgia,Autonomous Republic of Adjara,autonomous-republic-of-adjara,,,,1
+,110,22,Georgia,Mtskheta-Mtianeti,mtskheta-mtianeti,,,,1
+,111,22,Georgia,Samegrelo-Upper Svaneti,samegrelo-upper-svaneti,,,,1
+,112,22,Georgia,Samtskhe-Javakheti,samtskhe-javakheti,,,,1
+,113,23,Germany,Baden-Württemberg,baden-wurttemberg,,,,1
+,114,23,Germany,Bavaria,bavaria,,,,1
+,115,23,Germany,Hesse,hesse,,,,1
+,116,23,Germany,Lower Saxony,lower-saxony,,,,1
+,117,23,Germany,North Rhine-Westphalia,north-rhine-westphalia,,,,1
+,118,23,Germany,Rhineland-Palatinate,rhineland-palatinate,,,,1
+,119,23,Germany,Saxony,saxony,,,,1
+,120,24,Greece,Epirus and Western Macedonia,epirus-and-western-macedonia,,,,1
+,121,25,Greenland,Qeqqata,qeqqata,,,,1
+,122,25,Greenland,Sermersooq,sermersooq,,,,1
+,123,26,Hungary,Central Transdanubia,central-transdanubia,,,,1
+,124,26,Hungary,Great Plain and North,great-plain-and-north,,,,1
+,125,26,Hungary,North Hungary,north-hungary,,,,1
+,126,27,Iceland,Capital Region,capital-region,,,,1
+,127,27,Iceland,Eastern Region,eastern-region,,,,1
+,128,27,Iceland,Northeastern Region,northeastern-region,,,,1
+,129,27,Iceland,Northwestern Region,northwestern-region,,,,1
+,130,28,India,Himachal Pradesh,himachal-pradesh,,,,1
+,131,28,India,Jammu and Kashmir,jammu-and-kashmir,,,,1
+,132,28,India,Uttar Pradesh,uttar-pradesh,,,,1
+,133,28,India,Uttarakhand,uttarakhand,,,,1
+,134,29,Iran,Alborz Province,alborz-province,,,,1
+,135,29,Iran,Isfahan Province,isfahan-province,,,,1
+,136,29,Iran,Marand County,marand-county,,,,1
+,137,29,Iran,Razavi Khorasan,razavi-khorasan,,,,1
+,138,29,Iran,Tehran Province,tehran-province,,,,1
+,139,30,Ireland,Leinster,leinster,,,,1
+,140,31,Israel,North District,north-district,,,,1
+,141,32,Italy,Abruzzo,abruzzo,,,,1
+,142,32,Italy,Aosta Valley,aosta-valley,,,,1
+,143,32,Italy,Basilicata,basilicata,,,,1
+,144,32,Italy,Calabria,calabria,,,,1
+,145,32,Italy,Emilia-Romagna,emilia-romagna,,,,1
+,146,32,Italy,Friuli – Venezia Giulia,friuli-venezia-giulia,,,,1
+,147,32,Italy,L'Aquila,laquila,,,,1
+,148,32,Italy,Lazio,lazio,,,,1
+,149,32,Italy,Liguria,liguria,,,,1
+,150,32,Italy,Lombardy,lombardy,,,,1
+,151,32,Italy,Macerata,macerata,,,,1
+,152,32,Italy,Molise,molise,,,,1
+,153,32,Italy,Pesaro e Urbino,pesaro-e-urbino,,,,1
+,154,32,Italy,Pescara,pescara,,,,1
+,155,32,Italy,Piedmont,piedmont,,,,1
+,156,32,Italy,Sardinia,sardinia,,,,1
+,157,32,Italy,Sicily,sicily,,,,1
+,158,32,Italy,Trentino – Alto Adige/Südtirol,trentino-alto-adigesudtirol,,,,1
+,159,32,Italy,Tuscany,tuscany,,,,1
+,160,32,Italy,Umbria,umbria,,,,1
+,161,32,Italy,Veneto,veneto,,,,1
+,162,33,Japan,Aichi Prefecture,aichi-prefecture,,,,1
+,163,33,Japan,Akita Prefecture,akita-prefecture,,,,1
+,164,33,Japan,Aomori Prefecture,aomori-prefecture,,,,1
+,165,33,Japan,Ehime Prefecture,ehime-prefecture,,,,1
+,166,33,Japan,Fukui Prefecture,fukui-prefecture,,,,1
+,167,33,Japan,Fukushima Prefecture,fukushima-prefecture,,,,1
+,168,33,Japan,Gifu Prefecture,gifu-prefecture,,,,1
+,169,33,Japan,Gunma Prefecture,gunma-prefecture,,,,1
+,170,33,Japan,Hiroshima Prefecture,hiroshima-prefecture,,,,1
+,171,33,Japan,Hokkaido Prefecture,hokkaido-prefecture,,,,1
+,172,33,Japan,Hyogo Prefecture,hyogo-prefecture,,,,1
+,173,33,Japan,Ishikawa Prefecture,ishikawa-prefecture,,,,1
+,174,33,Japan,Iwate Prefecture,iwate-prefecture,,,,1
+,175,33,Japan,Kanagawa Prefecture,kanagawa-prefecture,,,,1
+,176,33,Japan,Kochi Prefecture,kochi-prefecture,,,,1
+,177,33,Japan,Kyoto Prefecture,kyoto-prefecture,,,,1
+,178,33,Japan,Mie Prefecture,mie-prefecture,,,,1
+,179,33,Japan,Miyagi Prefecture,miyagi-prefecture,,,,1
+,180,33,Japan,Miyazaki Prefecture,miyazaki-prefecture,,,,1
+,181,33,Japan,Nagano Prefecture,nagano-prefecture,,,,1
+,182,33,Japan,Nara Prefecture,nara-prefecture,,,,1
+,183,33,Japan,Niigata Prefecture,niigata-prefecture,,,,1
+,184,33,Japan,Oita Prefecture,oita-prefecture,,,,1
+,185,33,Japan,Okayama Prefecture,okayama-prefecture,,,,1
+,186,33,Japan,Saitama Prefecture,saitama-prefecture,,,,1
+,187,33,Japan,Shiga Prefecture,shiga-prefecture,,,,1
+,188,33,Japan,Shimane Prefecture,shimane-prefecture,,,,1
+,189,33,Japan,Shizuoka Prefecture,shizuoka-prefecture,,,,1
+,190,33,Japan,Tochigi Prefecture,tochigi-prefecture,,,,1
+,191,33,Japan,Tottori Prefecture,tottori-prefecture,,,,1
+,192,33,Japan,Toyama Prefecture,toyama-prefecture,,,,1
+,193,33,Japan,Yamagata Prefecture,yamagata-prefecture,,,,1
+,194,33,Japan,Yamaguchi Prefecture,yamaguchi-prefecture,,,,1
+,195,33,Japan,Yamanashi Prefecture,yamanashi-prefecture,,,,1
+,196,34,Kazakhstan,East Kazakhstan Region,east-kazakhstan-region,,,,1
+,197,35,Kyrgyzstan,Alamüdün District,alamudun-district,,,,1
+,198,35,Kyrgyzstan,Orlovka,orlovka,,,,1
+,199,35,Kyrgyzstan,Panfilov District,panfilov-district,,,,1
+,200,36,Latvia,Cēsu,cesu,,,,1
+,201,36,Latvia,Tukuma,tukuma,,,,1
+,202,36,Latvia,Ventspils,ventspils,,,,1
+,203,37,Liechtenstein,Oberland,oberland,,,,1
+,204,38,Lithuania,Alytus County,alytus-county,,,,1
+,205,39,Mexico,Coahuila,coahuila,,,,1
+,206,40,Mongolia,Ulaanbaatar,ulaanbaatar,,,,1
+,207,41,Morocco,Marrakech-Safi,marrakech-safi,,,,1
+,208,42,Netherlands,Gelderland,gelderland,,,,1
+,209,42,Netherlands,Limburg,limburg,,,,1
+,210,42,Netherlands,North Brabant,north-brabant,,,,1
+,211,42,Netherlands,North Holland,north-holland,,,,1
+,212,42,Netherlands,South Holland,south-holland,,,,1
+,213,42,Netherlands,Utrecht,utrecht,,,,1
+,214,42,Netherlands,Zeeland,zeeland,,,,1
+,215,43,New Zealand,Canterbury,canterbury,,,,1
+,216,43,New Zealand,Manawatū-Whanganui,manawatu-whanganui,,,,1
+,217,43,New Zealand,Otago,otago,,,,1
+,218,43,New Zealand,Taranaki,taranaki,,,,1
+,219,43,New Zealand,Waikato,waikato,,,,1
+,220,43,New Zealand,West Coast,west-coast,,,,1
+,221,44,North Macedonia,Municipality of Probishtip,municipality-of-probishtip,,,,1
+,222,45,Norway,Agder,agder,,,,1
+,223,45,Norway,Akershus,akershus,,,,1
+,224,45,Norway,Buskerud,buskerud,,,,1
+,225,45,Norway,Finnmark,finnmark,,,,1
+,226,45,Norway,Innlandet,innlandet,,,,1
+,227,45,Norway,Møre og Romsdal,mre-og-romsdal,,,,1
+,228,45,Norway,Nordland,nordland,,,,1
+,229,45,Norway,Oslo,oslo,,,,1
+,230,45,Norway,Rogaland,rogaland,,,,1
+,231,45,Norway,Telemark,telemark,,,,1
+,232,45,Norway,Troms,troms,,,,1
+,233,45,Norway,Trøndelag,trndelag,,,,1
+,234,45,Norway,Vestland,vestland,,,,1
+,235,45,Norway,Østfold,stfold,,,,1
+,236,46,Pakistan,Khyber Pakhtunkhwa,khyber-pakhtunkhwa,,,,1
+,237,47,Poland,Lesser Poland Voivodeship,lesser-poland-voivodeship,,,,1
+,238,47,Poland,Lower Silesian Voivodeship,lower-silesian-voivodeship,,,,1
+,239,47,Poland,Silesian Voivodeship,silesian-voivodeship,,,,1
+,240,47,Poland,Subcarpathian Voivodeship,subcarpathian-voivodeship,,,,1
+,241,47,Poland,Warmian-Masurian Voivodeship,warmian-masurian-voivodeship,,,,1
+,242,48,Portugal,Guarda,guarda,,,,1
+,243,49,Romania,Alba,alba,,,,1
+,244,49,Romania,Brașov,brasov,,,,1
+,245,49,Romania,Caraș-Severin,caras-severin,,,,1
+,246,49,Romania,Cluj,cluj,,,,1
+,247,49,Romania,Harghita,harghita,,,,1
+,248,49,Romania,Hunedoara,hunedoara,,,,1
+,249,49,Romania,Maramureș,maramures,,,,1
+,250,49,Romania,Mureș,mures,,,,1
+,251,49,Romania,Mălini,malini,,,,1
+,252,49,Romania,Neamț,neamt,,,,1
+,253,49,Romania,Prahova,prahova,,,,1
+,254,50,Russia,Altai Krai,altai-krai,,,,1
+,255,50,Russia,Altai Republic,altai-republic,,,,1
+,256,50,Russia,Arkhangelsk Oblast,arkhangelsk-oblast,,,,1
+,257,50,Russia,Bashkortostan,bashkortostan,,,,1
+,258,50,Russia,Chelyabinsk Oblast,chelyabinsk-oblast,,,,1
+,259,50,Russia,Ingushetia,ingushetia,,,,1
+,260,50,Russia,Irkutsk Oblast,irkutsk-oblast,,,,1
+,261,50,Russia,Kabardino-Balkaria,kabardino-balkaria,,,,1
+,262,50,Russia,Kaluga Oblast,kaluga-oblast,,,,1
+,263,50,Russia,Kamchatka Krai,kamchatka-krai,,,,1
+,264,50,Russia,Karachay-Cherkessia,karachay-cherkessia,,,,1
+,265,50,Russia,Kemerovo Oblast–Kuzbass,kemerovo-oblastkuzbass,,,,1
+,266,50,Russia,Khanty-Mansiysk Autonomous Okrug – Ugra,khanty-mansiysk-autonomous-okrug-ugra,,,,1
+,267,50,Russia,Krasnoyarsk Krai,krasnoyarsk-krai,,,,1
+,268,50,Russia,Leningrad Oblast,leningrad-oblast,,,,1
+,269,50,Russia,Lipetsk Oblast,lipetsk-oblast,,,,1
+,270,50,Russia,Moscow Oblast,moscow-oblast,,,,1
+,271,50,Russia,Murmansk Oblast,murmansk-oblast,,,,1
+,272,50,Russia,Nizhny Novgorod Oblast,nizhny-novgorod-oblast,,,,1
+,273,50,Russia,Novosibirsk Oblast,novosibirsk-oblast,,,,1
+,274,50,Russia,Orenburg Oblast,orenburg-oblast,,,,1
+,275,50,Russia,Perm Krai,perm-krai,,,,1
+,276,50,Russia,Primorsky Krai,primorsky-krai,,,,1
+,277,50,Russia,Republic of Karelia,republic-of-karelia,,,,1
+,278,50,Russia,Republic of Khakassia,republic-of-khakassia,,,,1
+,279,50,Russia,Sakhalin Oblast,sakhalin-oblast,,,,1
+,280,50,Russia,Samara Oblast,samara-oblast,,,,1
+,281,50,Russia,Saratov Oblast,saratov-oblast,,,,1
+,282,50,Russia,Sverdlovsk Oblast,sverdlovsk-oblast,,,,1
+,283,50,Russia,Tatarstan,tatarstan,,,,1
+,284,50,Russia,Vladimir Oblast,vladimir-oblast,,,,1
+,285,50,Russia,Yaroslavl Oblast,yaroslavl-oblast,,,,1
+,286,51,Serbia,Central Serbia,central-serbia,,,,1
+,287,52,Slovakia,Region of Banská Bystrica,region-of-banska-bystrica,,,,1
+,288,52,Slovakia,Region of Bratislava,region-of-bratislava,,,,1
+,289,52,Slovakia,Region of Košice,region-of-kosice,,,,1
+,290,52,Slovakia,Region of Prešov,region-of-presov,,,,1
+,291,52,Slovakia,Region of Trenčín,region-of-trencin,,,,1
+,292,52,Slovakia,Region of Žilina,region-of-zilina,,,,1
+,293,53,Slovenia,Bohinj,bohinj,,,,1
+,294,53,Slovenia,Cerklje na Gorenjskem,cerklje-na-gorenjskem,,,,1
+,295,53,Slovenia,Cerkno,cerkno,,,,1
+,296,53,Slovenia,Gorenja vas-Poljane,gorenja-vas-poljane,,,,1
+,297,53,Slovenia,Gorje,gorje,,,,1
+,298,53,Slovenia,Kranjska Gora,kranjska-gora,,,,1
+,299,53,Slovenia,Ljubno,ljubno,,,,1
+,300,53,Slovenia,Semič,semic,,,,1
+,301,53,Slovenia,Tolmin,tolmin,,,,1
+,302,53,Slovenia,Upravna Enota Kamnik,upravna-enota-kamnik,,,,1
+,303,53,Slovenia,Zreče,zrece,,,,1
+,304,54,South Korea,Gangwon State,gangwon-state,,,,1
+,305,54,South Korea,Gyeonggi,gyeonggi,,,,1
+,306,54,South Korea,Jeonbuk State,jeonbuk-state,,,,1
+,307,55,Spain,Aragon,aragon,,,,1
+,308,55,Spain,Cantabria,cantabria,,,,1
+,309,55,Spain,Castile and León,castile-and-leon,,,,1
+,310,55,Spain,Catalonia,catalonia,,,,1
+,311,55,Spain,Community of Madrid,community-of-madrid,,,,1
+,312,55,Spain,Galicia,galicia,,,,1
+,313,55,Spain,Rioja,rioja,,,,1
+,314,56,Sweden,Dalarna County,dalarna-county,,,,1
+,315,56,Sweden,Gävleborg County,gavleborg-county,,,,1
+,316,56,Sweden,Halland County,halland-county,,,,1
+,317,56,Sweden,Jämtland County,jamtland-county,,,,1
+,318,56,Sweden,Jönköping County,jonkoping-county,,,,1
+,319,56,Sweden,Kalmar County,kalmar-county,,,,1
+,320,56,Sweden,Mullsjö kommun,mullsjo-kommun,,,,1
+,321,56,Sweden,Norrbotten County,norrbotten-county,,,,1
+,322,56,Sweden,Stockholm County,stockholm-county,,,,1
+,323,56,Sweden,Södermanland County,sodermanland-county,,,,1
+,324,56,Sweden,Värmland County,varmland-county,,,,1
+,325,56,Sweden,Västerbotten County,vasterbotten-county,,,,1
+,326,56,Sweden,Västernorrland County,vasternorrland-county,,,,1
+,327,56,Sweden,Västmanland County,vastmanland-county,,,,1
+,328,56,Sweden,Västra Götaland County,vastra-gotaland-county,,,,1
+,329,56,Sweden,Östergötland County,ostergotland-county,,,,1
+,330,57,Switzerland,Appenzell Ausserrhoden,appenzell-ausserrhoden,,,,1
+,331,57,Switzerland,Appenzell Innerrhoden,appenzell-innerrhoden,,,,1
+,332,57,Switzerland,Bern,bern,,,,1
+,333,57,Switzerland,Fribourg,fribourg,,,,1
+,334,57,Switzerland,Glarus,glarus,,,,1
+,335,57,Switzerland,Grisons,grisons,,,,1
+,336,57,Switzerland,Lucerne,lucerne,,,,1
+,337,57,Switzerland,Neuchâtel,neuchatel,,,,1
+,338,57,Switzerland,Nidwalden,nidwalden,,,,1
+,339,57,Switzerland,Obwalden,obwalden,,,,1
+,340,57,Switzerland,Schwyz,schwyz,,,,1
+,341,57,Switzerland,St. Gallen,st-gallen,,,,1
+,342,57,Switzerland,Ticino,ticino,,,,1
+,343,57,Switzerland,Uri,uri,,,,1
+,344,57,Switzerland,Vaud,vaud,,,,1
+,345,57,Switzerland,Wallis,wallis,,,,1
+,346,57,Switzerland,Zurich,zurich,,,,1
+,347,58,Taiwan,Hsinchu County,hsinchu-county,,,,1
+,348,59,Turkey,Antalya,antalya,,,,1
+,349,59,Turkey,Denizli,denizli,,,,1
+,350,59,Turkey,Kahramanmaraş,kahramanmaras,,,,1
+,351,59,Turkey,Kayseri,kayseri,,,,1
+,352,60,Ukraine,Cherkasy Oblast,cherkasy-oblast,,,,1
+,353,60,Ukraine,Chernivtsi Oblast,chernivtsi-oblast,,,,1
+,354,60,Ukraine,Drohobych Raion,drohobych-raion,,,,1
+,355,60,Ukraine,Lviv Oblast,lviv-oblast,,,,1
+,356,60,Ukraine,Stryi Raion,stryi-raion,,,,1
+,357,60,Ukraine,Tiachiv Raion,tiachiv-raion,,,,1
+,358,60,Ukraine,Zakarpattia Oblast,zakarpattia-oblast,,,,1
+,359,61,United Kingdom,England,england,,,,1
+,360,61,United Kingdom,Scotland,scotland,,,,1
+,361,61,United Kingdom,Wales,wales,,,,1
+,362,62,United States,Alaska,alaska,,,,1
+,363,62,United States,Arizona,arizona,,,,1
+,364,62,United States,California,california,,,,1
+,365,62,United States,Colorado,colorado,,,,1
+,366,62,United States,Connecticut,connecticut,,,,1
+,367,62,United States,Idaho,idaho,,,,1
+,368,62,United States,Illinois,illinois,,,,1
+,369,62,United States,Indiana,indiana,,,,1
+,370,62,United States,Iowa,iowa,,,,1
+,371,62,United States,Maine,maine,,,,1
+,372,62,United States,Massachusetts,massachusetts,,,,1
+,373,62,United States,Michigan,michigan,,,,1
+,374,62,United States,Minnesota,minnesota,,,,1
+,375,62,United States,Missouri,missouri,,,,1
+,376,62,United States,Montana,montana,,,,1
+,377,62,United States,Nevada,nevada,,,,1
+,378,62,United States,New Hampshire,new-hampshire,,,,1
+,379,62,United States,New Jersey,new-jersey,,,,1
+,380,62,United States,New Mexico,new-mexico,,,,1
+,381,62,United States,New York,new-york,,,,1
+,382,62,United States,North Carolina,north-carolina,,,,1
+,383,62,United States,North Dakota,north-dakota,,,,1
+,384,62,United States,Ohio,ohio,,,,1
+,385,62,United States,Oregon,oregon,,,,1
+,386,62,United States,Pennsylvania,pennsylvania,,,,1
+,387,62,United States,Rhode Island,rhode-island,,,,1
+,388,62,United States,South Dakota,south-dakota,,,,1
+,389,62,United States,Texas,texas,,,,1
+,390,62,United States,Utah,utah,,,,1
+,391,62,United States,Vermont,vermont,,,,1
+,392,62,United States,Virginia,virginia,,,,1
+,393,62,United States,Washington,washington,,,,1
+,394,62,United States,West Virginia,west-virginia,,,,1
+,395,62,United States,Wisconsin,wisconsin,,,,1
+,396,62,United States,Wyoming,wyoming,,,,1

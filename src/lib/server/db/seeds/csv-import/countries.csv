@@ -1,0 +1,63 @@
+uuid,id,country,country_slug,country_code
+,1,Albania,albania,al
+,2,Andorra,andorra,ad
+,3,Argentina,argentina,ar
+,4,Armenia,armenia,am
+,5,Australia,australia,au
+,6,Austria,austria,at
+,7,Azerbaijan,azerbaijan,az
+,8,Belgium,belgium,be
+,9,Bosnia and Herzegovina,bosnia-and-herzegovina,ba
+,10,Brazil,brazil,br
+,11,Bulgaria,bulgaria,bg
+,12,Canada,canada,ca
+,13,Chile,chile,cl
+,14,China,china,cn
+,15,Croatia,croatia,hr
+,16,Cyprus,cyprus,cy
+,17,Czechia,czechia,cz
+,18,Denmark,denmark,dk
+,19,Estonia,estonia,ee
+,20,Finland,finland,fi
+,21,France,france,fr
+,22,Georgia,georgia,ge
+,23,Germany,germany,de
+,24,Greece,greece,gr
+,25,Greenland,greenland,gl
+,26,Hungary,hungary,hu
+,27,Iceland,iceland,is
+,28,India,india,in
+,29,Iran,iran,ir
+,30,Ireland,ireland,ie
+,31,Israel,israel,il
+,32,Italy,italy,it
+,33,Japan,japan,jp
+,34,Kazakhstan,kazakhstan,kz
+,35,Kyrgyzstan,kyrgyzstan,kg
+,36,Latvia,latvia,lv
+,37,Liechtenstein,liechtenstein,li
+,38,Lithuania,lithuania,lt
+,39,Mexico,mexico,mx
+,40,Mongolia,mongolia,mn
+,41,Morocco,morocco,ma
+,42,Netherlands,netherlands,nl
+,43,New Zealand,new-zealand,nz
+,44,North Macedonia,north-macedonia,mk
+,45,Norway,norway,no
+,46,Pakistan,pakistan,pk
+,47,Poland,poland,pl
+,48,Portugal,portugal,pt
+,49,Romania,romania,ro
+,50,Russia,russia,ru
+,51,Serbia,serbia,rs
+,52,Slovakia,slovakia,sk
+,53,Slovenia,slovenia,si
+,54,South Korea,south-korea,kr
+,55,Spain,spain,es
+,56,Sweden,sweden,se
+,57,Switzerland,switzerland,ch
+,58,Taiwan,taiwan,tw
+,59,Turkey,turkey,tr
+,60,Ukraine,ukraine,ua
+,61,United Kingdom,united-kingdom,gb
+,62,United States,united-states,us
