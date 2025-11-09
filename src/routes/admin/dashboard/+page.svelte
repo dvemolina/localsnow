@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
-	import * as Table from '$lib/components/ui/table';
+	import { Card, CardContent, CardHeader, CardTitle } from '$src/lib/components/ui/card';
+	import { Badge } from '$src/lib/components/ui/badge';
+	import { Button } from '$src/lib/components/ui/button';
+	import * as Table from '$src/lib/components/ui/table';
 
 	let { data } = $props();
 
