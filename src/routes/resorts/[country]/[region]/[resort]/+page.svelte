@@ -112,7 +112,7 @@
 									{sport.instructorCount} verified {sport.instructorCount === 1 ? 'instructor' : 'instructors'} available
 								</p>
 								<Button
-									href="/{location.country.countrySlug}/{location.region?.regionSlug || location.country.countrySlug}/{resort.slug}/{sport.sportSlug}-instructors"
+									href="/resorts/{location.country.countrySlug}/{location.region?.regionSlug || location.country.countrySlug}/{resort.slug}/{sport.sportSlug}-instructors"
 									class="w-full"
 								>
 									View {sport.sport} Instructors
@@ -161,7 +161,7 @@
 				<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 					{#each nearbyResorts as nearby}
 						<a
-							href="/{nearby.countrySlug}/{nearby.regionSlug || location.country.countrySlug}/{nearby.slug}"
+							href="/resorts/{nearby.countrySlug}/{nearby.regionSlug || location.country.countrySlug}/{nearby.slug}"
 							class="group block rounded-lg border bg-white p-4 transition-shadow hover:shadow-md"
 						>
 							<h3 class="mb-2 font-semibold group-hover:text-blue-600">

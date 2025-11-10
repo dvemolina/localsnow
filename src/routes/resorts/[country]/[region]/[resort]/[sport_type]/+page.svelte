@@ -215,7 +215,7 @@
 				<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 					{#each relatedResorts as related}
 						<a
-							href="/{related.countrySlug}/{related.regionSlug || location.country.countrySlug}/{related.slug}/{sport.sportSlug}-instructors"
+							href="/resorts/{related.countrySlug}/{related.regionSlug || location.country.countrySlug}/{related.slug}/{sport.sportSlug}-instructors"
 							data-sveltekit-reload
 							class="group block rounded-lg border bg-white p-4 transition-shadow hover:shadow-md"
 						>

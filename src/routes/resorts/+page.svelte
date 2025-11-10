@@ -71,7 +71,7 @@
 					<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 						{#each country.resorts as resort}
 							<a
-								href="/{country.countrySlug}/{resort.regionSlug}/{resort.slug}"
+								href="/resorts/{country.countrySlug}/{resort.regionSlug}/{resort.slug}"
 								class="group"
 							>
 								<Card class="h-full transition-shadow hover:shadow-lg">

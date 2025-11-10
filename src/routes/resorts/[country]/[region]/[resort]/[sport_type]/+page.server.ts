@@ -45,14 +45,15 @@ export const load: PageServerLoad = async ({ params, depends }) => {
 	const description = `Find and book professional ${sportName.toLowerCase()} instructors in ${resortName}, ${regionName || countryName}. ${landingData.totalInstructors} verified instructors available for private lessons.`;
 
 	// Canonical URL
-	const canonicalUrl = `https://localsnow.com/${country}/${region}/${resort}/${sport_type}`;
+	const canonicalUrl = `https://localsnow.com/resorts/${country}/${region}/${resort}/${sport_type}`;
 
 	// Breadcrumb structured data
 	const breadcrumbs = [
 		{ name: 'Home', url: 'https://localsnow.com' },
-		{ name: countryName, url: `https://localsnow.com/${country}` },
-		{ name: regionName || countryName, url: `https://localsnow.com/${country}/${region}` },
-		{ name: resortName!, url: `https://localsnow.com/${country}/${region}/${resort}` },
+		{ name: 'Resorts', url: 'https://localsnow.com/resorts' },
+		{ name: countryName, url: `https://localsnow.com/resorts/${country}` },
+		{ name: regionName || countryName, url: `https://localsnow.com/resorts/${country}/${region}` },
+		{ name: resortName!, url: `https://localsnow.com/resorts/${country}/${region}/${resort}` },
 		{ name: `${sportName} Instructors`, url: canonicalUrl }
 	];
 

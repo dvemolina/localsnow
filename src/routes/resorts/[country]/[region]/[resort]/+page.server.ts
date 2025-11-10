@@ -17,14 +17,14 @@ export const load: PageServerLoad = async ({ params }) => {
 	const title = `${resortInfo.name} Ski Resort | Find Instructors & Book Lessons`;
 	const description = `Discover ${resortInfo.name} in ${location.region?.region || location.country.country}. ${resortInfo.minElevation && resortInfo.maxElevation ? `Slopes from ${resortInfo.minElevation}m to ${resortInfo.maxElevation}m.` : ''} Book professional ski and snowboard instructors for private lessons.`;
 
-	const canonicalUrl = `https://localsnow.com/${country}/${region}/${resort}`;
+	const canonicalUrl = `https://localsnow.com/resorts/${country}/${region}/${resort}`;
 
 	// Breadcrumbs
 	const breadcrumbs = [
 		{ name: 'Home', url: 'https://localsnow.com' },
 		{ name: 'Resorts', url: 'https://localsnow.com/resorts' },
-		{ name: location.country.country, url: `https://localsnow.com/${country}` },
-		{ name: location.region?.region || location.country.country, url: `https://localsnow.com/${country}/${region}` },
+		{ name: location.country.country, url: `https://localsnow.com/resorts/${country}` },
+		{ name: location.region?.region || location.country.country, url: `https://localsnow.com/resorts/${country}/${region}` },
 		{ name: resortInfo.name, url: canonicalUrl }
 	];
 
