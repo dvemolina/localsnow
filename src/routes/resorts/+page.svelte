@@ -30,32 +30,30 @@
 	<link rel="canonical" href={seo.canonicalUrl} />
 </svelte:head>
 
-<div class="min-h-screen bg-gray-50">
-	<!-- Hero Section -->
-	<div class="bg-gradient-to-b from-blue-600 to-blue-800 text-white">
-		<div class="container mx-auto max-w-7xl px-4 py-16">
-			<div class="mx-auto max-w-3xl text-center">
-				<h1 class="mb-4 text-4xl font-bold md:text-5xl">Ski Resorts Directory</h1>
-				<p class="mb-8 text-xl text-blue-100">
-					Browse {totalResorts} resorts worldwide and find professional instructors
-				</p>
+<section class="w-full">
+	<!-- Header -->
+	<div class="mb-6 text-center">
+		<h1 class="title2 mb-2">Ski Resorts Directory</h1>
+		<p class="text-muted-foreground">
+			Browse {totalResorts} resorts worldwide and find professional instructors
+		</p>
+	</div>
 
-				<!-- Search -->
-				<div class="relative mx-auto max-w-md">
-					<Search class="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-					<Input
-						type="text"
-						placeholder="Search resorts..."
-						bind:value={searchQuery}
-						class="pl-10 bg-white"
-					/>
-				</div>
-			</div>
+	<!-- Search -->
+	<div class="mb-8">
+		<div class="relative mx-auto max-w-md">
+			<Search class="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+			<Input
+				type="text"
+				placeholder="Search resorts..."
+				bind:value={searchQuery}
+				class="pl-10"
+			/>
 		</div>
 	</div>
 
 	<!-- Resorts List -->
-	<div class="container mx-auto max-w-7xl px-4 py-12">
+	<div>
 		{#if filteredResorts.length === 0}
 			<div class="text-center py-12">
 				<p class="text-muted-foreground">No resorts found matching "{searchQuery}"</p>
@@ -103,4 +101,4 @@
 			{/each}
 		{/if}
 	</div>
-</div>
+</section>
