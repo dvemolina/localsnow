@@ -2,7 +2,15 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { getResortSportInstructors } from '$src/lib/server/services/seoLandingService';
 
-export const load: PageServerLoad = async ({ params }) => {
+// Force the page to re-run the load function when params change
+export const ssr = true;
+export const csr = true;
+
+export const load: PageServerLoad = async ({ params, depends }) => {
+	// This tells SvelteKit to re-run this function when these params change
+	depends(`resort:${params.resort}`);
+	depends(`sport:${params.sport_type}`);
+
 	const { country, region, resort, sport_type } = params;
 
 	// Validate sport_type format (must end with -instructors)

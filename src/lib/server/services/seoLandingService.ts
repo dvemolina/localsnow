@@ -277,6 +277,148 @@ export async function getResortSportInstructors(
 }
 
 /**
+ * Get individual resort information for resort detail page
+ */
+export async function getResortDetails(
+  countrySlug: string,
+  regionSlug: string,
+  resortSlug: string
+) {
+  // Get resort info
+  const resortData = await db
+    .select({
+      resortId: resorts.id,
+      resortName: resorts.name,
+      resortSlug: resorts.slug,
+      minElevation: resorts.minElevation,
+      maxElevation: resorts.maxElevation,
+      lat: resorts.lat,
+      lon: resorts.lon,
+      website: resorts.website,
+      regionId: regions.id,
+      regionName: regions.region,
+      regionSlug: regions.regionSlug,
+      countryId: countries.id,
+      countryName: countries.country,
+      countrySlug: countries.countrySlug,
+      countryCode: countries.countryCode
+    })
+    .from(resorts)
+    .innerJoin(countries, eq(resorts.countryId, countries.id))
+    .leftJoin(regions, eq(resorts.regionId, regions.id))
+    .where(
+      and(
+        eq(resorts.slug, resortSlug),
+        eq(countries.countrySlug, countrySlug),
+        regionSlug ? eq(regions.regionSlug, regionSlug) : undefined
+      )
+    )
+    .limit(1);
+
+  if (resortData.length === 0) return null;
+
+  const resort = resortData[0];
+
+  // Get count of verified instructors per sport at this resort
+  const sportCounts = await db
+    .select({
+      sportId: sports.id,
+      sport: sports.sport,
+      sportSlug: sports.sportSlug,
+      // Use a raw SQL count
+    })
+    .from(sports)
+    .leftJoin(instructorSports, eq(sports.id, instructorSports.sportId))
+    .leftJoin(instructorResorts,
+      and(
+        eq(instructorSports.instructorId, instructorResorts.instructorId),
+        eq(instructorResorts.resortId, resort.resortId)
+      )
+    )
+    .leftJoin(users,
+      and(
+        eq(instructorResorts.instructorId, users.id),
+        eq(users.isVerified, true)
+      )
+    )
+    .groupBy(sports.id, sports.sport, sports.sportSlug);
+
+  // Count instructors manually for each sport
+  const sportsWithCounts = await Promise.all(
+    sportCounts.map(async (sportData) => {
+      const count = await db
+        .select({ instructorId: instructorResorts.instructorId })
+        .from(instructorResorts)
+        .innerJoin(instructorSports, eq(instructorResorts.instructorId, instructorSports.instructorId))
+        .innerJoin(users, eq(instructorResorts.instructorId, users.id))
+        .where(
+          and(
+            eq(instructorResorts.resortId, resort.resortId),
+            eq(instructorSports.sportId, sportData.sportId),
+            eq(users.isVerified, true)
+          )
+        );
+
+      return {
+        ...sportData,
+        instructorCount: count.length
+      };
+    })
+  );
+
+  // Get nearby resorts in the same region/country
+  const nearbyResorts = await db
+    .select({
+      id: resorts.id,
+      name: resorts.name,
+      slug: resorts.slug,
+      minElevation: resorts.minElevation,
+      maxElevation: resorts.maxElevation,
+      regionSlug: regions.regionSlug,
+      countrySlug: countries.countrySlug
+    })
+    .from(resorts)
+    .innerJoin(countries, eq(resorts.countryId, countries.id))
+    .leftJoin(regions, eq(resorts.regionId, regions.id))
+    .where(
+      and(
+        eq(countries.id, resort.countryId),
+        resort.regionId ? eq(regions.id, resort.regionId) : undefined,
+        ne(resorts.id, resort.resortId)
+      )
+    )
+    .limit(6);
+
+  return {
+    resort: {
+      id: resort.resortId,
+      name: resort.resortName,
+      slug: resort.resortSlug,
+      minElevation: resort.minElevation,
+      maxElevation: resort.maxElevation,
+      lat: resort.lat,
+      lon: resort.lon,
+      website: resort.website
+    },
+    location: {
+      country: {
+        id: resort.countryId,
+        country: resort.countryName,
+        countrySlug: resort.countrySlug,
+        countryCode: resort.countryCode
+      },
+      region: resort.regionId ? {
+        id: resort.regionId,
+        region: resort.regionName!,
+        regionSlug: resort.regionSlug!
+      } : undefined
+    },
+    sportsAvailable: sportsWithCounts,
+    nearbyResorts
+  };
+}
+
+/**
  * Get all valid resort + sport combinations for sitemap generation
  */
 export async function getAllResortSportCombinations() {

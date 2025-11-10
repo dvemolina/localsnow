@@ -2,7 +2,7 @@ import 'dotenv';
 
 export const items = [
 	{ label: 'Instructors', href: '/instructors' },
-	{ label: 'Resorts', href: '/location' },
+	{ label: 'Resorts', href: '/resorts' },
 	{ label: 'Access', href: '/signup' },
 	{ label: 'About', href: '/about' }
 ];

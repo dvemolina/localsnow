@@ -3,10 +3,18 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent } from '$lib/components/ui/card';
 	import { MapPin, Mountain, ChevronRight, ExternalLink } from 'lucide-svelte';
+	import { page } from '$app/stores';
+	import Breadcrumb from '$lib/components/shared/Breadcrumb.svelte';
 
 	let { data } = $props();
 	const { landingData, seo } = data;
 	const { location, sport, instructors, relatedResorts, totalInstructors } = landingData;
+
+	// Prepare breadcrumb items for the shared component
+	const breadcrumbItems = seo.breadcrumbs.map((crumb) => ({
+		href: crumb.url.replace('https://localsnow.com', ''),
+		label: crumb.name
+	}));
 </script>
 
 <svelte:head>
@@ -41,24 +49,14 @@
 	})}<\/script>`}
 </svelte:head>
 
+{#key `${landingData.location.resort?.slug}-${landingData.sport.sportSlug}`}
 <div class="min-h-screen bg-gray-50">
 	<!-- Breadcrumbs -->
 	<div class="border-b bg-white">
-		<div class="container mx-auto max-w-7xl px-4 py-3">
-			<nav class="flex items-center space-x-2 text-sm text-muted-foreground" aria-label="Breadcrumb">
-				{#each seo.breadcrumbs as crumb, i}
-					{#if i > 0}
-						<ChevronRight class="h-4 w-4" />
-					{/if}
-					{#if i === seo.breadcrumbs.length - 1}
-						<span class="font-medium text-foreground">{crumb.name}</span>
-					{:else}
-						<a href={crumb.url.replace('https://localsnow.com', '')} class="hover:text-foreground">
-							{crumb.name}
-						</a>
-					{/if}
-				{/each}
-			</nav>
+		<div class="container mx-auto max-w-7xl px-2 py-3 md:px-4">
+			<div class="overflow-x-auto scrollbar-hide">
+				<Breadcrumb page={$page} items={breadcrumbItems} />
+			</div>
 		</div>
 	</div>
 
@@ -278,3 +276,4 @@
 		</div>
 	</div>
 </div>
+{/key}
