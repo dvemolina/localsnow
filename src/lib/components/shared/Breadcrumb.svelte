@@ -64,7 +64,7 @@
 		<img
 			src="/icons/home.svg"
 			alt="Path-Breadcrumb"
-			class="opacity-75 hover:opacity-100 cursor-pointer size-4 invert-0 dark:invert"
+			class="opacity-75 hover:opacity-100 cursor-pointer size-4 mr-2"
 		/>
 		<p>></p>
 	</a>

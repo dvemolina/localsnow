@@ -46,14 +46,14 @@
 				<div class="flex flex-row items-center gap-2">
 					<img src="/icons/language.svg" alt="Languages" class="size-4" />
 					<div class="flex flex-row items-center gap-1 flex-wrap">
-						{#each instructorData.spokenLanguages.slice(0, 3) as language}
+						{#each instructorData.spokenLanguages.slice(0, 2) as language}
 							<Badge variant="secondary" class="text-[0.65rem] sm:text-xs">
 								{language}
 							</Badge>
 						{/each}
-						{#if instructorData.spokenLanguages.length > 3}
+						{#if instructorData.spokenLanguages.length > 2}
 							<span class="text-[0.65rem] text-muted-foreground sm:text-xs">
-								+{instructorData.spokenLanguages.length - 3} more
+								+{instructorData.spokenLanguages.length - 2} more
 							</span>
 						{/if}
 					</div>
