@@ -72,8 +72,10 @@
 	{#if breadcrumbItems.length > 2}
 		<!-- Mobile: Show Home > ... > Current when breadcrumb is long -->
 		<Breadcrumb.List class="sm:hidden">
-			<Breadcrumb.Item class="opacity-75">
-				<Breadcrumb.Ellipsis />
+			<Breadcrumb.Item class="opacity-75 hover:opacity-100 cursor-pointer">
+				<Breadcrumb.Link href={breadcrumbItems[breadcrumbItems.length - 2].href}>
+					<Breadcrumb.Ellipsis />
+				</Breadcrumb.Link>
 			</Breadcrumb.Item>
 			<Breadcrumb.Separator />
 			<Breadcrumb.Item class="opacity-75">

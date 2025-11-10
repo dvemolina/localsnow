@@ -419,6 +419,144 @@ export async function getResortDetails(
 }
 
 /**
+ * Get country-level details showing all regions and resorts
+ */
+export async function getCountryDetails(countrySlug: string) {
+  // Get country info
+  const countryData = await db
+    .select({
+      id: countries.id,
+      country: countries.country,
+      countrySlug: countries.countrySlug,
+      countryCode: countries.countryCode
+    })
+    .from(countries)
+    .where(eq(countries.countrySlug, countrySlug))
+    .limit(1);
+
+  if (countryData.length === 0) return null;
+
+  const country = countryData[0];
+
+  // Get all regions in this country
+  const regionsData = await db
+    .select({
+      id: regions.id,
+      region: regions.region,
+      regionSlug: regions.regionSlug
+    })
+    .from(regions)
+    .where(eq(regions.countryId, country.id))
+    .orderBy(regions.region);
+
+  // Get all resorts in this country grouped by region
+  const resortsData = await db
+    .select({
+      id: resorts.id,
+      name: resorts.name,
+      slug: resorts.slug,
+      minElevation: resorts.minElevation,
+      maxElevation: resorts.maxElevation,
+      regionId: regions.id,
+      regionName: regions.region,
+      regionSlug: regions.regionSlug
+    })
+    .from(resorts)
+    .leftJoin(regions, eq(resorts.regionId, regions.id))
+    .where(eq(resorts.countryId, country.id))
+    .orderBy(regions.region, resorts.name);
+
+  // Group resorts by region
+  const resortsByRegion = resortsData.reduce((acc, resort) => {
+    const regionKey = resort.regionSlug || 'no-region';
+    if (!acc[regionKey]) {
+      acc[regionKey] = {
+        region: resort.regionName || 'Other',
+        regionSlug: resort.regionSlug || '',
+        resorts: []
+      };
+    }
+    acc[regionKey].resorts.push({
+      id: resort.id,
+      name: resort.name,
+      slug: resort.slug,
+      minElevation: resort.minElevation,
+      maxElevation: resort.maxElevation
+    });
+    return acc;
+  }, {} as Record<string, any>);
+
+  return {
+    country,
+    regions: regionsData,
+    resortsByRegion: Object.values(resortsByRegion),
+    totalResorts: resortsData.length
+  };
+}
+
+/**
+ * Get region-level details showing all resorts in a region
+ */
+export async function getRegionDetails(countrySlug: string, regionSlug: string) {
+  // Get region and country info
+  const regionData = await db
+    .select({
+      regionId: regions.id,
+      region: regions.region,
+      regionSlug: regions.regionSlug,
+      countryId: countries.id,
+      country: countries.country,
+      countrySlug: countries.countrySlug,
+      countryCode: countries.countryCode
+    })
+    .from(regions)
+    .innerJoin(countries, eq(regions.countryId, countries.id))
+    .where(
+      and(
+        eq(regions.regionSlug, regionSlug),
+        eq(countries.countrySlug, countrySlug)
+      )
+    )
+    .limit(1);
+
+  if (regionData.length === 0) return null;
+
+  const region = regionData[0];
+
+  // Get all resorts in this region
+  const resortsData = await db
+    .select({
+      id: resorts.id,
+      name: resorts.name,
+      slug: resorts.slug,
+      minElevation: resorts.minElevation,
+      maxElevation: resorts.maxElevation,
+      lat: resorts.lat,
+      lon: resorts.lon,
+      website: resorts.website
+    })
+    .from(resorts)
+    .where(eq(resorts.regionId, region.regionId))
+    .orderBy(resorts.name);
+
+  return {
+    region: {
+      id: region.regionId,
+      region: region.region,
+      regionSlug: region.regionSlug
+    },
+    country: {
+      id: region.countryId,
+      country: region.country,
+      countrySlug: region.countrySlug,
+      countryCode: region.countryCode
+    },
+    resorts: resortsData,
+    totalResorts: resortsData.length
+  };
+}
+
+/**
  * Get all valid resort + sport combinations for sitemap generation
  */
 export async function getAllResortSportCombinations() {
