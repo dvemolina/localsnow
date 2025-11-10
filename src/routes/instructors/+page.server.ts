@@ -10,12 +10,14 @@ export const load: PageServerLoad = async ({ url }) => {
     const resortId = url.searchParams.get('resort');
     const sportId = url.searchParams.get('sport');
     const searchQuery = url.searchParams.get('q');
+    const language = url.searchParams.get('language');
 
     try {
         const instructors = await instructorService.searchInstructors({
             resortId: resortId ? Number(resortId) : undefined,
             sportId: sportId ? Number(sportId) : undefined,
-            searchQuery: searchQuery || undefined
+            searchQuery: searchQuery || undefined,
+            language: language || undefined
         });
 
         // Fetch base lessons for all instructors
@@ -43,7 +45,8 @@ export const load: PageServerLoad = async ({ url }) => {
             filters: {
                 resort: resortId,
                 sport: sportId,
-                query: searchQuery
+                query: searchQuery,
+                language: language
             }
         };
     } catch (error) {
@@ -53,7 +56,8 @@ export const load: PageServerLoad = async ({ url }) => {
             filters: {
                 resort: resortId,
                 sport: sportId,
-                query: searchQuery
+                query: searchQuery,
+                language: language
             }
         };
     }

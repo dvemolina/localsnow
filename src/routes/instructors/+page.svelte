@@ -3,12 +3,12 @@
 	import InstructorCard from '$src/features/Instructors/components/InstructorCard.svelte';
 	import SearchResort from '$src/features/Resorts/components/SearchResort.svelte';
 	import SportSelect from '$src/features/Resorts/components/SportSelect.svelte';
+	import LanguageSelect from '$src/lib/components/shared/LanguageSelect.svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { z } from 'zod';
 	import { goto } from '$app/navigation';
 	import { Button } from '$src/lib/components/ui/button';
-	import { Input } from '$src/lib/components/ui/input';
 
 	let { data } = $props();
 
@@ -16,12 +16,12 @@
 	const filterSchema = z.object({
 		resort: z.number().optional(),
 		sport: z.string().optional(),
-		query: z.string().optional()
+		language: z.string().optional()
 	});
 
 	// Initialize form for filters
 	const form = superForm(
-		{ resort: data.filters.resort, sport: data.filters.sport, query: data.filters.query },
+		{ resort: data.filters.resort, sport: data.filters.sport, language: data.filters.language },
 		{
 			validators: zodClient(filterSchema),
 			SPA: true,
@@ -31,15 +31,13 @@
 
 	const { form: formData, enhance } = form;
 
-	let searchQuery = $state(data.filters.query || '');
-
 	// Apply filters function
 	async function applyFilters() {
 		const params = new URLSearchParams();
 
 		if ($formData.resort) params.set('resort', $formData.resort.toString());
 		if ($formData.sport) params.set('sport', $formData.sport);
-		if (searchQuery) params.set('q', searchQuery);
+		if ($formData.language) params.set('language', $formData.language);
 
 		goto(`/instructors?${params.toString()}`);
 	}
@@ -48,12 +46,12 @@
 	function clearFilters() {
 		$formData.resort = undefined;
 		$formData.sport = undefined;
-		searchQuery = '';
+		$formData.language = undefined;
 		goto('/instructors');
 	}
 
 	const hasActiveFilters = $derived(
-		!!$formData.resort || !!$formData.sport || !!searchQuery
+		!!$formData.resort || !!$formData.sport || !!$formData.language
 	);
 </script>
 
@@ -80,18 +78,6 @@
 
 		<form onsubmit={applyFilters} class="space-y-3">
 			<div class="grid gap-3 md:grid-cols-3">
-				<!-- Search by Name -->
-				<div>
-					<label for="search" class="mb-1 block text-sm font-medium">Search by Name</label>
-					<Input
-						id="search"
-						type="text"
-						bind:value={searchQuery}
-						placeholder="Instructor name..."
-						class="w-full"
-					/>
-				</div>
-
 				<!-- Resort Filter -->
 				<div>
 					<SearchResort {form} name="resort" label="Filter by Resort" />
@@ -100,6 +86,11 @@
 				<!-- Sport Filter -->
 				<div>
 					<SportSelect {form} name="sport" />
+				</div>
+
+				<!-- Language Filter -->
+				<div>
+					<LanguageSelect {form} name="language" />
 				</div>
 			</div>
 
