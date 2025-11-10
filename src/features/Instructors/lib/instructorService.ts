@@ -61,6 +61,7 @@ export class InstructorService {
                 professionalPhone: profileData.professionalPhone,
                 resort: profileData.resort,
                 sports: profileData.sports,
+                spokenLanguages: profileData.spokenLanguages,
                 profileImageUrl: profileData.profileImageUrl,
                 qualificationUrl: profileData.qualificationUrl
             };

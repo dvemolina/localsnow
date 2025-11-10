@@ -263,6 +263,36 @@
 						</span>
 					</div>
 				</div>
+
+				<!-- Languages Spoken -->
+				{#if instructor.spokenLanguages && instructor.spokenLanguages.length > 0}
+					<div>
+						<h2 class="title4 mb-3 flex items-center gap-2">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="size-5"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
+								/>
+							</svg>
+							Languages
+						</h2>
+						<div class="flex flex-wrap gap-2">
+							{#each instructor.spokenLanguages as language}
+								<Badge variant="outline" class="text-sm">
+									{language}
+								</Badge>
+							{/each}
+						</div>
+					</div>
+				{/if}
 			</div>
 
 			<!-- Qualifications -->

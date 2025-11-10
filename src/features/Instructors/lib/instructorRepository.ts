@@ -16,6 +16,7 @@ export interface InstructorData {
     professionalPhone?: string;
     bio?: string;
     sports?: number[];
+    spokenLanguages?: string[];
     basePrice?: number;
     currency?: string;
 }
@@ -33,6 +34,7 @@ export class InstructorRepository {
                     professionalCountryCode: instructorData.professionalCountryCode.toString(),
                     professionalPhone: instructorData.professionalPhone,
                     bio: instructorData.bio,
+                    spokenLanguages: instructorData.spokenLanguages,
                     updatedAt: new Date()
                 })
                 .where(eq(users.id, instructorData.userId))
@@ -99,13 +101,14 @@ export class InstructorRepository {
         return await db.transaction(async (tx) => {
             // Update user fields
             const userUpdateFields: Partial<InsertUser> = {};
-            
+
             if (updateData.profileImageUrl !== undefined) userUpdateFields.profileImageUrl = updateData.profileImageUrl;
             if (updateData.qualificationUrl !== undefined) userUpdateFields.qualificationUrl = updateData.qualificationUrl;
             if (updateData.professionalCountryCode) userUpdateFields.professionalCountryCode = updateData.professionalCountryCode;
             if (updateData.professionalPhone) userUpdateFields.professionalPhone = updateData.professionalPhone;
             if (updateData.bio !== undefined) userUpdateFields.bio = updateData.bio;
-            
+            if (updateData.spokenLanguages !== undefined) userUpdateFields.spokenLanguages = updateData.spokenLanguages;
+
             userUpdateFields.updatedAt = new Date();
 
             const updatedUser = await tx
@@ -163,6 +166,7 @@ export class InstructorRepository {
                     profileImageUrl: '/local-snow-head.png',
                     qualificationUrl: null,
                     bio: null,
+                    spokenLanguages: null,
                     updatedAt: new Date()
                 })
                 .where(eq(users.id, instructorId))
@@ -190,6 +194,7 @@ export class InstructorRepository {
                     countryCode: users.countryCode,
                     role: users.role,
                     qualificationUrl: users.qualificationUrl,
+                    spokenLanguages: users.spokenLanguages,
                     // Join data
                     sports: instructorSports.sportId,
                     resorts: instructorResorts.resortId
@@ -238,6 +243,7 @@ export class InstructorRepository {
                         countryCode: row.countryCode,
                         role: row.role,
                         qualificationUrl: row.qualificationUrl,
+                        spokenLanguages: row.spokenLanguages,
                         sports: [],
                         resorts: []
                     });

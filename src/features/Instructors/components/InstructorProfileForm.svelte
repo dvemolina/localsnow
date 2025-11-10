@@ -14,6 +14,7 @@
 	import { instructorProfileSchema, type InstructorProfileSchema } from '../lib/instructorSchemas';
 	import SearchResort from '$src/features/Resorts/components/SearchResort.svelte';
 	import SportsCheckboxes from '$src/features/Sports/components/SportsCheckboxes.svelte';
+	import LanguageCheckboxes from '$src/lib/components/shared/LanguageCheckboxes.svelte';
 	import { onDestroy, onMount } from 'svelte';
 	import CountryCodeSelect from '$src/lib/components/shared/CountryCodeSelect.svelte';
 	import { toast } from 'svelte-sonner';
@@ -178,6 +179,9 @@
 
 				<!-- Sports -->
 				<SportsCheckboxes {form} name="sports" />
+
+				<!-- Languages -->
+				<LanguageCheckboxes {form} name="spokenLanguages" />
 			</Accordion.Content>
 		</Accordion.Item>
 
