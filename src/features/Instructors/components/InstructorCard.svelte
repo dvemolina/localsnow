@@ -41,6 +41,25 @@
 				{/each}
 			</div>
 
+			<!-- Languages Spoken -->
+			{#if instructorData.spokenLanguages && instructorData.spokenLanguages.length > 0}
+				<div class="flex flex-row items-center gap-2">
+					<img src="/icons/language.svg" alt="Languages" class="size-4" />
+					<div class="flex flex-row items-center gap-1 flex-wrap">
+						{#each instructorData.spokenLanguages.slice(0, 3) as language}
+							<Badge variant="secondary" class="text-[0.65rem] sm:text-xs">
+								{language}
+							</Badge>
+						{/each}
+						{#if instructorData.spokenLanguages.length > 3}
+							<span class="text-[0.65rem] text-muted-foreground sm:text-xs">
+								+{instructorData.spokenLanguages.length - 3} more
+							</span>
+						{/if}
+					</div>
+				</div>
+			{/if}
+
 			<!-- Teaching Location -->
 			<div class="flex flex-row items-center gap-2">
 				<img src="/icons/ski-resort.svg" alt="Resort" class="size-4" />

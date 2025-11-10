@@ -47,7 +47,8 @@ export const load: PageServerLoad = async (event) => {
                 professionalCountryCode: fullUser.professionalCountryCode ? parseInt(fullUser.professionalCountryCode) : 1,
                 professionalPhone: fullUser.professionalPhone || '',
                 resort: instructorData.resorts[0] || 0,
-                sports: instructorData.sports || []
+                sports: instructorData.sports || [],
+                spokenLanguages: fullUser.spokenLanguages || []
             },
             zod(instructorProfileSchema)
         );
@@ -157,6 +158,7 @@ export const actions: Actions = {
             professionalPhone: form.data.professionalPhone,
             resort: form.data.resort,
             sports: form.data.sports,
+            spokenLanguages: form.data.spokenLanguages,
             // Only update if new file was uploaded, otherwise keep existing
             profileImageUrl: profileImageUrl !== undefined ? profileImageUrl : currentUser?.profileImageUrl,
             qualificationUrl: qualificationUrl !== undefined ? qualificationUrl : currentUser?.qualificationUrl

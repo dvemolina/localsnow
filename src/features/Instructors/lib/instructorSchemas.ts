@@ -56,6 +56,7 @@ export const instructorSignupSchema = z.object({
 	professionalPhone: z.string().nonempty("Insert Professional Contact Phone"),
 	bio: z.string().optional(),
 	sports: z.array(z.number()).min(1, 'Select at least one sport'),
+	spokenLanguages: z.array(z.string()).min(1, 'Select at least one language'),
 	basePrice: z.coerce.number().min(0, 'Base price must be positive'),
 	currency: z.string().min(1, 'Select currency')
 });
@@ -67,6 +68,7 @@ export const instructorProfileSchema = z.object({
 	professionalPhone: z.string().nonempty("Insert Professional Contact Phone"),
 	resort: z.coerce.number().min(1, "Choose the Resort where you teach"),
 	sports: z.array(z.number()).min(1, 'Select at least one sport'),
+	spokenLanguages: z.array(z.string()).min(1, 'Select at least one language'),
 	profileImage: imageFileSchema,
 	qualification: documentFileSchema
 });
@@ -85,6 +87,7 @@ export interface InstructorSignupData {
 	professionalPhone: string;
 	bio?: string;
 	sports: number[];
+	spokenLanguages: string[];
 	basePrice: number;
 	currency: string;
 }
@@ -95,6 +98,7 @@ export interface InstructorProfileData {
 	professionalPhone: string;
 	resort: number;
 	sports: number[];
+	spokenLanguages: string[];
 	profileImageUrl?: string | null;
 	qualificationUrl?: string | null;
 }

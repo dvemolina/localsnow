@@ -13,6 +13,7 @@
 	import { instructorSignupSchema, type InstructorSignupSchema } from '../lib/instructorSchemas';
 	import SearchResort from '$src/features/Resorts/components/SearchResort.svelte';
 	import SportsCheckboxes from '$src/features/Sports/components/SportsCheckboxes.svelte';
+	import LanguageCheckboxes from '$src/lib/components/shared/LanguageCheckboxes.svelte';
 	import { onDestroy } from 'svelte';
 	import CurrencySelect from '$src/lib/components/shared/CurrencySelect.svelte';
 	import CountryCodeSelect from '$src/lib/components/shared/CountryCodeSelect.svelte';
@@ -164,7 +165,9 @@
 	</Form.Field>
 
 	<SportsCheckboxes {form} name="sports" />
-	
+
+	<LanguageCheckboxes {form} name="spokenLanguages" />
+
 	<div class="flex w-full flex-col gap-2 sm:flex-row">
 		<Form.Field {form} name="basePrice" class="w-full">
 			<Form.Control>

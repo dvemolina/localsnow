@@ -31,6 +31,7 @@ export const users = pgTable('users', {
 	professionalCountryCode: varchar('professional_country_code', { length: 4}),
 	professionalPhone: varchar('professional_phone', { length: 50 }),
 	qualificationUrl: varchar('qualification_url', { length: 255 }),
+	spokenLanguages: text('spoken_languages').array(),
     isVerified: boolean('is_verified').default(false),
 	acceptedTerms: boolean('accepted_terms').notNull().default(false),
 	isSuspended: boolean('is_suspended').default(false),
