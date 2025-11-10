@@ -136,7 +136,7 @@
 			{/if}
 		</div>
 
-		{#if !isCurrentPath("/", page.url.pathname)}
+		{#if !isCurrentPath("/", page.url.pathname) && !page.url.pathname.includes('/resorts')}
 		<div
 			class="breadcrumb flex w-full max-w-[550px] flex-row items-center justify-between gap-4 rounded-full border border-border bg-background py-0.5 sm:gap-12 transition-all overflow-hidden"
 		>
