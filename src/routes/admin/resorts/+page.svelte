@@ -28,7 +28,13 @@
 					{#each data.resorts as resort}
 						<Table.Row>
 							<Table.Cell class="font-medium">{resort.name}</Table.Cell>
-							<Table.Cell>{resort.region.region}</Table.Cell>
+							<Table.Cell>
+								{#if resort.region}
+									{resort.region.region}
+								{:else}
+									<span class="text-muted-foreground">-</span>
+								{/if}
+							</Table.Cell>
 							<Table.Cell>
 								<Badge variant="outline">{resort.country.country}</Badge>
 							</Table.Cell>

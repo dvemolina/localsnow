@@ -78,7 +78,6 @@ export const resorts = pgTable('resorts', {
 		.notNull()
 		.references(() => countries.id, { onDelete: 'cascade' }),
 	regionId: integer('region_id')
-		.notNull()
 		.references(() => regions.id, { onDelete: 'cascade' }),
 	...timestamps
 });
