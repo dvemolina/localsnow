@@ -9,7 +9,7 @@
 	}
 
 	let currentPath: string | undefined = $state();
-	let breadcrumbItems: { href: string; label: string }[] = $state();
+	let breadcrumbItems: { href: string; label: string }[] = $state([]);
 
 	// Generate the breadcrumb trail based on current path
 	$effect(() => {
