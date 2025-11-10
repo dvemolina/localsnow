@@ -127,6 +127,11 @@ export class InstructorService {
         sportId?: number;
         searchQuery?: string;
         language?: string;
+        priceMin?: number;
+        priceMax?: number;
+        instructorType?: 'instructor-independent' | 'instructor-school';
+        verifiedOnly?: boolean;
+        sortBy?: string;
     }): Promise<unknown[]> {
         try {
             return await this.instructorRepository.searchInstructors(filters);

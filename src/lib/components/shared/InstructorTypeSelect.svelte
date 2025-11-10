@@ -6,10 +6,18 @@
 
 	let form = props.form;
 	let name = props.name;
-	const instructorTypes = [
-		{ label: 'School', value: 'instructor-school' },
-		{ label: 'Independent', value: 'instructor-independent' }
-	];
+	let isFilter: boolean = props.isFilter ?? false; // If true, shows "All Types" option
+
+	const instructorTypes = isFilter
+		? [
+			{ label: 'All Types', value: '' },
+			{ label: 'Independent', value: 'instructor-independent' },
+			{ label: 'School Instructor', value: 'instructor-school' }
+		]
+		: [
+			{ label: 'School', value: 'instructor-school' },
+			{ label: 'Independent', value: 'instructor-independent' }
+		];
 
 	const formStore = form.form; //the reactive store for form values
 </script>
@@ -20,10 +28,10 @@
 			<Form.Label>Instructor Type</Form.Label>
 			<Select.Root type="single" bind:value={$formStore[name]} name={props.name}>
 				<Select.Trigger {...props}>
-					{#if $formStore[name]}
+					{#if $formStore[name] !== undefined && $formStore[name] !== null}
 						{instructorTypes.find((s) => s.value === $formStore[name])?.label}
 					{:else}
-						Select your type
+						{isFilter ? 'All Types' : 'Select your type'}
 					{/if}
 				</Select.Trigger>
 				<Select.Content>
