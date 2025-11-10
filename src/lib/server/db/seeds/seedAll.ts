@@ -1,15 +1,15 @@
 // Complete seed script for countries, regions, resorts, and sports
-import { countries } from "./data/countries.js";
-import { regions } from "./data/regions.js";
-import { resorts } from "./data/resorts.js";
-import { sports } from "./data/sports.js";
+import { countries } from "./data/countries";
+import { regions } from "./data/regions";
+import { resorts } from "./data/resorts";
+import { sports } from "./data/sports";
 import {
   countries as countriesTable,
   regions as regionsTable,
   resorts as resortsTable,
   sports as sportsTable
-} from "../schema.js";
-import { db } from "../index.js";
+} from "../schema";
+import { db } from "../index";
 import { eq } from "drizzle-orm";
 
 async function seedCountries() {
