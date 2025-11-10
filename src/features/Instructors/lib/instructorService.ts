@@ -126,6 +126,7 @@ export class InstructorService {
         resortId?: number;
         sportId?: number;
         searchQuery?: string;
+        language?: string;
     }): Promise<unknown[]> {
         try {
             return await this.instructorRepository.searchInstructors(filters);

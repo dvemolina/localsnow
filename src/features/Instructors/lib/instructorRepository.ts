@@ -180,6 +180,7 @@ export class InstructorRepository {
         resortId?: number;
         sportId?: number;
         searchQuery?: string;
+        language?: string;
     }) {
         try {
             let query = db
@@ -271,12 +272,11 @@ export class InstructorRepository {
                 );
             }
 
-            // Filter by search query (name)
-            if (filters.searchQuery) {
-                const query = filters.searchQuery.toLowerCase();
+            // Filter by language if specified
+            if (filters.language) {
                 instructorsList = instructorsList.filter(instructor =>
-                    instructor.name.toLowerCase().includes(query) ||
-                    instructor.lastName.toLowerCase().includes(query)
+                    instructor.spokenLanguages &&
+                    instructor.spokenLanguages.includes(filters.language)
                 );
             }
 
