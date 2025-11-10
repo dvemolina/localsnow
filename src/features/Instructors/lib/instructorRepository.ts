@@ -181,6 +181,11 @@ export class InstructorRepository {
         sportId?: number;
         searchQuery?: string;
         language?: string;
+        priceMin?: number;
+        priceMax?: number;
+        instructorType?: 'instructor-independent' | 'instructor-school';
+        verifiedOnly?: boolean;
+        sortBy?: string;
     }) {
         try {
             let query = db
@@ -196,6 +201,7 @@ export class InstructorRepository {
                     role: users.role,
                     qualificationUrl: users.qualificationUrl,
                     spokenLanguages: users.spokenLanguages,
+                    isVerified: users.isVerified,
                     // Join data
                     sports: instructorSports.sportId,
                     resorts: instructorResorts.resortId
@@ -206,24 +212,31 @@ export class InstructorRepository {
                 .$dynamic();
 
             // Build WHERE conditions
-            const conditions = [
-                or(
-                    eq(users.role, 'instructor-independent'),
-                    eq(users.role, 'instructor-school')
-                )
-            ];
+            const conditions: any[] = [];
+
+            // Filter by instructor type if specified, otherwise get both types
+            if (filters.instructorType) {
+                conditions.push(eq(users.role, filters.instructorType));
+            } else {
+                conditions.push(
+                    or(
+                        eq(users.role, 'instructor-independent'),
+                        eq(users.role, 'instructor-school')
+                    )
+                );
+            }
+
+            // Filter by verified status if specified
+            if (filters.verifiedOnly) {
+                conditions.push(eq(users.isVerified, true));
+            }
 
             // Filter by resort
             if (filters.resortId) {
-                query = query.where(
-                    and(
-                        ...conditions,
-                        eq(instructorResorts.resortId, filters.resortId)
-                    )
-                );
-            } else {
-                query = query.where(and(...conditions));
+                conditions.push(eq(instructorResorts.resortId, filters.resortId));
             }
+
+            query = query.where(and(...conditions));
 
             // Execute query
             const results = await query;
@@ -245,6 +258,7 @@ export class InstructorRepository {
                         role: row.role,
                         qualificationUrl: row.qualificationUrl,
                         spokenLanguages: row.spokenLanguages,
+                        isVerified: row.isVerified,
                         sports: [],
                         resorts: []
                     });
@@ -278,6 +292,13 @@ export class InstructorRepository {
                     instructor.spokenLanguages &&
                     instructor.spokenLanguages.includes(filters.language)
                 );
+            }
+
+            // Basic sorting (name-based only, price and rating sorting happens in page.server after fetching lessons)
+            if (filters.sortBy === 'name_asc') {
+                instructorsList.sort((a, b) => a.name.localeCompare(b.name));
+            } else if (filters.sortBy === 'name_desc') {
+                instructorsList.sort((a, b) => b.name.localeCompare(a.name));
             }
 
             return instructorsList;
