@@ -2,7 +2,7 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-	import { MapPin, Mountain, ExternalLink, ArrowRight } from 'lucide-svelte';
+	import { MapPin, Mountain, ExternalLink, ArrowRight } from '@lucide/svelte';
 	import { page } from '$app/stores';
 	import Breadcrumb from '$lib/components/shared/Breadcrumb.svelte';
 

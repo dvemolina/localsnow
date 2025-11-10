@@ -2,7 +2,7 @@
 	import { Card } from '$lib/components/ui/card';
 	import { Input } from '$lib/components/ui/input';
 	import { Badge } from '$lib/components/ui/badge';
-	import { Search, Mountain } from 'lucide-svelte';
+	import { Search, Mountain } from '@lucide/svelte';
 
 	let { data } = $props();
 	const { resortsByCountry, totalResorts, seo } = data;
