@@ -216,6 +216,7 @@
 					{#each relatedResorts as related}
 						<a
 							href="/{related.countrySlug}/{related.regionSlug || location.country.countrySlug}/{related.slug}/{sport.sportSlug}-instructors"
+							data-sveltekit-reload
 							class="group block rounded-lg border bg-white p-4 transition-shadow hover:shadow-md"
 						>
 							<h3 class="font-semibold group-hover:text-blue-600">
