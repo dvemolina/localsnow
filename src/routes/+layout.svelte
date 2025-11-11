@@ -6,6 +6,7 @@
 	import '../app.css';
 	import ScreenSize from '$src/lib/components/shared/ScreenSize.svelte';
 	import Footer from '$src/lib/components/shared/Footer.svelte';
+	import CookieConsent from '$src/lib/components/shared/CookieConsent.svelte';
 	import { Toaster } from 'svelte-sonner';
 
 	let { children } = $props();
@@ -50,6 +51,7 @@
 	</div>
 	{/if}
 	<ScreenSize />
+	<CookieConsent />
 
 
 
