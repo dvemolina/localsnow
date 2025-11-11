@@ -12,11 +12,11 @@
 </svelte:head>
 
 <article class="prose prose-sm mx-auto max-w-3xl dark:prose-invert">
-	<h1>Privacy Policy</h1>
+	<h1 class="title-2">Privacy Policy</h1>
 	<p class="text-sm text-muted-foreground">Last updated: {lastUpdated}</p>
 
 	<section>
-		<h2>1. Introduction</h2>
+		<h2 class="title-3">1. Introduction</h2>
 		<p>
 			Local Snow ("we," "our," or "us") operates a marketplace platform connecting ski and
 			snowboard instructors with clients worldwide. We are committed to protecting your personal
@@ -31,7 +31,7 @@
 	</section>
 
 	<section>
-		<h2>2. Data Controller</h2>
+		<h2 class="title-3">2. Data Controller</h2>
 		<p>
 			Local Snow is the data controller responsible for your personal data. For privacy-related
 			inquiries, please contact us at:
@@ -42,9 +42,9 @@
 	</section>
 
 	<section>
-		<h2>3. Information We Collect</h2>
+		<h2 class="title-3">3. Information We Collect</h2>
 
-		<h3>3.1 Information You Provide</h3>
+		<h3 class="title-4">3.1 Information You Provide</h3>
 		<ul>
 			<li>
 				<strong>Account Information:</strong> Name, email address, username, password (hashed), profile
@@ -71,7 +71,7 @@
 			</li>
 		</ul>
 
-		<h3>3.2 Information Collected Automatically</h3>
+		<h3 class="title-4">3.2 Information Collected Automatically</h3>
 		<ul>
 			<li>
 				<strong>Usage Data:</strong> IP address, browser type, device information, pages visited, time
@@ -87,7 +87,7 @@
 			</li>
 		</ul>
 
-		<h3>3.3 Information from Third Parties</h3>
+		<h3 class="title-4">3.3 Information from Third Parties</h3>
 		<ul>
 			<li>
 				<strong>Google OAuth:</strong> If you sign in with Google, we receive your name, email, profile
@@ -104,9 +104,9 @@
 	</section>
 
 	<section>
-		<h2>4. How We Use Your Information</h2>
+		<h2 class="title-3">4. How We Use Your Information</h2>
 
-		<h3>4.1 Legal Bases for Processing (GDPR)</h3>
+		<h3 class="title-4">4.1 Legal Bases for Processing (GDPR)</h3>
 		<p>We process your personal data based on the following legal grounds:</p>
 		<ul>
 			<li>
@@ -127,7 +127,7 @@
 			</li>
 		</ul>
 
-		<h3>4.2 Specific Purposes</h3>
+		<h3 class="title-4">4.2 Specific Purposes</h3>
 		<ul>
 			<li>
 				<strong>Account Management:</strong> Create and maintain your account, authenticate users, manage
@@ -165,9 +165,9 @@
 	</section>
 
 	<section>
-		<h2>5. How We Share Your Information</h2>
+		<h2 class="title-3">5. How We Share Your Information</h2>
 
-		<h3>5.1 With Other Users</h3>
+		<h3 class="title-4">5.1 With Other Users</h3>
 		<ul>
 			<li>
 				<strong>Instructor Profiles:</strong> Publicly visible information (name, photo, biography,
@@ -179,7 +179,7 @@
 			</li>
 		</ul>
 
-		<h3>5.2 Service Providers</h3>
+		<h3 class="title-4">5.2 Service Providers</h3>
 		<ul>
 			<li>
 				<strong>Stripe:</strong> Payment processing and payout management
@@ -200,7 +200,7 @@
 			</li>
 		</ul>
 
-		<h3>5.3 Legal Requirements</h3>
+		<h3 class="title-4">5.3 Legal Requirements</h3>
 		<p>We may disclose your information when required to:</p>
 		<ul>
 			<li>Comply with legal obligations, court orders, or regulatory requirements</li>
@@ -209,7 +209,7 @@
 			<li>Protect the safety of users or the public</li>
 		</ul>
 
-		<h3>5.4 Business Transfers</h3>
+		<h3 class="title-4">5.4 Business Transfers</h3>
 		<p>
 			In the event of a merger, acquisition, or sale of assets, your personal data may be
 			transferred to the new entity. We will notify you of any such change and your options.
@@ -217,7 +217,7 @@
 	</section>
 
 	<section>
-		<h2>6. International Data Transfers</h2>
+		<h2 class="title-3">6. International Data Transfers</h2>
 		<p>
 			Local Snow operates globally. Your personal data may be transferred to and processed in
 			countries outside your residence, including countries that may not have the same data
@@ -235,7 +235,7 @@
 	</section>
 
 	<section>
-		<h2>7. Data Retention</h2>
+		<h2 class="title-3">7. Data Retention</h2>
 		<p>We retain your personal data for as long as necessary to fulfill the purposes outlined in this policy:</p>
 		<ul>
 			<li>
@@ -258,9 +258,9 @@
 	</section>
 
 	<section>
-		<h2>8. Your Rights and Choices</h2>
+		<h2 class="title-3">8. Your Rights and Choices</h2>
 
-		<h3>8.1 GDPR Rights (for EEA Residents)</h3>
+		<h3 class="title-4">8.1 GDPR Rights (for EEA Residents)</h3>
 		<ul>
 			<li>
 				<strong>Right to Access:</strong> Request a copy of your personal data we hold
@@ -290,7 +290,7 @@
 			</li>
 		</ul>
 
-		<h3>8.2 CCPA Rights (for California Residents)</h3>
+		<h3 class="title-4">8.2 CCPA Rights (for California Residents)</h3>
 		<ul>
 			<li>
 				<strong>Right to Know:</strong> Request disclosure of personal information collected, used,
@@ -308,7 +308,7 @@
 			</li>
 		</ul>
 
-		<h3>8.3 How to Exercise Your Rights</h3>
+		<h3 class="title-4">8.3 How to Exercise Your Rights</h3>
 		<p>To exercise any of these rights, please contact us at:</p>
 		<p>
 			<strong>Email:</strong> privacy@localsnow.org<br />
@@ -320,7 +320,7 @@
 	</section>
 
 	<section>
-		<h2>9. Data Security</h2>
+		<h2 class="title-3">9. Data Security</h2>
 		<p>We implement industry-standard security measures to protect your personal data:</p>
 		<ul>
 			<li>
@@ -347,7 +347,7 @@
 	</section>
 
 	<section>
-		<h2>10. Children's Privacy</h2>
+		<h2 class="title-3">10. Children's Privacy</h2>
 		<p>
 			Our Platform is not intended for children under 16 years of age. We do not knowingly collect
 			personal data from children under 16. If you believe a child has provided us with personal
@@ -356,7 +356,7 @@
 	</section>
 
 	<section>
-		<h2>11. Cookies and Tracking</h2>
+		<h2 class="title-3">11. Cookies and Tracking</h2>
 		<p>
 			We use cookies and similar technologies to provide and improve our services. For detailed
 			information about our cookie practices, please see our <a href="/legal/cookies"
@@ -367,7 +367,7 @@
 	</section>
 
 	<section>
-		<h2>12. Third-Party Links</h2>
+		<h2 class="title-3">12. Third-Party Links</h2>
 		<p>
 			Our Platform may contain links to third-party websites, including instructor personal
 			websites and social media profiles. We are not responsible for the privacy practices of
@@ -376,7 +376,7 @@
 	</section>
 
 	<section>
-		<h2>13. Changes to This Privacy Policy</h2>
+		<h2 class="title-3">13. Changes to This Privacy Policy</h2>
 		<p>
 			We may update this Privacy Policy periodically to reflect changes in our practices or legal
 			requirements. We will notify you of material changes by:
@@ -392,7 +392,7 @@
 	</section>
 
 	<section>
-		<h2>14. Contact Us</h2>
+		<h2 class="title-3">14. Contact Us</h2>
 		<p>For questions, concerns, or requests regarding this Privacy Policy or your personal data, please contact us:</p>
 		<p>
 			<strong>Email:</strong> privacy@localsnow.org<br />
@@ -405,7 +405,7 @@
 	</section>
 
 	<section class="mt-8 rounded-lg border border-border bg-muted p-4">
-		<h3 class="mb-2 text-sm font-semibold">Summary of Key Points</h3>
+		<h3 class="title-4" class="mb-2 text-sm font-semibold">Summary of Key Points</h3>
 		<ul class="text-sm">
 			<li>We collect information you provide, usage data, and data from third parties</li>
 			<li>We use your data to operate our marketplace, process bookings, and improve services</li>
