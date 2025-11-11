@@ -11,7 +11,7 @@
 
 <footer class="flex w-full items-center justify-center">
 	<div
-		class="grey-section mt-4 flex w-full max-w-4xl flex-col items-center justify-between gap-8 rounded-md border border-border/50 bg-card p-6 shadow-xs sm:my-4 sm:p-12"
+		class="grey-section mt-4 flex w-full max-w-4xl flex-col sm:flex-row items-center justify-between gap-8 rounded-md border border-border/50 bg-card p-6 shadow-xs sm:my-4 sm:p-12"
 	>
 		<div class="flex max-w-64 flex-col items-center justify-center gap-2 text-center">
 			<img src="/local-snow.png" alt="Local Snow Ski Instructor Logo" class="w-36" />
