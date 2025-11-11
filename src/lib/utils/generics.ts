@@ -3,8 +3,9 @@ import 'dotenv';
 export const items = [
 	{ label: 'Instructors', href: '/instructors' },
 	{ label: 'Resorts', href: '/resorts' },
-	{ label: 'Access', href: '/signup' },
-	{ label: 'About', href: '/about' }
+	{ label: 'How It Works', href: '/how-it-works' },
+	{ label: 'About', href: '/about' },
+	{ label: 'Sign Up', href: '/signup' }
 ];
 
 export function getProjectUrl() {

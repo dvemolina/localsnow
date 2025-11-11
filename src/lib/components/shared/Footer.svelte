@@ -15,7 +15,7 @@
 	>
 		<div class="flex max-w-64 flex-col items-center justify-center gap-2 text-center">
 			<img src="/local-snow.png" alt="Local Snow Ski Instructor Logo" class="w-36" />
-			<h3 class="title4">The free worldwide directory of snow sports professionals</h3>
+			<h3 class="title4">Free directory of ski instructors in Spain</h3>
 		</div>
 
 		<div class="flex flex-col gap-6 sm:flex-row sm:gap-12">

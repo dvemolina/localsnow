@@ -1,7 +1,9 @@
 
 import { db } from '$src/lib/server/db';
 import { countries, regions, resorts } from '$src/lib/server/db/schema';
-import { eq, ilike } from 'drizzle-orm';
+import { and, eq, ilike } from 'drizzle-orm';
+
+const SPAIN_COUNTRY_ID = 55; // Spain's countryId in the database
 
 export class ResortRepository {
 	async searchByName(query: string, limit = 10) {
@@ -18,7 +20,12 @@ export class ResortRepository {
 			.from(resorts)
 			.innerJoin(regions, eq(resorts.regionId, regions.id))
 			.innerJoin(countries, eq(resorts.countryId, countries.id))
-			.where(ilike(resorts.name, `%${query}%`))
+			.where(
+				and(
+					ilike(resorts.name, `%${query}%`),
+					eq(resorts.countryId, SPAIN_COUNTRY_ID)
+				)
+			)
 			.limit(limit);
 	}
 }

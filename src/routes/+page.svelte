@@ -2,52 +2,55 @@
 	import SearchResort from '$src/features/Resorts/components/SearchResort.svelte';
 	import { heroResortSearchSchema } from '$src/features/Resorts/lib/resortSchemas';
 	import SportSelect from '$src/features/Resorts/components/SportSelect.svelte';
-	import { fly } from 'svelte/transition';
-	import { superForm, superValidate } from 'sveltekit-superforms';
-	import { zod, zodClient } from 'sveltekit-superforms/adapters';
-
-	// Svelte 5 reactive state
-	let userLocation = $state<string | null>('Wonderland');
-	let isGeoLoading = $state(false);
-	let searchQuery = $state('');
-	let lessonType = $state('ski');
+	import { superForm } from 'sveltekit-superforms';
+	import { zodClient } from 'sveltekit-superforms/adapters';
 
 	let { data } = $props();
 
-	// Primary keyword targets (expanded for search intent)
-	const globalHeadline = 'Find Ski & Snowboard Lessons With Certified Instructors';
-	const geoHeadline = $derived(`${userLocation || 'Local'} Ski & Snowboard Instructors`);
-
-	// Top resorts data (helps with internal linking)
+	// Top Spanish resorts for homepage
 	const topResorts = [
-		{ name: 'Chamonix', slug: 'chamonix', country: 'France', instructorCount: 87 },
-		{ name: 'Whistler', slug: 'whistler', country: 'Canada', instructorCount: 112 },
-		{ name: 'Zermatt', slug: 'zermatt', country: 'Switzerland', instructorCount: 65 },
-		{ name: 'Catedral', slug: 'catedral', country: 'Argentina', instructorCount: 93 }
-		// Add more popular resorts
+		{
+			name: 'Baqueira Beret',
+			slug: 'baqueira-beret',
+			region: 'Pyrenees, Catalonia',
+			description: "Spain's most prestigious resort"
+		},
+		{
+			name: 'Formigal-Panticosa',
+			slug: 'formigal-panticosa',
+			region: 'Pyrenees, Aragón',
+			description: 'Largest ski area in Spain'
+		},
+		{
+			name: 'Cerler',
+			slug: 'cerler',
+			region: 'Pyrenees, Huesca',
+			description: 'Highest resort in the Pyrenees'
+		},
+		{
+			name: 'Sierra Nevada',
+			slug: 'sierra-nevada',
+			region: 'Granada, Andalusia',
+			description: 'Ski with views of the Mediterranean'
+		}
 	];
 
-	// Enhanced schema
+	// Schema markup for SEO
 	const websiteSchema = {
 		'@context': 'https://schema.org',
-		'@type': ['WebSite', 'SportsActivityLocation'],
-		name: 'SkiLessonsHub',
+		'@type': 'WebSite',
+		name: 'Local Snow',
 		description:
-			'Book ski lessons directly with certified ski and snowboard schools/instructors at top resorts worldwide',
-		url: 'https://skilessonshub.com',
-		image: '/ski-lessons-og.jpg',
-		hasOfferCatalog: {
-			'@type': 'OfferCatalog',
-			name: 'Ski Lessons',
-			itemListElement: topResorts.map((resort) => ({
-				'@type': 'Offer',
-				name: `${resort.name} Ski Lessons`,
-				category: 'SkiSchool'
-			}))
+			'Find ski and snowboard instructors at Spanish resorts. Direct contact, no booking fees.',
+		url: 'https://localsnow.org',
+		potentialAction: {
+			'@type': 'SearchAction',
+			target: 'https://localsnow.org/instructors?q={search_term_string}',
+			'query-input': 'required name=search_term_string'
 		}
 	};
 
-	//Hero Resort Search Form
+	// Hero Resort Search Form
 	const form = superForm(data.form, {
 		validators: zodClient(heroResortSearchSchema)
 	});
@@ -56,30 +59,29 @@
 </script>
 
 <svelte:head>
-	<title>Ski Lessons Hub | Certified Ski & Snowboard Instructors at Top Resorts</title>
+	<title>Local Snow | Find Ski Instructors at Spanish Resorts</title>
 	<meta
 		name="description"
-		content="Find & Book Ski Lessons | Connect directly with Certified Schools & Instructors at 200+ Top Resorts Worldwide. Get best prices with no booking fees, no middlemen."
+		content="Connect directly with ski and snowboard instructors across Spain. No booking fees, no middlemen. Find instructors at 25+ Spanish resorts including Baqueira, Formigal, Cerler, and Sierra Nevada."
 	/>
 	<script type="application/ld+json">
       {JSON.stringify(websiteSchema)}
 	</script>
-	<link rel="canonical" href="https://localsnow.com/" />
+	<link rel="canonical" href="https://localsnow.org/" />
 </svelte:head>
 
 <section class="hero relative h-full w-full" itemscope itemtype="http://schema.org/WPHeader">
-	<!-- LCP-optimized hero image -->
+	<!-- Hero image -->
 	<div class="overlay absolute inset-0 z-0 max-h-[400px] rounded-lg shadow-md">
 		<picture>
 			<source srcset="/ski-instructor-powder.webp" type="image/webp" />
 			<img
 				src="/ski-instructor-powder.jpeg"
-				alt="Professional ski instructor teaching perfect turn technique in powder snow"
+				alt="Ski instructor teaching in powder snow"
 				width="1195"
 				height="721"
 				loading="eager"
 				fetchpriority="high"
-				importance="high"
 				decoding="async"
 				class="h-full w-full rounded-md object-cover object-right"
 				itemprop="primaryImageOfPage"
@@ -87,7 +89,7 @@
 		</picture>
 	</div>
 
-	<!-- Content overlay with search functionality -->
+	<!-- Content overlay with search -->
 	<div
 		class="relative z-10 container flex h-full flex-col items-center justify-center rounded-md px-4 py-6 text-white"
 	>
@@ -96,16 +98,15 @@
 				itemprop="headline"
 				class="text-shadow mb-4 text-3xl font-bold sm:text-5xl md:text-6xl lg:text-6xl"
 			>
-				{globalHeadline}
+				Find Ski Instructors in Spain
 			</h1>
 			<div class="flex h-full flex-col justify-center">
-				<p class="text-shadow mb-4 max-w-[550px] text-lg text-white sm:text-xl md:text-2xl">
-					<span class="bg-primary/80 rounded-full px-2.5 py-0.5">7,000+ Visitors</span> trust our
-					<span class="font-semibold">FREE Worldwide</span> network of local instructors
-					<span class="bg-secondary/50 rounded-full px-2.5 py-0.5"> around 200+ Resorts</span>
+				<p class="text-shadow mb-6 max-w-[600px] text-lg text-white sm:text-xl md:text-2xl">
+					Direct contact with local instructors at Spanish resorts. You pay what they charge -
+					nothing more.
 				</p>
 
-				<!-- Search form - critical for conversion and user intent matching -->
+				<!-- Search form -->
 				<form method="POST" use:enhance class="mb-8 rounded-lg bg-white/90 p-4 shadow-lg">
 					<div class="flex flex-col gap-4 md:flex-row">
 						<div class="flex-1">
@@ -124,158 +125,99 @@
 						</div>
 					</div>
 				</form>
-
-				<!-- Geolocation feature -->
-				{#if userLocation}
-					<div class="mt-1 rounded-lg bg-white/80 p-4 text-gray-800 shadow-lg" in:fly={{ y: 20 }}>
-						<h2 class="flex items-center gap-2 text-xl font-bold">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								class="h-5 w-5"
-								viewBox="0 0 20 20"
-								fill="currentColor"
-							>
-								<path
-									fill-rule="evenodd"
-									d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-									clip-rule="evenodd"
-								/>
-							</svg>
-							{geoHeadline}
-						</h2>
-						<div class="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
-							<a
-								href={`/${userLocation}/ski-schools`}
-								class="text-primary flex items-center gap-2 hover:underline"
-							>
-								<span class="font-semibold">🏫 Ski Schools</span>
-								<span class="bg-primary/10 rounded-full px-2 py-1 text-sm"
-									>{Math.floor(Math.random() * 10) + 5}</span
-								>
-							</a>
-							<a
-								href={`/${userLocation}/private-instructors`}
-								class="text-primary flex items-center gap-2 hover:underline"
-							>
-								<span class="font-semibold">👨‍🏫 Private Instructors</span>
-								<span class="bg-primary/10 rounded-full px-2 py-1 text-sm"
-									>{Math.floor(Math.random() * 20) + 10}</span
-								>
-							</a>
-						</div>
-					</div>
-				{:else if isGeoLoading}
-					<div class="mt-1 animate-pulse rounded-lg bg-white/80 p-4 text-gray-800 shadow-lg">
-						<p>Finding instructors near your location...</p>
-					</div>
-				{/if}
 			</div>
 		</div>
 	</div>
 </section>
 
-<!-- Instructor Types Section - Critical for keyword targeting -->
-<section class="grey-section">
-	<h2 class="mb-8 text-center text-3xl font-bold">Find Your Perfect Instructor</h2>
-
-	<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-		<a
-			href="/private-ski-lessons"
-			class="rounded-lg bg-white p-6 shadow-md transition-shadow hover:shadow-lg"
-		>
-			<h3 class="mb-2 text-xl font-semibold">Private Ski Lessons</h3>
-			<p class="mb-4 text-gray-600">Personalized 1-on-1 instruction tailored to your skill level</p>
-			<span class="text-primary font-medium">View Options →</span>
-		</a>
-
-		<a
-			href="/group-ski-lessons"
-			class="rounded-lg bg-white p-6 shadow-md transition-shadow hover:shadow-lg"
-		>
-			<h3 class="mb-2 text-xl font-semibold">Group Ski Lessons</h3>
-			<p class="mb-4 text-gray-600">Social learning with certified pros at budget-friendly rates</p>
-			<span class="text-primary font-medium">View Options →</span>
-		</a>
-
-		<a
-			href="/snowboard-instructors"
-			class="rounded-lg bg-white p-6 shadow-md transition-shadow hover:shadow-lg"
-		>
-			<h3 class="mb-2 text-xl font-semibold">Snowboard Instructors</h3>
-			<p class="mb-4 text-gray-600">
-				From freestyle to backcountry - specialized snowboard coaching
-			</p>
-			<span class="text-primary font-medium">View Options →</span>
-		</a>
-
-		<a
-			href="/ski-schools"
-			class="rounded-lg bg-white p-6 shadow-md transition-shadow hover:shadow-lg"
-		>
-			<h3 class="mb-2 text-xl font-semibold">Ski Schools</h3>
-			<p class="mb-4 text-gray-600">
-				Official resort programs with full certification and insurance
-			</p>
-			<span class="text-primary font-medium">View Options →</span>
-		</a>
-	</div>
-</section>
-
-<!-- Top Resorts Section - Critical for local SEO -->
+<!-- Top Resorts Section -->
 <section class="section">
-	<h2 class="mb-2 text-center text-3xl font-bold">Popular Ski Resorts</h2>
-	<p class="mb-8 text-center text-gray-600">
-		Find certified instructors at these top ski destinations
-	</p>
+	<h2 class="mb-2 text-center text-3xl font-bold">Popular Spanish Ski Resorts</h2>
+	<p class="mb-8 text-center text-gray-600">Browse instructors at Spain's top ski destinations</p>
 
 	<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
 		{#each topResorts as resort}
 			<a
-				href={`/${resort.slug}/instructors`}
-				class="group relative overflow-hidden rounded-lg shadow-md transition-shadow hover:shadow-lg"
+				href="/instructors?resort={resort.slug}"
+				class="group rounded-lg border border-border bg-card p-6 shadow-sm transition-all hover:shadow-md"
 			>
-				<img
-					src={`/${resort.slug}.webp`}
-					alt={`${resort.name} ski resort instructors`}
-					loading="lazy"
-					width="300"
-					height="200"
-					class="h-48 w-full object-cover transition-transform group-hover:scale-105"
-				/>
-				<div
-					class="absolute inset-0 flex flex-col justify-end bg-linear-to-t from-black/70 to-transparent p-4"
-				>
-					<h3 class="text-xl font-bold text-white">{resort.name}</h3>
-					<p class="text-sm text-white/90">
-						{resort.country} • {resort.instructorCount}+ instructors
-					</p>
-				</div>
+				<h3 class="mb-2 text-xl font-semibold">{resort.name}</h3>
+				<p class="mb-2 text-sm text-muted-foreground">{resort.region}</p>
+				<p class="text-sm text-gray-600">{resort.description}</p>
+				<span class="text-primary mt-4 inline-block font-medium">View Instructors →</span>
 			</a>
 		{/each}
 	</div>
 
 	<div class="mt-8 text-center">
-		<a
-			href="/all-ski-resorts"
-			class="bg-primary inline-block rounded-md px-6 py-3 font-medium text-white"
-		>
-			View All 200+ Ski Resorts
+		<a href="/resorts" class="bg-primary inline-block rounded-md px-6 py-3 font-medium text-white">
+			View All Spanish Resorts
+		</a>
+	</div>
+</section>
+
+<!-- How It Works Section -->
+<section class="grey-section">
+	<h2 class="mb-8 text-center text-3xl font-bold">How It Works</h2>
+
+	<div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+		<div class="text-center">
+			<div
+				class="bg-primary/10 text-primary mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full text-2xl font-bold"
+			>
+				1
+			</div>
+			<h3 class="mb-2 text-xl font-semibold">Search</h3>
+			<p class="text-gray-600">
+				Pick your resort and sport. Browse instructor profiles with real qualifications and pricing.
+			</p>
+		</div>
+
+		<div class="text-center">
+			<div
+				class="bg-primary/10 text-primary mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full text-2xl font-bold"
+			>
+				2
+			</div>
+			<h3 class="mb-2 text-xl font-semibold">Request</h3>
+			<p class="text-gray-600">
+				Send a booking request with your dates and details. Get a direct response from the
+				instructor.
+			</p>
+		</div>
+
+		<div class="text-center">
+			<div
+				class="bg-primary/10 text-primary mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full text-2xl font-bold"
+			>
+				3
+			</div>
+			<h3 class="mb-2 text-xl font-semibold">Connect</h3>
+			<p class="text-gray-600">
+				Arrange your lesson directly with the instructor. Pay them directly - we don't take a cut.
+			</p>
+		</div>
+	</div>
+
+	<div class="mt-8 text-center">
+		<a href="/how-it-works" class="text-primary font-medium hover:underline">
+			See detailed guide for clients and instructors →
 		</a>
 	</div>
 </section>
 
 <!-- Trust Signals Section -->
-<section class="grey-section w-full">
+<section class="section">
 	<div class="mb-10 text-center">
-		<h2 class="mb-4 text-center text-3xl font-bold">Wait, you said free..?</h2>
+		<h2 class="mb-4 text-center text-3xl font-bold">No Booking Fees. Really.</h2>
 		<p class="text-center text-gray-600">
-			Yes, unlike booking platforms, we connect you directly with instructors - no commissions, no
-			fees
+			Unlike CheckYeti and Skibro, we don't take commissions from your lessons. Instructors set
+			their own prices.
 		</p>
 	</div>
 
 	<div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-		<div class="rounded-lg bg-white p-6 text-center shadow-md">
+		<div class="rounded-lg border border-border bg-card p-6 text-center shadow-sm">
 			<div
 				class="bg-primary/10 text-primary mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full"
 			>
@@ -290,17 +232,17 @@
 						stroke-linecap="round"
 						stroke-linejoin="round"
 						stroke-width="2"
-						d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+						d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
 					/>
 				</svg>
 			</div>
-			<h3 class="mb-2 text-xl font-semibold">No Booking Fees</h3>
+			<h3 class="mb-2 text-xl font-semibold">Free for Clients</h3>
 			<p class="text-gray-600">
-				Unlike Skibro and CheckYeti, we never take commissions from instructors
+				No booking fees, no service charges. Pay the instructor directly for your lessons.
 			</p>
 		</div>
 
-		<div class="rounded-lg bg-white p-6 text-center shadow-md">
+		<div class="rounded-lg border border-border bg-card p-6 text-center shadow-sm">
 			<div
 				class="bg-primary/10 text-primary mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full"
 			>
@@ -319,11 +261,13 @@
 					/>
 				</svg>
 			</div>
-			<h3 class="mb-2 text-xl font-semibold">Verified Certifications</h3>
-			<p class="text-gray-600">Every instructor's credentials are manually verified by our team</p>
+			<h3 class="mb-2 text-xl font-semibold">Verified Instructors</h3>
+			<p class="text-gray-600">
+				Look for the verified badge. We check qualifications so you don't have to.
+			</p>
 		</div>
 
-		<div class="rounded-lg bg-white p-6 text-center shadow-md">
+		<div class="rounded-lg border border-border bg-card p-6 text-center shadow-sm">
 			<div
 				class="bg-primary/10 text-primary mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full"
 			>
@@ -342,9 +286,9 @@
 					/>
 				</svg>
 			</div>
-			<h3 class="mb-2 text-xl font-semibold">Straight to the Source</h3>
+			<h3 class="mb-2 text-xl font-semibold">Built by Instructors</h3>
 			<p class="text-gray-600">
-				Connect directly with instructors - no middlemen or booking platforms
+				Created by a working ski instructor who was tired of expensive booking platforms.
 			</p>
 		</div>
 	</div>
