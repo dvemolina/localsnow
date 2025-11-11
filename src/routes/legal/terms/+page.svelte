@@ -440,7 +440,7 @@
 	</section>
 
 	<section class="mt-8 rounded-lg border border-border bg-muted p-4">
-		<h3 class="title-4" class="mb-2 text-sm font-semibold">Key Points Summary</h3>
+		<h3 class="mb-2 text-sm font-semibold">Key Points Summary</h3>
 		<ul class="text-sm">
 			<li>Local Snow is a marketplace platform connecting instructors with clients</li>
 			<li>We are not a party to lessons; instructors are independent providers</li>

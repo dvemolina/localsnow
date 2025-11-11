@@ -405,7 +405,7 @@
 	</section>
 
 	<section class="mt-8 rounded-lg border border-border bg-muted p-4">
-		<h3 class="title-4" class="mb-2 text-sm font-semibold">Summary of Key Points</h3>
+		<h3 class="mb-2 text-sm font-semibold">Summary of Key Points</h3>
 		<ul class="text-sm">
 			<li>We collect information you provide, usage data, and data from third parties</li>
 			<li>We use your data to operate our marketplace, process bookings, and improve services</li>
