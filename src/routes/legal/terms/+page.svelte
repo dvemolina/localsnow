@@ -11,7 +11,7 @@
 </svelte:head>
 
 <article class="prose prose-sm mx-auto max-w-3xl dark:prose-invert">
-	<h1 class="title-2">Terms of Service</h1>
+	<h1 class="title2">Terms of Service</h1>
 	<p class="text-sm text-muted-foreground">Last updated: {lastUpdated}</p>
 
 	<section>

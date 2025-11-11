@@ -11,11 +11,11 @@
 </svelte:head>
 
 <article class="prose prose-sm mx-auto max-w-3xl dark:prose-invert">
-	<h1>Cookie Policy</h1>
+	<h1 class="title2">Cookie Policy</h1>
 	<p class="text-sm text-muted-foreground">Last updated: {lastUpdated}</p>
 
 	<section>
-		<h2>1. Introduction</h2>
+		<h2 class="title3">1. Introduction</h2>
 		<p>
 			This Cookie Policy explains how Local Snow ("we," "us," or "our") uses cookies and similar
 			tracking technologies on our website at <strong>localsnow.org</strong> (the "Platform").
@@ -27,7 +27,7 @@
 	</section>
 
 	<section>
-		<h2>2. What Are Cookies?</h2>
+		<h2 class="title3">2. What Are Cookies?</h2>
 		<p>
 			Cookies are small text files stored on your device (computer, smartphone, tablet) when you
 			visit a website. They help websites remember your preferences, recognize you on return
@@ -53,9 +53,9 @@
 	</section>
 
 	<section>
-		<h2>3. How We Use Cookies</h2>
+		<h2 class="title3">3. How We Use Cookies</h2>
 
-		<h3>3.1 Strictly Necessary Cookies (Essential)</h3>
+		<h3 class="title4">3.1 Strictly Necessary Cookies (Essential)</h3>
 		<p>
 			These cookies are essential for the Platform to function properly. They cannot be disabled
 			without severely impacting your ability to use our services.
@@ -91,7 +91,7 @@
 			with you (GDPR Article 6(1)(b)).
 		</p>
 
-		<h3>3.2 Functional Cookies</h3>
+		<h3 class="title4">3.2 Functional Cookies</h3>
 		<p>
 			These cookies enhance functionality and personalization but are not strictly necessary. They
 			remember your preferences and settings.
@@ -127,7 +127,7 @@
 			at any time.
 		</p>
 
-		<h3>3.3 Analytics Cookies (Currently Not Implemented)</h3>
+		<h3 class="title4">3.3 Analytics Cookies (Currently Not Implemented)</h3>
 		<p>
 			We currently do not use analytics cookies. If we implement analytics in the future (e.g.,
 			Google Analytics), we will:
@@ -139,7 +139,7 @@
 			<li>Anonymize IP addresses to protect privacy</li>
 		</ul>
 
-		<h3>3.4 Advertising Cookies (Not Used)</h3>
+		<h3 class="title4">3.4 Advertising Cookies (Not Used)</h3>
 		<p>
 			We do <strong>not</strong> use advertising cookies or track you for behavioral advertising purposes.
 			We do not sell your data to third parties.
@@ -147,13 +147,13 @@
 	</section>
 
 	<section>
-		<h2>4. Third-Party Cookies</h2>
+		<h2 class="title3">4. Third-Party Cookies</h2>
 		<p>
 			Certain third-party services we use may set their own cookies when you interact with their
 			features:
 		</p>
 
-		<h3>4.1 Payment Processing (Stripe)</h3>
+		<h3 class="title4">4.1 Payment Processing (Stripe)</h3>
 		<p>
 			When you process payments, Stripe may set cookies for fraud prevention and secure payment
 			processing. Stripe's cookie usage is governed by their own privacy policy at <a
@@ -163,7 +163,7 @@
 			>.
 		</p>
 
-		<h3>4.2 Google OAuth (Authentication)</h3>
+		<h3 class="title4">4.2 Google OAuth (Authentication)</h3>
 		<p>
 			If you sign in with Google, Google may set cookies for authentication purposes. Google's
 			cookie practices are described at <a
@@ -173,7 +173,7 @@
 			>.
 		</p>
 
-		<h3>4.3 Google Calendar API</h3>
+		<h3 class="title4">4.3 Google Calendar API</h3>
 		<p>
 			If you connect your Google Calendar for availability management, Google may set cookies
 			related to calendar access. This requires your explicit consent during the OAuth flow.
@@ -181,7 +181,7 @@
 	</section>
 
 	<section>
-		<h2>5. How We Protect Your Privacy</h2>
+		<h2 class="title3">5. How We Protect Your Privacy</h2>
 		<ul>
 			<li>
 				<strong>Minimal Data Collection:</strong> We only use essential cookies and avoid unnecessary
@@ -207,9 +207,9 @@
 	</section>
 
 	<section>
-		<h2>6. Managing Your Cookie Preferences</h2>
+		<h2 class="title3">6. Managing Your Cookie Preferences</h2>
 
-		<h3>6.1 Cookie Consent Banner</h3>
+		<h3 class="title4">6.1 Cookie Consent Banner</h3>
 		<p>
 			When you first visit our Platform, you'll see a cookie consent banner allowing you to:
 		</p>
@@ -222,7 +222,7 @@
 		</ul>
 		<p>You can change your preferences at any time by clicking "Cookie Settings" in the footer.</p>
 
-		<h3>6.2 Browser Settings</h3>
+		<h3 class="title4">6.2 Browser Settings</h3>
 		<p>You can also manage cookies through your browser settings:</p>
 		<ul>
 			<li>
@@ -243,7 +243,7 @@
 			core Platform features.
 		</p>
 
-		<h3>6.3 Do Not Track (DNT)</h3>
+		<h3 class="title4">6.3 Do Not Track (DNT)</h3>
 		<p>
 			We respect browser Do Not Track signals. If your browser sends a DNT signal, we will not set
 			non-essential cookies without your explicit consent.
@@ -251,7 +251,7 @@
 	</section>
 
 	<section>
-		<h2>7. Cookie Retention and Deletion</h2>
+		<h2 class="title3">7. Cookie Retention and Deletion</h2>
 		<p>Cookies are retained for the durations specified in the tables above. You can delete cookies:</p>
 		<ul>
 			<li>
@@ -271,7 +271,7 @@
 	</section>
 
 	<section>
-		<h2>8. Cookies and GDPR Compliance</h2>
+		<h2 class="title3">8. Cookies and GDPR Compliance</h2>
 		<p>
 			In compliance with the General Data Protection Regulation (GDPR) and the ePrivacy Directive
 			(Cookie Law):
@@ -286,7 +286,7 @@
 	</section>
 
 	<section>
-		<h2>9. Cookies on Mobile Devices</h2>
+		<h2 class="title3">9. Cookies on Mobile Devices</h2>
 		<p>
 			If you access our Platform through a mobile browser, cookies function similarly to desktop
 			browsers. You can manage cookies through your mobile browser settings.
@@ -299,7 +299,7 @@
 	</section>
 
 	<section>
-		<h2>10. Changes to This Cookie Policy</h2>
+		<h2 class="title3">10. Changes to This Cookie Policy</h2>
 		<p>
 			We may update this Cookie Policy periodically to reflect changes in our practices or legal
 			requirements. We will notify you of material changes by:
@@ -316,7 +316,7 @@
 	</section>
 
 	<section>
-		<h2>11. Contact Us</h2>
+		<h2 class="title3">11. Contact Us</h2>
 		<p>If you have questions about our use of cookies, please contact us:</p>
 		<p>
 			<strong>Email:</strong> privacy@localsnow.org<br />
