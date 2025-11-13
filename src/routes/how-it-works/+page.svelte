@@ -273,7 +273,7 @@
 				<p>
 					Clients pay instructors directly for lessons - we're not involved. The only payments
 					processed through our platform are the client deposit (refundable) and instructor lead
-					fees (�5 per request). Both are handled securely through Stripe.
+					fees (5€ per request). Both are handled securely through Stripe.
 				</p>
 			</div>
 
@@ -281,7 +281,7 @@
 				<h3 class="title4">What if an instructor doesn't respond?</h3>
 				<p>
 					Try another instructor. Instructors aren't obligated to respond to every request - they
-					might be fully booked or unavailable for your dates. Your �15 deposit remains valid for
+					might be fully booked or unavailable for your dates. Your 15€ deposit remains valid for
 					future requests.
 				</p>
 			</div>
