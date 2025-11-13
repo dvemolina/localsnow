@@ -120,7 +120,7 @@
 			<ul class="my-2 space-y-1 text-sm">
 				<li> <strong>No booking fees</strong> - browse and request lessons for free</li>
 				<li>
-					 <strong>�15 refundable deposit</strong> - first-time users only, returned after first lesson
+					 <strong>15€ refundable deposit</strong> - first-time users only, returned after first lesson
 				</li>
 				<li> <strong>Unlimited requests</strong> - once you've paid the deposit</li>
 			</ul>
@@ -187,7 +187,7 @@
 					4
 				</div>
 				<div>
-					<h3 class="title4 mb-2">Pay �5 to Access Contact Info</h3>
+					<h3 class="title4 mb-2">Pay 5€ to Access Contact Info</h3>
 					<p>
 						To view the client's contact information and respond, you pay a one-time �5 lead fee per
 						request. This covers platform costs and prevents spam requests.
@@ -238,7 +238,7 @@
 			<ul class="my-2 space-y-1 text-sm">
 				<li> <strong>Free profile listing</strong> - create and maintain your profile at no cost</li>
 				<li>
-					 <strong>�5 per lead</strong> - only pay when you want to respond to a booking request
+					 <strong>5€ per lead</strong> - only pay when you want to respond to a booking request
 				</li>
 				<li> <strong>No commissions</strong> - keep 100% of your lesson fees</li>
 				<li> <strong>No monthly fees</strong> - pay only for leads you choose to pursue</li>
@@ -252,7 +252,7 @@
 
 		<div class="space-y-4">
 			<div>
-				<h3 class="title4">Why the �15 deposit for clients?</h3>
+				<h3 class="title4">Why the 15€ deposit for clients?</h3>
 				<p>
 					It prevents spam and fake requests. The deposit is fully refundable after your first
 					confirmed lesson. Once you've paid it, you can make unlimited booking requests.
@@ -260,7 +260,7 @@
 			</div>
 
 			<div>
-				<h3 class="title4">Why the �5 lead fee for instructors?</h3>
+				<h3 class="title4">Why the 5€ lead fee for instructors?</h3>
 				<p>
 					It covers server costs, email notifications, and platform maintenance. Unlike booking
 					platforms that take 15-20% commissions, we only charge for the initial connection - not
