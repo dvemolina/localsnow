@@ -11,12 +11,12 @@
 
 	<p class="text-lg text-muted-foreground">
 		Local Snow connects clients directly with ski and snowboard instructors. No booking fees, no
-		commissions. Here's how it works for both sides.
+		abusive commissions. Here's how it works for both sides.
 	</p>
 
 	<!-- For Clients Section -->
 	<section class="mt-12 rounded-lg border border-border bg-card p-6 shadow-sm">
-		<h2 class="title3">For Clients Looking for Lessons</h2>
+		<h2 class="title3 mb-6">For Clients Looking for Lessons</h2>
 
 		<div class="space-y-6">
 			<div class="flex gap-4">
@@ -62,7 +62,7 @@
 						special requirements. Submit it through the instructor's profile.
 					</p>
 					<p class="text-sm text-muted-foreground">
-						<strong>First-time users:</strong> You'll pay a refundable ¬15 deposit to prevent spam.
+						<strong>First-time users:</strong> You'll pay a refundable ï¿½15 deposit to prevent spam.
 						This is returned after your first confirmed lesson.
 					</p>
 				</div>
@@ -120,7 +120,7 @@
 			<ul class="my-2 space-y-1 text-sm">
 				<li> <strong>No booking fees</strong> - browse and request lessons for free</li>
 				<li>
-					 <strong>¬15 refundable deposit</strong> - first-time users only, returned after first lesson
+					 <strong>ï¿½15 refundable deposit</strong> - first-time users only, returned after first lesson
 				</li>
 				<li> <strong>Unlimited requests</strong> - once you've paid the deposit</li>
 			</ul>
@@ -129,7 +129,7 @@
 
 	<!-- For Instructors Section -->
 	<section class="mt-12 rounded-lg border border-border bg-card p-6 shadow-sm">
-		<h2 class="title3">For Instructors Offering Lessons</h2>
+		<h2 class="title3 mb-6">For Instructors Offering Lessons</h2>
 
 		<div class="space-y-6">
 			<div class="flex gap-4">
@@ -187,9 +187,9 @@
 					4
 				</div>
 				<div>
-					<h3 class="title4 mb-2">Pay ¬5 to Access Contact Info</h3>
+					<h3 class="title4 mb-2">Pay ï¿½5 to Access Contact Info</h3>
 					<p>
-						To view the client's contact information and respond, you pay a one-time ¬5 lead fee per
+						To view the client's contact information and respond, you pay a one-time ï¿½5 lead fee per
 						request. This covers platform costs and prevents spam requests.
 					</p>
 					<p class="text-sm text-muted-foreground">
@@ -238,7 +238,7 @@
 			<ul class="my-2 space-y-1 text-sm">
 				<li> <strong>Free profile listing</strong> - create and maintain your profile at no cost</li>
 				<li>
-					 <strong>¬5 per lead</strong> - only pay when you want to respond to a booking request
+					 <strong>ï¿½5 per lead</strong> - only pay when you want to respond to a booking request
 				</li>
 				<li> <strong>No commissions</strong> - keep 100% of your lesson fees</li>
 				<li> <strong>No monthly fees</strong> - pay only for leads you choose to pursue</li>
@@ -252,7 +252,7 @@
 
 		<div class="space-y-4">
 			<div>
-				<h3 class="title4">Why the ¬15 deposit for clients?</h3>
+				<h3 class="title4">Why the ï¿½15 deposit for clients?</h3>
 				<p>
 					It prevents spam and fake requests. The deposit is fully refundable after your first
 					confirmed lesson. Once you've paid it, you can make unlimited booking requests.
@@ -260,7 +260,7 @@
 			</div>
 
 			<div>
-				<h3 class="title4">Why the ¬5 lead fee for instructors?</h3>
+				<h3 class="title4">Why the ï¿½5 lead fee for instructors?</h3>
 				<p>
 					It covers server costs, email notifications, and platform maintenance. Unlike booking
 					platforms that take 15-20% commissions, we only charge for the initial connection - not
@@ -273,7 +273,7 @@
 				<p>
 					Clients pay instructors directly for lessons - we're not involved. The only payments
 					processed through our platform are the client deposit (refundable) and instructor lead
-					fees (¬5 per request). Both are handled securely through Stripe.
+					fees (ï¿½5 per request). Both are handled securely through Stripe.
 				</p>
 			</div>
 
@@ -281,7 +281,7 @@
 				<h3 class="title4">What if an instructor doesn't respond?</h3>
 				<p>
 					Try another instructor. Instructors aren't obligated to respond to every request - they
-					might be fully booked or unavailable for your dates. Your ¬15 deposit remains valid for
+					might be fully booked or unavailable for your dates. Your ï¿½15 deposit remains valid for
 					future requests.
 				</p>
 			</div>
@@ -290,14 +290,14 @@
 				<h3 class="title4">Can instructors see my contact info before paying?</h3>
 				<p>
 					No. Instructors see your dates, skill level, and requirements, but contact information is
-					hidden until they pay the ¬5 lead fee. This protects both parties from spam.
+					hidden until they pay the ï¿½5 lead fee. This protects both parties from spam.
 				</p>
 			</div>
 		</div>
 	</section>
 
-	<section class="mt-12 text-center">
-		<h2 class="title3">Ready to Get Started?</h2>
+	<section class="mt-12 text-center ">
+		<h2 class="title3 mb-6">Ready to Get Started?</h2>
 		<div class="flex flex-col gap-4 sm:flex-row sm:justify-center">
 			<a href="/" class="bg-primary inline-block rounded-md px-6 py-3 font-medium text-white">
 				Find an Instructor

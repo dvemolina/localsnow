@@ -18,11 +18,11 @@
 </script>
 <div class="header-wrapper fixed top-0 left-0 w-full z-30 pt-4 pb-4 px-2">
 	<header
-		class="flex w-full flex-col items-center justify-center gap-2 self-center transition-all z-50"
+		class="flex w-full  flex-col items-center justify-center gap-2 self-center transition-all z-50"
 	>
-		<div class="flex flex-row gap-2 items-center justify-center ">
+		<div class="flex w-full max-w-[685px] flex-row gap-2 items-center justify-center ">
 			<div
-				class="header flex w-fit flex-row items-center justify-between gap-4 rounded-full shadow-xs border border-border bg-card pr-4 sm:gap-12"
+				class="header flex w-full flex-row items-center justify-between gap-4 rounded-full shadow-xs border border-border pr-4 bg-card sm:gap-12"
 			>
 				<a href="/" class="group flex flex-row items-center justify-center">
 					<div class="m-1 size-12 overflow-hidden rounded-full object-cover">
@@ -38,7 +38,7 @@
 				</a>
 
 				<!-- Desktop Navigation -->
-				<nav class="hidden flex-row gap-6 sm:flex">
+				<nav class="hidden flex-row gap-6 md:flex">
 					<ul class="flex flex-row gap-4">
 						{#each items as { href, label }}
 							<li>
@@ -58,7 +58,7 @@
 
 				<!-- Mobile Navigation Trigger -->
 				<button
-					class="sm:hidden"
+					class="md:hidden"
 					aria-label="Open Menu"
 					aria-expanded={isMobileMenuOpen}
 					onclick={() => (isMobileMenuOpen = !isMobileMenuOpen)}
@@ -138,7 +138,7 @@
 
 		{#if !isCurrentPath("/", page.url.pathname)}
 		<div
-			class="breadcrumb flex w-full max-w-[550px] flex-row items-center justify-between gap-4 rounded-full border border-border bg-background py-0.5 sm:gap-12 transition-all overflow-hidden"
+			class="breadcrumb flex w-full max-w-[675px] flex-row items-center justify-between gap-4 rounded-full border border-border bg-background py-0.5 sm:gap-12 transition-all overflow-hidden"
 		>
 			<Breadcrumb {items} {page} />
 		</div>

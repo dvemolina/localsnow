@@ -6,10 +6,10 @@
 	/>
 </svelte:head>
 
-<article class="prose prose-sm mx-auto max-w-2xl dark:prose-invert">
+<article class="prose prose-sm mx-auto max-w-2xl">
 	<h1 class="title2">About Local Snow</h1>
 
-	<section>
+	<section class="my-6">
 		<h2 class="title3">Who Built This</h2>
 		<p>
 			I'm a ski instructor. I've worked in Argentina, New Zealand, Spain, Chile—different
@@ -19,7 +19,7 @@
 		</p>
 	</section>
 
-	<section>
+	<section class="my-6">
 		<h2 class="title3">The Economic Reality</h2>
 		<p>
 			Ski schools operate like managers or representatives for instructors. And like any management
@@ -39,7 +39,7 @@
 		</p>
 	</section>
 
-	<section>
+	<section class="my-6">
 		<h2 class="title3">The Visibility Problem</h2>
 		<p>
 			Schools often act as a screen between clients and instructors. But clients aren't just buying
@@ -53,7 +53,7 @@
 		</p>
 	</section>
 
-	<section>
+	<section class="my-6">
 		<h2 class="title3">Risk vs. Reward</h2>
 		<p>
 			Being a ski instructor comes with real risks. Physical injury, liability exposure,
@@ -66,7 +66,7 @@
 		</p>
 	</section>
 
-	<section>
+	<section class="my-6">
 		<h2 class="title3">What Local Snow Is</h2>
 		<p>
 			Local Snow is a free directory where instructors list their profiles and clients find them
@@ -82,7 +82,7 @@
 		<p>This isn't a war between independents and schools. It's about building a bridge.</p>
 	</section>
 
-	<section>
+	<section class="my-6">
 		<h2 class="title3">The Verification Process</h2>
 		<p>
 			I manually review every instructor who applies for verification. I check certifications,
@@ -96,7 +96,7 @@
 		</p>
 	</section>
 
-	<section>
+	<section class="my-6">
 		<h2 class="title3">Why Spain First</h2>
 		<p>
 			I've worked here. I know the resorts, the instructors, the local dynamics. Starting focused
@@ -106,7 +106,7 @@
 		</p>
 	</section>
 
-	<section>
+	<section class="my-6">
 		<h2 class="title3">The Goal</h2>
 		<p>
 			I want instructors—independent and school-affiliated—to have affordable tools that give them
@@ -121,7 +121,7 @@
 		</p>
 	</section>
 
-	<section>
+	<section class="my-6">
 		<h2 class="title3">Get in Touch</h2>
 		<p>
 			If you're an instructor in Spain—independent or working for a school—<a href="/signup"
