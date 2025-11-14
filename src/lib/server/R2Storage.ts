@@ -79,7 +79,7 @@ export class StorageService {
     async uploadQualificationPDF(fileBuffer: Buffer, userId: number): Promise<string> {
         try {
             const finalFileName = `qualifications/${userId}-qualification`;
-            
+
             await this.s3Client.send(
                 new PutObjectCommand({
                     Bucket: process.env.R2_BUCKET_NAME,
@@ -88,12 +88,38 @@ export class StorageService {
                     ContentType: "application/pdf"
                 })
             );
-            
+
             // Return the public URL of the uploaded PDF
             return `${process.env.R2_PUBLIC_URL}/${finalFileName}`;
         } catch (error) {
             console.error('Error uploading PDF to R2:', error);
             throw new Error('Failed to upload qualification document');
+        }
+    }
+
+    async uploadResortImage(imageBuffer: Buffer, resortSlug: string): Promise<string> {
+        const fileName = `resorts/${resortSlug}`;
+        const compressedBuffer = await sharp(imageBuffer)
+            .rotate()
+            .resize(1200, 800, { fit: "cover", position: "center" })
+            .webp({ quality: 80 })
+            .toBuffer();
+
+        try {
+            await this.s3Client.send(
+                new PutObjectCommand({
+                    Bucket: process.env.R2_BUCKET_NAME,
+                    Key: fileName,
+                    Body: compressedBuffer,
+                    ContentType: "image/webp",
+                    CacheControl: 'public, max-age=31536000' // Cache for 1 year
+                })
+            );
+
+            return `${process.env.R2_PUBLIC_URL}/${fileName}`;
+        } catch (error) {
+            console.error('Error uploading resort image to R2:', error);
+            throw new Error('Failed to upload resort image');
         }
     }
 }

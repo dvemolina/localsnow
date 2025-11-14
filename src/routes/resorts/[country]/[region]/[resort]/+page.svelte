@@ -53,7 +53,7 @@
 		<div class="relative h-[300px] md:h-[400px]">
 			<!-- Background Image -->
 			<img
-				src="/ski-instructor-powder.webp"
+				src={resort.image || '/ski-instructor-powder.webp'}
 				alt="{resort.name} ski resort"
 				class="h-full w-full object-cover"
 				loading="eager"

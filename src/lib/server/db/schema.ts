@@ -75,6 +75,7 @@ export const resorts = pgTable('resorts', {
 	lat: numeric('lat', { precision: 10, scale: 6 }),
 	lon: numeric('lon', { precision: 10, scale: 6 }),
 	website: varchar('website', { length: 255 }),
+	image: varchar('image', { length: 255 }),
 	countryId: integer('country_id')
 		.notNull()
 		.references(() => countries.id, { onDelete: 'cascade' }),
