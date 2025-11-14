@@ -62,8 +62,8 @@
 						special requirements. Submit it through the instructor's profile.
 					</p>
 					<p class="text-sm text-muted-foreground">
-						<strong>First-time users:</strong> You'll pay a refundable �15 deposit to prevent spam.
-						This is returned after your first confirmed lesson.
+						<strong>Refundable deposit:</strong> You'll pay a €15 deposit to secure your booking and
+						prevent spam. This is returned after your confirmed lesson.
 					</p>
 				</div>
 			</div>
@@ -120,9 +120,9 @@
 			<ul class="my-2 space-y-1 text-sm">
 				<li> <strong>No booking fees</strong> - browse and request lessons for free</li>
 				<li>
-					 <strong>15€ refundable deposit</strong> - first-time users only, returned after first lesson
+					 <strong>15€ refundable deposit</strong> - required per booking request, returned after your confirmed lesson
 				</li>
-				<li> <strong>Unlimited requests</strong> - once you've paid the deposit</li>
+				<li> <strong>Unlimited instructors</strong> - contact as many instructors as you need</li>
 			</ul>
 		</div>
 	</section>
@@ -254,8 +254,9 @@
 			<div>
 				<h3 class="title4">Why the 15€ deposit for clients?</h3>
 				<p>
-					It prevents spam and fake requests. The deposit is fully refundable after your first
-					confirmed lesson. Once you've paid it, you can make unlimited booking requests.
+					It prevents spam and fake requests. The deposit is fully refundable after your confirmed
+					lesson with the instructor. Each booking request requires a deposit, which protects
+					instructors from no-shows and ensures serious inquiries.
 				</p>
 			</div>
 

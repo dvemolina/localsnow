@@ -17,6 +17,7 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
+						<Table.Head>ID</Table.Head>
 						<Table.Head>Name</Table.Head>
 						<Table.Head>Region</Table.Head>
 						<Table.Head>Country</Table.Head>
@@ -27,6 +28,9 @@
 				<Table.Body>
 					{#each data.resorts as resort}
 						<Table.Row>
+							<Table.Cell class="font-mono text-xs text-muted-foreground">
+								#{resort.id}
+							</Table.Cell>
 							<Table.Cell class="font-medium">{resort.name}</Table.Cell>
 							<Table.Cell>
 								{#if resort.region}

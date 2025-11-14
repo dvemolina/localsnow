@@ -72,6 +72,7 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
+						<Table.Head>ID</Table.Head>
 						<Table.Head>Client</Table.Head>
 						<Table.Head>Amount</Table.Head>
 						<Table.Head>Status</Table.Head>
@@ -82,6 +83,9 @@
 				<Table.Body>
 					{#each data.deposits.slice(0, 20) as deposit}
 						<Table.Row>
+							<Table.Cell class="font-mono text-xs text-muted-foreground">
+								#{deposit.id}
+							</Table.Cell>
 							<Table.Cell>
 								{deposit.bookingRequest.clientName}
 								<br />
@@ -121,6 +125,7 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
+						<Table.Head>ID</Table.Head>
 						<Table.Head>Instructor</Table.Head>
 						<Table.Head>Client</Table.Head>
 						<Table.Head>Amount</Table.Head>
@@ -131,6 +136,9 @@
 				<Table.Body>
 					{#each data.leadPayments.slice(0, 20) as payment}
 						<Table.Row>
+							<Table.Cell class="font-mono text-xs text-muted-foreground">
+								#{payment.id}
+							</Table.Cell>
 							<Table.Cell>
 								{payment.instructor.name} {payment.instructor.lastName}
 							</Table.Cell>

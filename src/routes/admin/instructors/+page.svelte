@@ -121,6 +121,7 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
+						<Table.Head>ID</Table.Head>
 						<Table.Head>Name</Table.Head>
 						<Table.Head>Email</Table.Head>
 						<Table.Head>Resorts</Table.Head>
@@ -135,6 +136,9 @@
 				<Table.Body>
 					{#each data.instructors as instructor}
 						<Table.Row>
+							<Table.Cell class="font-mono text-xs text-muted-foreground">
+								#{instructor.id}
+							</Table.Cell>
 							<Table.Cell class="font-medium">
 								{instructor.name} {instructor.lastName}
 							</Table.Cell>

@@ -17,6 +17,7 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
+						<Table.Head>ID</Table.Head>
 						<Table.Head>Sport</Table.Head>
 						<Table.Head>Slug</Table.Head>
 						<Table.Head>Instructors Teaching</Table.Head>
@@ -25,6 +26,9 @@
 				<Table.Body>
 					{#each data.sports as sport}
 						<Table.Row>
+							<Table.Cell class="font-mono text-xs text-muted-foreground">
+								#{sport.id}
+							</Table.Cell>
 							<Table.Cell class="font-medium">{sport.sport}</Table.Cell>
 							<Table.Cell>
 								<Badge variant="outline">{sport.sportSlug}</Badge>
