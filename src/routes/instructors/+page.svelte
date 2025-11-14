@@ -142,7 +142,7 @@
 					<Accordion.Trigger class="text-sm font-medium">Main Filters</Accordion.Trigger>
 					<Accordion.Content class="space-y-3 pt-3">
 						<div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-							<SearchResort {form} name="resort" label="Resort" />
+							<SearchResort {form} name="resort" label="Resort" countryId={data.spainCountryId} />
 							<SportSelect {form} name="sport" />
 							<LanguageSelect {form} name="language" />
 						</div>
