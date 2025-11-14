@@ -114,7 +114,7 @@
 				<form method="POST" use:enhance class="mb-8 rounded-lg bg-white/90 p-4 shadow-lg">
 					<div class="flex flex-col gap-4 md:flex-row">
 						<div class="flex-1">
-							<SearchResort {form} name="resort" id="location" />
+							<SearchResort {form} name="resort" id="location" countryId={data.spainCountryId} />
 						</div>
 						<div class="text-foreground flex-1">
 							<SportSelect {form} name="sport" isHero={true} />

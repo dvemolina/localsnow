@@ -189,7 +189,7 @@
           <ul
             id="resort-listbox"
             role="listbox"
-            class="absolute top-full z-50 max-h-64 w-full overflow-auto rounded-md border border-gray-300 bg-white shadow-md"
+            class="absolute top-full z-[9999] max-h-64 w-full overflow-auto rounded-md border border-gray-300 bg-white shadow-md"
           >
             {#each suggestions as resort, i (resort.id)}
               <li
