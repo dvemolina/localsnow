@@ -189,7 +189,7 @@
 				<div>
 					<h3 class="title4 mb-2">Pay 5€ to Access Contact Info</h3>
 					<p>
-						To view the client's contact information and respond, you pay a one-time �5 lead fee per
+						To view the client's contact information and respond, you pay a one-time 5€ lead fee per
 						request. This covers platform costs and prevents spam requests.
 					</p>
 					<p class="text-sm text-muted-foreground">
@@ -290,7 +290,7 @@
 				<h3 class="title4">Can instructors see my contact info before paying?</h3>
 				<p>
 					No. Instructors see your dates, skill level, and requirements, but contact information is
-					hidden until they pay the �5 lead fee. This protects both parties from spam.
+					hidden until they pay the 5€ lead fee. This protects both parties from spam.
 				</p>
 			</div>
 		</div>
