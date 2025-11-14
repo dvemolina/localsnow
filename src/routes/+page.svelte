@@ -154,7 +154,7 @@
 						loading="lazy"
 					/>
 					<!-- Gradient Overlay for better text readability -->
-					<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/30"></div>
+					<div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/15"></div>
 				</div>
 
 				<!-- Content -->
@@ -546,13 +546,13 @@
 
 <style>
 	.text-shadow {
-		text-shadow: 0 1px 5px rgba(0, 0, 0, 0.567);
+		text-shadow: 0 1px 5px rgba(0, 0, 0, 0.572);
 	}
 
 	.overlay::before {
 		content: var(--tw-content);
 		position: absolute;
 		inset: 0px;
-		background: linear-gradient(to top, rgba(0, 0, 0, 0.221) 0%, transparent 100%);
+		background: linear-gradient(to top, rgba(0, 0, 0, 0.32) 0%, transparent 100%);
 	}
 </style>
