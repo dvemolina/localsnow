@@ -4,7 +4,7 @@ import { InstructorService } from '$src/features/Instructors/lib/instructorServi
 import { LessonService } from '$src/features/Lessons/lib/lessonService';
 import { db } from '$lib/server/db';
 import { countries } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 
 const lessonService = new LessonService();
 const instructorService = new InstructorService();
@@ -21,11 +21,11 @@ export const load: PageServerLoad = async ({ url }) => {
     const sortBy = url.searchParams.get('sortBy');
 
     try {
-        // Get Spain's country ID for resort filtering
+        // Get Spain's country ID for resort filtering (case-insensitive)
         const spainCountry = await db
             .select({ id: countries.id })
             .from(countries)
-            .where(eq(countries.countryCode, 'ES'))
+            .where(sql`UPPER(${countries.countryCode}) = 'ES'`)
             .limit(1);
         const spainCountryId = spainCountry[0]?.id;
 

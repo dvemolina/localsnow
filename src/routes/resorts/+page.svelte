@@ -33,9 +33,9 @@
 <section class="w-full">
 	<!-- Header -->
 	<div class="mb-6 text-center">
-		<h1 class="title2 mb-2">Ski Resorts Directory</h1>
+		<h1 class="title2 mb-2">Ski Resorts in Spain</h1>
 		<p class="text-muted-foreground">
-			Browse {totalResorts} resorts worldwide and find professional instructors
+			Browse {totalResorts} Spanish ski resorts and find professional instructors
 		</p>
 	</div>
 
@@ -59,17 +59,17 @@
 				<p class="text-muted-foreground">No resorts found matching "{searchQuery}"</p>
 			</div>
 		{:else}
-			{#each filteredResorts as country}
+			{#each filteredResorts as region}
 				<div class="mb-12">
 					<h2 class="mb-6 text-2xl font-bold">
-						{country.country}
-						<Badge variant="secondary" class="ml-2">{country.resorts.length} resorts</Badge>
+						{region.region}
+						<Badge variant="secondary" class="ml-2">{region.resorts.length} resorts</Badge>
 					</h2>
 
 					<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-						{#each country.resorts as resort}
+						{#each region.resorts as resort}
 							<a
-								href="/resorts/{country.countrySlug}/{resort.regionSlug}/{resort.slug}"
+								href="/resorts/spain/{resort.regionSlug}/{resort.slug}"
 								class="group"
 							>
 								<Card class="h-full transition-shadow hover:shadow-lg">
