@@ -66,6 +66,7 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
+						<Table.Head>ID</Table.Head>
 						<Table.Head>Name</Table.Head>
 						<Table.Head>Email</Table.Head>
 						<Table.Head>Role</Table.Head>
@@ -76,6 +77,7 @@
 				<Table.Body>
 					{#each data.users as user}
 						<Table.Row>
+							<Table.Cell class="font-mono text-xs text-muted-foreground">#{user.id}</Table.Cell>
 							<Table.Cell class="font-medium">{user.name} {user.lastName}</Table.Cell>
 							<Table.Cell>{user.email}</Table.Cell>
 							<Table.Cell><Badge variant="outline">{user.role || 'No role'}</Badge></Table.Cell>

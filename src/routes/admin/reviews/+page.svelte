@@ -30,6 +30,7 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
+						<Table.Head>ID</Table.Head>
 						<Table.Head>Instructor</Table.Head>
 						<Table.Head>Rating</Table.Head>
 						<Table.Head>Comment</Table.Head>
@@ -40,6 +41,9 @@
 				<Table.Body>
 					{#each data.reviews as review}
 						<Table.Row>
+							<Table.Cell class="font-mono text-xs text-muted-foreground">
+								#{review.id}
+							</Table.Cell>
 							<Table.Cell class="font-medium">
 								{review.instructor.name} {review.instructor.lastName}
 							</Table.Cell>

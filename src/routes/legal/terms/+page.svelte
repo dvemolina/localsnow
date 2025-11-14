@@ -198,7 +198,7 @@
 				<strong>Lead Fees:</strong> Non-refundable after contact information is accessed
 			</li>
 			<li>
-				<strong>Client Deposits:</strong> Automatically refunded after first verified lesson completion
+				<strong>Client Deposits:</strong> Automatically refunded after confirmed lesson completion
 			</li>
 			<li>
 				<strong>Lesson Fees:</strong> Refund disputes are handled directly between clients and instructors;
@@ -445,7 +445,7 @@
 			<li>Local Snow is a marketplace platform connecting instructors with clients</li>
 			<li>We are not a party to lessons; instructors are independent providers</li>
 			<li>Free to list as an instructor; €5 lead fee per booking request</li>
-			<li>Clients pay €15 refundable deposit for first booking (spam prevention)</li>
+			<li>Clients pay €15 refundable deposit per booking request (spam prevention)</li>
 			<li>Users must be 18+, provide accurate information, and comply with our policies</li>
 			<li>We disclaim liability for lesson quality, safety, or disputes between users</li>
 			<li>These Terms may be updated; continued use indicates acceptance</li>
