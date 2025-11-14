@@ -1,13 +1,26 @@
 
 import { db } from '$src/lib/server/db';
 import { countries, regions, resorts } from '$src/lib/server/db/schema';
-import { and, eq, ilike } from 'drizzle-orm';
-
-const SPAIN_COUNTRY_ID = 55; // Spain's countryId in the database
+import { and, eq, ilike, SQL } from 'drizzle-orm';
 
 export class ResortRepository {
-	async searchByName(query: string, limit = 10) {
+	/**
+	 * Search resorts by name with optional country filter
+	 * @param query - Search query string (minimum 2 characters)
+	 * @param limit - Maximum number of results to return (default: 10)
+	 * @param countryId - Optional country ID to filter results. If not provided, searches all countries.
+	 * @returns Array of matching resorts with region and country information
+	 */
+	async searchByName(query: string, limit = 10, countryId?: number) {
 		if (!query || query.length < 2) return [];
+
+		// Build where conditions
+		const conditions: SQL[] = [ilike(resorts.name, `%${query}%`)];
+
+		// Add country filter only if countryId is provided
+		if (countryId !== undefined && countryId !== null) {
+			conditions.push(eq(resorts.countryId, countryId));
+		}
 
 		return await db
 			.select({
@@ -18,14 +31,9 @@ export class ResortRepository {
 				country: countries.country
 			})
 			.from(resorts)
-			.innerJoin(regions, eq(resorts.regionId, regions.id))
+			.leftJoin(regions, eq(resorts.regionId, regions.id))
 			.innerJoin(countries, eq(resorts.countryId, countries.id))
-			.where(
-				and(
-					ilike(resorts.name, `%${query}%`),
-					eq(resorts.countryId, SPAIN_COUNTRY_ID)
-				)
-			)
+			.where(and(...conditions))
 			.limit(limit);
 	}
 }

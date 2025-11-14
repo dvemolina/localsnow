@@ -225,6 +225,13 @@
       "when": 1762792831767,
       "tag": "0031_hesitant_lorna_dane",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1763098240754,
+      "tag": "0032_dusty_kitty_pryde",
+      "breakpoints": true
     }
   ]
 }

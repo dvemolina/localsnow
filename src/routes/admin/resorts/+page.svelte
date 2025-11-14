@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Card, CardContent } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
+	import { Button } from '$lib/components/ui/button';
 	import * as Table from '$lib/components/ui/table';
 
 	let { data } = $props();
@@ -21,8 +22,8 @@
 						<Table.Head>Name</Table.Head>
 						<Table.Head>Region</Table.Head>
 						<Table.Head>Country</Table.Head>
-						<Table.Head>Elevation</Table.Head>
-						<Table.Head>Website</Table.Head>
+						<Table.Head>Image</Table.Head>
+						<Table.Head>Actions</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -42,25 +43,20 @@
 							<Table.Cell>
 								<Badge variant="outline">{resort.country.country}</Badge>
 							</Table.Cell>
-							<Table.Cell class="text-sm">
-								{#if resort.minElevation && resort.maxElevation}
-									{resort.minElevation}m - {resort.maxElevation}m
+							<Table.Cell>
+								{#if resort.image}
+									<div class="flex items-center gap-2">
+										<img src={resort.image} alt={resort.name} class="h-8 w-12 rounded object-cover" />
+										<span class="text-xs text-muted-foreground">Set</span>
+									</div>
 								{:else}
-									-
+									<span class="text-xs text-muted-foreground">No image</span>
 								{/if}
 							</Table.Cell>
 							<Table.Cell>
-								{#if resort.website}
-									<a
-										href={resort.website}
-										target="_blank"
-										class="text-sm text-blue-600 hover:underline"
-									>
-										Visit →
-									</a>
-								{:else}
-									-
-								{/if}
+								<Button href="/admin/resorts/{resort.id}" size="sm" variant="outline">
+									Edit
+								</Button>
 							</Table.Cell>
 						</Table.Row>
 					{/each}

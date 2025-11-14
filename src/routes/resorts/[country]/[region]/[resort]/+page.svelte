@@ -48,31 +48,46 @@
 </svelte:head>
 
 <section class="w-full">
-	<!-- Header with Resort Info -->
-	<div class="mb-6">
-		<h1 class="title2 mb-2">{resort.name}</h1>
-		<div class="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-			<div class="flex items-center gap-1.5">
-				<MapPin class="h-4 w-4" />
-				<span>{location.region?.region || location.country.country}, {location.country.country}</span>
-			</div>
-			{#if resort.minElevation && resort.maxElevation}
-				<div class="flex items-center gap-1.5">
-					<Mountain class="h-4 w-4" />
-					<span>{resort.minElevation}m - {resort.maxElevation}m</span>
+	<!-- Hero Banner -->
+	<div class="relative mb-8 -mt-6 overflow-hidden rounded-lg shadow-xl">
+		<div class="relative h-[300px] md:h-[400px]">
+			<!-- Background Image -->
+			<img
+				src={resort.image || '/ski-instructor-powder.webp'}
+				alt="{resort.name} ski resort"
+				class="h-full w-full object-cover"
+				loading="eager"
+			/>
+			<!-- Gradient Overlay -->
+			<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+
+			<!-- Content Overlay -->
+			<div class="absolute inset-0 flex flex-col justify-end p-6 text-white md:p-8">
+				<h1 class="title2 mb-3 text-white drop-shadow-2xl">{resort.name}</h1>
+				<div class="flex flex-wrap items-center gap-3 text-sm text-white/95 drop-shadow-lg md:gap-4 md:text-base">
+					<div class="flex items-center gap-1.5">
+						<MapPin class="h-4 w-4 md:h-5 md:w-5" />
+						<span>{location.region?.region || location.country.country}, {location.country.country}</span>
+					</div>
+					{#if resort.minElevation && resort.maxElevation}
+						<div class="flex items-center gap-1.5">
+							<Mountain class="h-4 w-4 md:h-5 md:w-5" />
+							<span>{resort.minElevation}m - {resort.maxElevation}m</span>
+						</div>
+					{/if}
+					{#if resort.website}
+						<a
+							href={resort.website}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="flex items-center gap-1.5 transition-colors hover:text-white"
+						>
+							<ExternalLink class="h-4 w-4 md:h-5 md:w-5" />
+							<span>Official Website</span>
+						</a>
+					{/if}
 				</div>
-			{/if}
-			{#if resort.website}
-				<a
-					href={resort.website}
-					target="_blank"
-					rel="noopener noreferrer"
-					class="flex items-center gap-1.5 hover:text-foreground"
-				>
-					<ExternalLink class="h-4 w-4" />
-					<span>Official Website</span>
-				</a>
-			{/if}
+			</div>
 		</div>
 	</div>
 

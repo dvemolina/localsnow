@@ -13,25 +13,29 @@
 			name: 'Baqueira Beret',
 			slug: 'baqueira-beret',
 			region: 'Pyrenees, Catalonia',
-			description: "Spain's most prestigious resort"
+			description: "Spain's most prestigious resort",
+			image: '/ski-instructor-powder.webp'
 		},
 		{
 			name: 'Formigal-Panticosa',
 			slug: 'formigal-panticosa',
 			region: 'Pyrenees, Aragón',
-			description: 'Largest ski area in Spain'
+			description: 'Largest ski area in Spain',
+			image: '/ski-instructor-turn.webp'
 		},
 		{
 			name: 'Cerler',
 			slug: 'cerler',
 			region: 'Pyrenees, Huesca',
-			description: 'Highest resort in the Pyrenees'
+			description: 'Highest resort in the Pyrenees',
+			image: '/zermatt.webp'
 		},
 		{
 			name: 'Sierra Nevada',
 			slug: 'sierra-nevada',
 			region: 'Granada, Andalusia',
-			description: 'Ski with views of the Mediterranean'
+			description: 'Ski with views of the Mediterranean',
+			image: '/catedral.webp'
 		}
 	];
 
@@ -139,12 +143,29 @@
 		{#each topResorts as resort}
 			<a
 				href="/instructors?resort={resort.slug}"
-				class="group rounded-lg border border-border bg-card p-6 shadow-sm transition-all hover:shadow-md"
+				class="resort-card group relative overflow-hidden rounded-lg border border-border shadow-lg transition-all hover:shadow-xl"
 			>
-				<h3 class="mb-2 text-xl font-semibold">{resort.name}</h3>
-				<p class="mb-2 text-sm text-muted-foreground">{resort.region}</p>
-				<p class="text-sm text-gray-600">{resort.description}</p>
-				<span class="text-primary mt-4 inline-block font-medium">View Instructors →</span>
+				<!-- Background Image -->
+				<div class="absolute inset-0">
+					<img
+						src={resort.image}
+						alt={resort.name}
+						class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+						loading="lazy"
+					/>
+					<!-- Gradient Overlay for better text readability -->
+					<div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/15"></div>
+				</div>
+
+				<!-- Content -->
+				<div class="relative flex h-full min-h-[280px] flex-col justify-end p-6 text-white">
+					<h3 class="mb-2 text-xl font-bold drop-shadow-lg">{resort.name}</h3>
+					<p class="mb-1 text-sm text-white/95 drop-shadow-md">{resort.region}</p>
+					<p class="mb-4 text-sm text-white/85 drop-shadow-md">{resort.description}</p>
+					<span class="inline-flex items-center font-semibold text-white transition-transform group-hover:translate-x-1">
+						View Instructors →
+					</span>
+				</div>
 			</a>
 		{/each}
 	</div>
@@ -525,13 +546,13 @@
 
 <style>
 	.text-shadow {
-		text-shadow: 0 1px 5px rgba(0, 0, 0, 0.567);
+		text-shadow: 0 1px 5px rgba(0, 0, 0, 0.572);
 	}
 
 	.overlay::before {
 		content: var(--tw-content);
 		position: absolute;
 		inset: 0px;
-		background: linear-gradient(to top, rgba(0, 0, 0, 0.221) 0%, transparent 100%);
+		background: linear-gradient(to top, rgba(0, 0, 0, 0.32) 0%, transparent 100%);
 	}
 </style>

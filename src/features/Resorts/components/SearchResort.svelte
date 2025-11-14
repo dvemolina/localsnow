@@ -3,18 +3,20 @@
   import * as Form from '$src/lib/components/ui/form';
   import { onMount } from 'svelte';
 
-  let { 
-    form, 
-    name, 
-    mode = 'form', 
-    label = 'Choose Resort', 
-    id = name 
+  let {
+    form,
+    name,
+    mode = 'form',
+    label = 'Choose Resort',
+    id = name,
+    countryId
   }: {
     form: any;
     name: string;
     mode?: 'form' | 'navigate';
     label?: string;
     id?: string;
+    countryId?: number;
   } = $props();
 
   type Resort = {
@@ -62,7 +64,13 @@
     abortController = new AbortController();
 
     try {
-      const res = await fetch(`/api/search-suggestions?q=${encodeURIComponent(q)}`, {
+      // Build query params
+      let queryParams = `q=${encodeURIComponent(q)}`;
+      if (countryId !== undefined) {
+        queryParams += `&countryId=${countryId}`;
+      }
+
+      const res = await fetch(`/api/search-suggestions?${queryParams}`, {
         signal: abortController.signal
       });
       if (res.ok) {
