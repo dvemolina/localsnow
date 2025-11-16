@@ -111,7 +111,7 @@
 	</div>
 
 	<!-- Filters Section -->
-	<div class="mb-6 rounded-lg border border-border bg-card p-4 shadow-sm">
+	<div class="mb-6 rounded-lg border border-border bg-card p-4 shadow-sm overflow-visible">
 		<div class="mb-4 flex items-center justify-between">
 			<h2 class="text-base font-semibold">Filter & Sort Instructors</h2>
 			{#if hasActiveFilters}
@@ -135,13 +135,13 @@
 			{/if}
 		</div>
 
-		<form onsubmit={applyFilters} class="space-y-4">
-			<Accordion.Root type="multiple" value={['main', 'details']}>
+		<form onsubmit={applyFilters} class="space-y-4 overflow-visible">
+			<Accordion.Root type="multiple" value={['main', 'details']} class="overflow-visible">
 				<!-- Main Filters -->
-				<Accordion.Item value="main">
+				<Accordion.Item value="main" class="overflow-visible">
 					<Accordion.Trigger class="text-sm font-medium">Main Filters</Accordion.Trigger>
-					<Accordion.Content class="space-y-3 pt-3">
-						<div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+					<Accordion.Content class="space-y-3 pt-3 overflow-visible">
+						<div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3 overflow-visible">
 							<SearchResort {form} name="resort" label="Resort" countryId={data.spainCountryId} />
 							<SportSelect {form} name="sport" />
 							<LanguageSelect {form} name="language" />
@@ -150,9 +150,9 @@
 				</Accordion.Item>
 
 				<!-- Advanced Filters -->
-				<Accordion.Item value="details">
+				<Accordion.Item value="details" class="overflow-visible">
 					<Accordion.Trigger class="text-sm font-medium">Advanced Filters</Accordion.Trigger>
-					<Accordion.Content class="space-y-3 pt-3">
+					<Accordion.Content class="space-y-3 pt-3 overflow-visible">
 						<!-- Price Range -->
 						<div class="grid gap-3 md:grid-cols-2">
 							<div>
