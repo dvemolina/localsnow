@@ -14,7 +14,8 @@
 	import { Input } from '$src/lib/components/ui/input';
 	import { Checkbox } from '$src/lib/components/ui/checkbox';
 	import { Label } from '$src/lib/components/ui/label';
-	import * as Accordion from '$src/lib/components/ui/accordion';
+	import * as Dialog from '$src/lib/components/ui/dialog';
+	import { Badge } from '$src/lib/components/ui/badge';
 
 	let { data } = $props();
 
@@ -52,6 +53,9 @@
 	// Verified only checkbox (separate from superform since it's a simple boolean)
 	let verifiedOnly = $state(data.filters.verifiedOnly === 'true');
 
+	// Dialog open state
+	let filtersDialogOpen = $state(false);
+
 	// Apply filters function
 	async function applyFilters() {
 		const params = new URLSearchParams();
@@ -65,6 +69,7 @@
 		if ($formData.sortBy) params.set('sortBy', $formData.sortBy);
 		if (verifiedOnly) params.set('verifiedOnly', 'true');
 
+		filtersDialogOpen = false;
 		goto(`/instructors?${params.toString()}`);
 	}
 
@@ -81,6 +86,16 @@
 		goto('/instructors');
 	}
 
+	// Remove individual filter
+	function removeFilter(filterName: string) {
+		if (filterName === 'verifiedOnly') {
+			verifiedOnly = false;
+		} else {
+			($formData as any)[filterName] = undefined;
+		}
+		applyFilters();
+	}
+
 	const hasActiveFilters = $derived(
 		!!$formData.resort ||
 			!!$formData.sport ||
@@ -88,116 +103,83 @@
 			!!$formData.priceMin ||
 			!!$formData.priceMax ||
 			!!$formData.instructorType ||
-			!!$formData.sortBy ||
 			verifiedOnly
 	);
+
+	const hasAdvancedFilters = $derived(
+		!!$formData.language ||
+			!!$formData.priceMin ||
+			!!$formData.priceMax ||
+			!!$formData.instructorType ||
+			verifiedOnly
+	);
+
+	// Get filter labels for display
+	function getResortName(resortId: number | undefined) {
+		// We'll display the resort ID for now - you could enhance this to fetch the actual name
+		return resortId ? `Resort #${resortId}` : '';
+	}
+
+	function getSportName(sportId: string | undefined) {
+		const sports: Record<string, string> = {
+			ski: 'Ski',
+			snowboard: 'Snowboard'
+		};
+		return sportId ? sports[sportId] || sportId : '';
+	}
+
+	function getLanguageName(langCode: string | undefined) {
+		return langCode || '';
+	}
+
+	function getInstructorTypeName(type: string | undefined) {
+		const types: Record<string, string> = {
+			'instructor-independent': 'Independent',
+			'instructor-school': 'School'
+		};
+		return type ? types[type] || type : '';
+	}
 </script>
 
 <svelte:head>
-	<title>Find Ski & Snowboard Instructors | Local Snow</title>
+	<title>Find Ski Instructors | Local Snow</title>
 	<meta
 		name="description"
 		content="Browse certified ski and snowboard instructors at top resorts worldwide. Book directly with professional instructors - no booking fees."
 	/>
 </svelte:head>
 
-<section class="w-full overflow-visible">
+<section class="w-full">
 	<!-- Header -->
-	<div class="mb-8 text-center">
-		<h1 class="title2 mb-4">Find Your Perfect Instructor</h1>
-		<p class="text-muted-foreground">
-			Connect directly with certified ski and snowboard instructors at top resorts
+	<div class="mb-6 text-center">
+		<h1 class="title2 mb-2">Find Your Perfect Instructor</h1>
+		<p class="text-muted-foreground text-sm">
+			Connect directly with certified ski and snowboard instructors
 		</p>
 	</div>
 
-	<!-- Filters Section -->
-	<div class="mb-6 rounded-lg border border-border bg-card p-4 shadow-sm overflow-visible">
-		<div class="mb-4 flex items-center justify-between">
-			<h2 class="text-base font-semibold">Filter & Sort Instructors</h2>
-			{#if hasActiveFilters}
-				<Button type="button" variant="ghost" size="sm" onclick={clearFilters}>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="mr-1 h-4 w-4"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M6 18L18 6M6 6l12 12"
-						/>
-					</svg>
-					Clear All
-				</Button>
-			{/if}
-		</div>
+	<!-- Compact Filter Bar -->
+	<div class="mb-4 rounded-lg border border-border bg-card p-3 shadow-sm">
+		<div class="flex flex-wrap items-center gap-2">
+			<!-- Resort Search -->
+			<div class="w-full md:w-auto md:min-w-[240px] md:flex-1">
+				<SearchResort {form} name="resort" label="" countryId={data.spainCountryId} />
+			</div>
 
-		<form onsubmit={applyFilters} class="space-y-4 overflow-visible">
-			<Accordion.Root type="multiple" value={['main', 'details']} class="overflow-visible">
-				<!-- Main Filters -->
-				<Accordion.Item value="main" class="relative z-10 overflow-visible">
-					<Accordion.Trigger class="text-sm font-medium">Main Filters</Accordion.Trigger>
-					<Accordion.Content class="space-y-3 pt-3 overflow-visible">
-						<div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3 overflow-visible">
-							<SearchResort {form} name="resort" label="Resort" countryId={data.spainCountryId} />
-							<SportSelect {form} name="sport" />
-							<LanguageSelect {form} name="language" />
-						</div>
-					</Accordion.Content>
-				</Accordion.Item>
+			<!-- Sport Select -->
+			<div class="w-full md:w-auto md:min-w-[180px]">
+				<SportSelect {form} name="sport" />
+			</div>
 
-				<!-- Advanced Filters -->
-				<Accordion.Item value="details" class="relative z-0 overflow-visible">
-					<Accordion.Trigger class="text-sm font-medium">Advanced Filters</Accordion.Trigger>
-					<Accordion.Content class="space-y-3 pt-3 overflow-visible">
-						<!-- Price Range -->
-						<div class="grid gap-3 md:grid-cols-2">
-							<div>
-								<Label class="mb-2 block text-sm">Min Price (per hour)</Label>
-								<Input
-									type="number"
-									bind:value={$formData.priceMin}
-									placeholder="Min €"
-									min="0"
-									class="w-full"
-								/>
-							</div>
-							<div>
-								<Label class="mb-2 block text-sm">Max Price (per hour)</Label>
-								<Input
-									type="number"
-									bind:value={$formData.priceMax}
-									placeholder="Max €"
-									min="0"
-									class="w-full"
-								/>
-							</div>
-						</div>
+			<!-- Sort -->
+			<div class="w-full md:w-auto md:min-w-[180px]">
+				<SortBySelect {form} name="sortBy" />
+			</div>
 
-						<!-- Instructor Type & Verified -->
-						<div class="grid gap-3 md:grid-cols-2">
-							<InstructorTypeSelect {form} name="instructorType" isFilter={true} />
-							<div class="flex items-center space-x-2 pt-6">
-								<Checkbox id="verified" bind:checked={verifiedOnly} />
-								<Label for="verified" class="text-sm font-medium leading-none cursor-pointer">
-									Verified Instructors Only
-								</Label>
-							</div>
-						</div>
-					</Accordion.Content>
-				</Accordion.Item>
-			</Accordion.Root>
-
-			<!-- Sort & Apply -->
-			<div class="flex flex-col gap-3 border-t pt-4 md:flex-row">
-				<div class="flex-1">
-					<SortBySelect {form} name="sortBy" />
-				</div>
-				<div class="flex gap-2">
-					<Button type="submit" class="flex-1 md:flex-initial">
+			<!-- More Filters Button -->
+			<Dialog.Root bind:open={filtersDialogOpen}>
+				<Dialog.Trigger asChild let:builder>
+					<Button builders={[builder]} variant="outline" class="w-full md:w-auto relative">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							class="mr-2 h-4 w-4"
@@ -209,19 +191,203 @@
 								stroke-linecap="round"
 								stroke-linejoin="round"
 								stroke-width="2"
-								d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+								d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
 							/>
 						</svg>
-						Apply Filters
+						More Filters
+						{#if hasAdvancedFilters}
+							<span
+								class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white"
+							>
+								{[
+									$formData.language,
+									$formData.priceMin,
+									$formData.priceMax,
+									$formData.instructorType,
+									verifiedOnly
+								].filter(Boolean).length}
+							</span>
+						{/if}
 					</Button>
-				</div>
-			</div>
-		</form>
+				</Dialog.Trigger>
+				<Dialog.Content class="max-w-lg">
+					<Dialog.Header>
+						<Dialog.Title>Advanced Filters</Dialog.Title>
+						<Dialog.Description>
+							Refine your search with additional filters
+						</Dialog.Description>
+					</Dialog.Header>
+
+					<div class="space-y-4 py-4">
+						<!-- Language -->
+						<div>
+							<LanguageSelect {form} name="language" />
+						</div>
+
+						<!-- Price Range -->
+						<div class="space-y-2">
+							<Label class="text-sm font-medium">Price Range (per hour)</Label>
+							<div class="grid grid-cols-2 gap-3">
+								<div>
+									<Input
+										type="number"
+										bind:value={$formData.priceMin}
+										placeholder="Min €"
+										min="0"
+										class="w-full"
+									/>
+								</div>
+								<div>
+									<Input
+										type="number"
+										bind:value={$formData.priceMax}
+										placeholder="Max €"
+										min="0"
+										class="w-full"
+									/>
+								</div>
+							</div>
+						</div>
+
+						<!-- Instructor Type -->
+						<div>
+							<InstructorTypeSelect {form} name="instructorType" isFilter={true} />
+						</div>
+
+						<!-- Verified Only -->
+						<div class="flex items-center space-x-2">
+							<Checkbox id="verified" bind:checked={verifiedOnly} />
+							<Label for="verified" class="text-sm font-medium leading-none cursor-pointer">
+								Verified Instructors Only
+							</Label>
+						</div>
+					</div>
+
+					<Dialog.Footer>
+						<Button variant="outline" onclick={clearFilters}>Clear All</Button>
+						<Button onclick={applyFilters}>Apply Filters</Button>
+					</Dialog.Footer>
+				</Dialog.Content>
+			</Dialog.Root>
+
+			<!-- Search Button (mobile) / Apply (desktop) -->
+			<Button onclick={applyFilters} class="w-full md:w-auto">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="mr-2 h-4 w-4"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+					/>
+				</svg>
+				Search
+			</Button>
+		</div>
 	</div>
 
-	<!-- Results Summary -->
-	<div class="mb-6 flex items-center justify-between">
-		<p class="text-sm text-muted-foreground">
+	<!-- Active Filters Chips -->
+	{#if hasActiveFilters}
+		<div class="mb-4 flex flex-wrap items-center gap-2">
+			<span class="text-muted-foreground text-sm">Active filters:</span>
+			{#if $formData.resort}
+				<Badge variant="secondary" class="gap-1">
+					{getResortName($formData.resort)}
+					<button
+						type="button"
+						onclick={() => removeFilter('resort')}
+						class="ml-1 hover:text-destructive"
+					>
+						×
+					</button>
+				</Badge>
+			{/if}
+			{#if $formData.sport}
+				<Badge variant="secondary" class="gap-1">
+					{getSportName($formData.sport)}
+					<button
+						type="button"
+						onclick={() => removeFilter('sport')}
+						class="ml-1 hover:text-destructive"
+					>
+						×
+					</button>
+				</Badge>
+			{/if}
+			{#if $formData.language}
+				<Badge variant="secondary" class="gap-1">
+					{getLanguageName($formData.language)}
+					<button
+						type="button"
+						onclick={() => removeFilter('language')}
+						class="ml-1 hover:text-destructive"
+					>
+						×
+					</button>
+				</Badge>
+			{/if}
+			{#if $formData.priceMin}
+				<Badge variant="secondary" class="gap-1">
+					Min: €{$formData.priceMin}
+					<button
+						type="button"
+						onclick={() => removeFilter('priceMin')}
+						class="ml-1 hover:text-destructive"
+					>
+						×
+					</button>
+				</Badge>
+			{/if}
+			{#if $formData.priceMax}
+				<Badge variant="secondary" class="gap-1">
+					Max: €{$formData.priceMax}
+					<button
+						type="button"
+						onclick={() => removeFilter('priceMax')}
+						class="ml-1 hover:text-destructive"
+					>
+						×
+					</button>
+				</Badge>
+			{/if}
+			{#if $formData.instructorType}
+				<Badge variant="secondary" class="gap-1">
+					{getInstructorTypeName($formData.instructorType)}
+					<button
+						type="button"
+						onclick={() => removeFilter('instructorType')}
+						class="ml-1 hover:text-destructive"
+					>
+						×
+					</button>
+				</Badge>
+			{/if}
+			{#if verifiedOnly}
+				<Badge variant="secondary" class="gap-1">
+					Verified Only
+					<button
+						type="button"
+						onclick={() => removeFilter('verifiedOnly')}
+						class="ml-1 hover:text-destructive"
+					>
+						×
+					</button>
+				</Badge>
+			{/if}
+			<Button variant="ghost" size="sm" onclick={clearFilters} class="h-6 px-2 text-xs">
+				Clear All
+			</Button>
+		</div>
+	{/if}
+
+	<!-- Results Count -->
+	<div class="mb-4 flex items-center justify-between">
+		<p class="text-muted-foreground text-sm">
 			{#if data.instructors.length === 0}
 				No instructors found
 			{:else if data.instructors.length === 1}
@@ -230,28 +396,14 @@
 				{data.instructors.length} instructors found
 			{/if}
 		</p>
-
-		{#if hasActiveFilters}
-			<p class="text-sm text-muted-foreground">Filters active</p>
-		{/if}
 	</div>
 
-	<!-- Instructors Grid -->
-	{#if data.instructors.length > 0}
-    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
-        {#each data.instructors as instructor}
-            <InstructorCard 
-                instructorData={instructor} 
-                baseLesson={instructor.baseLesson}
-            />
-        {/each}
-    </div>
-{:else}
-		<!-- Empty State -->
+	<!-- Instructor Cards Grid -->
+	{#if data.instructors.length === 0}
 		<div class="flex flex-col items-center justify-center rounded-lg border border-border bg-card p-12 text-center">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
-				class="mb-4 size-16 text-muted-foreground"
+				class="text-muted-foreground mb-4 h-16 w-16"
 				fill="none"
 				viewBox="0 0 24 24"
 				stroke="currentColor"
@@ -263,17 +415,15 @@
 					d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
 				/>
 			</svg>
-			<h3 class="title4 mb-2">No Instructors Found</h3>
-			<p class="mb-4 text-muted-foreground">
-				{#if hasActiveFilters}
-					Try adjusting your filters to see more results
-				{:else}
-					No instructors available at the moment
-				{/if}
-			</p>
-			{#if hasActiveFilters}
-				<Button variant="outline" onclick={clearFilters}>Clear All Filters</Button>
-			{/if}
+			<h3 class="mb-2 text-lg font-semibold">No instructors found</h3>
+			<p class="text-muted-foreground mb-4">Try adjusting your filters to see more results</p>
+			<Button onclick={clearFilters} variant="outline">Clear All Filters</Button>
+		</div>
+	{:else}
+		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
+			{#each data.instructors as instructor (instructor.id)}
+				<InstructorCard {instructor} />
+			{/each}
 		</div>
 	{/if}
 </section>
