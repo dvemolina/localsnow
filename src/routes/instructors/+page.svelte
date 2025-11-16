@@ -178,37 +178,35 @@
 
 			<!-- More Filters Button -->
 			<Dialog.Root bind:open={filtersDialogOpen}>
-				<Dialog.Trigger asChild let:builder>
-					<Button builders={[builder]} variant="outline" class="w-full md:w-auto relative">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							class="mr-2 h-4 w-4"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
+				<Dialog.Trigger class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full md:w-auto relative">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="mr-2 h-4 w-4"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+						/>
+					</svg>
+					More Filters
+					{#if hasAdvancedFilters}
+						<span
+							class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white"
 						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-							/>
-						</svg>
-						More Filters
-						{#if hasAdvancedFilters}
-							<span
-								class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white"
-							>
-								{[
-									$formData.language,
-									$formData.priceMin,
-									$formData.priceMax,
-									$formData.instructorType,
-									verifiedOnly
-								].filter(Boolean).length}
-							</span>
-						{/if}
-					</Button>
+							{[
+								$formData.language,
+								$formData.priceMin,
+								$formData.priceMax,
+								$formData.instructorType,
+								verifiedOnly
+							].filter(Boolean).length}
+						</span>
+					{/if}
 				</Dialog.Trigger>
 				<Dialog.Content class="max-w-lg">
 					<Dialog.Header>
