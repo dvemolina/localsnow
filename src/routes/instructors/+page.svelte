@@ -101,7 +101,7 @@
 	/>
 </svelte:head>
 
-<section class="w-full">
+<section class="w-full overflow-visible">
 	<!-- Header -->
 	<div class="mb-8 text-center">
 		<h1 class="title2 mb-4">Find Your Perfect Instructor</h1>
@@ -138,7 +138,7 @@
 		<form onsubmit={applyFilters} class="space-y-4 overflow-visible">
 			<Accordion.Root type="multiple" value={['main', 'details']} class="overflow-visible">
 				<!-- Main Filters -->
-				<Accordion.Item value="main" class="overflow-visible">
+				<Accordion.Item value="main" class="relative z-10 overflow-visible">
 					<Accordion.Trigger class="text-sm font-medium">Main Filters</Accordion.Trigger>
 					<Accordion.Content class="space-y-3 pt-3 overflow-visible">
 						<div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3 overflow-visible">
@@ -150,7 +150,7 @@
 				</Accordion.Item>
 
 				<!-- Advanced Filters -->
-				<Accordion.Item value="details" class="overflow-visible">
+				<Accordion.Item value="details" class="relative z-0 overflow-visible">
 					<Accordion.Trigger class="text-sm font-medium">Advanced Filters</Accordion.Trigger>
 					<Accordion.Content class="space-y-3 pt-3 overflow-visible">
 						<!-- Price Range -->
