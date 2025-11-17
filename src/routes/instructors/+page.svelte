@@ -158,27 +158,12 @@
 		</p>
 	</div>
 
-	<!-- Compact Filter Bar -->
-	<div class="mb-4 rounded-lg border border-border bg-card p-3 shadow-sm">
-		<div class="flex flex-wrap items-center gap-2">
-			<!-- Resort Search -->
-			<div class="w-full md:w-auto md:min-w-[240px] md:flex-1">
-				<SearchResort {form} name="resort" label="" countryId={data.spainCountryId} />
-			</div>
-
-			<!-- Sport Select -->
-			<div class="w-full md:w-auto md:min-w-[180px]">
-				<SportSelect {form} name="sport" />
-			</div>
-
-			<!-- Sort -->
-			<div class="w-full md:w-auto md:min-w-[180px]">
-				<SortBySelect {form} name="sortBy" />
-			</div>
-
-			<!-- More Filters Button -->
-			<Dialog.Root bind:open={filtersDialogOpen}>
-				<Dialog.Trigger class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full md:w-auto relative">
+	<!-- Filters Section -->
+	<div class="mb-6 rounded-lg border border-border bg-card p-4 shadow-sm overflow-visible">
+		<div class="mb-4 flex items-center justify-between">
+			<h2 class="text-base font-semibold">Filter & Sort Instructors</h2>
+			{#if hasActiveFilters}
+				<Button type="button" variant="ghost" size="sm" onclick={clearFilters}>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						class="mr-2 h-4 w-4"
@@ -216,12 +201,22 @@
 						</Dialog.Description>
 					</Dialog.Header>
 
-					<div class="space-y-4 py-4">
-						<!-- Language -->
-						<div>
+		<form onsubmit={applyFilters} class="space-y-4 overflow-visible">
+			<Accordion.Root type="multiple" value={['main', 'details']} class="overflow-visible">
+				<!-- Main Filters -->
+				<Accordion.Item value="main" class="overflow-visible">
+					<Accordion.Trigger class="text-sm font-medium">Main Filters</Accordion.Trigger>
+					<Accordion.Content class="space-y-3 pt-3 overflow-visible">
+						<div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3 overflow-visible">
+							<SearchResort {form} name="resort" label="Resort" countryId={data.spainCountryId} />
+							<SportSelect {form} name="sport" />
 							<LanguageSelect {form} name="language" />
 						</div>
 
+				<!-- Advanced Filters -->
+				<Accordion.Item value="details" class="overflow-visible">
+					<Accordion.Trigger class="text-sm font-medium">Advanced Filters</Accordion.Trigger>
+					<Accordion.Content class="space-y-3 pt-3 overflow-visible">
 						<!-- Price Range -->
 						<div class="space-y-2">
 							<Label class="text-sm font-medium">Price Range (per hour)</Label>
