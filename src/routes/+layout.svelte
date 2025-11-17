@@ -40,7 +40,7 @@
 	{/if}
 	<main class="wrapper h-full flex w-full flex-col items-center justify-center">
 		<div class=" w-full {isDashboard ? '' : 'max-w-4xl px-4 pt-32'}">
-			{@render children()}
+			{@render children?.()}
 		</div>
 	</main>
 	{#if !isDashboard}

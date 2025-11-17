@@ -102,16 +102,16 @@
 				itemprop="headline"
 				class="text-shadow mb-4 text-3xl font-bold sm:text-5xl md:text-6xl lg:text-6xl"
 			>
-				Find Ski Instructors in Spain
+				Find Ski & Snowboard Instructors in Spain
 			</h1>
-			<div class="flex h-full flex-col justify-center">
+			<div class="flex align-bottom h-full flex-col justify-center">
 				<p class="text-shadow mb-6 max-w-[600px] text-lg text-white sm:text-xl md:text-2xl">
 					Direct contact with local instructors at Spanish resorts. You pay what they charge -
 					nothing more.
 				</p>
 
 				<!-- Search form -->
-				<form method="POST" use:enhance class="mb-8 rounded-lg bg-white/90 p-4 shadow-lg">
+				<form method="POST" use:enhance class="rounded-lg bg-white/90 p-4 shadow-lg">
 					<div class="flex flex-col gap-4 md:flex-row">
 						<div class="flex-1">
 							<SearchResort {form} name="resort" id="location" countryId={data.spainCountryId} />
