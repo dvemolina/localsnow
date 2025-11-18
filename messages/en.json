@@ -33,17 +33,165 @@
 		"per_hour": "per hour",
 		"currency": {
 			"eur": "€"
-		}
+		},
+		"or": "or",
+		"and": "and",
+		"yes": "Yes",
+		"no": "No",
+		"close": "Close",
+		"open": "Open",
+		"select": "Select",
+		"required": "Required",
+		"optional": "Optional"
 	},
 	"home": {
 		"hero": {
-			"title": "Find Your Perfect Ski & Snowboard Instructor",
-			"subtitle": "Book directly with certified instructors at top resorts worldwide - no booking fees",
-			"cta": "Browse Instructors"
+			"title": "Find Ski & Snowboard Instructors in Spain",
+			"subtitle": "Direct contact with local instructors at Spanish resorts. You pay what they charge - nothing more.",
+			"cta": "Find Instructors"
 		},
-		"how_it_works": "How It Works",
-		"for_instructors": "Are you an instructor?",
-		"join_cta": "Join Local Snow"
+		"resorts": {
+			"title": "Popular Spanish Ski Resorts",
+			"subtitle": "Browse instructors at Spain's top ski destinations",
+			"view_all": "View All Spanish Resorts",
+			"view_instructors": "View Instructors"
+		},
+		"resort_descriptions": {
+			"baqueira": "Spain's most prestigious resort",
+			"formigal": "Largest ski area in Spain",
+			"cerler": "Highest resort in the Pyrenees",
+			"sierra_nevada": "Ski with views of the Mediterranean"
+		},
+		"how_it_works": {
+			"title": "How It Works",
+			"step1_title": "Search",
+			"step1_desc": "Pick your resort and sport. Browse instructor profiles with real qualifications and pricing.",
+			"step2_title": "Request",
+			"step2_desc": "Send a booking request with your dates and details. Get a direct response from the instructor.",
+			"step3_title": "Connect",
+			"step3_desc": "Arrange your lesson directly with the instructor. Pay them directly - we don't take a cut.",
+			"cta": "See Detailed Guide for Clients and Instructors"
+		},
+		"trust": {
+			"title": "No Booking Fees. Really.",
+			"subtitle": "Unlike CheckYeti and Skibro, we don't take commissions from your lessons. Instructors set their own prices.",
+			"free_title": "Free for Clients",
+			"free_desc": "No booking fees, no service charges. Pay the instructor directly for your lessons.",
+			"verified_title": "Verified Instructors",
+			"verified_desc": "Look for the verified badge. We check qualifications so you don't have to.",
+			"built_title": "Built by Instructors",
+			"built_desc": "Created by a working ski instructor who was tired of expensive booking platforms."
+		},
+		"instructors": {
+			"title": "Are You a Ski Instructor?",
+			"subtitle": "Join Local Snow and connect directly with clients. No commissions on your lessons - just a small fee per lead.",
+			"keep_fees_title": "Keep 100% of Your Fees",
+			"keep_fees_desc": "No commissions, no percentage cuts. You set your prices and keep everything you earn from lessons.",
+			"pay_leads_title": "Only Pay for Qualified Leads",
+			"pay_leads_desc": "Just 5€ per booking request you choose to respond to. No monthly fees, no hidden charges.",
+			"online_title": "Get Online in 5 Minutes",
+			"online_desc": "Free profile setup. Add your qualifications, set your rates, and start receiving booking requests immediately.",
+			"cta": "Create Your Instructor Profile",
+			"cta_note": "No credit card required. Takes less than 5 minutes."
+		},
+		"testimonials": {
+			"title": "Trusted by Instructors and Clients",
+			"subtitle": "See what our community has to say about Local Snow",
+			"maria": {
+				"text": "Finally, a platform that doesn't take 20% of my earnings. I love the simplicity - just pay per lead and keep everything else. My income has increased significantly.",
+				"name": "Maria Costa",
+				"role": "Ski Instructor, Baqueira Beret"
+			},
+			"james": {
+				"text": "Found an amazing instructor for my family at Sierra Nevada. No hidden fees, direct contact, and the instructor was exactly as described. Will definitely use again!",
+				"name": "James Miller",
+				"role": "Client from London"
+			},
+			"pablo": {
+				"text": "As a snowboard instructor in Formigal, this platform has been a game changer. More clients, less hassle, and I control my schedule completely. Highly recommended!",
+				"name": "Pablo García",
+				"role": "Snowboard Instructor, Formigal"
+			}
+		},
+		"cta": {
+			"title": "Ready to Get Started?",
+			"subtitle": "Join Local Snow today and experience skiing without the booking fees.",
+			"find_instructor": "Find an Instructor",
+			"list_instructor": "List as an Instructor"
+		}
+	},
+	"how_it_works_page": {
+		"title": "How It Works",
+		"intro": "Local Snow connects clients directly with ski and snowboard instructors. No booking fees, no abusive commissions. Here's how it works for both sides.",
+		"clients": {
+			"title": "For Clients Looking for Lessons",
+			"step1_title": "Search for Instructors",
+			"step1_desc": "Start on the homepage. Select your resort and sport (skiing or snowboarding). You'll see a list of instructors who work at that resort.",
+			"step2_title": "Browse Profiles",
+			"step2_desc": "Check instructor qualifications, languages spoken, experience, and pricing. Look for the verified badge - it means we've checked their certifications.",
+			"step3_title": "Request a Lesson",
+			"step3_desc": "Fill out a booking request with your dates, skill level, number of students, and any special requirements. Submit it through the instructor's profile.",
+			"step3_note": "Refundable deposit: You'll pay a €15 deposit to secure your booking and prevent spam. This is returned after your confirmed lesson.",
+			"step4_title": "Connect Directly",
+			"step4_desc": "The instructor receives your request and responds with availability and pricing. You arrange lesson details directly with them - no middleman.",
+			"step5_title": "Pay the Instructor Directly",
+			"step5_desc": "You pay the instructor directly for the lessons - not through our platform. Cash, bank transfer, or however you agree. We don't handle lesson payments, so there are no booking fees.",
+			"step6_title": "Leave a Review",
+			"step6_desc": "After your lesson, leave an honest review. It helps other clients find great instructors and gives instructors feedback.",
+			"cost_title": "Cost for Clients",
+			"cost_no_fees": "No booking fees - browse and request lessons for free",
+			"cost_deposit": "15€ refundable deposit - required per booking request, returned after your confirmed lesson",
+			"cost_unlimited": "Unlimited instructors - contact as many instructors as you need"
+		},
+		"instructors": {
+			"title": "For Instructors Offering Lessons",
+			"step1_title": "Create Your Profile",
+			"step1_desc": "Sign up and fill out your instructor profile. Add your qualifications, languages, resorts you work at, sports you teach, and base pricing.",
+			"step1_note": "Takes 5 minutes. Your profile goes live immediately.",
+			"step2_title": "Get Verified (Optional)",
+			"step2_desc": "Upload your certification documents to apply for verification. A verified badge appears on your profile, which helps you stand out and builds trust with clients.",
+			"step3_title": "Receive Booking Requests",
+			"step3_desc": "When a client requests a lesson, you get an email notification. You'll see their dates, skill level, and requirements.",
+			"step4_title": "Pay 5€ to Access Contact Info",
+			"step4_desc": "To view the client's contact information and respond, you pay a one-time 5€ lead fee per request. This covers platform costs and prevents spam requests.",
+			"step4_note": "You only pay if you want to respond. You can decline requests at no cost.",
+			"step5_title": "Arrange Lessons Directly",
+			"step5_desc": "Contact the client, confirm availability, and agree on lesson details. You handle scheduling, location, and pricing on your terms.",
+			"step6_title": "Get Paid Directly",
+			"step6_desc": "The client pays you directly for the lessons. Cash, bank transfer, Bizum - however you prefer. We don't process payments, so there are no commissions or fees on your lessons.",
+			"step6_note": "You keep 100% of what you charge for lessons.",
+			"cost_title": "Cost for Instructors",
+			"cost_free": "Free profile listing - create and maintain your profile at no cost",
+			"cost_lead": "5€ per lead - only pay when you want to respond to a booking request",
+			"cost_no_commission": "No commissions - keep 100% of your lesson fees",
+			"cost_no_monthly": "No monthly fees - pay only for leads you choose to pursue"
+		},
+		"faq": {
+			"title": "Common Questions",
+			"deposit_q": "Why the 15€ deposit for clients?",
+			"deposit_a": "It prevents spam and fake requests. The deposit is fully refundable after your confirmed lesson with the instructor. Each booking request requires a deposit, which protects instructors from no-shows and ensures serious inquiries.",
+			"lead_fee_q": "Why the 5€ lead fee for instructors?",
+			"lead_fee_a": "It covers server costs, email notifications, and platform maintenance. Unlike booking platforms that take 15-20% commissions, we only charge for the initial connection - not the lessons themselves.",
+			"payments_q": "How do payments work?",
+			"payments_a": "Clients pay instructors directly for lessons - we're not involved. The only payments processed through our platform are the client deposit (refundable) and instructor lead fees (5€ per request). Both are handled securely through Stripe.",
+			"no_response_q": "What if an instructor doesn't respond?",
+			"no_response_a": "Try another instructor. Instructors aren't obligated to respond to every request - they might be fully booked or unavailable for your dates. Your 15€ deposit remains valid for future requests.",
+			"contact_q": "Can instructors see my contact info before paying?",
+			"contact_a": "No. Instructors see your dates, skill level, and requirements, but contact information is hidden until they pay the 5€ lead fee. This protects both parties from spam."
+		},
+		"cta": {
+			"title": "Ready to Get Started?",
+			"find_instructor": "Find an Instructor",
+			"list_instructor": "List as an Instructor"
+		}
+	},
+	"footer": {
+		"tagline": "Free directory of ski instructors in Spain",
+		"navigation": "Navigation",
+		"legal": "Legal",
+		"privacy": "Privacy Policy",
+		"terms": "Terms of Service",
+		"cookies": "Cookie Policy"
 	},
 	"instructors": {
 		"title": "Find Your Perfect Instructor",
@@ -130,7 +278,44 @@
 		"country_code": "Country Code",
 		"accept_terms": "I accept the terms and conditions",
 		"have_account": "Already have an account?",
-		"no_account": "Don't have an account?"
+		"no_account": "Don't have an account?",
+		"sign_in": "Sign In",
+		"sign_up": "Sign Up",
+		"forgot_password": "Forgot password?",
+		"reset_password": "Reset Password",
+		"or_continue_with": "Or continue with",
+		"google": "Google",
+		"join_network": "Join Local Snow International Network",
+		"signup_google": "Signup With Google Account",
+		"or_create_account": "or create an account",
+		"access_google": "Access With Google Account",
+		"or": "or"
+	},
+	"instructors_page": {
+		"title": "Find Your Perfect Instructor",
+		"subtitle": "Connect directly with certified ski and snowboard instructors",
+		"filter_sort": "Filter & Sort Instructors",
+		"clear_all": "Clear All",
+		"more_filters": "More Filters",
+		"advanced_filters": "Advanced Filters",
+		"refine_search": "Refine your search with additional filters",
+		"price_range": "Price Range (per hour)",
+		"min_price": "Min €",
+		"max_price": "Max €",
+		"verified_only": "Verified Instructors Only",
+		"apply_filters": "Apply Filters",
+		"search": "Search",
+		"active_filters": "Active filters:",
+		"results": {
+			"none": "No instructors found",
+			"one": "1 instructor found",
+			"many": "{count} instructors found"
+		},
+		"empty": {
+			"title": "No instructors found",
+			"subtitle": "Try adjusting your filters to see more results",
+			"clear_filters": "Clear All Filters"
+		}
 	},
 	"dashboard": {
 		"title": "Dashboard",
@@ -149,13 +334,58 @@
 	"seo": {
 		"meta": {
 			"home": {
-				"title": "Local Snow - Direct Booking Platform for Ski & Snowboard Instructors",
-				"description": "Find and book certified ski and snowboard instructors directly. No booking fees. Connect with professional instructors at top resorts worldwide."
+				"title": "Local Snow | Find Ski Instructors at Spanish Resorts",
+				"description": "Connect directly with ski and snowboard instructors across Spain. No booking fees, no middlemen. Find instructors at 25+ Spanish resorts including Baqueira, Formigal, Cerler, and Sierra Nevada."
 			},
 			"instructors": {
 				"title": "Find Ski & Snowboard Instructors | Local Snow",
 				"description": "Browse certified ski and snowboard instructors at top resorts worldwide. Book directly with professional instructors - no booking fees."
+			},
+			"how_it_works": {
+				"title": "How It Works | Local Snow",
+				"description": "Learn how Local Snow connects clients with ski instructors in Spain. Simple process for booking lessons and listing your instructor profile."
 			}
 		}
+	},
+	"about": {
+		"title": "About Local Snow",
+		"intro": "Local Snow is a free directory connecting clients with independent ski and snowboard instructors across Spain.",
+		"mission": {
+			"title": "Our Mission",
+			"text": "We believe ski lessons should be accessible without expensive booking fees. Our platform lets instructors set their own prices and keep 100% of their lesson fees."
+		},
+		"how_different": {
+			"title": "How We're Different",
+			"text": "Unlike booking platforms that charge 15-20% commissions, we only charge a small lead fee (5€) to instructors. Clients browse for free and pay a refundable deposit to prevent spam."
+		},
+		"story": {
+			"title": "Our Story",
+			"text": "Founded by a working ski instructor who was frustrated with expensive booking platforms that take large cuts from every lesson."
+		}
+	},
+	"legal": {
+		"privacy": {
+			"title": "Privacy Policy",
+			"last_updated": "Last updated"
+		},
+		"terms": {
+			"title": "Terms of Service",
+			"last_updated": "Last updated"
+		},
+		"cookies": {
+			"title": "Cookie Policy",
+			"last_updated": "Last updated"
+		}
+	},
+	"sports": {
+		"ski": "Ski",
+		"snowboard": "Snowboard",
+		"both": "Ski & Snowboard"
+	},
+	"levels": {
+		"beginner": "Beginner",
+		"intermediate": "Intermediate",
+		"advanced": "Advanced",
+		"expert": "Expert"
 	}
 }

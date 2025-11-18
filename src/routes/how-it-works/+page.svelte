@@ -1,22 +1,25 @@
+<script lang="ts">
+	import * as m from '$lib/paraglide/messages';
+</script>
+
 <svelte:head>
-	<title>How It Works | Local Snow</title>
+	<title>{m.seo_meta_how_it_works_title()}</title>
 	<meta
 		name="description"
-		content="Learn how Local Snow connects clients with ski instructors in Spain. Simple process for booking lessons and listing your instructor profile."
+		content={m.seo_meta_how_it_works_description()}
 	/>
 </svelte:head>
 
 <article class="prose prose-sm mx-auto max-w-3xl dark:prose-invert">
-	<h1 class="title2">How It Works</h1>
+	<h1 class="title2">{m.how_it_works_page_title()}</h1>
 
 	<p class="text-lg text-muted-foreground">
-		Local Snow connects clients directly with ski and snowboard instructors. No booking fees, no
-		abusive commissions. Here's how it works for both sides.
+		{m.how_it_works_page_intro()}
 	</p>
 
 	<!-- For Clients Section -->
 	<section class="mt-12 rounded-lg border border-border bg-card p-6 shadow-sm">
-		<h2 class="title3 mb-6">For Clients Looking for Lessons</h2>
+		<h2 class="title3 mb-6">{m.how_it_works_page_clients_title()}</h2>
 
 		<div class="space-y-6">
 			<div class="flex gap-4">
@@ -26,10 +29,9 @@
 					1
 				</div>
 				<div>
-					<h3 class="title4 mb-2">Search for Instructors</h3>
+					<h3 class="title4 mb-2">{m.how_it_works_page_clients_step1_title()}</h3>
 					<p>
-						Start on the <a href="/">homepage</a>. Select your resort and sport (skiing or snowboarding).
-						You'll see a list of instructors who work at that resort.
+						{m.how_it_works_page_clients_step1_desc()}
 					</p>
 				</div>
 			</div>
@@ -41,10 +43,9 @@
 					2
 				</div>
 				<div>
-					<h3 class="title4 mb-2">Browse Profiles</h3>
+					<h3 class="title4 mb-2">{m.how_it_works_page_clients_step2_title()}</h3>
 					<p>
-						Check instructor qualifications, languages spoken, experience, and pricing. Look for the
-						<strong>verified badge</strong> - it means we've checked their certifications.
+						{m.how_it_works_page_clients_step2_desc()}
 					</p>
 				</div>
 			</div>
@@ -56,14 +57,12 @@
 					3
 				</div>
 				<div>
-					<h3 class="title4 mb-2">Request a Lesson</h3>
+					<h3 class="title4 mb-2">{m.how_it_works_page_clients_step3_title()}</h3>
 					<p>
-						Fill out a booking request with your dates, skill level, number of students, and any
-						special requirements. Submit it through the instructor's profile.
+						{m.how_it_works_page_clients_step3_desc()}
 					</p>
 					<p class="text-sm text-muted-foreground">
-						<strong>Refundable deposit:</strong> You'll pay a €15 deposit to secure your booking and
-						prevent spam. This is returned after your confirmed lesson.
+						<strong>{m.how_it_works_page_clients_step3_note()}</strong>
 					</p>
 				</div>
 			</div>
@@ -75,10 +74,9 @@
 					4
 				</div>
 				<div>
-					<h3 class="title4 mb-2">Connect Directly</h3>
+					<h3 class="title4 mb-2">{m.how_it_works_page_clients_step4_title()}</h3>
 					<p>
-						The instructor receives your request and responds with availability and pricing. You
-						arrange lesson details directly with them - no middleman.
+						{m.how_it_works_page_clients_step4_desc()}
 					</p>
 				</div>
 			</div>
@@ -90,11 +88,9 @@
 					5
 				</div>
 				<div>
-					<h3 class="title4 mb-2">Pay the Instructor Directly</h3>
+					<h3 class="title4 mb-2">{m.how_it_works_page_clients_step5_title()}</h3>
 					<p>
-						<strong>You pay the instructor directly</strong> for the lessons - not through our platform.
-						Cash, bank transfer, or however you agree. We don't handle lesson payments, so there are
-						no booking fees.
+						{m.how_it_works_page_clients_step5_desc()}
 					</p>
 				</div>
 			</div>
@@ -106,30 +102,29 @@
 					6
 				</div>
 				<div>
-					<h3 class="title4 mb-2">Leave a Review</h3>
+					<h3 class="title4 mb-2">{m.how_it_works_page_clients_step6_title()}</h3>
 					<p>
-						After your lesson, leave an honest review. It helps other clients find great instructors
-						and gives instructors feedback.
+						{m.how_it_works_page_clients_step6_desc()}
 					</p>
 				</div>
 			</div>
 		</div>
 
 		<div class="mt-6 rounded-md bg-muted p-4">
-			<h4 class="font-semibold">Cost for Clients</h4>
+			<h4 class="font-semibold">{m.how_it_works_page_clients_cost_title()}</h4>
 			<ul class="my-2 space-y-1 text-sm">
-				<li> <strong>No booking fees</strong> - browse and request lessons for free</li>
+				<li> <strong>{m.how_it_works_page_clients_cost_no_fees()}</strong></li>
 				<li>
-					 <strong>15€ refundable deposit</strong> - required per booking request, returned after your confirmed lesson
+					 <strong>{m.how_it_works_page_clients_cost_deposit()}</strong>
 				</li>
-				<li> <strong>Unlimited instructors</strong> - contact as many instructors as you need</li>
+				<li> <strong>{m.how_it_works_page_clients_cost_unlimited()}</strong></li>
 			</ul>
 		</div>
 	</section>
 
 	<!-- For Instructors Section -->
 	<section class="mt-12 rounded-lg border border-border bg-card p-6 shadow-sm">
-		<h2 class="title3 mb-6">For Instructors Offering Lessons</h2>
+		<h2 class="title3 mb-6">{m.how_it_works_page_instructors_title()}</h2>
 
 		<div class="space-y-6">
 			<div class="flex gap-4">
@@ -139,13 +134,12 @@
 					1
 				</div>
 				<div>
-					<h3 class="title4 mb-2">Create Your Profile</h3>
+					<h3 class="title4 mb-2">{m.how_it_works_page_instructors_step1_title()}</h3>
 					<p>
-						<a href="/signup">Sign up</a> and fill out your instructor profile. Add your qualifications,
-						languages, resorts you work at, sports you teach, and base pricing.
+						{m.how_it_works_page_instructors_step1_desc()}
 					</p>
 					<p class="text-sm text-muted-foreground">
-						<strong>Takes 5 minutes.</strong> Your profile goes live immediately.
+						<strong>{m.how_it_works_page_instructors_step1_note()}</strong>
 					</p>
 				</div>
 			</div>
@@ -157,10 +151,9 @@
 					2
 				</div>
 				<div>
-					<h3 class="title4 mb-2">Get Verified (Optional)</h3>
+					<h3 class="title4 mb-2">{m.how_it_works_page_instructors_step2_title()}</h3>
 					<p>
-						Upload your certification documents to apply for verification. A verified badge appears
-						on your profile, which helps you stand out and builds trust with clients.
+						{m.how_it_works_page_instructors_step2_desc()}
 					</p>
 				</div>
 			</div>
@@ -172,10 +165,9 @@
 					3
 				</div>
 				<div>
-					<h3 class="title4 mb-2">Receive Booking Requests</h3>
+					<h3 class="title4 mb-2">{m.how_it_works_page_instructors_step3_title()}</h3>
 					<p>
-						When a client requests a lesson, you get an email notification. You'll see their dates,
-						skill level, and requirements.
+						{m.how_it_works_page_instructors_step3_desc()}
 					</p>
 				</div>
 			</div>
@@ -187,13 +179,12 @@
 					4
 				</div>
 				<div>
-					<h3 class="title4 mb-2">Pay 5€ to Access Contact Info</h3>
+					<h3 class="title4 mb-2">{m.how_it_works_page_instructors_step4_title()}</h3>
 					<p>
-						To view the client's contact information and respond, you pay a one-time 5€ lead fee per
-						request. This covers platform costs and prevents spam requests.
+						{m.how_it_works_page_instructors_step4_desc()}
 					</p>
 					<p class="text-sm text-muted-foreground">
-						You only pay if you want to respond. You can decline requests at no cost.
+						{m.how_it_works_page_instructors_step4_note()}
 					</p>
 				</div>
 			</div>
@@ -205,10 +196,9 @@
 					5
 				</div>
 				<div>
-					<h3 class="title4 mb-2">Arrange Lessons Directly</h3>
+					<h3 class="title4 mb-2">{m.how_it_works_page_instructors_step5_title()}</h3>
 					<p>
-						Contact the client, confirm availability, and agree on lesson details. You handle
-						scheduling, location, and pricing on your terms.
+						{m.how_it_works_page_instructors_step5_desc()}
 					</p>
 				</div>
 			</div>
@@ -220,94 +210,83 @@
 					6
 				</div>
 				<div>
-					<h3 class="title4 mb-2">Get Paid Directly</h3>
+					<h3 class="title4 mb-2">{m.how_it_works_page_instructors_step6_title()}</h3>
 					<p>
-						<strong>The client pays you directly</strong> for the lessons. Cash, bank transfer, Bizum
-						- however you prefer. We don't process payments, so there are no commissions or fees on
-						your lessons.
+						{m.how_it_works_page_instructors_step6_desc()}
 					</p>
 					<p class="text-sm text-muted-foreground">
-						You keep 100% of what you charge for lessons.
+						{m.how_it_works_page_instructors_step6_note()}
 					</p>
 				</div>
 			</div>
 		</div>
 
 		<div class="mt-6 rounded-md bg-muted p-4">
-			<h4 class="font-semibold">Cost for Instructors</h4>
+			<h4 class="font-semibold">{m.how_it_works_page_instructors_cost_title()}</h4>
 			<ul class="my-2 space-y-1 text-sm">
-				<li> <strong>Free profile listing</strong> - create and maintain your profile at no cost</li>
+				<li> <strong>{m.how_it_works_page_instructors_cost_free()}</strong></li>
 				<li>
-					 <strong>5€ per lead</strong> - only pay when you want to respond to a booking request
+					 <strong>{m.how_it_works_page_instructors_cost_lead()}</strong>
 				</li>
-				<li> <strong>No commissions</strong> - keep 100% of your lesson fees</li>
-				<li> <strong>No monthly fees</strong> - pay only for leads you choose to pursue</li>
+				<li> <strong>{m.how_it_works_page_instructors_cost_no_commission()}</strong></li>
+				<li> <strong>{m.how_it_works_page_instructors_cost_no_monthly()}</strong></li>
 			</ul>
 		</div>
 	</section>
 
 	<!-- FAQ Section -->
 	<section class="mt-12">
-		<h2 class="title3">Common Questions</h2>
+		<h2 class="title3">{m.how_it_works_page_faq_title()}</h2>
 
 		<div class="space-y-4">
 			<div>
-				<h3 class="title4">Why the 15€ deposit for clients?</h3>
+				<h3 class="title4">{m.how_it_works_page_faq_deposit_q()}</h3>
 				<p>
-					It prevents spam and fake requests. The deposit is fully refundable after your confirmed
-					lesson with the instructor. Each booking request requires a deposit, which protects
-					instructors from no-shows and ensures serious inquiries.
+					{m.how_it_works_page_faq_deposit_a()}
 				</p>
 			</div>
 
 			<div>
-				<h3 class="title4">Why the 5€ lead fee for instructors?</h3>
+				<h3 class="title4">{m.how_it_works_page_faq_lead_fee_q()}</h3>
 				<p>
-					It covers server costs, email notifications, and platform maintenance. Unlike booking
-					platforms that take 15-20% commissions, we only charge for the initial connection - not
-					the lessons themselves.
+					{m.how_it_works_page_faq_lead_fee_a()}
 				</p>
 			</div>
 
 			<div>
-				<h3 class="title4">How do payments work?</h3>
+				<h3 class="title4">{m.how_it_works_page_faq_payments_q()}</h3>
 				<p>
-					Clients pay instructors directly for lessons - we're not involved. The only payments
-					processed through our platform are the client deposit (refundable) and instructor lead
-					fees (5€ per request). Both are handled securely through Stripe.
+					{m.how_it_works_page_faq_payments_a()}
 				</p>
 			</div>
 
 			<div>
-				<h3 class="title4">What if an instructor doesn't respond?</h3>
+				<h3 class="title4">{m.how_it_works_page_faq_no_response_q()}</h3>
 				<p>
-					Try another instructor. Instructors aren't obligated to respond to every request - they
-					might be fully booked or unavailable for your dates. Your 15€ deposit remains valid for
-					future requests.
+					{m.how_it_works_page_faq_no_response_a()}
 				</p>
 			</div>
 
 			<div>
-				<h3 class="title4">Can instructors see my contact info before paying?</h3>
+				<h3 class="title4">{m.how_it_works_page_faq_contact_q()}</h3>
 				<p>
-					No. Instructors see your dates, skill level, and requirements, but contact information is
-					hidden until they pay the 5€ lead fee. This protects both parties from spam.
+					{m.how_it_works_page_faq_contact_a()}
 				</p>
 			</div>
 		</div>
 	</section>
 
 	<section class="mt-12 text-center ">
-		<h2 class="title3 mb-6">Ready to Get Started?</h2>
+		<h2 class="title3 mb-6">{m.how_it_works_page_cta_title()}</h2>
 		<div class="flex flex-col gap-4 sm:flex-row sm:justify-center">
 			<a href="/" class="bg-primary inline-block rounded-md px-6 py-3 font-medium text-white">
-				Find an Instructor
+				{m.how_it_works_page_cta_find_instructor()}
 			</a>
 			<a
 				href="/signup"
 				class="inline-block rounded-md border border-border bg-card px-6 py-3 font-medium"
 			>
-				List as an Instructor
+				{m.how_it_works_page_cta_list_instructor()}
 			</a>
 		</div>
 	</section>

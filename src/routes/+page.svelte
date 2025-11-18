@@ -4,40 +4,41 @@
 	import SportSelect from '$src/features/Resorts/components/SportSelect.svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
+	import * as m from '$lib/paraglide/messages';
 
 	let { data } = $props();
 
-	// Top Spanish resorts for homepage
-	const topResorts = [
+	// Top Spanish resorts for homepage - use $derived for translation reactivity
+	const topResorts = $derived([
 		{
 			name: 'Baqueira Beret',
 			slug: 'baqueira-beret',
 			region: 'Pyrenees, Catalonia',
-			description: "Spain's most prestigious resort",
+			description: m.home_resort_descriptions_baqueira(),
 			image: '/ski-instructor-powder.webp'
 		},
 		{
 			name: 'Formigal-Panticosa',
 			slug: 'formigal-panticosa',
 			region: 'Pyrenees, Aragón',
-			description: 'Largest ski area in Spain',
+			description: m.home_resort_descriptions_formigal(),
 			image: '/ski-instructor-turn.webp'
 		},
 		{
 			name: 'Cerler',
 			slug: 'cerler',
 			region: 'Pyrenees, Huesca',
-			description: 'Highest resort in the Pyrenees',
+			description: m.home_resort_descriptions_cerler(),
 			image: '/zermatt.webp'
 		},
 		{
 			name: 'Sierra Nevada',
 			slug: 'sierra-nevada',
 			region: 'Granada, Andalusia',
-			description: 'Ski with views of the Mediterranean',
+			description: m.home_resort_descriptions_sierra_nevada(),
 			image: '/catedral.webp'
 		}
-	];
+	]);
 
 	// Schema markup for SEO
 	const websiteSchema = {
@@ -63,15 +64,15 @@
 </script>
 
 <svelte:head>
-	<title>Local Snow | Find Ski Instructors at Spanish Resorts</title>
+	<title>{m.seo_meta_home_title()}</title>
 	<meta
 		name="description"
-		content="Connect directly with ski and snowboard instructors across Spain. No booking fees, no middlemen. Find instructors at 25+ Spanish resorts including Baqueira, Formigal, Cerler, and Sierra Nevada."
+		content={m.seo_meta_home_description()}
 	/>
 
 	<!-- Open Graph -->
-	<meta property="og:title" content="Local Snow | Find Ski Instructors at Spanish Resorts" />
-	<meta property="og:description" content="Connect directly with ski and snowboard instructors across Spain. No booking fees, no middlemen. Find instructors at Baqueira, Formigal, Cerler, and Sierra Nevada." />
+	<meta property="og:title" content={m.seo_meta_home_title()} />
+	<meta property="og:description" content={m.seo_meta_home_description()} />
 	<meta property="og:url" content="https://localsnow.org/" />
 	<meta property="og:image" content="https://localsnow.org/ski-instructor-powder.webp" />
 	<meta property="og:image:alt" content="Ski instructor teaching in powder snow" />
@@ -79,8 +80,8 @@
 	<meta property="og:image:height" content="630" />
 
 	<!-- Twitter Card -->
-	<meta name="twitter:title" content="Local Snow | Find Ski Instructors at Spanish Resorts" />
-	<meta name="twitter:description" content="Connect directly with ski and snowboard instructors across Spain. No booking fees." />
+	<meta name="twitter:title" content={m.seo_meta_home_title()} />
+	<meta name="twitter:description" content={m.seo_meta_home_description()} />
 	<meta name="twitter:image" content="https://localsnow.org/ski-instructor-powder.webp" />
 
 	<script type="application/ld+json">
@@ -117,12 +118,11 @@
 				itemprop="headline"
 				class="text-shadow mb-4 text-3xl font-bold sm:text-5xl md:text-6xl lg:text-6xl"
 			>
-				Find Ski & Snowboard Instructors in Spain
+				{m.home_hero_title()}
 			</h1>
 			<div class="flex align-bottom h-full flex-col justify-center">
 				<p class="text-shadow mb-6 max-w-[600px] text-lg text-white sm:text-xl md:text-2xl">
-					Direct contact with local instructors at Spanish resorts. You pay what they charge -
-					nothing more.
+					{m.home_hero_subtitle()}
 				</p>
 
 				<!-- Search form -->
@@ -139,7 +139,7 @@
 								type="submit"
 								class="bg-primary h-12 w-full rounded-md p-3 font-medium whitespace-nowrap text-white md:w-auto"
 							>
-								Find Instructors
+								{m.home_hero_cta()}
 							</button>
 						</div>
 					</div>
@@ -151,8 +151,8 @@
 
 <!-- Top Resorts Section -->
 <section class="section">
-	<h2 class="mb-2 text-center text-3xl font-bold">Popular Spanish Ski Resorts</h2>
-	<p class="mb-8 text-center text-gray-600">Browse instructors at Spain's top ski destinations</p>
+	<h2 class="mb-2 text-center text-3xl font-bold">{m.home_resorts_title()}</h2>
+	<p class="mb-8 text-center text-gray-600">{m.home_resorts_subtitle()}</p>
 
 	<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
 		{#each topResorts as resort}
@@ -178,7 +178,7 @@
 					<p class="mb-1 text-sm text-white/95 drop-shadow-md">{resort.region}</p>
 					<p class="mb-4 text-sm text-white/85 drop-shadow-md">{resort.description}</p>
 					<span class="inline-flex items-center font-semibold text-white transition-transform group-hover:translate-x-1">
-						View Instructors →
+						{m.home_resorts_view_instructors()} →
 					</span>
 				</div>
 			</a>
@@ -187,14 +187,14 @@
 
 	<div class="mt-8 text-center">
 		<a href="/resorts" class="bg-primary inline-block rounded-md px-6 py-3 font-medium text-white">
-			View All Spanish Resorts
+			{m.home_resorts_view_all()}
 		</a>
 	</div>
 </section>
 
 <!-- How It Works Section -->
 <section class="grey-section">
-	<h2 class="mb-8 text-center text-3xl font-bold">How It Works</h2>
+	<h2 class="mb-8 text-center text-3xl font-bold">{m.home_how_it_works_title()}</h2>
 
 	<div class="grid grid-cols-1 gap-8 md:grid-cols-3">
 		<div class="text-center">
@@ -203,9 +203,9 @@
 			>
 				1
 			</div>
-			<h3 class="mb-2 text-xl font-semibold">Search</h3>
+			<h3 class="mb-2 text-xl font-semibold">{m.home_how_it_works_step1_title()}</h3>
 			<p class="text-gray-600">
-				Pick your resort and sport. Browse instructor profiles with real qualifications and pricing.
+				{m.home_how_it_works_step1_desc()}
 			</p>
 		</div>
 
@@ -215,10 +215,9 @@
 			>
 				2
 			</div>
-			<h3 class="mb-2 text-xl font-semibold">Request</h3>
+			<h3 class="mb-2 text-xl font-semibold">{m.home_how_it_works_step2_title()}</h3>
 			<p class="text-gray-600">
-				Send a booking request with your dates and details. Get a direct response from the
-				instructor.
+				{m.home_how_it_works_step2_desc()}
 			</p>
 		</div>
 
@@ -228,9 +227,9 @@
 			>
 				3
 			</div>
-			<h3 class="mb-2 text-xl font-semibold">Connect</h3>
+			<h3 class="mb-2 text-xl font-semibold">{m.home_how_it_works_step3_title()}</h3>
 			<p class="text-gray-600">
-				Arrange your lesson directly with the instructor. Pay them directly - we don't take a cut.
+				{m.home_how_it_works_step3_desc()}
 			</p>
 		</div>
 	</div>
@@ -240,7 +239,7 @@
 			href="/how-it-works"
 			class="inline-block rounded-md border border-primary px-6 py-3 font-medium text-primary transition-all hover:bg-primary hover:text-white"
 		>
-			See Detailed Guide for Clients and Instructors →
+			{m.home_how_it_works_cta()} →
 		</a>
 	</div>
 </section>
@@ -248,10 +247,9 @@
 <!-- Trust Signals Section -->
 <section class="section">
 	<div class="mb-10 text-center">
-		<h2 class="mb-4 text-center text-3xl font-bold">No Booking Fees. Really.</h2>
+		<h2 class="mb-4 text-center text-3xl font-bold">{m.home_trust_title()}</h2>
 		<p class="text-center text-gray-600">
-			Unlike CheckYeti and Skibro, we don't take commissions from your lessons. Instructors set
-			their own prices.
+			{m.home_trust_subtitle()}
 		</p>
 	</div>
 
@@ -275,9 +273,9 @@
 					/>
 				</svg>
 			</div>
-			<h3 class="mb-2 text-xl font-semibold">Free for Clients</h3>
+			<h3 class="mb-2 text-xl font-semibold">{m.home_trust_free_title()}</h3>
 			<p class="text-gray-600">
-				No booking fees, no service charges. Pay the instructor directly for your lessons.
+				{m.home_trust_free_desc()}
 			</p>
 		</div>
 
@@ -300,9 +298,9 @@
 					/>
 				</svg>
 			</div>
-			<h3 class="mb-2 text-xl font-semibold">Verified Instructors</h3>
+			<h3 class="mb-2 text-xl font-semibold">{m.home_trust_verified_title()}</h3>
 			<p class="text-gray-600">
-				Look for the verified badge. We check qualifications so you don't have to.
+				{m.home_trust_verified_desc()}
 			</p>
 		</div>
 
@@ -325,9 +323,9 @@
 					/>
 				</svg>
 			</div>
-			<h3 class="mb-2 text-xl font-semibold">Built by Instructors</h3>
+			<h3 class="mb-2 text-xl font-semibold">{m.home_trust_built_title()}</h3>
 			<p class="text-gray-600">
-				Created by a working ski instructor who was tired of expensive booking platforms.
+				{m.home_trust_built_desc()}
 			</p>
 		</div>
 	</div>
@@ -336,10 +334,9 @@
 <!-- Instructor Benefits Section -->
 <section class="grey-section">
 	<div class="mb-10 text-center">
-		<h2 class="mb-4 text-center text-3xl font-bold">Are You a Ski Instructor?</h2>
+		<h2 class="mb-4 text-center text-3xl font-bold">{m.home_instructors_title()}</h2>
 		<p class="text-center text-gray-600">
-			Join Local Snow and connect directly with clients. No commissions on your lessons - just a
-			small fee per lead.
+			{m.home_instructors_subtitle()}
 		</p>
 	</div>
 
@@ -363,10 +360,9 @@
 					/>
 				</svg>
 			</div>
-			<h3 class="mb-2 text-xl font-semibold">Keep 100% of Your Fees</h3>
+			<h3 class="mb-2 text-xl font-semibold">{m.home_instructors_keep_fees_title()}</h3>
 			<p class="text-gray-600">
-				No commissions, no percentage cuts. You set your prices and keep everything you earn from
-				lessons.
+				{m.home_instructors_keep_fees_desc()}
 			</p>
 		</div>
 
@@ -389,9 +385,9 @@
 					/>
 				</svg>
 			</div>
-			<h3 class="mb-2 text-xl font-semibold">Only Pay for Qualified Leads</h3>
+			<h3 class="mb-2 text-xl font-semibold">{m.home_instructors_pay_leads_title()}</h3>
 			<p class="text-gray-600">
-				Just 5€ per booking request you choose to respond to. No monthly fees, no hidden charges.
+				{m.home_instructors_pay_leads_desc()}
 			</p>
 		</div>
 
@@ -414,10 +410,9 @@
 					/>
 				</svg>
 			</div>
-			<h3 class="mb-2 text-xl font-semibold">Get Online in 5 Minutes</h3>
+			<h3 class="mb-2 text-xl font-semibold">{m.home_instructors_online_title()}</h3>
 			<p class="text-gray-600">
-				Free profile setup. Add your qualifications, set your rates, and start receiving booking
-				requests immediately.
+				{m.home_instructors_online_desc()}
 			</p>
 		</div>
 	</div>
@@ -427,10 +422,10 @@
 			href="/signup"
 			class="bg-primary inline-block rounded-md px-8 py-3 font-semibold text-white shadow-sm transition-all hover:shadow-md"
 		>
-			Create Your Instructor Profile
+			{m.home_instructors_cta()}
 		</a>
 		<p class="mt-4 text-sm text-gray-600">
-			No credit card required. Takes less than 5 minutes.
+			{m.home_instructors_cta_note()}
 		</p>
 	</div>
 </section>
@@ -438,9 +433,9 @@
 <!-- Social Proof Section -->
 <section class="section">
 	<div class="mb-10 text-center">
-		<h2 class="mb-4 text-center text-3xl font-bold">Trusted by Instructors and Clients</h2>
+		<h2 class="mb-4 text-center text-3xl font-bold">{m.home_testimonials_title()}</h2>
 		<p class="text-center text-gray-600">
-			See what our community has to say about Local Snow
+			{m.home_testimonials_subtitle()}
 		</p>
 	</div>
 
@@ -461,16 +456,15 @@
 				{/each}
 			</div>
 			<p class="mb-4 text-gray-700">
-				"Finally, a platform that doesn't take 20% of my earnings. I love the simplicity - just
-				pay per lead and keep everything else. My income has increased significantly."
+				"{m.home_testimonials_maria_text()}"
 			</p>
 			<div class="flex items-center gap-3">
 				<div class="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-full">
 					<span class="text-primary font-semibold">MC</span>
 				</div>
 				<div>
-					<p class="font-semibold">Maria Costa</p>
-					<p class="text-sm text-muted-foreground">Ski Instructor, Baqueira Beret</p>
+					<p class="font-semibold">{m.home_testimonials_maria_name()}</p>
+					<p class="text-sm text-muted-foreground">{m.home_testimonials_maria_role()}</p>
 				</div>
 			</div>
 		</div>
@@ -491,16 +485,15 @@
 				{/each}
 			</div>
 			<p class="mb-4 text-gray-700">
-				"Found an amazing instructor for my family at Sierra Nevada. No hidden fees, direct contact,
-				and the instructor was exactly as described. Will definitely use again!"
+				"{m.home_testimonials_james_text()}"
 			</p>
 			<div class="flex items-center gap-3">
 				<div class="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-full">
 					<span class="text-primary font-semibold">JM</span>
 				</div>
 				<div>
-					<p class="font-semibold">James Miller</p>
-					<p class="text-sm text-muted-foreground">Client from London</p>
+					<p class="font-semibold">{m.home_testimonials_james_name()}</p>
+					<p class="text-sm text-muted-foreground">{m.home_testimonials_james_role()}</p>
 				</div>
 			</div>
 		</div>
@@ -521,16 +514,15 @@
 				{/each}
 			</div>
 			<p class="mb-4 text-gray-700">
-				"As a snowboard instructor in Formigal, this platform has been a game changer. More clients,
-				less hassle, and I control my schedule completely. Highly recommended!"
+				"{m.home_testimonials_pablo_text()}"
 			</p>
 			<div class="flex items-center gap-3">
 				<div class="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-full">
 					<span class="text-primary font-semibold">PG</span>
 				</div>
 				<div>
-					<p class="font-semibold">Pablo García</p>
-					<p class="text-sm text-muted-foreground">Snowboard Instructor, Formigal</p>
+					<p class="font-semibold">{m.home_testimonials_pablo_name()}</p>
+					<p class="text-sm text-muted-foreground">{m.home_testimonials_pablo_role()}</p>
 				</div>
 			</div>
 		</div>
@@ -539,22 +531,22 @@
 
 <!-- Bottom CTA Section -->
 <section class="grey-section text-center">
-	<h2 class="mb-6 text-3xl font-bold">Ready to Get Started?</h2>
+	<h2 class="mb-6 text-3xl font-bold">{m.home_cta_title()}</h2>
 	<p class="mb-8 text-gray-600">
-		Join Local Snow today and experience skiing without the booking fees.
+		{m.home_cta_subtitle()}
 	</p>
 	<div class="flex flex-col gap-4 sm:flex-row sm:justify-center">
 		<a
 			href="/instructors"
 			class="bg-primary inline-block rounded-md px-8 py-3 font-semibold text-white shadow-sm transition-all hover:shadow-md"
 		>
-			Find an Instructor
+			{m.home_cta_find_instructor()}
 		</a>
 		<a
 			href="/signup"
 			class="inline-block rounded-md border border-border bg-card px-8 py-3 font-semibold shadow-sm transition-all hover:shadow-md"
 		>
-			List as an Instructor
+			{m.home_cta_list_instructor()}
 		</a>
 	</div>
 </section>
