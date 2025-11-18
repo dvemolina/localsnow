@@ -147,6 +147,17 @@
 		name="description"
 		content="Browse certified ski and snowboard instructors at top resorts worldwide. Book directly with professional instructors - no booking fees."
 	/>
+
+	<!-- Open Graph -->
+	<meta property="og:title" content="Find Ski Instructors | Local Snow" />
+	<meta property="og:description" content="Browse certified ski and snowboard instructors at Spanish resorts. Book directly - no booking fees." />
+	<meta property="og:url" content="https://localsnow.org/instructors" />
+	<meta property="og:image" content="https://localsnow.org/ski-instructor-turn.webp" />
+
+	<!-- Twitter Card -->
+	<meta name="twitter:title" content="Find Ski Instructors | Local Snow" />
+	<meta name="twitter:description" content="Browse certified ski and snowboard instructors at Spanish resorts. Book directly - no booking fees." />
+	<meta name="twitter:image" content="https://localsnow.org/ski-instructor-turn.webp" />
 </svelte:head>
 
 <section class="w-full">

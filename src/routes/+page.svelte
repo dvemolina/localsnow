@@ -68,6 +68,21 @@
 		name="description"
 		content="Connect directly with ski and snowboard instructors across Spain. No booking fees, no middlemen. Find instructors at 25+ Spanish resorts including Baqueira, Formigal, Cerler, and Sierra Nevada."
 	/>
+
+	<!-- Open Graph -->
+	<meta property="og:title" content="Local Snow | Find Ski Instructors at Spanish Resorts" />
+	<meta property="og:description" content="Connect directly with ski and snowboard instructors across Spain. No booking fees, no middlemen. Find instructors at Baqueira, Formigal, Cerler, and Sierra Nevada." />
+	<meta property="og:url" content="https://localsnow.org/" />
+	<meta property="og:image" content="https://localsnow.org/ski-instructor-powder.webp" />
+	<meta property="og:image:alt" content="Ski instructor teaching in powder snow" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+
+	<!-- Twitter Card -->
+	<meta name="twitter:title" content="Local Snow | Find Ski Instructors at Spanish Resorts" />
+	<meta name="twitter:description" content="Connect directly with ski and snowboard instructors across Spain. No booking fees." />
+	<meta name="twitter:image" content="https://localsnow.org/ski-instructor-powder.webp" />
+
 	<script type="application/ld+json">
       {JSON.stringify(websiteSchema)}
 	</script>
