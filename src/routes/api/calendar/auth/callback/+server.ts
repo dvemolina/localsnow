@@ -17,9 +17,20 @@ export const GET: RequestHandler = async ({ url }) => {
 	}
 	
 	try {
-		const { instructorId } = JSON.parse(state);
-		await handleCalendarOAuthCallback(code, instructorId);
-		
+		let parsedState;
+		try {
+			parsedState = JSON.parse(state);
+		} catch (parseError) {
+			console.error('Invalid state parameter:', parseError);
+			redirect(303, '/dashboard/availability?error=invalid_state');
+		}
+
+		if (!parsedState?.instructorId) {
+			redirect(303, '/dashboard/availability?error=invalid_state');
+		}
+
+		await handleCalendarOAuthCallback(code, parsedState.instructorId);
+
 	} catch (err) {
 		console.error('Calendar OAuth callback error:', err);
 		redirect(303, '/dashboard/availability?error=connection_failed');

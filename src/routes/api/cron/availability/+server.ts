@@ -13,9 +13,13 @@ const tentativeBookingService = new TentativeBookingService();
 export const POST: RequestHandler = async ({ request }) => {
 	// Verify cron secret (add CRON_SECRET to your .env)
 	const authHeader = request.headers.get('authorization');
-	const expectedSecret = env.CRON_SECRET || 'your-secret-token-here';
 
-	if (authHeader !== `Bearer ${expectedSecret}`) {
+	if (!env.CRON_SECRET) {
+		console.error('CRON_SECRET environment variable is not set');
+		return json({ error: 'Server configuration error' }, { status: 500 });
+	}
+
+	if (authHeader !== `Bearer ${env.CRON_SECRET}`) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
 
