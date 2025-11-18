@@ -6,9 +6,6 @@ import type { LessonData, LessonUpdateData, LessonWithSports } from "./lessonSch
 export class LessonRepository {
     async createLesson(data: LessonData, sportIds: number[]): Promise<LessonWithSports> {
         try {
-            console.log('Creating lesson with data:', data);
-            console.log('Sport IDs:', sportIds);
-            
             // Create the lesson
             const [newLesson] = await db
                 .insert(lessons)
@@ -25,27 +22,18 @@ export class LessonRepository {
                 })
                 .returning();
 
-            console.log('Lesson created:', newLesson);
-
             // Insert sports relationships
             if (sportIds && sportIds.length > 0) {
                 try {
-                    console.log('Inserting sports relationships...');
                     await db.insert(lessonSports).values(
                         sportIds.map(sportId => ({
                             lessonId: newLesson.id,
                             sportId
                         }))
                     );
-                    console.log('Sports relationships created successfully');
                 } catch (sportsError) {
-                    console.error('Error inserting sports:', sportsError);
-                    console.error('This might mean the lesson_sports table does not exist.');
-                    console.error('Please run the migration to create it.');
-                    
                     // Delete the lesson we just created since sports failed
                     await db.delete(lessons).where(eq(lessons.id, newLesson.id));
-                    
                     throw new Error('Failed to create sports relationships. Please ensure the lesson_sports table exists.');
                 }
             }
@@ -55,7 +43,7 @@ export class LessonRepository {
                 sports: sportIds
             };
         } catch (error) {
-            console.error('Detailed error in createLesson:', error);
+            console.error('Error creating lesson:', error);
             throw error;
         }
     }
@@ -81,7 +69,6 @@ export class LessonRepository {
                     sports: sports.map(s => s.sportId)
                 };
             } catch (error) {
-                console.error('Error fetching sports for lesson:', error);
                 // Return lesson without sports if table doesn't exist
                 return {
                     ...lesson,
@@ -89,7 +76,7 @@ export class LessonRepository {
                 };
             }
         } catch (error) {
-            console.error('Error in getLessonById:', error);
+            console.error('Error getting lesson by ID:', error);
             throw error;
         }
     }
@@ -120,7 +107,7 @@ export class LessonRepository {
                         );
                     }
                 } catch (error) {
-                    console.error('Error updating sports:', error);
+                    // Sports update failed but lesson was updated
                 }
             }
 
@@ -142,7 +129,7 @@ export class LessonRepository {
                 };
             }
         } catch (error) {
-            console.error('Error in updateLesson:', error);
+            console.error('Error updating lesson:', error);
             throw error;
         }
     }
@@ -178,7 +165,6 @@ export class LessonRepository {
                             sports: sports.map(s => s.sportId)
                         };
                     } catch (error) {
-                        console.error('Error fetching sports for lesson:', error);
                         return {
                             ...lesson,
                             sports: []
@@ -189,7 +175,7 @@ export class LessonRepository {
 
             return lessonsWithSports;
         } catch (error) {
-            console.error('Error in listLessonsByInstructor:', error);
+            console.error('Error listing lessons by instructor:', error);
             throw error;
         }
     }

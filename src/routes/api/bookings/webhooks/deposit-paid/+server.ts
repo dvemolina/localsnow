@@ -34,25 +34,15 @@ export const GET: RequestHandler = async ({ url }) => {
             expand: ['payment_intent']
         });
 
-        console.log('Session payment_status:', session.payment_status);
-        console.log('Session status:', session.status);
-
-        // ⚠️ FIX: For manual capture, check if session is complete AND has payment_intent
-        // The payment_status might be 'unpaid' but the session is 'complete' with a valid payment_intent
+        // For manual capture, check if session is complete AND has payment_intent
         const paymentIntent = session.payment_intent as Stripe.PaymentIntent;
-        
+
         if (session.status !== 'complete' || !paymentIntent) {
-            console.error('Session not complete or no payment intent:', {
-                status: session.status,
-                payment_status: session.payment_status,
-                has_payment_intent: !!paymentIntent
-            });
             redirect(303, '/booking/booking-error?reason=payment_failed');
         }
 
         // For manual capture, the payment_intent should have status 'requires_capture'
         if (paymentIntent.status !== 'requires_capture' && paymentIntent.status !== 'succeeded') {
-            console.error('Unexpected payment intent status:', paymentIntent.status);
             redirect(303, '/booking/booking-error?reason=payment_failed');
         }
 

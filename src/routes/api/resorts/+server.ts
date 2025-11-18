@@ -22,7 +22,6 @@ type SheetResort = {
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const resortsList = await request.json();
-        console.log('RESORTS: ', resortsList)
 
 		if (!Array.isArray(resortsList) || resortsList.length === 0) {
 			return new Response(JSON.stringify({ error: 'No resorts provided' }), { status: 400 });

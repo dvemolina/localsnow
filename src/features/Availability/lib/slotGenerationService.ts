@@ -28,9 +28,6 @@ export class SlotGenerationService {
 		endDate: Date,
 		slotDurationMinutes: number = 60
 	): Promise<DayAvailability[]> {
-		console.log('🔍 Generating slots for instructor:', instructorId);
-		console.log('📅 Date range:', startDate, 'to', endDate);
-
 		// Get working hours
 		const workingHours = await db.query.instructorWorkingHours.findMany({
 			where: and(
@@ -39,10 +36,7 @@ export class SlotGenerationService {
 			)
 		});
 
-		console.log('⏰ Found working hours:', workingHours.length, 'days configured');
-
 		if (workingHours.length === 0) {
-			console.log('❌ No working hours configured for instructor');
 			return []; // No working hours configured
 		}
 
@@ -70,8 +64,6 @@ export class SlotGenerationService {
 			)
 		});
 
-		console.log('🚫 Found calendar blocks:', blocks.length);
-
 		// Generate slots for each day
 		const availability: DayAvailability[] = [];
 		const currentDate = new Date(startDate);
@@ -85,7 +77,6 @@ export class SlotGenerationService {
 
 			if (!dayWorkingHours) {
 				// Not a working day
-				console.log(`📅 ${dateStr}: Not a working day (day ${dayOfWeek})`);
 				availability.push({
 					date: dateStr,
 					dayOfWeek,
@@ -96,8 +87,6 @@ export class SlotGenerationService {
 				continue;
 			}
 
-			console.log(`✅ ${dateStr}: Working day (${dayWorkingHours.startTime} - ${dayWorkingHours.endTime})`);
-
 			// Generate slots for this day
 			const daySlots = this.generateSlotsForDay(
 				currentDate,
@@ -106,9 +95,6 @@ export class SlotGenerationService {
 				slotDurationMinutes,
 				blocks
 			);
-
-			const availableCount = daySlots.filter(s => s.status === 'available').length;
-			console.log(`   📊 Generated ${daySlots.length} slots, ${availableCount} available`);
 
 			availability.push({
 				date: dateStr,
@@ -120,7 +106,6 @@ export class SlotGenerationService {
 			currentDate.setDate(currentDate.getDate() + 1);
 		}
 
-		console.log('✅ Total days processed:', availability.length);
 		return availability;
 	}
 
