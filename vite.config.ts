@@ -7,12 +7,10 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
 	plugins: [
 		tailwindcss(),
-		paraglideVitePlugin({ project: './project.inlang', outdir: './src/paraglide' }),
-		sveltekit(),
 		paraglideVitePlugin({
 			project: './project.inlang',
 			outdir: './src/lib/paraglide',
-			strategy: ['url','preferredLanguage', 'cookie', 'baseLocale'],
-		})
+		}),
+		sveltekit(),
 	]
 });

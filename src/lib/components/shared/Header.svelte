@@ -3,9 +3,19 @@
 	import { fade } from 'svelte/transition';
 	import LanguageSwitch from './LanguageSwitch.svelte';
 	import Breadcrumb from './Breadcrumb.svelte';
-	import { items, isCurrentPath } from "$src/lib/utils/generics";
+	import { isCurrentPath } from "$src/lib/utils/generics";
+	import * as m from '$lib/paraglide/messages';
 
 	let isMobileMenuOpen = $state(false);
+
+	// Navigation items - use $derived so translations update on locale change
+	const items = $derived([
+		{ href: '/instructors', label: m.nav_instructors() },
+		{ href: '/resorts', label: m.nav_resorts() },
+		{ href: '/how-it-works', label: m.nav_how_it_works() },
+		{ href: '/about', label: m.nav_about() },
+		{ href: '/signup', label: m.nav_signup() }
+	]);
 
 	// Prevent scrolling when menu is open
 	$effect(() => {

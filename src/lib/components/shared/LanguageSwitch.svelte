@@ -3,7 +3,8 @@
 	import { locales, getLocale } from '$lib/paraglide/runtime';
 	import { localizeHref } from '$lib/paraglide/runtime';
 
-	const currentLocale = getLocale();
+	// Use $derived to make locale reactive when it changes
+	const currentLocale = $derived(getLocale());
 
 	function changeLanguage(event: Event) {
 		const target = event.target as HTMLSelectElement;

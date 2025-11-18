@@ -10,12 +10,13 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { z } from 'zod';
 	import { goto } from '$app/navigation';
-	import { Button } from '$src/lib/components/ui/button';
+	import { Button, buttonVariants } from '$src/lib/components/ui/button';
 	import { Input } from '$src/lib/components/ui/input';
 	import { Checkbox } from '$src/lib/components/ui/checkbox';
 	import { Label } from '$src/lib/components/ui/label';
 	import * as Dialog from '$src/lib/components/ui/dialog';
 	import { Badge } from '$src/lib/components/ui/badge';
+	import * as m from '$lib/paraglide/messages';
 
 	let { data } = $props();
 
@@ -142,29 +143,40 @@
 </script>
 
 <svelte:head>
-	<title>Find Ski Instructors | Local Snow</title>
+	<title>{m.seo_meta_instructors_title()}</title>
 	<meta
 		name="description"
-		content="Browse certified ski and snowboard instructors at top resorts worldwide. Book directly with professional instructors - no booking fees."
+		content={m.seo_meta_instructors_description()}
 	/>
+
+	<!-- Open Graph -->
+	<meta property="og:title" content={m.seo_meta_instructors_title()} />
+	<meta property="og:description" content={m.seo_meta_instructors_description()} />
+	<meta property="og:url" content="https://localsnow.org/instructors" />
+	<meta property="og:image" content="https://localsnow.org/ski-instructor-turn.webp" />
+
+	<!-- Twitter Card -->
+	<meta name="twitter:title" content={m.seo_meta_instructors_title()} />
+	<meta name="twitter:description" content={m.seo_meta_instructors_description()} />
+	<meta name="twitter:image" content="https://localsnow.org/ski-instructor-turn.webp" />
 </svelte:head>
 
 <section class="w-full">
 	<!-- Header -->
 	<div class="mb-6 text-center">
-		<h1 class="title2 mb-2">Find Your Perfect Instructor</h1>
+		<h1 class="title2 mb-2">{m.instructors_page_title()}</h1>
 		<p class="text-muted-foreground text-sm">
-			Connect directly with certified ski and snowboard instructors
+			{m.instructors_page_subtitle()}
 		</p>
 	</div>
 
 	<!-- Filters Section -->
 	<div class="mb-6 rounded-lg border border-border bg-card p-4 shadow-sm overflow-visible">
 		<div class="mb-4 flex items-center justify-between">
-			<h2 class="text-base font-semibold">Filter & Sort Instructors</h2>
+			<h2 class="text-base font-semibold">{m.instructors_page_filter_sort()}</h2>
 			{#if hasActiveFilters}
 				<Button type="button" variant="ghost" size="sm" onclick={clearFilters}>
-					Clear All
+					{m.instructors_page_clear_all()}
 				</Button>
 			{/if}
 		</div>
@@ -181,36 +193,34 @@
 		<div class="flex items-center gap-3">
 			<!-- Advanced Filters Dialog -->
 			<Dialog.Root bind:open={filtersDialogOpen}>
-				<Dialog.Trigger>
-					<Button type="button" variant="outline" class="relative">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							class="mr-2 h-4 w-4"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
+				<Dialog.Trigger class="{buttonVariants({ variant: 'outline' })} relative">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="mr-2 h-4 w-4"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+						/>
+					</svg>
+					{m.instructors_page_more_filters()}
+					{#if hasAdvancedFilters}
+						<span
+							class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white"
 						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-							/>
-						</svg>
-						More Filters
-						{#if hasAdvancedFilters}
-							<span
-								class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white"
-							>
-								{[
-									$formData.priceMin,
-									$formData.priceMax,
-									$formData.instructorType,
-									verifiedOnly
-								].filter(Boolean).length}
-							</span>
-						{/if}
-					</Button>
+							{[
+								$formData.priceMin,
+								$formData.priceMax,
+								$formData.instructorType,
+								verifiedOnly
+							].filter(Boolean).length}
+						</span>
+					{/if}
 				</Dialog.Trigger>
 				<Dialog.Content class="max-w-lg">
 					<Dialog.Header>
@@ -223,7 +233,7 @@
 					<div class="space-y-4 py-4">
 						<!-- Price Range -->
 						<div class="space-y-2">
-							<Label class="text-sm font-medium">Price Range (per hour)</Label>
+							<Label class="text-sm font-medium">{m.instructors_page_price_range()}</Label>
 							<div class="grid grid-cols-2 gap-3">
 								<div>
 									<Input
@@ -291,7 +301,7 @@
 	<!-- Active Filters Chips -->
 	{#if hasActiveFilters}
 		<div class="mb-4 flex flex-wrap items-center gap-2">
-			<span class="text-muted-foreground text-sm">Active filters:</span>
+			<span class="text-muted-foreground text-sm">{m.instructors_page_active_filters()}</span>
 			{#if $formData.resort}
 				<Badge variant="secondary" class="gap-1">
 					{getResortName($formData.resort)}
