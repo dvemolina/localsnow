@@ -164,34 +164,53 @@
 			<h2 class="text-base font-semibold">Filter & Sort Instructors</h2>
 			{#if hasActiveFilters}
 				<Button type="button" variant="ghost" size="sm" onclick={clearFilters}>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="mr-2 h-4 w-4"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-						/>
-					</svg>
-					More Filters
-					{#if hasAdvancedFilters}
-						<span
-							class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white"
+					Clear All
+				</Button>
+			{/if}
+		</div>
+
+		<!-- Main Filters -->
+		<div class="grid gap-3 md:grid-cols-2 lg:grid-cols-4 overflow-visible mb-4">
+			<SearchResort {form} name="resort" label="Resort" countryId={data.spainCountryId} />
+			<SportSelect {form} name="sport" />
+			<LanguageSelect {form} name="language" />
+			<SortBySelect {form} name="sortBy" />
+		</div>
+
+		<!-- Actions Row -->
+		<div class="flex items-center gap-3">
+			<!-- Advanced Filters Dialog -->
+			<Dialog.Root bind:open={filtersDialogOpen}>
+				<Dialog.Trigger>
+					<Button type="button" variant="outline" class="relative">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="mr-2 h-4 w-4"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
 						>
-							{[
-								$formData.language,
-								$formData.priceMin,
-								$formData.priceMax,
-								$formData.instructorType,
-								verifiedOnly
-							].filter(Boolean).length}
-						</span>
-					{/if}
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+							/>
+						</svg>
+						More Filters
+						{#if hasAdvancedFilters}
+							<span
+								class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white"
+							>
+								{[
+									$formData.priceMin,
+									$formData.priceMax,
+									$formData.instructorType,
+									verifiedOnly
+								].filter(Boolean).length}
+							</span>
+						{/if}
+					</Button>
 				</Dialog.Trigger>
 				<Dialog.Content class="max-w-lg">
 					<Dialog.Header>
@@ -201,22 +220,7 @@
 						</Dialog.Description>
 					</Dialog.Header>
 
-		<form onsubmit={applyFilters} class="space-y-4 overflow-visible">
-			<Accordion.Root type="multiple" value={['main', 'details']} class="overflow-visible">
-				<!-- Main Filters -->
-				<Accordion.Item value="main" class="overflow-visible">
-					<Accordion.Trigger class="text-sm font-medium">Main Filters</Accordion.Trigger>
-					<Accordion.Content class="space-y-3 pt-3 overflow-visible">
-						<div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3 overflow-visible">
-							<SearchResort {form} name="resort" label="Resort" countryId={data.spainCountryId} />
-							<SportSelect {form} name="sport" />
-							<LanguageSelect {form} name="language" />
-						</div>
-
-				<!-- Advanced Filters -->
-				<Accordion.Item value="details" class="overflow-visible">
-					<Accordion.Trigger class="text-sm font-medium">Advanced Filters</Accordion.Trigger>
-					<Accordion.Content class="space-y-3 pt-3 overflow-visible">
+					<div class="space-y-4 py-4">
 						<!-- Price Range -->
 						<div class="space-y-2">
 							<Label class="text-sm font-medium">Price Range (per hour)</Label>
@@ -257,14 +261,14 @@
 					</div>
 
 					<Dialog.Footer>
-						<Button variant="outline" onclick={clearFilters}>Clear All</Button>
-						<Button onclick={applyFilters}>Apply Filters</Button>
+						<Button type="button" variant="outline" onclick={clearFilters}>Clear All</Button>
+						<Button type="button" onclick={applyFilters}>Apply Filters</Button>
 					</Dialog.Footer>
 				</Dialog.Content>
 			</Dialog.Root>
 
-			<!-- Search Button (mobile) / Apply (desktop) -->
-			<Button onclick={applyFilters} class="w-full md:w-auto">
+			<!-- Search Button -->
+			<Button type="button" onclick={applyFilters} class="flex-1 md:flex-none">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					class="mr-2 h-4 w-4"

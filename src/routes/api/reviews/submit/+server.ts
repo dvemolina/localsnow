@@ -3,6 +3,9 @@ import type { RequestHandler } from './$types';
 import { ReviewService } from '$src/features/Reviews/lib/reviewService';
 import { submitReviewSchema } from '$src/features/Reviews/lib/reviewSchema';
 import { sendEmail } from '$lib/server/webhooks/n8n/email-n8n';
+import { db } from '$lib/server/db';
+import { bookingRequests } from '$lib/server/db/schema';
+import { eq } from 'drizzle-orm';
 
 const reviewService = new ReviewService();
 
@@ -16,6 +19,28 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		// Validate input
 		const validatedData = submitReviewSchema.parse(body);
+
+		// Verify that the client email matches the booking
+		const [booking] = await db
+			.select({
+				clientEmail: bookingRequests.clientEmail
+			})
+			.from(bookingRequests)
+			.where(eq(bookingRequests.id, validatedData.bookingRequestId));
+
+		if (!booking) {
+			return json(
+				{ success: false, error: 'Booking not found' },
+				{ status: 404 }
+			);
+		}
+
+		if (booking.clientEmail.toLowerCase() !== validatedData.clientEmail.toLowerCase()) {
+			return json(
+				{ success: false, error: 'Email does not match the booking' },
+				{ status: 403 }
+			);
+		}
 
 		// Submit review
 		const review = await reviewService.submitReview(validatedData);
