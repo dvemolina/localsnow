@@ -49,10 +49,10 @@
 				</a>
 
 				<!-- Desktop Navigation -->
-				<nav class="hidden flex-row gap-6 md:flex">
-					<ul class="flex flex-row gap-4 w-max">
+				<nav class="hidden flex-row gap-4 md:flex items-center">
+					<ul class="flex flex-row gap-3 text-sm">
 						{#each items as { href, label }}
-							<li>
+							<li class="whitespace-nowrap">
 								<a
 									{href}
 									class="opacity-75 hover:opacity-100 {isCurrentPath(href, page.url.pathname)
@@ -64,8 +64,10 @@
 							</li>
 						{/each}
 					</ul>
+					<div class="flex-shrink-0">
+						<LanguageSwitch />
+					</div>
 				</nav>
-				<LanguageSwitch />
 
 				<!-- Mobile Navigation Trigger -->
 				<button

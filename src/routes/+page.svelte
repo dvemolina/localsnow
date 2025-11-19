@@ -5,9 +5,12 @@
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import * as m from '$lib/paraglide/messages';
-	import { localizeHref } from '$lib/paraglide/runtime';
+	import { localizeHref, getLocale } from '$lib/paraglide/runtime';
 
 	let { data } = $props();
+
+	// Get current locale for form submission
+	const currentLocale = $derived(getLocale());
 
 	// Top Spanish resorts for homepage - use $derived for translation reactivity
 	const topResorts = $derived([
@@ -128,6 +131,7 @@
 
 				<!-- Search form -->
 				<form method="POST" use:enhance class="rounded-lg bg-white/90 p-4 shadow-lg">
+					<input type="hidden" name="locale" value={currentLocale} />
 					<div class="flex flex-col gap-4 md:flex-row">
 						<div class="flex-1">
 							<SearchResort {form} name="resort" id="location" countryId={data.spainCountryId} />
