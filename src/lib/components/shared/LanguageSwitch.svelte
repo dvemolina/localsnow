@@ -40,7 +40,7 @@
 		justify-content: center;
 		border: 1px solid #ccc;
 		border-radius: 5px;
-		padding: 0.4rem;
+		padding: 0.1rem;
 		cursor: pointer;
 		background: white;
 		min-width: 36px;
