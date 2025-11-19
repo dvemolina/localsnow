@@ -66,22 +66,27 @@
 					</ul>
 				</nav>
 				
-				<div class="flex-shrink-0">
-					<LanguageSwitch />
+				<div class="hidden md:flex flex-shrink-0">
+					<LanguageSwitch /> <!-- Desktop Language Switcher-->
 				</div>
 				<!-- Mobile Navigation Trigger -->
-				<button
-					class="md:hidden"
-					aria-label="Open Menu"
-					aria-expanded={isMobileMenuOpen}
-					onclick={() => (isMobileMenuOpen = !isMobileMenuOpen)}
-				>
-					<img
-						src="/icons/burger.svg"
-						alt="Menu"
-						class="size-6 opacity-80 hover:opacity-100 active:opacity-100"
-					/>
-				</button>
+				 <div class="md:hidden flex flex-row gap-4">
+
+					 <button
+					 aria-label="Open Menu"
+					 aria-expanded={isMobileMenuOpen}
+					 onclick={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+					 >
+					 <img
+					 src="/icons/burger.svg"
+					 alt="Menu"
+					 class="size-6 opacity-80 hover:opacity-100 active:opacity-100"
+					 />
+					</button>
+					<div class="flex-shrink-0">
+						<LanguageSwitch /> <!-- Desktop Language Switcher-->
+					</div>
+				</div>
 			</div>
 
 			<!-- Mobile Menu Overlay -->
