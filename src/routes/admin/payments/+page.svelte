@@ -2,6 +2,7 @@
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Table from '$lib/components/ui/table';
+	import * as m from '$lib/paraglide/messages';
 
 	let { data } = $props();
 
@@ -20,44 +21,44 @@
 
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8">
-		<h1 class="title2 mb-2">Payment Overview</h1>
-		<p class="text-muted-foreground">Monitor platform revenue and transactions</p>
+		<h1 class="title2 mb-2">{m.admin_payment_overview()}</h1>
+		<p class="text-muted-foreground">{m.admin_payment_overview_desc()}</p>
 	</div>
 
 	<!-- Revenue Summary -->
 	<div class="grid gap-4 md:grid-cols-3">
 		<Card>
 			<CardHeader>
-				<CardTitle>Total Revenue</CardTitle>
+				<CardTitle>{m.admin_total_revenue()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">€{totalRevenue.toFixed(2)}</div>
 				<p class="text-xs text-muted-foreground">
-					{data.stats.deposits.count + data.stats.leads.count} transactions
+					{data.stats.deposits.count + data.stats.leads.count} {m.admin_transactions()}
 				</p>
 			</CardContent>
 		</Card>
 
 		<Card>
 			<CardHeader>
-				<CardTitle>Client Deposits</CardTitle>
+				<CardTitle>{m.admin_client_deposits()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">€{totalDepositRevenue.toFixed(2)}</div>
 				<p class="text-xs text-muted-foreground">
-					{data.stats.deposits.count} deposits
+					{data.stats.deposits.count} {m.admin_deposits()}
 				</p>
 			</CardContent>
 		</Card>
 
 		<Card>
 			<CardHeader>
-				<CardTitle>Lead Payments</CardTitle>
+				<CardTitle>{m.admin_lead_payments()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">€{totalLeadRevenue.toFixed(2)}</div>
 				<p class="text-xs text-muted-foreground">
-					{data.stats.leads.count} instructor payments
+					{data.stats.leads.count} {m.admin_instructor_payments()}
 				</p>
 			</CardContent>
 		</Card>
@@ -66,18 +67,18 @@
 	<!-- Recent Deposits -->
 	<Card>
 		<CardHeader>
-			<CardTitle>Recent Client Deposits</CardTitle>
+			<CardTitle>{m.admin_recent_client_deposits()}</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>ID</Table.Head>
-						<Table.Head>Client</Table.Head>
-						<Table.Head>Amount</Table.Head>
-						<Table.Head>Status</Table.Head>
-						<Table.Head>Stripe ID</Table.Head>
-						<Table.Head>Date</Table.Head>
+						<Table.Head>{m.table_id()}</Table.Head>
+						<Table.Head>{m.table_client()}</Table.Head>
+						<Table.Head>{m.table_amount()}</Table.Head>
+						<Table.Head>{m.table_status()}</Table.Head>
+						<Table.Head>{m.admin_stripe_id()}</Table.Head>
+						<Table.Head>{m.table_date()}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -119,18 +120,18 @@
 	<!-- Recent Lead Payments -->
 	<Card>
 		<CardHeader>
-			<CardTitle>Recent Lead Payments (Instructor)</CardTitle>
+			<CardTitle>{m.admin_recent_lead_payments()}</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>ID</Table.Head>
-						<Table.Head>Instructor</Table.Head>
-						<Table.Head>Client</Table.Head>
-						<Table.Head>Amount</Table.Head>
-						<Table.Head>Status</Table.Head>
-						<Table.Head>Date</Table.Head>
+						<Table.Head>{m.table_id()}</Table.Head>
+						<Table.Head>{m.table_instructor()}</Table.Head>
+						<Table.Head>{m.table_client()}</Table.Head>
+						<Table.Head>{m.table_amount()}</Table.Head>
+						<Table.Head>{m.table_status()}</Table.Head>
+						<Table.Head>{m.table_date()}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>

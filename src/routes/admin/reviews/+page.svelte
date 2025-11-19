@@ -3,6 +3,7 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Table from '$lib/components/ui/table';
+	import * as m from '$lib/paraglide/messages';
 
 	let { data } = $props();
 
@@ -17,12 +18,12 @@
 
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8">
-		<h1 class="title2 mb-2">Review Management</h1>
-		<p class="text-muted-foreground">Monitor and moderate platform reviews</p>
+		<h1 class="title2 mb-2">{m.admin_review_management()}</h1>
+		<p class="text-muted-foreground">{m.admin_review_management_desc()}</p>
 	</div>
 
 	<p class="text-sm text-muted-foreground">
-		Showing {data.reviews.length} of {data.pagination.total} reviews
+		{m.admin_showing_of({ count: data.reviews.length, total: data.pagination.total })} {m.admin_reviews().toLowerCase()}
 	</p>
 
 	<Card>
@@ -30,12 +31,12 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>ID</Table.Head>
-						<Table.Head>Instructor</Table.Head>
-						<Table.Head>Rating</Table.Head>
-						<Table.Head>Comment</Table.Head>
-						<Table.Head>Client</Table.Head>
-						<Table.Head>Date</Table.Head>
+						<Table.Head>{m.table_id()}</Table.Head>
+						<Table.Head>{m.table_instructor()}</Table.Head>
+						<Table.Head>{m.table_rating()}</Table.Head>
+						<Table.Head>{m.table_comment()}</Table.Head>
+						<Table.Head>{m.table_client()}</Table.Head>
+						<Table.Head>{m.table_date()}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -55,7 +56,7 @@
 							</Table.Cell>
 							<Table.Cell class="max-w-md">
 								<p class="truncate text-sm">
-									{review.comment || 'No comment'}
+									{review.comment || m.admin_no_comment()}
 								</p>
 							</Table.Cell>
 							<Table.Cell class="text-sm text-muted-foreground">
@@ -73,13 +74,13 @@
 		<div class="flex items-center justify-center gap-2">
 			{#if data.pagination.page > 1}
 				<Button href="/admin/reviews?page={data.pagination.page - 1}" variant="outline" size="sm">
-					Previous
+					{m.button_previous()}
 				</Button>
 			{/if}
-			<span class="text-sm">Page {data.pagination.page} of {data.pagination.totalPages}</span>
+			<span class="text-sm">{m.admin_page_of({ page: data.pagination.page, total: data.pagination.totalPages })}</span>
 			{#if data.pagination.page < data.pagination.totalPages}
 				<Button href="/admin/reviews?page={data.pagination.page + 1}" variant="outline" size="sm">
-					Next
+					{m.button_next()}
 				</Button>
 			{/if}
 		</div>

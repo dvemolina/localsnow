@@ -4,6 +4,7 @@
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { toast } from 'svelte-sonner';
 	import { invalidateAll } from '$app/navigation';
+	import * as m from '$lib/paraglide/messages';
 
 	let { data } = $props();
 
@@ -84,9 +85,9 @@
 <div class="container mx-auto max-w-4xl py-6">
 	<!-- Header -->
 	<div class="mb-6">
-		<h1 class="title2 mb-2">Availability Settings</h1>
+		<h1 class="title2 mb-2">{m.availability_page_title()}</h1>
 		<p class="text-muted-foreground">
-			Manage your calendar sync and availability settings
+			{m.availability_page_subtitle()}
 		</p>
 	</div>
 
@@ -104,15 +105,15 @@
 								d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
 							/>
 						</svg>
-						Google Calendar Integration
+						{m.availability_google_calendar_title()}
 						{#if data.connected}
-							<Badge variant="default" class="bg-green-600">Connected</Badge>
+							<Badge variant="default" class="bg-green-600">{m.status_connected()}</Badge>
 						{:else}
-							<Badge variant="secondary">Not Connected</Badge>
+							<Badge variant="secondary">{m.status_not_connected()}</Badge>
 						{/if}
 					</Card.Title>
 					<Card.Description class="mt-1">
-						Sync your Google Calendar to automatically block unavailable times
+						{m.availability_google_calendar_desc()}
 					</Card.Description>
 				</div>
 			</div>
@@ -134,14 +135,13 @@
 							/>
 						</svg>
 						<div class="text-sm text-green-800">
-							<p class="font-medium">Calendar Connected</p>
+							<p class="font-medium">{m.availability_calendar_connected_title()}</p>
 							<p class="mt-1">
-								Your Google Calendar is synced. Events will automatically block availability slots
-								for clients.
+								{m.availability_calendar_connected_message()}
 							</p>
 							{#if data.syncDetails.lastSyncAt}
 								<p class="mt-2 text-xs">
-									Last synced: {new Date(data.syncDetails.lastSyncAt).toLocaleString()}
+									{m.availability_last_synced()} {new Date(data.syncDetails.lastSyncAt).toLocaleString()}
 								</p>
 							{/if}
 						</div>
@@ -172,7 +172,7 @@
 									d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
 								></path>
 							</svg>
-							Syncing...
+							{m.button_syncing()}
 						{:else}
 							<svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path
@@ -182,7 +182,7 @@
 									d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
 								/>
 							</svg>
-							Sync Now
+							{m.button_sync_now()}
 						{/if}
 					</Button>
 					<Button
@@ -194,7 +194,7 @@
 						{#if disconnecting}
 							Disconnecting...
 						{:else}
-							Disconnect Calendar
+							{m.button_disconnect_calendar()}
 						{/if}
 					</Button>
 				</div>
@@ -213,9 +213,9 @@
 							/>
 						</svg>
 					</div>
-					<h3 class="mb-2 font-semibold text-lg">Connect Your Google Calendar</h3>
+					<h3 class="mb-2 font-semibold text-lg">{m.availability_connect_calendar_heading()}</h3>
 					<p class="mb-4 text-muted-foreground">
-						Automatically sync your calendar events to show accurate availability to clients
+						{m.availability_connect_calendar_desc()}
 					</p>
 					<Button onclick={connectCalendar} class="mx-auto">
 						<svg class="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -232,7 +232,7 @@
 								d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
 							/>
 						</svg>
-						Connect Google Calendar
+						{m.button_connect_google_calendar()}
 					</Button>
 				</div>
 
@@ -251,16 +251,15 @@
 							/>
 						</svg>
 						<div class="text-sm text-blue-800">
-							<p class="font-medium">Why connect your calendar?</p>
+							<p class="font-medium">{m.availability_why_connect_title()}</p>
 							<ul class="mt-2 space-y-1 text-sm">
-								<li>• Automatically block times when you're busy</li>
-								<li>• Prevent double bookings</li>
-								<li>• Keep your availability always up-to-date</li>
-								<li>• Save time - no manual updates needed</li>
+								<li>• {m.availability_benefit1()}</li>
+								<li>• {m.availability_benefit2()}</li>
+								<li>• {m.availability_benefit3()}</li>
+								<li>• {m.availability_benefit4()}</li>
 							</ul>
 							<p class="mt-2 text-xs">
-								We only read your calendar events to check availability. We never modify or delete
-								your events.
+								{m.availability_calendar_disclaimer()}
 							</p>
 						</div>
 					</div>
@@ -281,15 +280,15 @@
 						d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
 					/>
 				</svg>
-				Working Hours
+				{m.availability_working_hours_title()}
 				{#if data.workingHoursConfigured}
-					<Badge variant="default" class="bg-green-600">Configured</Badge>
+					<Badge variant="default" class="bg-green-600">{m.status_configured()}</Badge>
 				{:else}
-					<Badge variant="secondary">Not Set</Badge>
+					<Badge variant="secondary">{m.status_not_set()}</Badge>
 				{/if}
 			</Card.Title>
 			<Card.Description>
-				Set your regular working hours and seasonal availability
+				{m.availability_working_hours_desc()}
 			</Card.Description>
 		</Card.Header>
 		<Card.Content class="space-y-4">
@@ -308,10 +307,9 @@
 							/>
 						</svg>
 						<div class="text-sm text-green-800">
-							<p class="font-medium">Working Hours Set</p>
+							<p class="font-medium">{m.availability_working_hours_set()}</p>
 							<p class="mt-1">
-								You have configured your working hours. Clients can now book lessons during your
-								available times.
+								{m.availability_working_hours_configured_message()}
 							</p>
 						</div>
 					</div>
@@ -330,17 +328,16 @@
 							/>
 						</svg>
 					</div>
-					<h3 class="mb-2 font-semibold text-lg">Set Your Working Hours</h3>
+					<h3 class="mb-2 font-semibold text-lg">{m.availability_set_working_hours_heading()}</h3>
 					<p class="mb-4 text-muted-foreground">
-						Define your available hours for each day of the week to let clients know when they can
-						book lessons
+						{m.availability_set_working_hours_desc()}
 					</p>
 				</div>
 			{/if}
 		</Card.Content>
 		<Card.Footer>
 			<Button href="/dashboard/availability/working-hours" class="w-full">
-				{data.workingHoursConfigured ? 'Edit Working Hours' : 'Set Working Hours'}
+				{data.workingHoursConfigured ? m.button_edit_working_hours() : m.button_set_working_hours()}
 			</Button>
 		</Card.Footer>
 	</Card.Root>

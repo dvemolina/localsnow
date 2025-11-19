@@ -3,6 +3,7 @@
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { Button } from '$src/lib/components/ui/button';
 	import * as Table from '$src/lib/components/ui/table';
+	import * as m from '$lib/paraglide/messages';
 
 	let { data } = $props();
 
@@ -44,56 +45,56 @@
 <div class="container mx-auto max-w-7xl space-y-6">
 	<!-- Page Header -->
 	<div class="mb-8">
-		<h1 class="title2 mb-2">Platform Overview</h1>
-		<p class="text-muted-foreground">Monitor key metrics and platform health</p>
+		<h1 class="title2 mb-2">{m.admin_platform_overview()}</h1>
+		<p class="text-muted-foreground">{m.admin_platform_overview_desc()}</p>
 	</div>
 
 	<!-- Key Metrics Cards -->
 	<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
 		<Card>
 			<CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-				<CardTitle class="text-sm font-medium">Total Users</CardTitle>
+				<CardTitle class="text-sm font-medium">{m.admin_total_users()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">{totalUsers}</div>
 				<p class="text-xs text-muted-foreground">
-					+{data.stats.recentActivity.users} in last 30 days
+					+{data.stats.recentActivity.users} {m.admin_in_last_30_days()}
 				</p>
 			</CardContent>
 		</Card>
 
 		<Card>
 			<CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-				<CardTitle class="text-sm font-medium">Instructors</CardTitle>
+				<CardTitle class="text-sm font-medium">{m.admin_instructors()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">{verifiedInstructors}/{totalInstructors}</div>
 				<p class="text-xs text-muted-foreground">
-					{pendingInstructors} pending verification
+					{pendingInstructors} {m.admin_pending_verification()}
 				</p>
 			</CardContent>
 		</Card>
 
 		<Card>
 			<CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-				<CardTitle class="text-sm font-medium">Bookings</CardTitle>
+				<CardTitle class="text-sm font-medium">{m.admin_bookings()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">{totalBookings}</div>
 				<p class="text-xs text-muted-foreground">
-					{completedBookings} completed, {pendingBookings} pending
+					{completedBookings} {m.status_completed()}, {pendingBookings} {m.status_pending()}
 				</p>
 			</CardContent>
 		</Card>
 
 		<Card>
 			<CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-				<CardTitle class="text-sm font-medium">Revenue</CardTitle>
+				<CardTitle class="text-sm font-medium">{m.admin_revenue()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">€{totalRevenue.toFixed(2)}</div>
 				<p class="text-xs text-muted-foreground">
-					{data.stats.reviewStats.total} reviews submitted
+					{data.stats.reviewStats.total} {m.admin_reviews_submitted()}
 				</p>
 			</CardContent>
 		</Card>
@@ -105,7 +106,7 @@
 			<CardHeader>
 				<CardTitle class="flex items-center gap-2 text-yellow-900">
 					<span class="text-xl">⚠️</span>
-					{data.pendingVerifications.length} Instructor(s) Pending Verification
+					{data.pendingVerifications.length} {m.admin_instructors_pending_verification()}
 				</CardTitle>
 			</CardHeader>
 			<CardContent>
@@ -116,11 +117,11 @@
 								<p class="font-medium">{instructor.name} {instructor.lastName}</p>
 								<p class="text-sm text-muted-foreground">{instructor.email}</p>
 								<p class="text-xs text-muted-foreground">
-									Registered: {formatDate(instructor.createdAt)}
+									{m.admin_registered()}: {formatDate(instructor.createdAt)}
 								</p>
 							</div>
 							<Button href="/admin/instructors/{instructor.id}" size="sm">
-								Review
+								{m.button_review()}
 							</Button>
 						</div>
 					{/each}
@@ -135,7 +136,7 @@
 			<CardHeader>
 				<CardTitle class="flex items-center gap-2 text-red-900">
 					<span class="text-xl">🚫</span>
-					{data.suspendedUsers.length} Suspended User(s)
+					{data.suspendedUsers.length} {m.admin_suspended_users()}
 				</CardTitle>
 			</CardHeader>
 			<CardContent>
@@ -145,7 +146,7 @@
 							<div>
 								<p class="font-medium">{user.name} {user.lastName}</p>
 								<p class="text-sm text-muted-foreground">{user.email}</p>
-								<p class="text-xs text-red-600">Reason: {user.suspensionReason}</p>
+								<p class="text-xs text-red-600">{m.admin_reason()}: {user.suspensionReason}</p>
 							</div>
 							<Badge variant="destructive">{user.role}</Badge>
 						</div>
@@ -160,16 +161,16 @@
 		<!-- Recent Bookings -->
 		<Card>
 			<CardHeader>
-				<CardTitle>Recent Bookings</CardTitle>
+				<CardTitle>{m.admin_recent_bookings()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<Table.Root>
 					<Table.Header>
 						<Table.Row>
-							<Table.Head>Client</Table.Head>
-							<Table.Head>Instructor</Table.Head>
-							<Table.Head>Date</Table.Head>
-							<Table.Head>Status</Table.Head>
+							<Table.Head>{m.table_client()}</Table.Head>
+							<Table.Head>{m.table_instructor()}</Table.Head>
+							<Table.Head>{m.table_date()}</Table.Head>
+							<Table.Head>{m.table_status()}</Table.Head>
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
@@ -191,7 +192,7 @@
 				</Table.Root>
 				<div class="mt-4 text-center">
 					<Button href="/admin/bookings" variant="outline" size="sm">
-						View All Bookings
+						{m.button_view_all_bookings()}
 					</Button>
 				</div>
 			</CardContent>
@@ -200,7 +201,7 @@
 		<!-- Recent Reviews -->
 		<Card>
 			<CardHeader>
-				<CardTitle>Recent Reviews</CardTitle>
+				<CardTitle>{m.admin_recent_reviews()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="space-y-3">
@@ -229,7 +230,7 @@
 				</div>
 				<div class="mt-4 text-center">
 					<Button href="/admin/reviews" variant="outline" size="sm">
-						View All Reviews
+						{m.button_view_all_reviews()}
 					</Button>
 				</div>
 			</CardContent>
@@ -241,13 +242,13 @@
 		<!-- User Distribution -->
 		<Card>
 			<CardHeader>
-				<CardTitle>Users by Role</CardTitle>
+				<CardTitle>{m.admin_users_by_role()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="space-y-2">
 					{#each data.stats.userStats as stat}
 						<div class="flex items-center justify-between">
-							<span class="text-sm capitalize">{stat.role || 'No role'}</span>
+							<span class="text-sm capitalize">{stat.role || m.admin_no_role()}</span>
 							<Badge variant="secondary">{stat.count}</Badge>
 						</div>
 					{/each}
@@ -258,7 +259,7 @@
 		<!-- Booking Status Distribution -->
 		<Card>
 			<CardHeader>
-				<CardTitle>Bookings by Status</CardTitle>
+				<CardTitle>{m.admin_bookings_by_status()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="space-y-2">
@@ -275,16 +276,16 @@
 		<!-- Review Statistics -->
 		<Card>
 			<CardHeader>
-				<CardTitle>Review Metrics</CardTitle>
+				<CardTitle>{m.admin_review_metrics()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="space-y-3">
 					<div>
-						<p class="text-sm text-muted-foreground">Total Reviews</p>
+						<p class="text-sm text-muted-foreground">{m.admin_total_reviews()}</p>
 						<p class="text-2xl font-bold">{data.stats.reviewStats.total}</p>
 					</div>
 					<div>
-						<p class="text-sm text-muted-foreground">Average Rating</p>
+						<p class="text-sm text-muted-foreground">{m.admin_average_rating()}</p>
 						<div class="flex items-center gap-2">
 							<p class="text-2xl font-bold">
 								{Number(data.stats.reviewStats.avgRating || 0).toFixed(1)}
