@@ -3,49 +3,52 @@
 	import { isMobile } from '$src/lib/hooks/is-mobile.svelte';
 	import { get } from 'svelte/store';
 	import { page } from '$app/stores';
+	import { localizeHref } from '$lib/paraglide/runtime';
+	import * as m from '$lib/paraglide/messages';
+	import LanguageSwitch from '$lib/components/shared/LanguageSwitch.svelte';
 
-	const items = [
+	const items = $derived([
 		{
-			title: 'Overview',
+			title: m.admin_sidebar_overview(),
 			url: '/admin/dashboard',
 			icon: '/icons/home.svg'
 		},
 		{
-			title: 'Instructors',
+			title: m.admin_sidebar_instructors(),
 			url: '/admin/instructors',
 			icon: '/icons/service.svg'
 		},
 		{
-			title: 'Bookings',
+			title: m.admin_sidebar_bookings(),
 			url: '/admin/bookings',
 			icon: '/icons/notebook.svg'
 		},
 		{
-			title: 'Users',
+			title: m.admin_sidebar_users(),
 			url: '/admin/users',
 			icon: '/icons/ski-resort.svg'
 		},
 		{
-			title: 'Reviews',
+			title: m.admin_sidebar_reviews(),
 			url: '/admin/reviews',
 			icon: '/icons/calendar.svg'
 		},
 		{
-			title: 'Resorts',
+			title: m.admin_sidebar_resorts(),
 			url: '/admin/resorts',
 			icon: '/icons/ski-resort.svg'
 		},
 		{
-			title: 'Sports',
+			title: m.admin_sidebar_sports(),
 			url: '/admin/sports',
 			icon: '/icons/service.svg'
 		},
 		{
-			title: 'Payments',
+			title: m.admin_sidebar_payments(),
 			url: '/admin/payments',
 			icon: '/icons/notebook.svg'
 		}
-	];
+	]);
 
 	const sidebar = Sidebar.useSidebar();
 
@@ -65,7 +68,7 @@
 
 <Sidebar.Root class="bg-background">
 	<Sidebar.Header class="bg-white">
-		<a href="/" class="group flex flex-row items-center justify-center gap-1">
+		<a href={localizeHref('/')} class="group flex flex-row items-center justify-center gap-1">
 			<div class="m-1 size-12 overflow-hidden object-cover">
 				<img
 					src="/local-snow-head-big.png"
@@ -77,21 +80,21 @@
 				<p class="title4 mt-0 text-foreground/85 transition-all group-hover:text-foreground">
 					localsnow
 				</p>
-				<span class="text-xs text-muted-foreground">Admin Panel</span>
+				<span class="text-xs text-muted-foreground">{m.admin_panel()}</span>
 			</div>
 		</a>
 	</Sidebar.Header>
 	<Sidebar.Content class="px-3 bg-white">
 		<Sidebar.Group />
-		<Sidebar.GroupLabel>Admin Dashboard</Sidebar.GroupLabel>
+		<Sidebar.GroupLabel>{m.admin_dashboard()}</Sidebar.GroupLabel>
 		<Sidebar.GroupContent>
 			<Sidebar.Menu>
-				{#each items as item (item.title)}
+				{#each items as item (item.url)}
 					<Sidebar.MenuItem>
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}
 								<a
-									href={item.url}
+									href={localizeHref(item.url)}
 									{...props}
 									onclick={handleClick}
 									class:font-semibold={isActive(item.url)}
@@ -109,8 +112,14 @@
 		<Sidebar.Group />
 	</Sidebar.Content>
 	<Sidebar.Footer class="bg-white p-4">
-		<a href="/dashboard" class="text-sm text-muted-foreground hover:text-foreground">
-			← Back to Dashboard
-		</a>
+		<div class="flex flex-col gap-3">
+			<a href={localizeHref('/dashboard')} class="text-sm text-muted-foreground hover:text-foreground">
+				← {m.admin_back_to_dashboard()}
+			</a>
+			<div class="flex items-center justify-between border-t pt-3">
+				<span class="text-sm text-muted-foreground">{m.sidebar_language()}</span>
+				<LanguageSwitch />
+			</div>
+		</div>
 	</Sidebar.Footer>
 </Sidebar.Root>
