@@ -64,11 +64,11 @@
 							</li>
 						{/each}
 					</ul>
-					<div class="flex-shrink-0">
-						<LanguageSwitch />
-					</div>
 				</nav>
-
+				
+				<div class="flex-shrink-0">
+					<LanguageSwitch />
+				</div>
 				<!-- Mobile Navigation Trigger -->
 				<button
 					class="md:hidden"
