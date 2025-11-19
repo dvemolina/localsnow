@@ -1,6 +1,7 @@
 <script lang="ts">
 	import * as Select from '$lib/components/ui/select/index.js';
 	import * as Form from '$lib/components/ui/form';
+	import * as m from '$lib/paraglide/messages';
 
 	let props = $props();
 
@@ -8,16 +9,16 @@
 	let name = props.name;
 	let isFilter: boolean = props.isFilter ?? false; // If true, shows "All Types" option
 
-	const instructorTypes = isFilter
+	const instructorTypes = $derived(isFilter
 		? [
-			{ label: 'All Types', value: '' },
-			{ label: 'Independent', value: 'instructor-independent' },
-			{ label: 'School Instructor', value: 'instructor-school' }
+			{ label: m.instructor_type_all(), value: '' },
+			{ label: m.instructor_type_independent(), value: 'instructor-independent' },
+			{ label: m.instructor_type_school_instructor(), value: 'instructor-school' }
 		]
 		: [
-			{ label: 'School', value: 'instructor-school' },
-			{ label: 'Independent', value: 'instructor-independent' }
-		];
+			{ label: m.instructor_type_school(), value: 'instructor-school' },
+			{ label: m.instructor_type_independent(), value: 'instructor-independent' }
+		]);
 
 	const formStore = form.form; //the reactive store for form values
 </script>
@@ -25,13 +26,13 @@
 <Form.Field class="w-full" {form} {name}>
 	<Form.Control>
 		{#snippet children({ props })}
-			<Form.Label>Instructor Type</Form.Label>
+			<Form.Label>{m.form_label_instructor_type()}</Form.Label>
 			<Select.Root type="single" bind:value={$formStore[name]} name={props.name}>
 				<Select.Trigger {...props}>
 					{#if $formStore[name] !== undefined && $formStore[name] !== null}
 						{instructorTypes.find((s) => s.value === $formStore[name])?.label}
 					{:else}
-						{isFilter ? 'All Types' : 'Select your type'}
+						{isFilter ? m.instructor_type_all() : m.form_placeholder_select_instructor_type()}
 					{/if}
 				</Select.Trigger>
 				<Select.Content>

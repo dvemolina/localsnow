@@ -12,6 +12,7 @@
 	import SearchResort from '$src/features/Resorts/components/SearchResort.svelte';
 	import { onDestroy } from 'svelte';
 	import { localizeHref } from '$lib/paraglide/runtime';
+	import * as m from '$lib/paraglide/messages';
 
 	let { data }: { data: { form: SuperValidated<Infer<SchoolSignupSchema>> } } = $props();
 
@@ -52,7 +53,7 @@
 	<Form.Field {form} name="name" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>School Name</Form.Label>
+				<Form.Label>{m.form_label_school_name()}</Form.Label>
 				<Input {...props} bind:value={$formData.name} />
 			{/snippet}
 		</Form.Control>
@@ -62,9 +63,9 @@
 	<Form.Field {form} name="logo" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>School Logo Image</Form.Label>
+				<Form.Label>{m.form_label_school_logo()}</Form.Label>
 				<Form.Description class="text-xs"
-					>This image will appear in your School Card for clients to see.</Form.Description
+					>{m.form_description_school_logo()}</Form.Description
 				>
 				<!-- File input -->
 				<Input
@@ -94,12 +95,12 @@
 	<Form.Field {form} name="schoolEmail" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>School Contact Email</Form.Label>
-				<Form.Description class="text-xs">School Contact details for the Clients</Form.Description>
+				<Form.Label>{m.form_label_school_email()}</Form.Label>
+				<Form.Description class="text-xs">{m.form_description_school_email()}</Form.Description>
 				<Input {...props} bind:value={$formData.schoolEmail} type="email" />
 			{/snippet}
 		</Form.Control>
-		
+
 		<Form.FieldErrors />
 	</Form.Field>
 
@@ -108,7 +109,7 @@
 		<Form.Field {form} name="schoolPhone" class="w-full">
 			<Form.Control>
 				{#snippet children({ props })}
-					<Form.Label>School Contact Phone</Form.Label>
+					<Form.Label>{m.form_label_school_phone()}</Form.Label>
 					<Input {...props} bind:value={$formData.schoolPhone} type="tel" />
 				{/snippet}
 			</Form.Control>
@@ -119,8 +120,8 @@
 	<Form.Field {form} name="bio" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>School Biography</Form.Label>
-				<Form.Description class="text-xs">Short description of what sets you apart, services or packages you offer, your values/style and types of professionals you have.</Form.Description>
+				<Form.Label>{m.form_label_biography()}</Form.Label>
+				<Form.Description class="text-xs">{m.form_description_school_bio()}</Form.Description>
 				<Textarea name="bio" bind:value={$formData.bio} />
 			{/snippet}
 		</Form.Control>
@@ -150,8 +151,8 @@
 	</Form.Field> -->
 
 	<div class="mt-6 flex w-full flex-row items-center justify-center gap-2">
-		<a href={localizeHref('/dashboard')} class="text-sm {buttonVariants({ variant: 'outline' })}">Go back</a>
-		<Form.Button type="submit">Submit</Form.Button>
+		<a href={localizeHref('/dashboard')} class="text-sm {buttonVariants({ variant: 'outline' })}">{m.button_go_back()}</a>
+		<Form.Button type="submit">{m.common_submit()}</Form.Button>
 	</div>
 </form>
 

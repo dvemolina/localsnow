@@ -856,5 +856,22 @@
 	"button_view_details": "Ver Detalles",
 
 	"login_already_have_account": "Ya tengo una cuenta",
-	"login_no_account": "No tengo una cuenta"
+	"login_no_account": "No tengo una cuenta",
+
+	"form_placeholder_select_currency": "Selecciona una moneda",
+	"form_placeholder_country_prefix": "Prefijo de País",
+	"form_placeholder_select_instructor_type": "Selecciona tu tipo",
+
+	"instructor_type_all": "Todos los Tipos",
+	"instructor_type_independent": "Independiente",
+	"instructor_type_school": "Escuela",
+	"instructor_type_school_instructor": "Instructor de Escuela",
+
+	"form_description_profile_image": "Esta imagen aparecerá en tu Tarjeta de Instructor para que los clientes la vean.",
+	"form_description_qualification": "La certificación debe estar en formato PDF.",
+	"form_description_contact_phone": "Este número se mostrará a los clientes",
+	"form_description_biography": "Breve descripción de ti mismo y lo que ofreces",
+	"form_description_school_logo": "Esta imagen aparecerá en tu Tarjeta de Escuela para que los clientes la vean.",
+	"form_description_school_email": "Datos de contacto de la escuela para los clientes",
+	"form_description_school_bio": "Breve descripción de lo que te diferencia, servicios o paquetes que ofreces, tus valores/estilo y tipos de profesionales que tienes."
 }

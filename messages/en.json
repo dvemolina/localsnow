@@ -856,5 +856,22 @@
 	"button_view_details": "View Details",
 
 	"login_already_have_account": "I already have an account",
-	"login_no_account": "I don't have an account"
+	"login_no_account": "I don't have an account",
+
+	"form_placeholder_select_currency": "Select a currency",
+	"form_placeholder_country_prefix": "Country Prefix",
+	"form_placeholder_select_instructor_type": "Select your type",
+
+	"instructor_type_all": "All Types",
+	"instructor_type_independent": "Independent",
+	"instructor_type_school": "School",
+	"instructor_type_school_instructor": "School Instructor",
+
+	"form_description_profile_image": "This image will appear in your Instructor Card for clients to see.",
+	"form_description_qualification": "The qualification has to be in PDF format.",
+	"form_description_contact_phone": "This number will be shown to clients",
+	"form_description_biography": "Short description of yourself and what you offer",
+	"form_description_school_logo": "This image will appear in your School Card for clients to see.",
+	"form_description_school_email": "School Contact details for the Clients",
+	"form_description_school_bio": "Short description of what sets you apart, services or packages you offer, your values/style and types of professionals you have."
 }

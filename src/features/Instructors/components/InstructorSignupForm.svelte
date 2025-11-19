@@ -19,6 +19,7 @@
 	import CountryCodeSelect from '$src/lib/components/shared/CountryCodeSelect.svelte';
 	import InstructorTypeSelect from '$src/lib/components/shared/InstructorTypeSelect.svelte';
 	import { localizeHref } from '$lib/paraglide/runtime';
+	import * as m from '$lib/paraglide/messages';
 
 	let { data }: { data: { form: SuperValidated<Infer<InstructorSignupSchema>> } } = $props();
 
@@ -81,9 +82,9 @@
 	<Form.Field {form} name="profileImage" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>Professional Profile Image</Form.Label>
+				<Form.Label>{m.form_label_profile_image()}</Form.Label>
 				<Form.Description class="text-xs"
-					>This image will appear in your Instructor Card for clients to see.</Form.Description
+					>{m.form_description_profile_image()}</Form.Description
 				>
 				<Input
 					{...props}
@@ -111,9 +112,9 @@
 	<Form.Field {form} name="qualification" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>Qualification File</Form.Label>
+				<Form.Label>{m.form_label_qualification()}</Form.Label>
 				<Form.Description class="text-xs"
-					>The qualification has to be in PDF format.</Form.Description
+					>{m.form_description_qualification()}</Form.Description
 				>
 				<Input
 					{...props}
@@ -141,9 +142,9 @@
 		<Form.Field {form} name="professionalPhone" class="w-full">
 			<Form.Control>
 				{#snippet children({ props })}
-					<Form.Label>Professional Contact Phone</Form.Label>
+					<Form.Label>{m.form_label_contact_phone()}</Form.Label>
 					<Form.Description class="text-xs">
-						This number will be shown to clients
+						{m.form_description_contact_phone()}
 					</Form.Description>
 					<Input {...props} bind:value={$formData.professionalPhone} type="tel" />
 				{/snippet}
@@ -155,9 +156,9 @@
 	<Form.Field {form} name="bio" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>Biography</Form.Label>
+				<Form.Label>{m.form_label_biography()}</Form.Label>
 				<Form.Description class="text-xs"
-					>Short description of yourself and what you offer</Form.Description
+					>{m.form_description_biography()}</Form.Description
 				>
 				<Textarea name="bio" bind:value={$formData.bio} />
 			{/snippet}
@@ -173,10 +174,10 @@
 		<Form.Field {form} name="basePrice" class="w-full">
 			<Form.Control>
 				{#snippet children({ props })}
-					<Form.Label>Base Price (1 Hour)</Form.Label>
+					<Form.Label>{m.form_label_base_price()}</Form.Label>
 					<Input {...props} bind:value={$formData.basePrice} type="number" min="0" />
 					<Form.Description class="text-xs"
-						>Base Hourly Rate. You'll be able to add Discounts and Promotions later.</Form.Description
+						>{m.form_description_base_price()}</Form.Description
 					>
 				{/snippet}
 			</Form.Control>
@@ -186,8 +187,8 @@
 	</div>
 
 	<div class="mt-6 flex w-full flex-row items-center justify-center gap-2">
-		<a href={localizeHref('/dashboard')} class="text-sm {buttonVariants({ variant: 'outline' })}">Go back</a>
-		<Form.Button type="submit">Submit</Form.Button>
+		<a href={localizeHref('/dashboard')} class="text-sm {buttonVariants({ variant: 'outline' })}">{m.button_go_back()}</a>
+		<Form.Button type="submit">{m.common_submit()}</Form.Button>
 	</div>
 </form>
 
