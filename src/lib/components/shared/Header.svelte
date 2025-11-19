@@ -66,9 +66,6 @@
 					</ul>
 				</nav>
 				
-				<div class="flex-shrink-0">
-					<LanguageSwitch />
-				</div>
 				<!-- Mobile Navigation Trigger -->
 				<button
 					class="md:hidden"
@@ -144,9 +141,12 @@
 							{/each}
 						</ul>
 					</nav>
+				</div>
+				
+			{/if}
+			<div class="flex-shrink-0">
 					<LanguageSwitch />
 				</div>
-			{/if}
 		</div>
 
 		{#if !isCurrentPath("/", page.url.pathname)}
