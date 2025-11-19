@@ -31,9 +31,9 @@
 	<header
 		class="flex w-full  flex-col items-center justify-center gap-2 self-center transition-all z-50"
 	>
-		<div class="flex w-full max-w-[685px] flex-row gap-2 items-center justify-center ">
+		<div class="flex w-full max-w-[685px] flex-row gap-2 items-center justify-center">
 			<div
-				class="header flex w-full flex-row items-center justify-between gap-4 rounded-full shadow-xs border border-border pr-4 bg-card sm:gap-12"
+				class="header flex w-full flex-row items-center justify-evenly gap-4 rounded-full shadow-xs border border-border bg-card sm:gap-12"
 			>
 				<a href={localizeHref('/')} class="group flex flex-row items-center justify-center">
 					<div class="m-1 size-12 overflow-hidden rounded-full object-cover">
@@ -50,7 +50,7 @@
 
 				<!-- Desktop Navigation -->
 				<nav class="hidden flex-row gap-6 md:flex">
-					<ul class="flex flex-row gap-4">
+					<ul class="flex flex-row gap-4 w-max">
 						{#each items as { href, label }}
 							<li>
 								<a
@@ -64,8 +64,8 @@
 							</li>
 						{/each}
 					</ul>
-					<LanguageSwitch />
 				</nav>
+				<LanguageSwitch />
 
 				<!-- Mobile Navigation Trigger -->
 				<button
