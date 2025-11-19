@@ -11,6 +11,7 @@
 	import CountryCodeSelect from '$src/lib/components/shared/CountryCodeSelect.svelte';
 	import SearchResort from '$src/features/Resorts/components/SearchResort.svelte';
 	import { onDestroy } from 'svelte';
+	import { localizeHref } from '$lib/paraglide/runtime';
 
 	let { data }: { data: { form: SuperValidated<Infer<SchoolSignupSchema>> } } = $props();
 
@@ -149,7 +150,7 @@
 	</Form.Field> -->
 
 	<div class="mt-6 flex w-full flex-row items-center justify-center gap-2">
-		<a href="/dashboard" class="text-sm {buttonVariants({ variant: 'outline' })}">Go back</a>
+		<a href={localizeHref('/dashboard')} class="text-sm {buttonVariants({ variant: 'outline' })}">Go back</a>
 		<Form.Button type="submit">Submit</Form.Button>
 	</div>
 </form>

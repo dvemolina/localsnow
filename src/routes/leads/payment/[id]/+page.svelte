@@ -2,6 +2,7 @@
 	import { Button } from '$src/lib/components/ui/button';
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { enhance } from '$app/forms';
+	import { localizeHref } from '$lib/paraglide/runtime';
 
 	let { data, form } = $props();
 	
@@ -26,8 +27,8 @@
 
 <section class="mx-auto max-w-2xl py-8">
 	<div class="mb-6">
-		<a 
-			href="/dashboard" 
+		<a
+			href={localizeHref('/dashboard')}
 			class="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
 		>
 			<svg

@@ -4,6 +4,7 @@
 
 	import { buttonVariants } from "$src/lib/components/ui/button";
 	import * as m from '$lib/paraglide/messages';
+	import { localizeHref } from '$lib/paraglide/runtime';
 
 </script>
 
@@ -22,9 +23,9 @@
 
 			<div class="space-y-4">
                 <div class="flex flex-col gap-2 items-center justify-center">
-                    <a href="/dashboard/choose-role/default-user" class=" w-full {buttonVariants({ variant: "default" })}" >{m.role_student()}</a>
-                    <a href="/dashboard/choose-role/instructor" class="w-full {buttonVariants({ variant: "default" })}">{m.role_instructor()}</a>
-                    <a href="/dashboard/choose-role/school-admin" class="w-full {buttonVariants({ variant: "default" })}"> {m.role_school_admin()}</a>
+                    <a href={localizeHref('/dashboard/choose-role/default-user')} class=" w-full {buttonVariants({ variant: "default" })}" >{m.role_student()}</a>
+                    <a href={localizeHref('/dashboard/choose-role/instructor')} class="w-full {buttonVariants({ variant: "default" })}">{m.role_instructor()}</a>
+                    <a href={localizeHref('/dashboard/choose-role/school-admin')} class="w-full {buttonVariants({ variant: "default" })}"> {m.role_school_admin()}</a>
             </div>
 			</div>
 

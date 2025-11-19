@@ -18,6 +18,7 @@
 	import CurrencySelect from '$src/lib/components/shared/CurrencySelect.svelte';
 	import CountryCodeSelect from '$src/lib/components/shared/CountryCodeSelect.svelte';
 	import InstructorTypeSelect from '$src/lib/components/shared/InstructorTypeSelect.svelte';
+	import { localizeHref } from '$lib/paraglide/runtime';
 
 	let { data }: { data: { form: SuperValidated<Infer<InstructorSignupSchema>> } } = $props();
 
@@ -185,7 +186,7 @@
 	</div>
 
 	<div class="mt-6 flex w-full flex-row items-center justify-center gap-2">
-		<a href="/dashboard" class="text-sm {buttonVariants({ variant: 'outline' })}">Go back</a>
+		<a href={localizeHref('/dashboard')} class="text-sm {buttonVariants({ variant: 'outline' })}">Go back</a>
 		<Form.Button type="submit">Submit</Form.Button>
 	</div>
 </form>

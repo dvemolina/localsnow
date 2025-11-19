@@ -6,6 +6,7 @@
 	import { Switch } from '$src/lib/components/ui/switch';
 	import { toast } from 'svelte-sonner';
 	import { invalidateAll } from '$app/navigation';
+	import { localizeHref } from '$lib/paraglide/runtime';
 
 	let { data } = $props();
 
@@ -196,7 +197,7 @@
 			{/each}
 		</Card.Content>
 		<Card.Footer class="flex justify-between">
-			<Button variant="outline" href="/dashboard/availability">
+			<Button variant="outline" href={localizeHref('/dashboard/availability')}>
 				Back
 			</Button>
 			<Button onclick={saveWorkingHours} disabled={saving}>
