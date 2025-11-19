@@ -106,7 +106,7 @@
 	"filter_price_min": "Min",
 	"filter_price_max": "Max",
 	"filter_group_size": "Group Size",
-	"filter_select_sport": "Select sport",
+	"filter_select_sport": "Select a sport",
 	"filter_select_resort": "Select resort",
 	"instructor_view_profile": "View Profile",
 	"instructor_book_now": "Book Now",
@@ -286,5 +286,9 @@
 	"home_how_it_works_step2_desc": "Send a booking request with your dates and details. Get direct response from the instructor.",
 	"home_how_it_works_step3_title": "Connect",
 	"home_how_it_works_step3_desc": "Arrange your lesson directly with the instructor. Pay them directly - we take nothing.",
-	"home_how_it_works_cta": "See Detailed Guide for Clients and Instructors"
+	"home_how_it_works_cta": "See Detailed Guide for Clients and Instructors",
+	"filter_choose_resort": "Choose Resort",
+	"filter_choose_sport": "Choose Sport",
+	"filter_search_resorts_placeholder": "Type to search resorts...",
+	"sports_telemark": "Telemark"
 }

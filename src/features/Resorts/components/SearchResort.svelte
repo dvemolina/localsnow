@@ -2,12 +2,13 @@
   import { Label } from '$src/lib/components/ui/label';
   import * as Form from '$src/lib/components/ui/form';
   import { onMount } from 'svelte';
+  import * as m from '$lib/paraglide/messages';
 
   let {
     form,
     name,
     mode = 'form',
-    label = 'Choose Resort',
+    label,
     id = name,
     countryId
   }: {
@@ -18,6 +19,10 @@
     id?: string;
     countryId?: number;
   } = $props();
+
+  // Use translated label if not provided
+  const displayLabel = $derived(label ?? m.filter_choose_resort());
+  const placeholder = $derived(m.filter_search_resorts_placeholder());
 
   type Resort = {
     id: number;
@@ -163,7 +168,7 @@
   <Form.Control>
     {#snippet children({ props })}
       <div class="relative mx-auto w-full" bind:this={container}>
-        <Form.Label class="mb-1 block text-sm font-medium text-foreground">{label}</Form.Label>
+        <Form.Label class="mb-1 block text-sm font-medium text-foreground">{displayLabel}</Form.Label>
         
         <input
           {...props}
@@ -175,7 +180,7 @@
           {id}
           type="text"
           class="h-12 w-full rounded-md border border-gray-300 p-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-foreground"
-          placeholder="Type to search resorts..."
+          placeholder={placeholder}
           bind:value={query}
           oninput={onInput}
           onkeydown={onKeyDown}

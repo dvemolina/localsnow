@@ -172,7 +172,7 @@
 	"filter_price_min": "Mín",
 	"filter_price_max": "Máx",
 	"filter_group_size": "Tamaño del Grupo",
-	"filter_select_sport": "Selecciona deporte",
+	"filter_select_sport": "Selecciona un deporte",
 	"filter_select_resort": "Selecciona estación",
 	"instructor_view_profile": "Ver Perfil",
 	"instructor_book_now": "Reservar Ahora",
@@ -286,5 +286,9 @@
 	"levels_expert": "Experto",
 	"home_for_instructors": "¿Eres instructor?",
 	"home_how_it_works": "Cómo Funciona",
-	"home_join_cta": "Únete a Local Snow"
+	"home_join_cta": "Únete a Local Snow",
+	"filter_choose_resort": "Elegir Estación",
+	"filter_choose_sport": "Elegir Deporte",
+	"filter_search_resorts_placeholder": "Escribe para buscar estaciones...",
+	"sports_telemark": "Telemark"
 }
