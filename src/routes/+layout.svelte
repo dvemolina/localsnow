@@ -9,7 +9,7 @@
 	import CookieConsent from '$src/lib/components/shared/CookieConsent.svelte';
 	import { Toaster } from 'svelte-sonner';
 
-	let { children } = $props();
+	let { data, children } = $props();
 	let isDashboard = $state(
 		page.url.pathname.includes('/dashboard') || page.url.pathname.includes('/admin')
 	);
@@ -36,7 +36,7 @@
 <ModeWatcher /> -->
 
 	{#if !isDashboard}
-		<Header />
+		<Header user={data.user} />
 	{/if}
 	<main class="wrapper h-full flex w-full flex-col items-center justify-center">
 		<div class=" w-full {isDashboard ? '' : 'max-w-4xl px-4 pt-32'}">

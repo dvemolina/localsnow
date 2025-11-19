@@ -7,15 +7,26 @@
 	import * as m from '$lib/paraglide/messages';
 	import { localizeHref } from '$lib/paraglide/runtime';
 
+	type User = {
+		id: string;
+		name: string;
+		email: string;
+		role?: string;
+	} | null;
+
+	let { user }: { user: User } = $props();
+
 	let isMobileMenuOpen = $state(false);
 
 	// Navigation items - use $derived so translations update on locale change
-	// Removed Instructors since users access via homepage search
+	// Conditionally show Dashboard or Sign Up based on user state
 	const items = $derived([
 		{ href: localizeHref('/resorts'), label: m.nav_resorts() },
 		{ href: localizeHref('/how-it-works'), label: m.nav_how_it_works() },
 		{ href: localizeHref('/about'), label: m.nav_about() },
-		{ href: localizeHref('/signup'), label: m.nav_signup() }
+		user
+			? { href: localizeHref('/dashboard'), label: m.nav_dashboard() }
+			: { href: localizeHref('/signup'), label: m.nav_signup() }
 	]);
 
 	// Prevent scrolling when menu is open
