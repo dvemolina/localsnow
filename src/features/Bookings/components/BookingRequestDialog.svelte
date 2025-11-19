@@ -13,6 +13,7 @@
 	import AvailabilityCalendar from '$src/features/Availability/components/AvailabilityCalendar.svelte';
 	import { toast } from 'svelte-sonner';
 	import { getSportName } from '$src/features/Sports/lib/sportsConstants';
+	import * as m from '$lib/paraglide/messages';
 
 	let { 
 		instructorId,
@@ -180,12 +181,12 @@
 		}
 	}
 
-	const skillLevels = [
-		{ value: 'beginner', label: 'Beginner' },
-		{ value: 'intermediate', label: 'Intermediate' },
-		{ value: 'advanced', label: 'Advanced' },
-		{ value: 'expert', label: 'Expert' }
-	];
+	const skillLevels = $derived([
+		{ value: 'beginner', label: m.levels_beginner() },
+		{ value: 'intermediate', label: m.levels_intermediate() },
+		{ value: 'advanced', label: m.levels_advanced() },
+		{ value: 'expert', label: m.levels_expert() }
+	]);
 
 	let availableSports = $derived(baseLesson?.sports || []);
 
