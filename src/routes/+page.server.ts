@@ -6,6 +6,7 @@ import type { PageServerLoad } from "./$types";
 import { db } from '$lib/server/db';
 import { countries } from '$lib/server/db/schema';
 import { sql } from 'drizzle-orm';
+import { extractLocaleFromRequest, localizeHref } from '$lib/paraglide/runtime';
 
 
 export const load: PageServerLoad = async () => {
@@ -35,7 +36,9 @@ export const actions: Actions = {
         if (form.data.resort) params.set('resort', form.data.resort.toString());
         if (form.data.sport) params.set('sport', form.data.sport);
 
-        // Redirect to instructors page with filters
-        throw redirect(303, `/instructors?${params.toString()}`);
+        // Get current locale and redirect to localized instructors page
+        const locale = extractLocaleFromRequest(request);
+        const localizedUrl = localizeHref(`/instructors?${params.toString()}`, { locale });
+        throw redirect(303, localizedUrl);
     }
 };

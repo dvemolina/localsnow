@@ -9,14 +9,14 @@
 	function changeLanguage(event: Event) {
 		const target = event.target as HTMLSelectElement;
 		const selectedLocale = target.value;
-		window.location.href = localizeHref(page.url.pathname, { locale: selectedLocale });
+		window.location.href = localizeHref(page.url.pathname + page.url.search, { locale: selectedLocale });
 	}
 </script>
 
 <div class="language-switcher">
 	<div class="custom-select">
-		<img src={`/flags/${currentLocale}.svg`} alt="Flag" class="selected-flag" />
-		<select onchange={changeLanguage} class="language-select">
+		<img src={`/flags/${currentLocale}.svg`} alt="Current language" class="selected-flag" />
+		<select onchange={changeLanguage} class="language-select" aria-label="Select language">
 			{#each locales as locale}
 				<option value={locale} selected={locale === currentLocale}>
 					{locale.toUpperCase()}
@@ -37,36 +37,33 @@
 		position: relative;
 		display: flex;
 		align-items: center;
-		gap: 0.5rem;
+		justify-content: center;
 		border: 1px solid #ccc;
 		border-radius: 5px;
-		padding: 0 0.1rem;
+		padding: 0.4rem;
 		cursor: pointer;
 		background: white;
+		min-width: 36px;
+		min-height: 28px;
+	}
+
+	.custom-select:hover {
+		border-color: #999;
 	}
 
 	.selected-flag {
 		width: 20px;
 		height: 15px;
 		object-fit: contain;
+		pointer-events: none;
 	}
 
 	.language-select {
-		background: transparent;
-		border: none;
-		font-size: 0.7rem;
+		position: absolute;
+		inset: 0;
+		opacity: 0;
 		cursor: pointer;
-		padding: 0.1rem;
-		appearance: none; /* Hides default dropdown styling */
-	}
-
-	.language-select:focus {
-		outline: none;
-	}
-
-	/* Style dropdown options */
-	.language-select option {
-		background: white;
-		color: black;
+		width: 100%;
+		height: 100%;
 	}
 </style>
