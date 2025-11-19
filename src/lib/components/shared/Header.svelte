@@ -5,16 +5,17 @@
 	import Breadcrumb from './Breadcrumb.svelte';
 	import { isCurrentPath } from "$src/lib/utils/generics";
 	import * as m from '$lib/paraglide/messages';
+	import { localizeHref } from '$lib/paraglide/runtime';
 
 	let isMobileMenuOpen = $state(false);
 
 	// Navigation items - use $derived so translations update on locale change
+	// Removed Instructors since users access via homepage search
 	const items = $derived([
-		{ href: '/instructors', label: m.nav_instructors() },
-		{ href: '/resorts', label: m.nav_resorts() },
-		{ href: '/how-it-works', label: m.nav_how_it_works() },
-		{ href: '/about', label: m.nav_about() },
-		{ href: '/signup', label: m.nav_signup() }
+		{ href: localizeHref('/resorts'), label: m.nav_resorts() },
+		{ href: localizeHref('/how-it-works'), label: m.nav_how_it_works() },
+		{ href: localizeHref('/about'), label: m.nav_about() },
+		{ href: localizeHref('/signup'), label: m.nav_signup() }
 	]);
 
 	// Prevent scrolling when menu is open
@@ -34,7 +35,7 @@
 			<div
 				class="header flex w-full flex-row items-center justify-between gap-4 rounded-full shadow-xs border border-border pr-4 bg-card sm:gap-12"
 			>
-				<a href="/" class="group flex flex-row items-center justify-center">
+				<a href={localizeHref('/')} class="group flex flex-row items-center justify-center">
 					<div class="m-1 size-12 overflow-hidden rounded-full object-cover">
 						<img
 							src="/local-snow-head-big.png"
@@ -109,7 +110,7 @@
 					</button>
 
 					<nav class="flex flex-col items-center justify-center space-y-8 mb-8">
-						<a href="/" class="group flex flex-row items-center justify-center gap-1">
+						<a href={localizeHref('/')} class="group flex flex-row items-center justify-center gap-1">
 							<div class="m-1 size-12 overflow-hidden object-cover">
 								<img
 									src="/local-snow-head-big.png"
