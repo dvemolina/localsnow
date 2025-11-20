@@ -10,7 +10,7 @@
 	/>
 </svelte:head>
 
-<article class="prose prose-sm mx-auto max-w-3xl dark:prose-invert">
+<article class="prose prose-sm mx-auto max-w-3xl ">
 	<h1 class="title2">{m.how_it_works_page_title()}</h1>
 
 	<p class="text-lg text-muted-foreground">
@@ -68,14 +68,14 @@
 			</div>
 
 			<!-- Beta Launch Special (Clients) -->
-			<div class="mt-4 rounded-lg border-2 border-green-500 bg-green-50 p-4 dark:bg-green-950">
+			<div class="mt-4 rounded-lg border-2 border-green-500 bg-green-50 p-4 ">
 				<div class="flex items-start gap-3">
 					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 h-5 w-5 flex-shrink-0 text-green-600"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>
 					<div>
-						<p class="font-semibold text-green-900 dark:text-green-100">
+						<p class="font-semibold text-green-900 ">
 							{m.beta_launch_client_info()}
 						</p>
-						<p class="mt-1 text-sm text-green-800 dark:text-green-200">
+						<p class="mt-1 text-sm text-green-800 ">
 							{m.beta_launch_client_message()}
 						</p>
 					</div>
@@ -205,14 +205,14 @@
 			</div>
 
 			<!-- Beta Launch Special (Instructors) -->
-			<div class="mt-4 rounded-lg border-2 border-green-500 bg-green-50 p-4 dark:bg-green-950">
+			<div class="mt-4 rounded-lg border-2 border-green-500 bg-green-50 p-4" >
 				<div class="flex items-start gap-3">
 					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 h-5 w-5 flex-shrink-0 text-green-600"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>
 					<div>
-						<p class="font-semibold text-green-900 dark:text-green-100">
+						<p class="font-semibold text-green-900 ">
 							{m.beta_launch_instructor_info()}
 						</p>
-						<p class="mt-1 text-sm text-green-800 dark:text-green-200">
+						<p class="mt-1 text-sm text-green-800 ">
 							{m.beta_launch_instructor_message()}
 						</p>
 					</div>
