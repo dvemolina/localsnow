@@ -69,12 +69,12 @@ export const actions: Actions = {
 					isActive
 				})
 				.where(eq(launchCodes.id, id));
-
-			throw redirect(303, '/admin/launch-codes');
 		} catch (error) {
-			if (error instanceof Response) throw error;
 			console.error('Error updating launch code:', error);
 			return fail(500, { error: 'Failed to update code' });
 		}
+
+		// Redirect OUTSIDE try-catch to avoid catching the redirect exception
+		throw redirect(303, '/admin/launch-codes');
 	}
 };

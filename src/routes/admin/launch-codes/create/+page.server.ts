@@ -43,12 +43,12 @@ export const actions: Actions = {
 				maxUses: maxUses ? parseInt(maxUses) : null,
 				isActive
 			});
-
-			throw redirect(303, '/admin/launch-codes');
 		} catch (error) {
-			if (error instanceof Response) throw error;
 			console.error('Error creating launch code:', error);
 			return fail(500, { error: 'Failed to create code', code, description });
 		}
+
+		// Redirect OUTSIDE try-catch to avoid catching the redirect exception
+		throw redirect(303, '/admin/launch-codes');
 	}
 };
