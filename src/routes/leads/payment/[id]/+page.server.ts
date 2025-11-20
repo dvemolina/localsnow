@@ -204,9 +204,6 @@ export const actions: Actions = {
                 estimatedPrice: bookingRequest.estimatedPrice || 0,
                 currency: bookingRequest.currency || 'EUR'
             }).catch(err => console.error('Email error:', err));
-
-            // Redirect to success page
-            redirect(303, `/leads/payment/${bookingRequestId}/success?usedBetaCode=true`);
         } catch (err) {
             console.error('Error using promo code:', err);
             return fail(500, {
@@ -214,5 +211,8 @@ export const actions: Actions = {
                 field: 'promoCode'
             });
         }
+
+        // Redirect OUTSIDE try-catch to avoid catching the redirect exception
+        redirect(303, `/leads/payment/${bookingRequestId}/success?usedBetaCode=true`);
     }
 };
