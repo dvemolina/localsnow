@@ -1,29 +1,32 @@
 // src/features/PromoCodes/lib/promoCodeService.ts
 import { db } from '$lib/server/db';
-import { launchCodes } from '$lib/server/db/schema';
+import { launchCodes, promoCodes } from '$lib/server/db/schema';
 import { eq, and, lte, gte, or } from 'drizzle-orm';
 
 export interface PromoCodeValidation {
 	valid: boolean;
 	error?: string;
 	code?: string;
-	type?: 'launch_code' | 'promotion'; // Future: 'promotion' for instructor-created promos
+	type?: 'launch_code' | 'instructor_promo';
+	discountPercent?: number; // For instructor promos
+	instructorId?: number; // For instructor promos
+	lessonId?: number; // For instructor promos
 }
 
 /**
  * Unified Promo Code Service
  *
- * Validates promo codes from multiple sources:
- * 1. Launch codes (admin-managed, stored in launch_codes table)
- * 2. Future: Promotions (instructor-managed, will be in promotions table)
+ * Validates promo codes from BOTH sources:
+ * 1. Launch codes (admin-managed, platform-wide, stored in launch_codes table)
+ * 2. Promo codes (instructor-managed, lesson-specific, stored in promo_codes table)
  *
- * This ensures both types of codes work seamlessly and won't conflict.
+ * This ensures both types of codes work seamlessly without conflicts.
  */
 export class PromoCodeService {
 	/**
-	 * Validate a promo code - checks both launch codes and future promotions
+	 * Validate a promo code - checks BOTH launch codes AND instructor promo codes
 	 */
-	async validateCode(code: string): Promise<PromoCodeValidation> {
+	async validateCode(code: string, lessonId?: number): Promise<PromoCodeValidation> {
 		if (!code || code.trim().length === 0) {
 			return {
 				valid: false,
@@ -33,17 +36,17 @@ export class PromoCodeService {
 
 		const upperCode = code.trim().toUpperCase();
 
-		// Check launch codes table
+		// Check launch codes table (admin codes - platform wide)
 		const launchCodeResult = await this.checkLaunchCode(upperCode);
 		if (launchCodeResult.valid) {
 			return launchCodeResult;
 		}
 
-		// TODO: Future - Check promotions table
-		// const promotionResult = await this.checkPromotion(upperCode);
-		// if (promotionResult.valid) {
-		// 	return promotionResult;
-		// }
+		// Check promo codes table (instructor codes - lesson specific)
+		const promoCodeResult = await this.checkInstructorPromo(upperCode, lessonId);
+		if (promoCodeResult.valid) {
+			return promoCodeResult;
+		}
 
 		// If not found in either table
 		return {
@@ -53,7 +56,7 @@ export class PromoCodeService {
 	}
 
 	/**
-	 * Check if code exists in launch_codes table
+	 * Check if code exists in launch_codes table (admin codes)
 	 */
 	private async checkLaunchCode(code: string): Promise<PromoCodeValidation> {
 		try {
@@ -92,39 +95,105 @@ export class PromoCodeService {
 	}
 
 	/**
-	 * Future: Check if code exists in promotions table
-	 * This will be implemented when instructor-created promotions are added
+	 * Check if code exists in promo_codes table (instructor codes)
 	 */
-	// private async checkPromotion(code: string): Promise<PromoCodeValidation> {
-	// 	// TODO: Implement when promotions table exists
-	// 	return { valid: false };
-	// }
+	private async checkInstructorPromo(code: string, lessonId?: number): Promise<PromoCodeValidation> {
+		try {
+			// Build where conditions
+			const conditions = [eq(promoCodes.code, code)];
+
+			// If lessonId provided, only check codes for that lesson
+			if (lessonId) {
+				conditions.push(eq(promoCodes.lessonId, lessonId));
+			}
+
+			const result = await db.query.promoCodes.findFirst({
+				where: and(...conditions)
+			});
+
+			if (!result) {
+				return { valid: false };
+			}
+
+			// Check if expired
+			if (result.validUntil && new Date(result.validUntil) < new Date()) {
+				return {
+					valid: false,
+					error: 'This promo code has expired'
+				};
+			}
+
+			// Check max uses if set
+			if (result.maxUses !== null && (result.currentUses || 0) >= result.maxUses) {
+				return {
+					valid: false,
+					error: 'This promo code has reached its maximum uses'
+				};
+			}
+
+			return {
+				valid: true,
+				code: result.code,
+				type: 'instructor_promo',
+				discountPercent: result.discountPercent,
+				instructorId: result.instructorId,
+				lessonId: result.lessonId
+			};
+		} catch (error) {
+			console.error('Error checking instructor promo code:', error);
+			return {
+				valid: false,
+				error: 'Error validating promo code'
+			};
+		}
+	}
 
 	/**
-	 * Record usage of a promo code
+	 * Record usage of a promo code (updates currentUses in appropriate table)
 	 */
-	async recordUsage(code: string): Promise<void> {
+	async recordUsage(code: string, lessonId?: number): Promise<void> {
 		const upperCode = code.trim().toUpperCase();
 
 		// Try to increment launch code usage
 		try {
-			await db
+			const launchCodeResult = await db
 				.update(launchCodes)
 				.set({
 					currentUses: db.raw('current_uses + 1')
 				})
-				.where(eq(launchCodes.code, upperCode));
+				.where(eq(launchCodes.code, upperCode))
+				.returning();
+
+			// If launch code was updated, we're done
+			if (launchCodeResult.length > 0) {
+				return;
+			}
 		} catch (error) {
-			console.error('Error recording promo code usage:', error);
+			console.error('Error updating launch code usage:', error);
 		}
 
-		// TODO: Future - Also try to increment promotion usage if it exists
+		// Try to increment instructor promo code usage
+		try {
+			const conditions = [eq(promoCodes.code, upperCode)];
+			if (lessonId) {
+				conditions.push(eq(promoCodes.lessonId, lessonId));
+			}
+
+			await db
+				.update(promoCodes)
+				.set({
+					currentUses: db.raw('current_uses + 1')
+				})
+				.where(and(...conditions));
+		} catch (error) {
+			console.error('Error updating promo code usage:', error);
+		}
 	}
 
 	/**
 	 * Get promo code details (for display purposes)
 	 */
-	async getCodeDetails(code: string) {
+	async getCodeDetails(code: string, lessonId?: number) {
 		const upperCode = code.trim().toUpperCase();
 
 		// Check launch codes
@@ -141,7 +210,26 @@ export class PromoCodeService {
 			};
 		}
 
-		// TODO: Future - Check promotions table
+		// Check instructor promo codes
+		const conditions = [eq(promoCodes.code, upperCode)];
+		if (lessonId) {
+			conditions.push(eq(promoCodes.lessonId, lessonId));
+		}
+
+		const promoCode = await db.query.promoCodes.findFirst({
+			where: and(...conditions)
+		});
+
+		if (promoCode) {
+			return {
+				code: promoCode.code,
+				discountPercent: promoCode.discountPercent,
+				validUntil: promoCode.validUntil,
+				type: 'instructor_promo' as const,
+				instructorId: promoCode.instructorId,
+				lessonId: promoCode.lessonId
+			};
+		}
 
 		return null;
 	}
