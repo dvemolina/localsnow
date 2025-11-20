@@ -680,6 +680,28 @@
 	"booking_form_success": "Request Sent Successfully!",
 	"booking_form_success_message": "{name} will contact you within 24 hours to confirm your lesson details.",
 	"booking_form_disclaimer": "By submitting this form, you agree to our Terms of Service. The instructor will contact you directly to arrange payment.",
+
+	"beta_launch_badge": "Beta Launch - Season 2024/25",
+	"beta_launch_title": "Free Access for Early Adopters",
+	"beta_launch_description": "Join our beta and help shape the future of ski instruction booking. Check your email after signup for your free access code.",
+	"beta_launch_valid_until": "Valid until March 31, 2025",
+	"beta_launch_no_fees": "No deposits, no fees",
+	"beta_launch_client_info": "🎉 Beta Launch Special",
+	"beta_launch_client_message": "Check your email after signup for code BETA2025 - gives you free booking requests until March 2025. Normal pricing (€15 refundable deposit) starts next season.",
+	"beta_launch_instructor_info": "🎉 Beta Launch Special",
+	"beta_launch_instructor_message": "Check your email after signup for code BETA2025 - gives you free lead unlocks until March 2025. Normal pricing (€5 per lead) starts next season.",
+
+	"launch_code_label": "Launch Code",
+	"launch_code_optional": "Optional",
+	"launch_code_placeholder": "Enter your beta code",
+	"launch_code_help_booking": "Have a launch code? Enter it to skip the €15 deposit.",
+	"launch_code_help_instructor": "Have a launch code? Enter it to unlock contact info for free.",
+	"launch_code_learn_more": "Learn more",
+	"launch_code_invalid": "Invalid or expired launch code",
+	"launch_code_applied": "Beta code applied - no payment required!",
+	"launch_code_button": "Use Launch Code",
+	"launch_code_or_pay": "Or pay €5 to unlock",
+
 	"error_title": "Error",
 
 	"lesson_type_private": "Private Lesson",

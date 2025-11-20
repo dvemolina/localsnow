@@ -680,6 +680,28 @@
 	"booking_form_success": "¡Solicitud Enviada con Éxito!",
 	"booking_form_success_message": "{name} te contactará en 24 horas para confirmar los detalles de tu clase.",
 	"booking_form_disclaimer": "Al enviar este formulario, aceptas nuestros Términos de Servicio. El instructor te contactará directamente para coordinar el pago.",
+
+	"beta_launch_badge": "Lanzamiento Beta - Temporada 2024/25",
+	"beta_launch_title": "Acceso Gratuito para Early Adopters",
+	"beta_launch_description": "Únete a nuestra beta y ayúdanos a dar forma al futuro de la reserva de clases de esquí. Revisa tu email después de registrarte para obtener tu código de acceso gratuito.",
+	"beta_launch_valid_until": "Válido hasta el 31 de marzo de 2025",
+	"beta_launch_no_fees": "Sin depósitos, sin tarifas",
+	"beta_launch_client_info": "🎉 Especial Lanzamiento Beta",
+	"beta_launch_client_message": "Revisa tu email después de registrarte para obtener el código BETA2025 - te da solicitudes de reserva gratis hasta marzo de 2025. Los precios normales (depósito reembolsable de 15€) comienzan la próxima temporada.",
+	"beta_launch_instructor_info": "🎉 Especial Lanzamiento Beta",
+	"beta_launch_instructor_message": "Revisa tu email después de registrarte para obtener el código BETA2025 - te da desbloqueos de leads gratis hasta marzo de 2025. Los precios normales (5€ por lead) comienzan la próxima temporada.",
+
+	"launch_code_label": "Código de Lanzamiento",
+	"launch_code_optional": "Opcional",
+	"launch_code_placeholder": "Ingresa tu código beta",
+	"launch_code_help_booking": "¿Tienes un código de lanzamiento? Ingrésalo para omitir el depósito de 15€.",
+	"launch_code_help_instructor": "¿Tienes un código de lanzamiento? Ingrésalo para desbloquear la info de contacto gratis.",
+	"launch_code_learn_more": "Más información",
+	"launch_code_invalid": "Código de lanzamiento inválido o expirado",
+	"launch_code_applied": "¡Código beta aplicado - no se requiere pago!",
+	"launch_code_button": "Usar Código de Lanzamiento",
+	"launch_code_or_pay": "O paga 5€ para desbloquear",
+
 	"error_title": "Error",
 
 	"lesson_type_private": "Clase Privada",

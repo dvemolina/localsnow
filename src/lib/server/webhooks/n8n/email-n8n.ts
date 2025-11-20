@@ -3,7 +3,7 @@ import { env } from "$env/dynamic/private";
 const N8N_BASE_URL = 'https://automation.personalflow.net/webhook'; //Delete the "-test" for production
 const EMAIL_SECRET = env.EMAIL_HEADER_SECRET;
 
-export async function sendSignupEmail(name: string, email: string) {
+export async function sendSignupEmail(name: string, email: string, betaCode: string = 'BETA2025') {
 	try {
 		const response = await fetch(`${N8N_BASE_URL}/797b1c35-f0fd-4b8c-a0a2-014d07e396ae`, {
 			method: 'POST',
@@ -11,7 +11,13 @@ export async function sendSignupEmail(name: string, email: string) {
 				'Content-Type': 'application/json',
                 'x-n8n-secret': EMAIL_SECRET
 			},
-			body: JSON.stringify({ name: name, email: email })
+			body: JSON.stringify({
+				name: name,
+				email: email,
+				betaCode: betaCode,
+				isBetaLaunch: true,
+				betaValidUntil: '2025-03-31'
+			})
 		});
 
 		if (!response.ok) {
