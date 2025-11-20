@@ -14,7 +14,7 @@
 
 	<!-- Dashboard with Sidebar -->
 	<Sidebar.Provider>
-		<AppSidebar />
+		<AppSidebar {user}/>
 		<main class="w-full min-h-screen ">
 			<div class="sticky top-0 z-10 flex items-center gap-4 border-b border-border bg-white px-4 py-3 ">
 				<Sidebar.Trigger />
