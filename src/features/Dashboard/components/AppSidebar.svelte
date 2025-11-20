@@ -6,7 +6,27 @@
 	import * as m from '$lib/paraglide/messages';
 	import LanguageSwitch from '$lib/components/shared/LanguageSwitch.svelte';
 
-	const items = $derived([
+	let { user } = $props()
+
+	const userItems = $derived([
+		{
+			title: m.sidebar_home(),
+			url: '/dashboard',
+			icon: '/icons/home.svg'
+		},
+		{
+			title: m.sidebar_profile(),
+			url: '/dashboard/profile',
+			icon: '/icons/ski-resort.svg'
+		},
+		{
+			title: m.sidebar_bookings(),
+			url: '/dashboard/bookings',
+			icon: '/icons/notebook.svg'
+		}
+	]);
+
+	const instructorItems = $derived([
 		{
 			title: m.sidebar_home(),
 			url: '/dashboard',
@@ -66,18 +86,33 @@
 		<Sidebar.GroupLabel>{m.sidebar_application()}</Sidebar.GroupLabel>
 		<Sidebar.GroupContent>
 			<Sidebar.Menu>
-				{#each items as item (item.url)}
-					<Sidebar.MenuItem>
-						<Sidebar.MenuButton>
-							{#snippet child({ props })}
-								<a href={localizeHref(item.url)} {...props} onclick={handleClick}>
-									<img src={item.icon} alt={item.title} class="size-5" />
-									<span>{item.title}</span>
-								</a>
-							{/snippet}
-						</Sidebar.MenuButton>
-					</Sidebar.MenuItem>
-				{/each}
+				{#if user.role === "client"}
+					{#each userItems as item (item.url)}
+						<Sidebar.MenuItem>
+							<Sidebar.MenuButton>
+								{#snippet child({ props })}
+									<a href={localizeHref(item.url)} {...props} onclick={handleClick}>
+										<img src={item.icon} alt={item.title} class="size-5" />
+										<span>{item.title}</span>
+									</a>
+								{/snippet}
+							</Sidebar.MenuButton>
+						</Sidebar.MenuItem>
+					{/each}
+				{:else if user.role === "instructor-independent"}
+					{#each instructorItems as item (item.url)}
+						<Sidebar.MenuItem>
+							<Sidebar.MenuButton>
+								{#snippet child({ props })}
+									<a href={localizeHref(item.url)} {...props} onclick={handleClick}>
+										<img src={item.icon} alt={item.title} class="size-5" />
+										<span>{item.title}</span>
+									</a>
+								{/snippet}
+							</Sidebar.MenuButton>
+						</Sidebar.MenuItem>
+					{/each}	
+				{/if}
 			</Sidebar.Menu>
 		</Sidebar.GroupContent>
 		<Sidebar.Group />
