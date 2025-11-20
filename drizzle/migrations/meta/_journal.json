@@ -239,6 +239,13 @@
       "when": 1763634000000,
       "tag": "0033_add_launch_codes_system",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1763631154785,
+      "tag": "0034_slim_zombie",
+      "breakpoints": true
     }
   ]
 }
