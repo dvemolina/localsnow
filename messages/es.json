@@ -264,6 +264,46 @@
 	"seo_meta_how_it_works_title": "Cómo Funciona | Local Snow",
 	"seo_meta_how_it_works_description": "Aprende cómo Local Snow conecta clientes con instructores de esquí en España. Proceso simple para reservar clases y publicar tu perfil de instructor.",
 	"about_title": "Acerca de Local Snow",
+	"about_meta_description": "Local Snow fue creado por un instructor de esquí con experiencia en Argentina, Nueva Zelanda, España y Chile. Una plataforma justa que da propiedad a los instructores mientras conecta a los clientes directamente con las personas que les enseñan.",
+
+	"about_who_built_title": "Quién Construyó Esto",
+	"about_who_built_p1": "Soy instructor de esquí. He trabajado en Argentina, Nueva Zelanda, España, Chile—diferentes continentes, diferentes culturas de estaciones, diferentes enfoques para el mismo trabajo. Esa perspectiva me mostró algo: el sistema actual tiene problemas fundamentales que perjudican a instructores, clientes y a la industria de deportes de nieve en general.",
+
+	"about_economic_title": "La Realidad Económica",
+	"about_economic_p1": "Las escuelas de esquí operan como gerentes o representantes de instructores. Y como cualquier relación de gestión, toman una comisión. Pero ¿en qué otra industria un gerente toma más del 50% de las ganancias del talento?",
+	"about_economic_p2": "En muchas configuraciones de escuelas, la escuela cobra por persona por hora mientras los instructores reciben un salario por hora fijo sin importar cuántos estudiantes enseñen. ¿Una clase grupal con 6 personas? La escuela puede cobrar 60€/hora por persona (360€ total) mientras el instructor gana 25€/hora. Las matemáticas no cuadran para las personas que hacen el trabajo real.",
+	"about_economic_p3": "¿Y las plataformas de reservas? Cobran comisiones del 15-20% además de eso, más tarifas de suscripción por funciones básicas como gestionar tu propio calendario o establecer tus propios precios. Herramientas que deberían ser estándar están bloqueadas detrás de muros de pago.",
+
+	"about_visibility_title": "El Problema de Visibilidad",
+	"about_visibility_p1": "Las escuelas a menudo actúan como una pantalla entre clientes e instructores. Pero los clientes no solo están comprando una clase—están confiando en alguien con su seguridad, o más importante, la seguridad de sus hijos. Tienen todo el derecho de saber quién es esa persona, ver sus calificaciones y tomar una decisión informada.",
+	"about_visibility_p2": "Los mejores instructores merecen ser visibles. El sistema no debería ocultar el talento detrás de marcas institucionales.",
+
+	"about_risk_title": "Riesgo vs. Recompensa",
+	"about_risk_p1": "Ser instructor de esquí conlleva riesgos reales. Lesiones físicas, exposición a responsabilidad, ingresos impredecibles, incertidumbre estacional. Asumimos todo eso, y sin embargo la mayoría de nosotros no puede ganarse la vida cómodamente con ello. Eso no es sostenible, y no es justo.",
+	"about_risk_p2": "Los instructores necesitan herramientas que les ayuden a gestionar su negocio, poseer sus relaciones con clientes y ganar lo que valen—sin sacrificar la mitad de sus ingresos a intermediarios.",
+
+	"about_what_is_title": "Qué es Local Snow",
+	"about_what_is_p1": "Local Snow es un directorio gratuito donde los instructores publican sus perfiles y los clientes los encuentran directamente. Sin comisiones en clases. Sin tarifas de suscripción. Sin costos ocultos. Solo una pequeña tarifa de lead de 5€ cuando un instructor elige responder a una solicitud de reserva.",
+	"about_what_is_p2": "No estoy tratando de destruir escuelas de esquí o plataformas de reservas. Las escuelas sirven un propósito—proporcionan estructura, seguro, programas de capacitación y trabajo constante para instructores que quieren eso. Pero también debería haber espacio para que instructores independientes operen justamente, y para que instructores de escuelas construyan su propia reputación y base de clientes.",
+	"about_what_is_p3": "Esto no es una guerra entre independientes y escuelas. Se trata de construir un puente.",
+
+	"about_verification_title": "El Proceso de Verificación",
+	"about_verification_p1": "Reviso manualmente a cada instructor que solicita verificación. Verifico certificaciones, calificaciones y credenciales profesionales. La insignia no significa que alguien es el mejor instructor del mundo—confirma que son legítimos, calificados y toman su trabajo en serio.",
+	"about_verification_p2": "Los clientes merecen saber con quién están trabajando. Los instructores merecen ser reconocidos por sus calificaciones. Para eso es la verificación.",
+
+	"about_spain_title": "Por Qué España Primero",
+	"about_spain_p1": "He trabajado aquí. Conozco las estaciones, los instructores, las dinámicas locales. Comenzar enfocado tenía más sentido que tratar de construir un directorio mundial desde el primer día. Si esto funciona en España y ayuda a los instructores a ganarse mejor la vida mientras da a los clientes mejor acceso a excelente instrucción, tal vez se expanda. Si no, al menos lo intenté.",
+
+	"about_goal_title": "El Objetivo",
+	"about_goal_p1": "Quiero que los instructores—independientes y afiliados a escuelas—tengan herramientas asequibles que les den propiedad sobre su trabajo. Quiero que los clientes se conecten directamente con las personas que les enseñan. Quiero que la industria de deportes de nieve sea un lugar donde instructores talentosos puedan construir carreras sostenibles haciendo lo que aman.",
+	"about_goal_p2": "Esto no se trata de hacerse rico o escalar en alguna startup respaldada por capital de riesgo. Se trata de arreglar algo roto. Si Local Snow ayuda aunque sea a un puñado de instructores a ganar más y a un puñado de clientes a encontrar mejor instrucción, vale la pena.",
+
+	"about_contact_title": "Ponte en Contacto",
+	"about_contact_p1": "Si eres instructor en España—independiente o trabajando para una escuela—{createProfile}. Si tienes comentarios o preguntas, envíame un correo a {email}.",
+	"about_contact_p2": "Eso es todo. Sin manifiestos, sin declaraciones de misión corporativas. Solo tratando de hacerlo mejor.",
+	"about_contact_create_profile": "crea un perfil",
+	"about_contact_email": "support@localsnow.org",
+
 	"about_intro": "Local Snow es un directorio gratuito que conecta clientes con instructores independientes de esquí y snowboard en toda España.",
 	"about_mission_title": "Nuestra Misión",
 	"about_mission_text": "Creemos que las clases de esquí deben ser accesibles sin costosas comisiones de reserva. Nuestra plataforma permite a los instructores fijar sus propios precios y quedarse el 100% de sus tarifas de clases.",
