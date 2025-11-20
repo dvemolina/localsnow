@@ -5,25 +5,55 @@
 
 	// Use $derived to make locale reactive when it changes
 	const currentLocale = $derived(getLocale());
+	let isOpen = $state(false);
 
-	function changeLanguage(event: Event) {
-		const target = event.target as HTMLSelectElement;
-		const selectedLocale = target.value;
-		window.location.href = localizeHref(page.url.pathname, { locale: selectedLocale });
+	function selectLocale(locale: string) {
+		isOpen = false;
+		window.location.href = localizeHref(page.url.pathname + page.url.search, { locale });
+	}
+
+	function toggleDropdown() {
+		isOpen = !isOpen;
+	}
+
+	function handleClickOutside(event: MouseEvent) {
+		const target = event.target as HTMLElement;
+		if (!target.closest('.language-switcher')) {
+			isOpen = false;
+		}
 	}
 </script>
 
+<svelte:window onclick={handleClickOutside} />
+
 <div class="language-switcher">
-	<div class="custom-select">
-		<img src={`/flags/${currentLocale}.svg`} alt="Flag" class="selected-flag" />
-		<select onchange={changeLanguage} class="language-select">
+	<button
+		type="button"
+		class="custom-select"
+		onclick={toggleDropdown}
+		aria-label="Select language"
+		aria-expanded={isOpen}
+	>
+		<img src={`/flags/${currentLocale}.svg`} alt="Current language" class="selected-flag" />
+		<svg class="chevron" class:open={isOpen} width="10" height="6" viewBox="0 0 10 6" fill="none">
+			<path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+		</svg>
+	</button>
+
+	{#if isOpen}
+		<div class="dropdown">
 			{#each locales as locale}
-				<option value={locale} selected={locale === currentLocale}>
-					{locale.toUpperCase()}
-				</option>
+				<button
+					type="button"
+					class="dropdown-item"
+					class:active={locale === currentLocale}
+					onclick={() => selectLocale(locale)}
+				>
+					<img src={`/flags/${locale}.svg`} alt={locale} class="flag" />
+				</button>
 			{/each}
-		</select>
-	</div>
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -34,15 +64,21 @@
 	}
 
 	.custom-select {
-		position: relative;
 		display: flex;
 		align-items: center;
-		gap: 0.5rem;
+		justify-content: center;
+		gap: 0.25rem;
 		border: 1px solid #ccc;
 		border-radius: 5px;
-		padding: 0 0.1rem;
+		padding: 0.3rem 0.4rem;
 		cursor: pointer;
 		background: white;
+		min-width: 36px;
+		min-height: 28px;
+	}
+
+	.custom-select:hover {
+		border-color: #999;
 	}
 
 	.selected-flag {
@@ -51,22 +87,51 @@
 		object-fit: contain;
 	}
 
-	.language-select {
+	.chevron {
+		width: 8px;
+		height: 8px;
+		color: #666;
+		transition: transform 0.2s ease;
+	}
+
+	.chevron.open {
+		transform: rotate(180deg);
+	}
+
+	.dropdown {
+		position: absolute;
+		top: calc(100% + 4px);
+		right: 0;
+		background: white;
+		border: 1px solid #ccc;
+		border-radius: 5px;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		z-index: 100;
+		overflow: hidden;
+	}
+
+	.dropdown-item {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.5rem 0.75rem;
+		cursor: pointer;
 		background: transparent;
 		border: none;
-		font-size: 0.7rem;
-		cursor: pointer;
-		padding: 0.1rem;
-		appearance: none; /* Hides default dropdown styling */
+		width: 100%;
 	}
 
-	.language-select:focus {
-		outline: none;
+	.dropdown-item:hover {
+		background: #f5f5f5;
 	}
 
-	/* Style dropdown options */
-	.language-select option {
-		background: white;
-		color: black;
+	.dropdown-item.active {
+		background: #e8f4fd;
+	}
+
+	.flag {
+		width: 20px;
+		height: 15px;
+		object-fit: contain;
 	}
 </style>

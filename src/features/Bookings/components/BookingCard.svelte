@@ -3,6 +3,7 @@
 	import { Button } from '$src/lib/components/ui/button';
 	import * as Card from '$src/lib/components/ui/card';
 	import { formatDate } from '$src/lib/utils/generics';
+	import * as m from '$lib/paraglide/messages';
 
 	let {
 		booking,
@@ -12,23 +13,23 @@
 		onViewDetails: () => void;
 	} = $props();
 
-	const statusConfig = {
+	const statusConfig = $derived({
 		pending: {
-			label: 'Pending Review',
+			label: m.status_pending_review(),
 			variant: 'secondary' as const,
 			color: 'bg-yellow-100 text-yellow-800 border-yellow-200'
 		},
 		accepted: {  // Combined unlocked + accepted
-			label: 'Accepted',
+			label: m.status_accepted(),
 			variant: 'default' as const,
 			color: 'bg-green-100 text-green-800 border-green-200'
 		},
 		rejected: {
-			label: 'Rejected',
+			label: m.status_rejected(),
 			variant: 'outline' as const,
 			color: 'bg-red-100 text-red-800 border-red-200'
 		}
-	};
+	});
 
 	const getStatus = () => {
 		if (booking.status === 'rejected') return 'rejected';

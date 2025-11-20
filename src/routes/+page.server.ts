@@ -6,6 +6,7 @@ import type { PageServerLoad } from "./$types";
 import { db } from '$lib/server/db';
 import { countries } from '$lib/server/db/schema';
 import { sql } from 'drizzle-orm';
+import { baseLocale, isLocale } from '$lib/paraglide/runtime';
 
 
 export const load: PageServerLoad = async () => {
@@ -24,18 +25,25 @@ export const load: PageServerLoad = async () => {
 
 export const actions: Actions = {
     default: async ({ request }) => {
-        const form = await superValidate(request, zod(heroResortSearchSchema));
+        const formData = await request.formData();
+        const form = await superValidate(formData, zod(heroResortSearchSchema));
 
         if (!form.valid) {
             return { form };
         }
+
+        // Get locale from hidden form field
+        const localeField = formData.get('locale')?.toString() || '';
+        const locale = isLocale(localeField) ? localeField : baseLocale;
 
         // Build query parameters
         const params = new URLSearchParams();
         if (form.data.resort) params.set('resort', form.data.resort.toString());
         if (form.data.sport) params.set('sport', form.data.sport);
 
-        // Redirect to instructors page with filters
-        throw redirect(303, `/instructors?${params.toString()}`);
+        // Build localized redirect URL
+        const basePath = `/instructors?${params.toString()}`;
+        const localizedUrl = locale === baseLocale ? basePath : `/${locale}${basePath}`;
+        throw redirect(303, localizedUrl);
     }
 };

@@ -1,29 +1,30 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import { page } from '$app/stores';
+	import * as m from '$lib/paraglide/messages';
 
 	const reason = $page.url.searchParams.get('reason');
 
-	const errorMessages: Record<string, { title: string; description: string }> = {
+	const errorMessages = $derived({
 		no_session: {
-			title: 'Payment Session Not Found',
-			description: 'We couldn\'t find your payment session. Please try submitting your booking request again.'
+			title: m.error_no_session_title(),
+			description: m.error_no_session_desc()
 		},
 		payment_failed: {
-			title: 'Payment Failed',
-			description: 'Your payment could not be processed. Please check your card details and try again.'
+			title: m.error_payment_failed_title(),
+			description: m.error_payment_failed_desc()
 		},
 		processing_error: {
-			title: 'Processing Error',
-			description: 'There was an error processing your payment. Please try again or contact support if the problem persists.'
+			title: m.error_processing_title(),
+			description: m.error_processing_desc()
 		}
-	};
+	});
 
-	const error = errorMessages[reason || 'processing_error'] || errorMessages.processing_error;
+	const error = $derived(errorMessages[reason || 'processing_error'] || errorMessages.processing_error);
 </script>
 
 <svelte:head>
-	<title>Booking Error - Local Snow</title>
+	<title>{m.booking_error_page_title()} - Local Snow</title>
 </svelte:head>
 
 <section class="mx-auto max-w-2xl py-12">
@@ -43,19 +44,19 @@
 
 		<!-- Support Info -->
 		<div class="mb-6 rounded-lg bg-muted/50 p-4 text-left text-sm">
-			<p class="font-semibold mb-2">Need Help?</p>
+			<p class="font-semibold mb-2">{m.error_need_help()}</p>
 			<p class="text-muted-foreground">
-				If you continue to experience issues, please contact our support team and we'll help you complete your booking.
+				{m.error_support_message()}
 			</p>
 		</div>
 
 		<!-- Actions -->
 		<div class="flex flex-col gap-3 sm:flex-row sm:justify-center">
 			<Button onclick={() => window.history.back()} variant="default">
-				Try Again
+				{m.button_try_again()}
 			</Button>
 			<Button onclick={() => window.location.href = '/instructors'} variant="outline">
-				Browse Instructors
+				{m.button_browse_instructors()}
 			</Button>
 		</div>
 	</div>

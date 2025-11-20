@@ -5,16 +5,28 @@
 	import Breadcrumb from './Breadcrumb.svelte';
 	import { isCurrentPath } from "$src/lib/utils/generics";
 	import * as m from '$lib/paraglide/messages';
+	import { localizeHref } from '$lib/paraglide/runtime';
+
+	type User = {
+		id: string;
+		name: string;
+		email: string;
+		role?: string;
+	} | null;
+
+	let { user }: { user: User } = $props();
 
 	let isMobileMenuOpen = $state(false);
 
 	// Navigation items - use $derived so translations update on locale change
+	// Conditionally show Dashboard or Sign Up based on user state
 	const items = $derived([
-		{ href: '/instructors', label: m.nav_instructors() },
-		{ href: '/resorts', label: m.nav_resorts() },
-		{ href: '/how-it-works', label: m.nav_how_it_works() },
-		{ href: '/about', label: m.nav_about() },
-		{ href: '/signup', label: m.nav_signup() }
+		{ href: localizeHref('/resorts'), label: m.nav_resorts() },
+		{ href: localizeHref('/how-it-works'), label: m.nav_how_it_works() },
+		{ href: localizeHref('/about'), label: m.nav_about() },
+		user
+			? { href: localizeHref('/dashboard'), label: m.nav_dashboard() }
+			: { href: localizeHref('/signup'), label: m.nav_signup() }
 	]);
 
 	// Prevent scrolling when menu is open
@@ -30,11 +42,11 @@
 	<header
 		class="flex w-full  flex-col items-center justify-center gap-2 self-center transition-all z-50"
 	>
-		<div class="flex w-full max-w-[685px] flex-row gap-2 items-center justify-center ">
+		<div class="flex w-full max-w-[685px] flex-row gap-2 items-center justify-center">
 			<div
-				class="header flex w-full flex-row items-center justify-between gap-4 rounded-full shadow-xs border border-border pr-4 bg-card sm:gap-12"
+				class="header flex w-full flex-row items-center justify-evenly gap-4 pr-4 rounded-full shadow-xs border border-border bg-card sm:gap-12"
 			>
-				<a href="/" class="group flex flex-row items-center justify-center">
+				<a href={localizeHref('/')} class="group flex flex-row items-center justify-center">
 					<div class="m-1 size-12 overflow-hidden rounded-full object-cover">
 						<img
 							src="/local-snow-head-big.png"
@@ -48,10 +60,10 @@
 				</a>
 
 				<!-- Desktop Navigation -->
-				<nav class="hidden flex-row gap-6 md:flex">
-					<ul class="flex flex-row gap-4">
+				<nav class="hidden flex-row gap-4 md:flex items-center">
+					<ul class="flex flex-row gap-3 text-sm">
 						{#each items as { href, label }}
-							<li>
+							<li class="whitespace-nowrap">
 								<a
 									{href}
 									class="opacity-75 hover:opacity-100 {isCurrentPath(href, page.url.pathname)
@@ -63,22 +75,29 @@
 							</li>
 						{/each}
 					</ul>
-					<LanguageSwitch />
 				</nav>
-
+				
+				<div class="hidden md:flex flex-shrink-0">
+					<LanguageSwitch /> <!-- Desktop Language Switcher-->
+				</div>
 				<!-- Mobile Navigation Trigger -->
-				<button
-					class="md:hidden"
-					aria-label="Open Menu"
-					aria-expanded={isMobileMenuOpen}
-					onclick={() => (isMobileMenuOpen = !isMobileMenuOpen)}
-				>
-					<img
-						src="/icons/burger.svg"
-						alt="Menu"
-						class="size-6 opacity-80 hover:opacity-100 active:opacity-100"
-					/>
-				</button>
+				 <div class="md:hidden flex flex-row gap-4">
+
+					 <button
+					 aria-label="Open Menu"
+					 aria-expanded={isMobileMenuOpen}
+					 onclick={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+					 >
+					 <img
+					 src="/icons/burger.svg"
+					 alt="Menu"
+					 class="size-6 opacity-80 hover:opacity-100 active:opacity-100"
+					 />
+					</button>
+					<div class="flex-shrink-0">
+						<LanguageSwitch /> <!-- Desktop Language Switcher-->
+					</div>
+				</div>
 			</div>
 
 			<!-- Mobile Menu Overlay -->
@@ -109,7 +128,7 @@
 					</button>
 
 					<nav class="flex flex-col items-center justify-center space-y-8 mb-8">
-						<a href="/" class="group flex flex-row items-center justify-center gap-1">
+						<a href={localizeHref('/')} class="group flex flex-row items-center justify-center gap-1">
 							<div class="m-1 size-12 overflow-hidden object-cover">
 								<img
 									src="/local-snow-head-big.png"
@@ -141,8 +160,8 @@
 							{/each}
 						</ul>
 					</nav>
-					<LanguageSwitch />
 				</div>
+				<LanguageSwitch />
 			{/if}
 		</div>
 

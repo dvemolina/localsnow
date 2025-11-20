@@ -6,6 +6,7 @@
 	import * as Table from '$lib/components/ui/table';
 	import * as Select from '$lib/components/ui/select';
 	import { goto } from '$app/navigation';
+	import * as m from '$lib/paraglide/messages';
 
 	let { data } = $props();
 
@@ -26,8 +27,8 @@
 
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8">
-		<h1 class="title2 mb-2">User Management</h1>
-		<p class="text-muted-foreground">Manage all platform users</p>
+		<h1 class="title2 mb-2">{m.admin_user_management()}</h1>
+		<p class="text-muted-foreground">{m.admin_user_management_desc()}</p>
 	</div>
 
 	<Card>
@@ -36,7 +37,7 @@
 				<div class="col-span-2">
 					<Input
 						bind:value={searchValue}
-						placeholder="Search name or email..."
+						placeholder={m.admin_search_name_email()}
 						onkeydown={(e) => e.key === 'Enter' && applyFilters()}
 					/>
 				</div>
@@ -44,34 +45,34 @@
 					selected={{ value: roleFilter }}
 					onSelectedChange={(v) => roleFilter = v?.value || 'all'}
 				>
-					<Select.Trigger><Select.Value placeholder="Role" /></Select.Trigger>
+					<Select.Trigger><Select.Value placeholder={m.table_role()} /></Select.Trigger>
 					<Select.Content>
-						<Select.Item value="all">All Roles</Select.Item>
-						<Select.Item value="client">Client</Select.Item>
-						<Select.Item value="instructor-independent">Instructor (Independent)</Select.Item>
-						<Select.Item value="instructor-school">Instructor (School)</Select.Item>
-						<Select.Item value="school-admin">School Admin</Select.Item>
-						<Select.Item value="admin">Admin</Select.Item>
+						<Select.Item value="all">{m.admin_all_roles()}</Select.Item>
+						<Select.Item value="client">{m.role_client()}</Select.Item>
+						<Select.Item value="instructor-independent">{m.role_instructor_independent()}</Select.Item>
+						<Select.Item value="instructor-school">{m.role_instructor_school()}</Select.Item>
+						<Select.Item value="school-admin">{m.role_school_admin()}</Select.Item>
+						<Select.Item value="admin">{m.role_admin()}</Select.Item>
 					</Select.Content>
 				</Select.Root>
 			</div>
-			<Button onclick={applyFilters} class="mt-4">Apply</Button>
+			<Button onclick={applyFilters} class="mt-4">{m.button_apply()}</Button>
 		</CardContent>
 	</Card>
 
-	<p class="text-sm text-muted-foreground">Showing {data.users.length} of {data.pagination.total} users</p>
+	<p class="text-sm text-muted-foreground">{m.admin_showing_of({ count: data.users.length, total: data.pagination.total })} {m.admin_users().toLowerCase()}</p>
 
 	<Card>
 		<CardContent class="p-0">
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>ID</Table.Head>
-						<Table.Head>Name</Table.Head>
-						<Table.Head>Email</Table.Head>
-						<Table.Head>Role</Table.Head>
-						<Table.Head>Status</Table.Head>
-						<Table.Head>Joined</Table.Head>
+						<Table.Head>{m.table_id()}</Table.Head>
+						<Table.Head>{m.table_name()}</Table.Head>
+						<Table.Head>{m.table_email()}</Table.Head>
+						<Table.Head>{m.table_role()}</Table.Head>
+						<Table.Head>{m.table_status()}</Table.Head>
+						<Table.Head>{m.table_joined()}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -80,12 +81,12 @@
 							<Table.Cell class="font-mono text-xs text-muted-foreground">#{user.id}</Table.Cell>
 							<Table.Cell class="font-medium">{user.name} {user.lastName}</Table.Cell>
 							<Table.Cell>{user.email}</Table.Cell>
-							<Table.Cell><Badge variant="outline">{user.role || 'No role'}</Badge></Table.Cell>
+							<Table.Cell><Badge variant="outline">{user.role || m.admin_no_role()}</Badge></Table.Cell>
 							<Table.Cell>
 								{#if user.isSuspended}
-									<Badge variant="destructive">Suspended</Badge>
+									<Badge variant="destructive">{m.status_suspended()}</Badge>
 								{:else}
-									<Badge class="bg-green-100 text-green-800">Active</Badge>
+									<Badge class="bg-green-100 text-green-800">{m.status_active()}</Badge>
 								{/if}
 							</Table.Cell>
 							<Table.Cell>{formatDate(user.createdAt)}</Table.Cell>
@@ -99,11 +100,11 @@
 	{#if data.pagination.totalPages > 1}
 		<div class="flex items-center justify-center gap-2">
 			{#if data.pagination.page > 1}
-				<Button href="/admin/users?page={data.pagination.page - 1}" variant="outline" size="sm">Previous</Button>
+				<Button href="/admin/users?page={data.pagination.page - 1}" variant="outline" size="sm">{m.button_previous()}</Button>
 			{/if}
-			<span class="text-sm">Page {data.pagination.page} of {data.pagination.totalPages}</span>
+			<span class="text-sm">{m.admin_page_of({ page: data.pagination.page, total: data.pagination.totalPages })}</span>
 			{#if data.pagination.page < data.pagination.totalPages}
-				<Button href="/admin/users?page={data.pagination.page + 1}" variant="outline" size="sm">Next</Button>
+				<Button href="/admin/users?page={data.pagination.page + 1}" variant="outline" size="sm">{m.button_next()}</Button>
 			{/if}
 		</div>
 	{/if}

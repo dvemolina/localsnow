@@ -18,11 +18,12 @@
 	import { onDestroy, onMount } from 'svelte';
 	import CountryCodeSelect from '$src/lib/components/shared/CountryCodeSelect.svelte';
 	import { toast } from 'svelte-sonner';
+	import * as m from '$lib/paraglide/messages';
 
-	let { 
+	let {
 		instructorForm,
-		currentProfileImageUrl 
-	}: { 
+		currentProfileImageUrl
+	}: {
 		instructorForm: SuperValidated<Infer<InstructorProfileSchema>>;
 		currentProfileImageUrl?: string | null;
 	} = $props();
@@ -32,11 +33,11 @@
 		dataType: 'json',
 		onUpdate({ form }) {
 			if (form.valid) {
-				toast.success('Instructor profile updated successfully!');
+				toast.success(m.toast_instructor_profile_updated());
 			}
 		},
 		onError({ result }) {
-			toast.error('Failed to update instructor profile. Please try again.');
+			toast.error(m.toast_instructor_profile_error());
 		}
 	});
 
@@ -97,18 +98,18 @@
 		<!-- Basic Information -->
 		<Accordion.Item value="basic">
 			<Accordion.Trigger class="text-base font-semibold">
-				Basic Information
+				{m.instructor_form_basic_info()}
 			</Accordion.Trigger>
 			<Accordion.Content class="space-y-4 pt-4">
 				<!-- Profile Image -->
 				<Form.Field {form} name="profileImage" class="w-full">
 					<Form.Control>
 						{#snippet children({ props })}
-							<Form.Label>Professional Profile Image</Form.Label>
+							<Form.Label>{m.instructor_form_profile_image()}</Form.Label>
 							<Form.Description class="text-xs">
-								This image will appear on your instructor card. Recommended: 400x400px, max 5MB
+								{m.instructor_form_profile_image_desc()}
 							</Form.Description>
-							
+
 							<!-- Current/Preview Image Display -->
 							<div class="mb-3 flex items-center gap-3">
 								<div class="size-24 overflow-hidden rounded-full border-2 border-border">
@@ -120,10 +121,10 @@
 								</div>
 								<div class="flex flex-col gap-1">
 									<p class="text-sm font-medium">
-										{profilePreviewUrl ? 'New Image Preview' : currentProfileImageUrl ? 'Current Profile Image' : 'Default Image'}
+										{profilePreviewUrl ? m.instructor_form_new_image() : currentProfileImageUrl ? m.instructor_form_current_image() : m.instructor_form_default_image()}
 									</p>
 									<p class="text-xs text-muted-foreground">
-										Upload a new image to replace
+										{m.instructor_form_upload_to_replace()}
 									</p>
 								</div>
 							</div>
@@ -145,20 +146,20 @@
 				<Form.Field {form} name="bio" class="w-full">
 					<Form.Control>
 						{#snippet children({ props })}
-							<Form.Label>Biography</Form.Label>
+							<Form.Label>{m.form_label_bio()}</Form.Label>
 							<Form.Description class="text-xs">
-								Tell potential clients about your teaching style, experience, and specialties (max 500 characters)
+								{m.instructor_form_bio_desc()}
 							</Form.Description>
-							<Textarea 
-								bind:value={$formData.bio} 
+							<Textarea
+								bind:value={$formData.bio}
 								disabled={$delayed}
-								placeholder="I'm a certified ski instructor with 10+ years of experience teaching all levels..."
+								placeholder={m.instructor_form_bio_placeholder()}
 								rows={4}
 								maxlength={500}
 							/>
 							{#if $formData.bio}
 								<p class="text-xs text-muted-foreground text-right">
-									{$formData.bio.length}/500 characters
+									{$formData.bio.length}/500 {m.form_characters()}
 								</p>
 							{/if}
 						{/snippet}
@@ -171,11 +172,11 @@
 		<!-- Location & Teaching Details -->
 		<Accordion.Item value="location">
 			<Accordion.Trigger class="text-base font-semibold">
-				Location & Teaching Details
+				{m.instructor_form_location_details()}
 			</Accordion.Trigger>
 			<Accordion.Content class="space-y-4 pt-4">
 				<!-- Resort -->
-				<SearchResort {form} name="resort" label="Primary Teaching Resort" />
+				<SearchResort {form} name="resort" label={m.instructor_form_primary_resort()} />
 
 				<!-- Sports -->
 				<SportsCheckboxes {form} name="sports" />
@@ -188,16 +189,16 @@
 		<!-- Credentials & Verification -->
 		<Accordion.Item value="credentials">
 			<Accordion.Trigger class="text-base font-semibold">
-				Credentials & Verification
+				{m.instructor_form_credentials()}
 			</Accordion.Trigger>
 			<Accordion.Content class="space-y-4 pt-4">
 				<!-- Qualification Upload -->
 				<Form.Field {form} name="qualification" class="w-full">
 					<Form.Control>
 						{#snippet children({ props })}
-							<Form.Label>Instructor Qualification Certificate</Form.Label>
+							<Form.Label>{m.instructor_form_qualification()}</Form.Label>
 							<Form.Description class="text-xs">
-								Upload your instructor certification in PDF format (max 10MB). Required for verification.
+								{m.instructor_form_qualification_desc()}
 							</Form.Description>
 							<Input
 								{...props}
@@ -212,7 +213,7 @@
 									<svg class="h-5 w-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
 										<path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" />
 									</svg>
-									<span class="text-sm">New PDF uploaded</span>
+									<span class="text-sm">{m.instructor_form_new_pdf()}</span>
 								</div>
 							{/if}
 						{/snippet}
@@ -226,16 +227,16 @@
 					<Form.Field {form} name="professionalPhone" class="w-full">
 						<Form.Control>
 							{#snippet children({ props })}
-								<Form.Label>Professional Contact Phone <span class="text-red-500">*</span></Form.Label>
-								<Input 
-									{...props} 
-									bind:value={$formData.professionalPhone} 
-									type="tel" 
+								<Form.Label>{m.form_label_professional_phone()} <span class="text-red-500">*</span></Form.Label>
+								<Input
+									{...props}
+									bind:value={$formData.professionalPhone}
+									type="tel"
 									disabled={$delayed}
 									placeholder="123 456 7890"
 								/>
 								<Form.Description class="text-xs">
-									Clients will use this number to contact you
+									{m.instructor_form_phone_desc()}
 								</Form.Description>
 							{/snippet}
 						</Form.Control>
@@ -255,10 +256,10 @@
 						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
 						<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
 					</svg>
-					Saving...
+					{m.button_saving()}
 				</span>
 			{:else}
-				Save Instructor Profile
+				{m.button_save_instructor_profile()}
 			{/if}
 		</Button>
 	</div>

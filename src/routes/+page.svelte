@@ -5,8 +5,12 @@
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import * as m from '$lib/paraglide/messages';
+	import { localizeHref, getLocale } from '$lib/paraglide/runtime';
 
 	let { data } = $props();
+
+	// Get current locale for form submission
+	const currentLocale = $derived(getLocale());
 
 	// Top Spanish resorts for homepage - use $derived for translation reactivity
 	const topResorts = $derived([
@@ -127,6 +131,7 @@
 
 				<!-- Search form -->
 				<form method="POST" use:enhance class="rounded-lg bg-white/90 p-4 shadow-lg">
+					<input type="hidden" name="locale" value={currentLocale} />
 					<div class="flex flex-col gap-4 md:flex-row">
 						<div class="flex-1">
 							<SearchResort {form} name="resort" id="location" countryId={data.spainCountryId} />
@@ -157,7 +162,7 @@
 	<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
 		{#each topResorts as resort}
 			<a
-				href="/instructors?resort={resort.slug}"
+				href={localizeHref(`/instructors?resort=${resort.slug}`)}
 				class="resort-card group relative overflow-hidden rounded-lg border border-border shadow-lg transition-all hover:shadow-xl"
 			>
 				<!-- Background Image -->
@@ -186,7 +191,7 @@
 	</div>
 
 	<div class="mt-8 text-center">
-		<a href="/resorts" class="bg-primary inline-block rounded-md px-6 py-3 font-medium text-white">
+		<a href={localizeHref('/resorts')} class="bg-primary inline-block rounded-md px-6 py-3 font-medium text-white">
 			{m.home_resorts_view_all()}
 		</a>
 	</div>
@@ -236,7 +241,7 @@
 
 	<div class="mt-10 text-center">
 		<a
-			href="/how-it-works"
+			href={localizeHref('/how-it-works')}
 			class="inline-block rounded-md border border-primary px-6 py-3 font-medium text-primary transition-all hover:bg-primary hover:text-white"
 		>
 			{m.home_how_it_works_cta()} →
@@ -419,7 +424,7 @@
 
 	<div class="mt-10 text-center">
 		<a
-			href="/signup"
+			href={localizeHref('/signup')}
 			class="bg-primary inline-block rounded-md px-8 py-3 font-semibold text-white shadow-sm transition-all hover:shadow-md"
 		>
 			{m.home_instructors_cta()}
@@ -537,13 +542,13 @@
 	</p>
 	<div class="flex flex-col gap-4 sm:flex-row sm:justify-center">
 		<a
-			href="/instructors"
+			href={localizeHref('/instructors')}
 			class="bg-primary inline-block rounded-md px-8 py-3 font-semibold text-white shadow-sm transition-all hover:shadow-md"
 		>
 			{m.home_cta_find_instructor()}
 		</a>
 		<a
-			href="/signup"
+			href={localizeHref('/signup')}
 			class="inline-block rounded-md border border-border bg-card px-8 py-3 font-semibold shadow-sm transition-all hover:shadow-md"
 		>
 			{m.home_cta_list_instructor()}

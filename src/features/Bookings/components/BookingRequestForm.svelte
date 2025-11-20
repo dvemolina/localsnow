@@ -4,6 +4,7 @@
 	import { Textarea } from '$src/lib/components/ui/textarea';
 	import { Button } from '$src/lib/components/ui/button';
 	import * as Select from '$src/lib/components/ui/select';
+	import * as m from '$lib/paraglide/messages';
 
 	let { instructorId, instructorName } = $props();
 
@@ -65,40 +66,39 @@
 		}
 	}
 
-	const lessonTypes = [
-		{ value: 'private', label: 'Private Lesson' },
-		{ value: 'group', label: 'Group Lesson' },
-		{ value: 'half-day', label: 'Half Day' },
-		{ value: 'full-day', label: 'Full Day' }
-	];
+	const lessonTypes = $derived([
+		{ value: 'private', label: m.lesson_type_private() },
+		{ value: 'group', label: m.lesson_type_group() },
+		{ value: 'half-day', label: m.lesson_type_half_day() },
+		{ value: 'full-day', label: m.lesson_type_full_day() }
+	]);
 
-	const skillLevels = [
-		{ value: 'beginner', label: 'Beginner' },
-		{ value: 'intermediate', label: 'Intermediate' },
-		{ value: 'advanced', label: 'Advanced' },
-		{ value: 'expert', label: 'Expert' }
-	];
+	const skillLevels = $derived([
+		{ value: 'beginner', label: m.skill_level_beginner() },
+		{ value: 'intermediate', label: m.skill_level_intermediate() },
+		{ value: 'advanced', label: m.skill_level_advanced() },
+		{ value: 'expert', label: m.skill_level_expert() }
+	]);
 </script>
 
 <div class="rounded-lg border border-border bg-card p-6 shadow-md">
-	<h2 class="title4 mb-2">Request a Lesson</h2>
+	<h2 class="title4 mb-2">{m.booking_form_title()}</h2>
 	<p class="mb-6 text-sm text-muted-foreground">
-		Fill out the form below and {instructorName} will get back to you to confirm availability and finalize
-		details.
+		{m.booking_form_subtitle({ name: instructorName })}
 	</p>
 
 	{#if submitSuccess}
 		<div class="mb-6 rounded-lg bg-green-50 p-4 text-green-800 dark:bg-green-900/20 dark:text-green-200">
-			<p class="font-medium">Request Sent Successfully! ✓</p>
+			<p class="font-medium">{m.booking_form_success()} ✓</p>
 			<p class="mt-1 text-sm">
-				{instructorName} will contact you within 24 hours to confirm your lesson details.
+				{m.booking_form_success_message({ name: instructorName })}
 			</p>
 		</div>
 	{/if}
 
 	{#if submitError}
 		<div class="mb-6 rounded-lg bg-red-50 p-4 text-red-800 dark:bg-red-900/20 dark:text-red-200">
-			<p class="font-medium">Error</p>
+			<p class="font-medium">{m.error_title()}</p>
 			<p class="mt-1 text-sm">{submitError}</p>
 		</div>
 	{/if}
@@ -106,12 +106,12 @@
 	<form onsubmit={handleSubmit} class="space-y-4">
 		<!-- Client Name -->
 		<div class="w-full">
-			<label for="clientName" class="mb-1 block text-sm font-medium">Your Name *</label>
+			<label for="clientName" class="mb-1 block text-sm font-medium">{m.form_label_your_name()} *</label>
 			<Input
 				id="clientName"
 				bind:value={formData.clientName}
 				required
-				placeholder="John Doe"
+				placeholder={m.form_placeholder_your_name()}
 				disabled={isSubmitting}
 			/>
 		</div>
@@ -119,23 +119,23 @@
 		<!-- Email & Phone Row -->
 		<div class="grid gap-4 sm:grid-cols-2">
 			<div>
-				<label for="clientEmail" class="mb-1 block text-sm font-medium">Email *</label>
+				<label for="clientEmail" class="mb-1 block text-sm font-medium">{m.form_label_email()} *</label>
 				<Input
 					id="clientEmail"
 					type="email"
 					bind:value={formData.clientEmail}
 					required
-					placeholder="john@example.com"
+					placeholder={m.form_placeholder_email()}
 					disabled={isSubmitting}
 				/>
 			</div>
 			<div>
-				<label for="clientPhone" class="mb-1 block text-sm font-medium">Phone</label>
+				<label for="clientPhone" class="mb-1 block text-sm font-medium">{m.form_label_phone()}</label>
 				<Input
 					id="clientPhone"
 					type="tel"
 					bind:value={formData.clientPhone}
-					placeholder="+1 234 567 8900"
+					placeholder={m.form_placeholder_phone()}
 					disabled={isSubmitting}
 				/>
 			</div>
@@ -144,7 +144,7 @@
 		<!-- Preferred Date & Lesson Type Row -->
 		<div class="grid gap-4 sm:grid-cols-2">
 			<div>
-				<label for="preferredDate" class="mb-1 block text-sm font-medium">Preferred Date *</label>
+				<label for="preferredDate" class="mb-1 block text-sm font-medium">{m.form_label_preferred_date()} *</label>
 				<Input
 					id="preferredDate"
 					type="date"
@@ -155,10 +155,10 @@
 				/>
 			</div>
 			<div>
-				<label for="lessonType" class="mb-1 block text-sm font-medium">Lesson Type *</label>
+				<label for="lessonType" class="mb-1 block text-sm font-medium">{m.form_label_lesson_type()} *</label>
 				<Select.Root bind:value={formData.lessonType}>
 					<Select.Trigger disabled={isSubmitting}>
-						<Select.Value placeholder="Select lesson type" />
+						<Select.Value placeholder={m.form_placeholder_select_lesson_type()} />
 					</Select.Trigger>
 					<Select.Content>
 						{#each lessonTypes as type}
@@ -172,7 +172,7 @@
 		<!-- Number of People & Skill Level Row -->
 		<div class="grid gap-4 sm:grid-cols-2">
 			<div>
-				<label for="numberOfPeople" class="mb-1 block text-sm font-medium">Number of People</label>
+				<label for="numberOfPeople" class="mb-1 block text-sm font-medium">{m.form_label_number_of_people()}</label>
 				<Input
 					id="numberOfPeople"
 					type="number"
@@ -183,10 +183,10 @@
 				/>
 			</div>
 			<div>
-				<label for="skillLevel" class="mb-1 block text-sm font-medium">Skill Level *</label>
+				<label for="skillLevel" class="mb-1 block text-sm font-medium">{m.form_label_skill_level()} *</label>
 				<Select.Root bind:value={formData.skillLevel} required>
 					<Select.Trigger disabled={isSubmitting}>
-						<Select.Value placeholder="Select your level" />
+						<Select.Value placeholder={m.form_placeholder_select_level()} />
 					</Select.Trigger>
 					<Select.Content>
 						{#each skillLevels as level}
@@ -199,31 +199,30 @@
 
 		<!-- Message -->
 		<div>
-			<label for="message" class="mb-1 block text-sm font-medium">Additional Information</label>
+			<label for="message" class="mb-1 block text-sm font-medium">{m.form_label_additional_info()}</label>
 			<Textarea
 				id="message"
 				bind:value={formData.message}
-				placeholder="Any special requests, goals, or questions..."
+				placeholder={m.form_placeholder_additional_info()}
 				rows={4}
 				disabled={isSubmitting}
 			/>
 			<p class="mt-1 text-xs text-muted-foreground">
-				Optional: Tell the instructor about your goals, experience, or any special requirements
+				{m.form_help_additional_info()}
 			</p>
 		</div>
 
 		<!-- Submit Button -->
 		<Button type="submit" class="w-full" disabled={isSubmitting}>
 			{#if isSubmitting}
-				Sending Request...
+				{m.button_sending_request()}
 			{:else}
-				Send Lesson Request
+				{m.button_send_lesson_request()}
 			{/if}
 		</Button>
 
 		<p class="text-center text-xs text-muted-foreground">
-			By submitting this form, you agree that the instructor will contact you directly to finalize
-			booking details and pricing.
+			{m.booking_form_disclaimer()}
 		</p>
 	</form>
 </div>

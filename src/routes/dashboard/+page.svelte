@@ -5,48 +5,49 @@
 	import { Badge } from '$src/lib/components/ui/badge';
 	import * as Card from '$src/lib/components/ui/card';
 	import ProfileVisitsCard from '$src/features/Dashboard/components/ProfileVisitsCard.svelte';
+	import * as m from '$lib/paraglide/messages';
 
 	let { data } = $props();
 	let user = $state(data.user);
 
-	const getWelcomeMessage = () => {
+	const getWelcomeMessage = $derived(() => {
 		const hour = new Date().getHours();
-		if (hour < 12) return 'Good morning';
-		if (hour < 18) return 'Good afternoon';
-		return 'Good evening';
-	};
+		if (hour < 12) return m.dashboard_greeting_morning();
+		if (hour < 18) return m.dashboard_greeting_afternoon();
+		return m.dashboard_greeting_evening();
+	});
 
 	const quickActions = $derived([
 		{
-			title: 'View Profile',
-			description: 'Update your personal information',
+			title: m.dashboard_action_view_profile(),
+			description: m.dashboard_action_view_profile_desc(),
 			icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
 			href: '/dashboard/profile',
 			show: true
 		},
 		{
-			title: 'View Bookings',
-			description: 'See your upcoming lesson requests',
+			title: m.dashboard_action_view_bookings(),
+			description: m.dashboard_action_view_bookings_desc(),
 			icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
 			href: '/dashboard/bookings',
 			show: user.role === 'instructor-independent' || user.role === 'instructor-school'
 		},
 		{
-			title: 'Manage Lessons',
-			description: 'Create and edit your lesson offerings',
+			title: m.dashboard_action_manage_lessons(),
+			description: m.dashboard_action_manage_lessons_desc(),
 			icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253',
 			href: '/dashboard/lessons',
 			show: user.role === 'instructor-independent' || user.role === 'instructor-school'
 		}
-		
+
 	].filter(action => action.show));
 </script>
 
 {#if !user.role}
 	<div class="flex flex-col items-center justify-center">
-		<p class="title3">Hey {user.name}, Let's Choose Your Account Type</p>
+		<p class="title3">{m.dashboard_choose_role_greeting({ name: user.name })}</p>
 		<Button onclick={() => goto('/dashboard/choose-role')} class="w-full">
-			Choose Account Type
+			{m.dashboard_choose_role_button()}
 		</Button>
 	</div>
 {:else}
@@ -57,7 +58,7 @@
 				{getWelcomeMessage()}, {user.name}!
 			</h1>
 			<p class="text-muted-foreground">
-				Welcome to your Local Snow dashboard
+				{m.dashboard_welcome_subtitle()}
 			</p>
 		</div>
 
@@ -66,17 +67,17 @@
 			<Card.Root>
 				<Card.Header class="pb-2">
 					<Card.Title class="text-sm font-medium text-muted-foreground">
-						Account Status
+						{m.dashboard_account_status()}
 					</Card.Title>
 				</Card.Header>
 				<Card.Content>
 					<div class="flex items-center justify-between">
 						<Badge variant={user.isVerified ? 'default' : 'secondary'} class={user.isVerified ? 'bg-green-600' : ''}>
-							{user.isVerified ? '✓ Verified' : 'Pending'}
+							{user.isVerified ? `✓ ${m.status_verified()}` : m.status_pending()}
 						</Badge>
 						{#if !user.isVerified}
 							<span class="text-xs text-muted-foreground">
-								Review in progress
+								{m.dashboard_review_in_progress()}
 							</span>
 						{/if}
 					</div>
@@ -87,13 +88,13 @@
 				<Card.Root>
 					<Card.Header class="pb-2">
 						<Card.Title class="text-sm font-medium text-muted-foreground">
-							Total Bookings
+							{m.dashboard_total_bookings()}
 						</Card.Title>
 					</Card.Header>
 					<Card.Content>
 						<div class="text-2xl font-bold">0</div>
 						<p class="text-xs text-muted-foreground">
-							No bookings yet
+							{m.dashboard_no_bookings_yet()}
 						</p>
 					</Card.Content>
 				</Card.Root>
@@ -101,13 +102,13 @@
 				<Card.Root>
 					<Card.Header class="pb-2">
 						<Card.Title class="text-sm font-medium text-muted-foreground">
-							Active Lessons
+							{m.dashboard_active_lessons()}
 						</Card.Title>
 					</Card.Header>
 					<Card.Content>
 						<div class="text-2xl font-bold">0</div>
 						<p class="text-xs text-muted-foreground">
-							Create your first lesson
+							{m.dashboard_create_first_lesson()}
 						</p>
 					</Card.Content>
 				</Card.Root>
@@ -118,7 +119,7 @@
 
 		<!-- Quick Actions -->
 		<div class="mb-8">
-			<h2 class="title4 mb-4">Quick Actions</h2>
+			<h2 class="title4 mb-4">{m.dashboard_quick_actions()}</h2>
 			<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 				{#each quickActions as action}
 					<a
@@ -145,35 +146,35 @@
 						<svg class="h-5 w-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
 							<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
 						</svg>
-						Complete Your Profile
+						{m.dashboard_complete_profile()}
 					</Card.Title>
 				</Card.Header>
 				<Card.Content>
 					<p class="mb-4 text-sm text-yellow-800 ">
-						Your instructor profile is under review. To speed up verification:
+						{m.dashboard_profile_verification_notice()}
 					</p>
 					<ul class="mb-4 space-y-2 text-sm text-yellow-800 ">
 						<li class="flex items-start gap-2">
 							<svg class="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
 							</svg>
-							<span>Ensure your certification documents are clear and valid</span>
+							<span>{m.dashboard_profile_verification_item1()}</span>
 						</li>
 						<li class="flex items-start gap-2">
 							<svg class="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
 							</svg>
-							<span>Add a professional profile photo</span>
+							<span>{m.dashboard_profile_verification_item2()}</span>
 						</li>
 						<li class="flex items-start gap-2">
 							<svg class="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
 							</svg>
-							<span>Complete your biography with teaching experience</span>
+							<span>{m.dashboard_profile_verification_item3()}</span>
 						</li>
 					</ul>
 					<Button onclick={() => goto('/dashboard/profile')} variant="outline" size="sm">
-						Go to Profile
+						{m.dashboard_go_to_profile_button()}
 					</Button>
 				</Card.Content>
 			</Card.Root>

@@ -6,6 +6,7 @@
 	import * as Table from '$lib/components/ui/table';
 	import * as Select from '$lib/components/ui/select';
 	import { goto } from '$app/navigation';
+	import * as m from '$lib/paraglide/messages';
 
 	let { data } = $props();
 
@@ -42,8 +43,8 @@
 
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8">
-		<h1 class="title2 mb-2">Booking Management</h1>
-		<p class="text-muted-foreground">View and manage all platform bookings</p>
+		<h1 class="title2 mb-2">{m.admin_booking_management()}</h1>
+		<p class="text-muted-foreground">{m.admin_booking_management_desc()}</p>
 	</div>
 
 	<!-- Filters -->
@@ -53,7 +54,7 @@
 				<div class="col-span-2">
 					<Input
 						bind:value={searchValue}
-						placeholder="Search client name or email..."
+						placeholder={m.admin_search_client_placeholder()}
 						onkeydown={(e) => e.key === 'Enter' && applyFilters()}
 					/>
 				</div>
@@ -62,24 +63,24 @@
 					onSelectedChange={(v) => statusFilter = v?.value || 'all'}
 				>
 					<Select.Trigger>
-						<Select.Value placeholder="Status" />
+						<Select.Value placeholder={m.table_status()} />
 					</Select.Trigger>
 					<Select.Content>
-						<Select.Item value="all">All Statuses</Select.Item>
-						<Select.Item value="pending">Pending</Select.Item>
-						<Select.Item value="viewed">Viewed</Select.Item>
-						<Select.Item value="accepted">Accepted</Select.Item>
-						<Select.Item value="completed">Completed</Select.Item>
-						<Select.Item value="rejected">Rejected</Select.Item>
+						<Select.Item value="all">{m.admin_all_statuses()}</Select.Item>
+						<Select.Item value="pending">{m.status_pending()}</Select.Item>
+						<Select.Item value="viewed">{m.status_viewed()}</Select.Item>
+						<Select.Item value="accepted">{m.status_accepted()}</Select.Item>
+						<Select.Item value="completed">{m.status_completed()}</Select.Item>
+						<Select.Item value="rejected">{m.status_rejected()}</Select.Item>
 					</Select.Content>
 				</Select.Root>
 			</div>
-			<Button onclick={applyFilters} class="mt-4">Apply Filters</Button>
+			<Button onclick={applyFilters} class="mt-4">{m.button_apply_filters()}</Button>
 		</CardContent>
 	</Card>
 
 	<p class="text-sm text-muted-foreground">
-		Showing {data.bookings.length} of {data.pagination.total} bookings
+		{m.admin_showing_of({ count: data.bookings.length, total: data.pagination.total })} {m.admin_bookings().toLowerCase()}
 	</p>
 
 	<!-- Bookings Table -->
@@ -88,15 +89,15 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>ID</Table.Head>
-						<Table.Head>Client</Table.Head>
-						<Table.Head>Instructor</Table.Head>
-						<Table.Head>Resort/Sport</Table.Head>
-						<Table.Head>Date</Table.Head>
-						<Table.Head>Students</Table.Head>
-						<Table.Head>Price</Table.Head>
-						<Table.Head>Status</Table.Head>
-						<Table.Head>Created</Table.Head>
+						<Table.Head>{m.table_id()}</Table.Head>
+						<Table.Head>{m.table_client()}</Table.Head>
+						<Table.Head>{m.table_instructor()}</Table.Head>
+						<Table.Head>{m.table_resort_sport()}</Table.Head>
+						<Table.Head>{m.table_date()}</Table.Head>
+						<Table.Head>{m.table_students()}</Table.Head>
+						<Table.Head>{m.table_price()}</Table.Head>
+						<Table.Head>{m.table_status()}</Table.Head>
+						<Table.Head>{m.table_created()}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -142,13 +143,13 @@
 		<div class="flex items-center justify-center gap-2">
 			{#if data.pagination.page > 1}
 				<Button href="/admin/bookings?page={data.pagination.page - 1}" variant="outline" size="sm">
-					Previous
+					{m.button_previous()}
 				</Button>
 			{/if}
-			<span class="text-sm">Page {data.pagination.page} of {data.pagination.totalPages}</span>
+			<span class="text-sm">{m.admin_page_of({ page: data.pagination.page, total: data.pagination.totalPages })}</span>
 			{#if data.pagination.page < data.pagination.totalPages}
 				<Button href="/admin/bookings?page={data.pagination.page + 1}" variant="outline" size="sm">
-					Next
+					{m.button_next()}
 				</Button>
 			{/if}
 		</div>

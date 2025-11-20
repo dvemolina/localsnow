@@ -5,6 +5,7 @@
 	import { Separator } from '$src/lib/components/ui/separator';
 	import { formatDate } from '$src/lib/utils/generics';
 	import { enhance } from '$app/forms';
+	import * as m from '$lib/paraglide/messages';
 
 	let {
 		booking,
@@ -17,12 +18,12 @@
 	let isSubmitting = $state(false);
 	let actionResult = $state<{ success?: boolean; message?: string } | null>(null);
 
-	const statusConfig = {
-		pending: { label: 'Pending Payment', color: 'bg-yellow-100 text-yellow-800' },
-		unlocked: { label: 'Unlocked', color: 'bg-green-100 text-green-800' },
-		accepted: { label: 'Accepted', color: 'bg-green-100 text-green-800' },
-		rejected: { label: 'Rejected', color: 'bg-red-100 text-red-800' }
-	};
+	const statusConfig = $derived({
+		pending: { label: m.status_pending_payment(), color: 'bg-yellow-100 text-yellow-800' },
+		unlocked: { label: m.status_unlocked(), color: 'bg-green-100 text-green-800' },
+		accepted: { label: m.status_accepted(), color: 'bg-green-100 text-green-800' },
+		rejected: { label: m.status_rejected(), color: 'bg-red-100 text-red-800' }
+	});
 
 	const getStatus = () => {
 		if (booking.status === 'rejected') return 'rejected';

@@ -6,18 +6,20 @@
 	import { Switch } from '$src/lib/components/ui/switch';
 	import { toast } from 'svelte-sonner';
 	import { invalidateAll } from '$app/navigation';
+	import { localizeHref } from '$lib/paraglide/runtime';
+	import * as m from '$lib/paraglide/messages';
 
 	let { data } = $props();
 
-	const daysOfWeek = [
-		{ value: 0, label: 'Sunday' },
-		{ value: 1, label: 'Monday' },
-		{ value: 2, label: 'Tuesday' },
-		{ value: 3, label: 'Wednesday' },
-		{ value: 4, label: 'Thursday' },
-		{ value: 5, label: 'Friday' },
-		{ value: 6, label: 'Saturday' }
-	];
+	const daysOfWeek = $derived([
+		{ value: 0, label: m.day_sunday() },
+		{ value: 1, label: m.day_monday() },
+		{ value: 2, label: m.day_tuesday() },
+		{ value: 3, label: m.day_wednesday() },
+		{ value: 4, label: m.day_thursday() },
+		{ value: 5, label: m.day_friday() },
+		{ value: 6, label: m.day_saturday() }
+	]);
 
 	type WorkingDay = {
 		dayOfWeek: number;
@@ -196,7 +198,7 @@
 			{/each}
 		</Card.Content>
 		<Card.Footer class="flex justify-between">
-			<Button variant="outline" href="/dashboard/availability">
+			<Button variant="outline" href={localizeHref('/dashboard/availability')}>
 				Back
 			</Button>
 			<Button onclick={saveWorkingHours} disabled={saving}>

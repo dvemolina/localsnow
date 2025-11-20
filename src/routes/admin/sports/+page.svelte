@@ -2,14 +2,15 @@
 	import { Card, CardContent } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Table from '$lib/components/ui/table';
+	import * as m from '$lib/paraglide/messages';
 
 	let { data } = $props();
 </script>
 
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8">
-		<h1 class="title2 mb-2">Sport Management</h1>
-		<p class="text-muted-foreground">View platform sports and instructor distribution</p>
+		<h1 class="title2 mb-2">{m.admin_sport_management()}</h1>
+		<p class="text-muted-foreground">{m.admin_sport_management_desc()}</p>
 	</div>
 
 	<Card>
@@ -17,10 +18,10 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>ID</Table.Head>
-						<Table.Head>Sport</Table.Head>
-						<Table.Head>Slug</Table.Head>
-						<Table.Head>Instructors Teaching</Table.Head>
+						<Table.Head>{m.table_id()}</Table.Head>
+						<Table.Head>{m.table_sport()}</Table.Head>
+						<Table.Head>{m.table_slug()}</Table.Head>
+						<Table.Head>{m.admin_instructors_teaching()}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -34,7 +35,7 @@
 								<Badge variant="outline">{sport.sportSlug}</Badge>
 							</Table.Cell>
 							<Table.Cell>
-								<Badge>{sport.instructorCount} instructors</Badge>
+								<Badge>{sport.instructorCount} {m.admin_instructors().toLowerCase()}</Badge>
 							</Table.Cell>
 						</Table.Row>
 					{/each}
