@@ -259,6 +259,46 @@
 	"instructors_page_empty_subtitle": "Try adjusting your filters to see more results",
 	"instructors_page_empty_clear_filters": "Clear All Filters",
 	"about_title": "About Local Snow",
+	"about_meta_description": "Local Snow is built by a ski instructor with experience across Argentina, New Zealand, Spain, and Chile. A fair platform that gives instructors ownership while connecting clients directly with the people who teach them.",
+
+	"about_who_built_title": "Who Built This",
+	"about_who_built_p1": "I'm a ski instructor. I've worked in Argentina, New Zealand, Spain, Chile—different continents, different resort cultures, different approaches to the same job. That perspective showed me something: the current system has fundamental problems that hurt instructors, clients, and the snowsports industry as a whole.",
+
+	"about_economic_title": "The Economic Reality",
+	"about_economic_p1": "Ski schools operate like managers or representatives for instructors. And like any management relationship, they take a cut. But in what other industry does a manager take more than 50% of the talent's earnings?",
+	"about_economic_p2": "In many school setups, the school gets paid per person per hour while instructors get paid a flat hourly rate regardless of how many students they teach. A group lesson with 6 people? The school might charge €60/hour per person (€360 total) while the instructor earns €25/hour. The math doesn't add up for the people doing the actual work.",
+	"about_economic_p3": "And booking platforms? They charge 15-20% commissions on top of that, plus subscription fees for basic features like managing your own calendar or setting your own pricing. Tools that should be standard are locked behind paywalls.",
+
+	"about_visibility_title": "The Visibility Problem",
+	"about_visibility_p1": "Schools often act as a screen between clients and instructors. But clients aren't just buying a lesson—they're trusting someone with their safety, or more importantly, their kids' safety. They have every right to know who that person is, see their qualifications, and make an informed choice.",
+	"about_visibility_p2": "The best instructors deserve to be visible. The system shouldn't hide talent behind institutional branding.",
+
+	"about_risk_title": "Risk vs. Reward",
+	"about_risk_p1": "Being a ski instructor comes with real risks. Physical injury, liability exposure, unpredictable income, seasonal uncertainty. We take on all of that, and yet most of us can't make a comfortable living from it. That's not sustainable, and it's not fair.",
+	"about_risk_p2": "Instructors need tools that help them manage their business, own their client relationships, and earn what they're worth—without sacrificing half their income to middlemen.",
+
+	"about_what_is_title": "What Local Snow Is",
+	"about_what_is_p1": "Local Snow is a free directory where instructors list their profiles and clients find them directly. No commissions on lessons. No subscription fees. No hidden costs. Just a small €5 lead fee when an instructor chooses to respond to a booking request.",
+	"about_what_is_p2": "I'm not trying to destroy ski schools or booking platforms. Schools serve a purpose—they provide structure, insurance, training programs, and consistent work for instructors who want that. But there should also be space for independent instructors to operate fairly, and for school instructors to build their own reputation and client base.",
+	"about_what_is_p3": "This isn't a war between independents and schools. It's about building a bridge.",
+
+	"about_verification_title": "The Verification Process",
+	"about_verification_p1": "I manually review every instructor who applies for verification. I check certifications, qualifications, and professional credentials. The badge doesn't mean someone is the best instructor in the world—it confirms they're legitimate, qualified, and take their work seriously.",
+	"about_verification_p2": "Clients deserve to know who they're working with. Instructors deserve to be recognized for their qualifications. That's what verification is for.",
+
+	"about_spain_title": "Why Spain First",
+	"about_spain_p1": "I've worked here. I know the resorts, the instructors, the local dynamics. Starting focused made more sense than trying to build a worldwide directory on day one. If this works in Spain and helps instructors make a better living while giving clients better access to great instruction, maybe it expands. If not, at least I tried.",
+
+	"about_goal_title": "The Goal",
+	"about_goal_p1": "I want instructors—independent and school-affiliated—to have affordable tools that give them ownership over their work. I want clients to connect directly with the people who teach them. I want the snowsports industry to be a place where talented instructors can build sustainable careers doing what they love.",
+	"about_goal_p2": "This isn't about getting rich or scaling into some venture-backed startup. It's about fixing something broken. If Local Snow helps even a handful of instructors earn more and a handful of clients find better instruction, it's worth it.",
+
+	"about_contact_title": "Get in Touch",
+	"about_contact_p1": "If you're an instructor in Spain—independent or working for a school—{createProfile}. If you have feedback or questions, email me at {email}.",
+	"about_contact_p2": "That's it. No manifesto, no corporate mission statement. Just trying to do better.",
+	"about_contact_create_profile": "create a profile",
+	"about_contact_email": "support@localsnow.org",
+
 	"about_intro": "Local Snow is a free directory connecting clients with independent ski and snowboard instructors across Spain.",
 	"about_mission_title": "Our Mission",
 	"about_mission_text": "We believe ski lessons should be accessible without expensive booking fees. Our platform lets instructors set their own prices and keep 100% of their lesson fees.",
