@@ -20,6 +20,7 @@ export const bookingRequestSchema = z.object({
     
     // Pricing
     promoCode: z.string().optional(),
+    launchCode: z.string().optional(),
 });
 
 export type BookingRequestSchema = z.infer<typeof bookingRequestSchema>;

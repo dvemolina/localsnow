@@ -106,32 +106,35 @@ export const bookingRequests = pgTable('booking_requests', {
     id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
     uuid: uuid('uuid').defaultRandom().unique().notNull(),
     instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-    
+
     // Client info
     clientName: varchar('client_name', { length: 100 }).notNull(),
     clientEmail: varchar('client_email', { length: 255 }).notNull(),
 	clientCountryCode: varchar('client_country_code', { length: 4 }),
     clientPhone: varchar('client_phone', { length: 50 }),
-    
+
     // Lesson details
     numberOfStudents: integer('number_of_students').notNull().default(1),
     startDate: timestamp('start_date').notNull(),
     endDate: timestamp('end_date'), // null for single-day bookings
     hoursPerDay: numeric('hours_per_day', { precision: 4, scale: 1 }).notNull(),
 	timeSlots: text('time_slots'), // JSON array of time slots
-    
+
     // Additional info
     skillLevel: varchar('skill_level', { length: 50 }),
     message: text('message'),
     promoCode: varchar('promo_code', { length: 50 }),
-    
+
     // Pricing estimate (for reference)
     estimatedPrice: integer('estimated_price'),
     currency: varchar('currency', { length: 50 }),
 
 	//Lead info after payment
 	contactInfoUnlocked: boolean('contact_info_unlocked').notNull().default(false),
-    
+
+    // Beta launch tracking
+    usedLaunchCode: varchar('used_launch_code', { length: 50 }), // Track if beta code was used
+
     status: bookingStatusEnum('status').default('pending'),
     ...timestamps
 });
@@ -277,6 +280,7 @@ export const leadPayments = pgTable('lead_payments', {
 	stripePaymentIntentId: varchar('stripe_payment_intent_id', { length: 255 }),
 	stripeCheckoutSessionId: varchar('stripe_checkout_session_id', { length: 255 }),
 	status: varchar('status', { length: 50 }).notNull().default('pending'), // pending, paid, failed, refunded
+	usedLaunchCode: varchar('used_launch_code', { length: 50 }), // Track if beta code was used
 	paidAt: timestamp('paid_at'),
 	createdAt: timestamp('created_at').notNull().defaultNow(),
 	updatedAt: timestamp('updated_at').notNull().defaultNow()
@@ -318,6 +322,21 @@ export const clientDepositsRelations = relations(clientDeposits, ({ one }) => ({
 
 export type ClientDeposit = typeof clientDeposits.$inferSelect;
 export type InsertClientDeposit = typeof clientDeposits.$inferInsert;
+
+// Launch Codes (Beta Access System)
+export const launchCodes = pgTable('launch_codes', {
+	id: serial('id').primaryKey(),
+	code: varchar('code', { length: 50 }).notNull().unique(),
+	description: text('description'),
+	validUntil: timestamp('valid_until').notNull(),
+	isActive: boolean('is_active').notNull().default(true),
+	maxUses: integer('max_uses'), // null = unlimited
+	currentUses: integer('current_uses').notNull().default(0),
+	createdAt: timestamp('created_at').notNull().defaultNow()
+});
+
+export type LaunchCode = typeof launchCodes.$inferSelect;
+export type InsertLaunchCode = typeof launchCodes.$inferInsert;
 
 // Reviews
 export const reviews = pgTable('reviews', {

@@ -4,10 +4,18 @@ import type { PageServerLoad, Actions } from './$types';
 import { BookingRequestService } from '$src/features/Bookings/lib/bookingRequestService';
 import { LeadPaymentService } from '$src/features/Bookings/lib/leadPaymentService';
 import { InstructorService } from '$src/features/Instructors/lib/instructorService';
+import { LaunchCodeService } from '$src/features/LaunchCodes/lib/launchCodeService';
+import { TentativeBookingService } from '$src/features/Availability/lib/tentativeBookingService';
+import { sendContactInfoToInstructor } from '$lib/server/webhooks/n8n/email-n8n';
+import { db } from '$lib/server/db';
+import { bookingRequests, leadPayments } from '$lib/server/db/schema';
+import { eq } from 'drizzle-orm';
 
 const bookingService = new BookingRequestService();
 const paymentService = new LeadPaymentService();
 const instructorService = new InstructorService();
+const launchCodeService = new LaunchCodeService();
+const tentativeService = new TentativeBookingService();
 
 export const load: PageServerLoad = async ({ params, locals }) => {
     const user = locals.user;
@@ -61,13 +69,13 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 export const actions: Actions = {
     createCheckout: async ({ params, locals, url }) => {
         const user = locals.user;
-        
+
         if (!user) {
             redirect(302, `/auth/login?redirect=/leads/payment/${params.id}`);
         }
 
         const bookingRequestId = Number(params.id);
-        
+
         if (isNaN(bookingRequestId)) {
             return fail(400, { message: 'Invalid booking request ID' });
         }
@@ -77,7 +85,7 @@ export const actions: Actions = {
         const cancelUrl = `${baseUrl}/leads/payment/${bookingRequestId}`;
 
         let session;
-        
+
         try {
             session = await paymentService.createCheckoutSession(
                 bookingRequestId,
@@ -87,8 +95,8 @@ export const actions: Actions = {
             );
         } catch (err) {
             console.error('Error creating Stripe checkout session:', err);
-            return fail(500, { 
-                message: 'Payment system is temporarily unavailable. Please try again in a few moments.' 
+            return fail(500, {
+                message: 'Payment system is temporarily unavailable. Please try again in a few moments.'
             });
         }
 
@@ -99,5 +107,112 @@ export const actions: Actions = {
 
         // ✅ Call redirect OUTSIDE the try-catch block
         redirect(303, session.url);
+    },
+
+    useLaunchCode: async ({ params, locals, request }) => {
+        const user = locals.user;
+
+        if (!user) {
+            redirect(302, `/auth/login?redirect=/leads/payment/${params.id}`);
+        }
+
+        const bookingRequestId = Number(params.id);
+
+        if (isNaN(bookingRequestId)) {
+            return fail(400, { message: 'Invalid booking request ID' });
+        }
+
+        const formData = await request.formData();
+        const launchCode = formData.get('launchCode')?.toString().trim();
+
+        if (!launchCode) {
+            return fail(400, { message: 'Please enter a launch code', field: 'launchCode' });
+        }
+
+        // Validate launch code
+        const validation = await launchCodeService.validateCode(launchCode);
+
+        if (!validation.valid) {
+            return fail(400, {
+                message: validation.error || 'Invalid launch code',
+                field: 'launchCode'
+            });
+        }
+
+        // Get booking request
+        const bookingRequest = await bookingService.getBookingRequestById(bookingRequestId);
+
+        if (!bookingRequest) {
+            return fail(404, { message: 'Booking request not found' });
+        }
+
+        if (bookingRequest.instructorId !== user.id) {
+            return fail(403, { message: 'Unauthorized' });
+        }
+
+        try {
+            // Record code usage
+            await launchCodeService.recordUsage(launchCode);
+
+            // Create a lead payment record for tracking (status: beta_waived)
+            await db.insert(leadPayments).values({
+                bookingRequestId,
+                instructorId: user.id,
+                amount: '0.00',
+                currency: 'EUR',
+                status: 'paid', // Mark as paid since it's free
+                usedLaunchCode: launchCode.toUpperCase(),
+                paidAt: new Date()
+            });
+
+            // Unlock contact info
+            await db.update(bookingRequests)
+                .set({ contactInfoUnlocked: true })
+                .where(eq(bookingRequests.id, bookingRequestId));
+
+            // Auto-accept booking
+            await bookingService.updateBookingStatus(bookingRequestId, 'accepted');
+
+            // Convert tentative blocks to confirmed
+            await tentativeService.convertTentativeToConfirmed(bookingRequestId);
+
+            // Get instructor sports for email
+            const sports = await bookingService.getBookingRequestSports(bookingRequestId);
+            const sportNames = await Promise.all(
+                sports.map(async (sportId) => {
+                    const { sports: sportsTable } = await import('$lib/server/db/schema');
+                    const result = await db.select().from(sportsTable).where(eq(sportsTable.id, sportId));
+                    return result[0]?.sport || 'Unknown';
+                })
+            );
+
+            // Send contact info email to instructor
+            sendContactInfoToInstructor({
+                instructorEmail: user.email,
+                instructorName: user.name,
+                clientName: bookingRequest.clientName,
+                clientEmail: bookingRequest.clientEmail,
+                clientPhone: bookingRequest.clientPhone || '',
+                clientCountryCode: bookingRequest.clientCountryCode || '',
+                numberOfStudents: bookingRequest.numberOfStudents,
+                startDate: bookingRequest.startDate.toISOString(),
+                endDate: bookingRequest.endDate?.toISOString() || null,
+                hoursPerDay: Number(bookingRequest.hoursPerDay),
+                sports: sportNames,
+                skillLevel: bookingRequest.skillLevel || '',
+                message: bookingRequest.message || '',
+                estimatedPrice: bookingRequest.estimatedPrice || 0,
+                currency: bookingRequest.currency || 'EUR'
+            }).catch(err => console.error('Email error:', err));
+
+            // Redirect to success page
+            redirect(303, `/leads/payment/${bookingRequestId}/success?usedBetaCode=true`);
+        } catch (err) {
+            console.error('Error using launch code:', err);
+            return fail(500, {
+                message: 'Failed to process launch code. Please try again.',
+                field: 'launchCode'
+            });
+        }
     }
 };

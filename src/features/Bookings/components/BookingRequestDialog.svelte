@@ -55,7 +55,8 @@
         clientCountryCode: isAuthenticated && user?.countryCode ? user.countryCode : 34,
         clientPhone: isAuthenticated && user?.phone ? user.phone : '',
         message: '',
-        promoCode: ''
+        promoCode: '',
+        launchCode: ''
     }, {
         validators: zodClient(bookingRequestSchema),
         SPA: true,
@@ -498,6 +499,16 @@
 					<div>
 						<label class="mb-1.5 block text-sm font-medium">Promo Code (optional)</label>
 						<Input bind:value={$formData.promoCode} placeholder="Enter promo code" disabled={isSubmitting || submitSuccess} />
+					</div>
+
+					<div>
+						<label class="mb-1.5 block text-sm font-medium">
+							{m.launch_code_label()} <span class="text-xs text-muted-foreground">({m.launch_code_optional()})</span>
+						</label>
+						<Input bind:value={$formData.launchCode} placeholder={m.launch_code_placeholder()} disabled={isSubmitting || submitSuccess} />
+						<p class="mt-1 text-xs text-muted-foreground">
+							{m.launch_code_help_booking()} <a href="/how-it-works" class="text-primary underline">{m.launch_code_learn_more()}</a>
+						</p>
 					</div>
 
 					<div>

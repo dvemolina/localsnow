@@ -1,15 +1,19 @@
 <script lang="ts">
 	import { Button } from '$src/lib/components/ui/button';
 	import { Badge } from '$src/lib/components/ui/badge';
+	import { Input } from '$src/lib/components/ui/input';
 	import { enhance } from '$app/forms';
 	import { localizeHref } from '$lib/paraglide/runtime';
+	import * as m from '$lib/paraglide/messages';
 
 	let { data, form } = $props();
-	
+
 	const booking = data.bookingRequest;
 	const leadPrice = data.leadPrice;
-	
+
 	let isProcessing = $state(false);
+	let isProcessingCode = $state(false);
+	let launchCodeValue = $state('');
 
 	function formatDate(date: Date | string) {
 		return new Date(date).toLocaleDateString('en-US', {
@@ -145,6 +149,47 @@
 					</div>
 				{/if}
 
+		<!-- Launch Code Section -->
+		<div class="mb-6 rounded-lg border border-primary/30 bg-primary/5 p-4">
+			<h3 class="mb-2 font-medium text-sm">{m.launch_code_label()}</h3>
+			<p class="mb-3 text-xs text-muted-foreground">
+				{m.launch_code_help_instructor()}
+			</p>
+
+			<form method="POST" action="?/useLaunchCode" use:enhance={() => {
+				isProcessingCode = true;
+				return async ({ update }) => {
+					await update();
+					isProcessingCode = false;
+				};
+			}}>
+				<div class="flex gap-2">
+					<Input
+						type="text"
+						name="launchCode"
+						bind:value={launchCodeValue}
+						placeholder={m.launch_code_placeholder()}
+						disabled={isProcessingCode || isProcessing}
+						required
+					/>
+					<Button
+						type="submit"
+						variant="outline"
+						disabled={isProcessingCode || isProcessing || !launchCodeValue}
+					>
+						{#if isProcessingCode}
+							...
+						{:else}
+							{m.launch_code_button()}
+						{/if}
+					</Button>
+				</div>
+			</form>
+		</div>
+
+		<div class="mb-4 text-center text-sm text-muted-foreground">
+			{m.launch_code_or_pay()}
+		</div>
 
 		<form method="POST" action="?/createCheckout" use:enhance={() => {
 					isProcessing = true;
