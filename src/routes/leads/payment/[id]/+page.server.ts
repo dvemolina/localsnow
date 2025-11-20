@@ -4,7 +4,7 @@ import type { PageServerLoad, Actions } from './$types';
 import { BookingRequestService } from '$src/features/Bookings/lib/bookingRequestService';
 import { LeadPaymentService } from '$src/features/Bookings/lib/leadPaymentService';
 import { InstructorService } from '$src/features/Instructors/lib/instructorService';
-import { LaunchCodeService } from '$src/features/LaunchCodes/lib/launchCodeService';
+import { PromoCodeService } from '$src/features/PromoCodes/lib/promoCodeService';
 import { TentativeBookingService } from '$src/features/Availability/lib/tentativeBookingService';
 import { sendContactInfoToInstructor } from '$lib/server/webhooks/n8n/email-n8n';
 import { db } from '$lib/server/db';
@@ -14,7 +14,7 @@ import { eq } from 'drizzle-orm';
 const bookingService = new BookingRequestService();
 const paymentService = new LeadPaymentService();
 const instructorService = new InstructorService();
-const launchCodeService = new LaunchCodeService();
+const promoCodeService = new PromoCodeService();
 const tentativeService = new TentativeBookingService();
 
 export const load: PageServerLoad = async ({ params, locals }) => {
@@ -109,7 +109,7 @@ export const actions: Actions = {
         redirect(303, session.url);
     },
 
-    useLaunchCode: async ({ params, locals, request }) => {
+    usePromoCode: async ({ params, locals, request }) => {
         const user = locals.user;
 
         if (!user) {
@@ -123,19 +123,19 @@ export const actions: Actions = {
         }
 
         const formData = await request.formData();
-        const launchCode = formData.get('launchCode')?.toString().trim();
+        const promoCode = formData.get('promoCode')?.toString().trim();
 
-        if (!launchCode) {
-            return fail(400, { message: 'Please enter a launch code', field: 'launchCode' });
+        if (!promoCode) {
+            return fail(400, { message: 'Please enter a promo code', field: 'promoCode' });
         }
 
-        // Validate launch code
-        const validation = await launchCodeService.validateCode(launchCode);
+        // Validate promo code (checks both launch codes and future promotions)
+        const validation = await promoCodeService.validateCode(promoCode);
 
         if (!validation.valid) {
             return fail(400, {
-                message: validation.error || 'Invalid launch code',
-                field: 'launchCode'
+                message: validation.error || 'Invalid promo code',
+                field: 'promoCode'
             });
         }
 
@@ -152,16 +152,16 @@ export const actions: Actions = {
 
         try {
             // Record code usage
-            await launchCodeService.recordUsage(launchCode);
+            await promoCodeService.recordUsage(promoCode);
 
-            // Create a lead payment record for tracking (status: beta_waived)
+            // Create a lead payment record for tracking (status: paid, free with promo)
             await db.insert(leadPayments).values({
                 bookingRequestId,
                 instructorId: user.id,
                 amount: '0.00',
                 currency: 'EUR',
                 status: 'paid', // Mark as paid since it's free
-                usedLaunchCode: launchCode.toUpperCase(),
+                usedLaunchCode: promoCode.toUpperCase(), // Still stored in usedLaunchCode field for compatibility
                 paidAt: new Date()
             });
 
@@ -208,10 +208,10 @@ export const actions: Actions = {
             // Redirect to success page
             redirect(303, `/leads/payment/${bookingRequestId}/success?usedBetaCode=true`);
         } catch (err) {
-            console.error('Error using launch code:', err);
+            console.error('Error using promo code:', err);
             return fail(500, {
-                message: 'Failed to process launch code. Please try again.',
-                field: 'launchCode'
+                message: 'Failed to process promo code. Please try again.',
+                field: 'promoCode'
             });
         }
     }

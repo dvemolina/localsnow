@@ -13,7 +13,7 @@
 
 	let isProcessing = $state(false);
 	let isProcessingCode = $state(false);
-	let launchCodeValue = $state('');
+	let promoCodeValue = $state('');
 
 	function formatDate(date: Date | string) {
 		return new Date(date).toLocaleDateString('en-US', {
@@ -149,14 +149,14 @@
 					</div>
 				{/if}
 
-		<!-- Launch Code Section -->
+		<!-- Promo Code Section -->
 		<div class="mb-6 rounded-lg border border-primary/30 bg-primary/5 p-4">
-			<h3 class="mb-2 font-medium text-sm">{m.launch_code_label()}</h3>
+			<h3 class="mb-2 font-medium text-sm">{m.form_label_promo_code()}</h3>
 			<p class="mb-3 text-xs text-muted-foreground">
 				{m.launch_code_help_instructor()}
 			</p>
 
-			<form method="POST" action="?/useLaunchCode" use:enhance={() => {
+			<form method="POST" action="?/usePromoCode" use:enhance={() => {
 				isProcessingCode = true;
 				return async ({ update }) => {
 					await update();
@@ -166,21 +166,21 @@
 				<div class="flex gap-2">
 					<Input
 						type="text"
-						name="launchCode"
-						bind:value={launchCodeValue}
-						placeholder={m.launch_code_placeholder()}
+						name="promoCode"
+						bind:value={promoCodeValue}
+						placeholder={m.form_placeholder_promo_code()}
 						disabled={isProcessingCode || isProcessing}
 						required
 					/>
 					<Button
 						type="submit"
 						variant="outline"
-						disabled={isProcessingCode || isProcessing || !launchCodeValue}
+						disabled={isProcessingCode || isProcessing || !promoCodeValue}
 					>
 						{#if isProcessingCode}
 							...
 						{:else}
-							{m.launch_code_button()}
+							{m.button_apply()}
 						{/if}
 					</Button>
 				</div>
