@@ -155,33 +155,33 @@
 </section>
 
 <!-- Beta Launch Banner -->
-<section class="bg-primary/5 border-y border-primary/20 py-8">
+<section class="bg-green-50 border-2 border-green-500 py-8 mt-12 rounded-md">
 	<div class="container">
 		<div class="mx-auto max-w-3xl text-center">
-			<div class="mb-4 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold">
+			<div class="mb-4 inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-900 ">
 				<span class="relative flex h-3 w-3">
-					<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
-					<span class="relative inline-flex h-3 w-3 rounded-full bg-primary"></span>
+					<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-600 opacity-75"></span>
+					<span class="relative inline-flex h-3 w-3 rounded-full bg-green-600"></span>
 				</span>
 				{m.beta_launch_badge()}
 			</div>
 
-			<h2 class="mb-3 text-2xl font-bold md:text-3xl">
+			<h2 class="mb-3 text-2xl font-bold text-green-900 md:text-3xl ">
 				{m.beta_launch_title()}
 			</h2>
 
-			<p class="mb-4 text-lg text-muted-foreground">
+			<p class="mb-4 text-lg text-green-800 ">
 				{m.beta_launch_description()}
 			</p>
 
 			<div class="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-				<div class="flex items-center gap-2 rounded-lg bg-card border border-border px-4 py-3">
-					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-					<span class="text-sm">{m.beta_launch_valid_until()}</span>
+				<div class="flex items-center gap-2 rounded-lg bg-white border-2 border-green-200 px-4 py-3 ">
+					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600 dark:text-green-400"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+					<span class="text-sm text-green-900 ">{m.beta_launch_valid_until()}</span>
 				</div>
-				<div class="flex items-center gap-2 rounded-lg bg-card border border-border px-4 py-3">
-					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><polyline points="20 6 9 17 4 12"></polyline></svg>
-					<span class="text-sm">{m.beta_launch_no_fees()}</span>
+				<div class="flex items-center gap-2 rounded-lg bg-white border-2 border-green-200 px-4 py-3 ">
+					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600 dark:text-green-400"><polyline points="20 6 9 17 4 12"></polyline></svg>
+					<span class="text-sm text-green-900 ">{m.beta_launch_no_fees()}</span>
 				</div>
 			</div>
 		</div>
