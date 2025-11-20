@@ -44,6 +44,11 @@
 			icon: '/icons/service.svg'
 		},
 		{
+			title: m.admin_sidebar_launch_codes(),
+			url: '/admin/launch-codes',
+			icon: '/icons/notebook.svg'
+		},
+		{
 			title: m.admin_sidebar_payments(),
 			url: '/admin/payments',
 			icon: '/icons/notebook.svg'
