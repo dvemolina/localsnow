@@ -4,7 +4,7 @@ import { BookingRequestService } from '$src/features/Bookings/lib/bookingRequest
 
 const bookingService = new BookingRequestService();
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
     try {
         const { instructorId, clientEmail } = await request.json();
 
@@ -12,8 +12,12 @@ export const POST: RequestHandler = async ({ request }) => {
             return json({ error: 'Missing required fields' }, { status: 400 });
         }
 
+        // Get authenticated user ID if available (preferred for security and performance)
+        const clientUserId = locals.user?.id || null;
+
         const validation = await bookingService.validateBookingRequest(
             Number(instructorId),
+            clientUserId,
             clientEmail
         );
 

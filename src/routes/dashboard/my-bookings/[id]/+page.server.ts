@@ -15,7 +15,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
     }
 
     // Get all bookings for this client to find the one we want
-    const bookings = await bookingService.getBookingRequestsByClient(locals.user.email);
+    // Use user ID (preferred) with email fallback for backward compatibility
+    const bookings = await bookingService.getBookingRequestsByClient(locals.user.id, locals.user.email);
     const booking = bookings.find(b => b.id === bookingId);
 
     if (!booking) {

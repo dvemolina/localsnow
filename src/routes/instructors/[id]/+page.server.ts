@@ -96,9 +96,9 @@ export const load: PageServerLoad = async (event) => {
 };
 
 export const actions: Actions = {
-    default: async ({ request, params, url }) => {
+    default: async ({ request, params, url, locals }) => {
         const instructorId = Number(params.id);
-        
+
         if (isNaN(instructorId)) {
             return fail(400, { message: 'Invalid instructor ID' });
         }
@@ -120,15 +120,19 @@ export const actions: Actions = {
                     data.sports = JSON.parse(data.sports);
                 }
             }
-            
+
             // Validate required fields
             if (!data.clientName || !data.clientEmail || !data.startDate || !data.skillLevel || !data.numberOfStudents || !data.hoursPerDay) {
                 return fail(400, { message: 'Missing required fields' });
             }
 
             // ✅ NEW: Validate booking limits
+            // Get authenticated user ID if available (preferred for security and performance)
+            const clientUserId = locals.user?.id || null;
+
             const validation = await bookingRequestService.validateBookingRequest(
                 instructorId,
+                clientUserId,
                 data.clientEmail
             );
 
@@ -146,6 +150,7 @@ export const actions: Actions = {
             // Create booking request
             const bookingRequest = await bookingRequestService.createBookingRequest({
                 instructorId,
+                clientUserId, // Store user ID for authenticated users (production-ready approach)
                 clientName: data.clientName,
                 clientEmail: data.clientEmail,
                 clientPhone: data.clientPhone || null,
