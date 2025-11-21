@@ -134,3 +134,68 @@ export async function sendContactInfoToInstructor(data: {
 		console.error('Error sending contact info:', err);
 	}
 }
+
+export async function sendCancellationNotificationToInstructor(data: {
+	instructorEmail: string;
+	instructorName: string;
+	bookingRequestId: number;
+	clientName: string;
+	startDate: string;
+	endDate?: string;
+	numberOfStudents: number;
+	hoursPerDay: number;
+	dashboardUrl?: string;
+}) {
+	try {
+		const response = await fetch(`${N8N_BASE_URL}/booking-cancellation-instructor`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'x-n8n-secret': EMAIL_SECRET
+			},
+			body: JSON.stringify({
+				type: 'cancellation_notification',
+				...data,
+				dashboardUrl: data.dashboardUrl || 'https://localsnow.org/dashboard/bookings'
+			})
+		});
+
+		if (!response.ok) {
+			console.error('Failed to send cancellation notification', await response.text());
+		}
+	} catch (err) {
+		console.error('Error sending cancellation notification:', err);
+	}
+}
+
+export async function sendCancellationConfirmationToClient(data: {
+	clientEmail: string;
+	clientName: string;
+	instructorName: string;
+	bookingRequestId: number;
+	startDate: string;
+	endDate?: string;
+	depositRefunded: boolean;
+	refundAmount?: number;
+	currency?: string;
+}) {
+	try {
+		const response = await fetch(`${N8N_BASE_URL}/booking-cancellation-client`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'x-n8n-secret': EMAIL_SECRET
+			},
+			body: JSON.stringify({
+				type: 'cancellation_confirmation',
+				...data
+			})
+		});
+
+		if (!response.ok) {
+			console.error('Failed to send cancellation confirmation', await response.text());
+		}
+	} catch (err) {
+		console.error('Error sending cancellation confirmation:', err);
+	}
+}

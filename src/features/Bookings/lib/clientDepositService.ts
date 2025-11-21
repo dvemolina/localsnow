@@ -212,7 +212,7 @@ export class ClientDepositService {
             }
 
             // Check if review is required for this refund
-            const automaticRefundReasons = ['expired_no_acceptance', 'booking_rejected'];
+            const automaticRefundReasons = ['expired_no_acceptance', 'booking_rejected', 'client_cancellation'];
             const requiresReview = !automaticRefundReasons.includes(reason);
 
             if (requiresReview) {

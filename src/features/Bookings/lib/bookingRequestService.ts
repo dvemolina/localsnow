@@ -1,5 +1,11 @@
 import { TentativeBookingService } from "$src/features/Availability/lib/tentativeBookingService";
 import { BookingRequestRepository, type BookingRequestData } from "./bookingRequestRepository";
+import { ClientDepositService } from "./clientDepositService";
+import {
+    sendCancellationNotificationToInstructor,
+    sendCancellationConfirmationToClient
+} from "$lib/server/webhooks/n8n/email-n8n";
+import { db } from "$lib/server/db";
 
 const tentativeBookingService = new TentativeBookingService();
 
@@ -51,14 +57,14 @@ export class BookingRequestService {
 
     async updateBookingStatus(bookingRequestId: number, status: string) {
         const result = await this.repository.updateBookingStatus(bookingRequestId, status);
-        
-        // Clean up tentative blocks when booking is rejected or expired
-        if (status === 'rejected' || status === 'expired') {
+
+        // Clean up tentative blocks when booking is rejected, expired, or cancelled
+        if (status === 'rejected' || status === 'expired' || status === 'cancelled') {
             await tentativeBookingService.deleteTentativeBlocksForBooking(bookingRequestId).catch(err => {
                 console.error('Failed to cleanup tentative blocks:', err);
             });
         }
-        
+
         return result;
     }
 
@@ -108,14 +114,95 @@ export class BookingRequestService {
             throw new Error('Booking request not found or unauthorized');
         }
 
-        // Only allow cancellation of pending or viewed bookings
+        // Only allow cancellation of pending or viewed bookings (protect against race condition)
         if (!['pending', 'viewed'].includes(booking.status)) {
             throw new Error('Cannot cancel this booking request');
         }
 
-        // Update status to cancelled
-        const result = await this.updateBookingStatus(bookingRequestId, 'cancelled');
+        // Get instructor details for notification
+        const { users } = await import('$lib/server/db/schema');
+        const instructor = await db.query.users.findFirst({
+            where: (users, { eq }) => eq(users.id, booking.instructorId),
+            columns: {
+                id: true,
+                name: true,
+                lastName: true,
+                email: true
+            }
+        });
 
-        return result;
+        if (!instructor) {
+            throw new Error('Instructor not found');
+        }
+
+        // Update status to cancelled (this will automatically clean up tentative blocks)
+        await this.updateBookingStatus(bookingRequestId, 'cancelled');
+
+        // Handle deposit refund if applicable
+        let depositRefunded = false;
+        let refundAmount = 0;
+        const currency = booking.currency || 'EUR';
+
+        // Only process refund if booking didn't use a launch code (launch codes = free access, no deposit)
+        if (!booking.usedLaunchCode) {
+            const depositService = new ClientDepositService();
+            const deposit = await depositService.getDepositByBookingRequest(bookingRequestId);
+
+            if (deposit && deposit.status === 'held') {
+                try {
+                    // Refund with 'client_cancellation' reason (automatic, no review required)
+                    await depositService.refundDeposit(deposit.id, 'client_cancellation');
+                    depositRefunded = true;
+                    refundAmount = parseFloat(deposit.amount);
+                } catch (error) {
+                    console.error('Failed to refund deposit:', error);
+                    // Don't throw - cancellation succeeded, refund can be handled manually
+                }
+            }
+        }
+
+        // Send notification to instructor
+        try {
+            await sendCancellationNotificationToInstructor({
+                instructorEmail: instructor.email,
+                instructorName: instructor.name,
+                bookingRequestId: booking.id,
+                clientName: booking.clientName,
+                startDate: new Date(booking.startDate).toLocaleDateString(),
+                endDate: booking.endDate ? new Date(booking.endDate).toLocaleDateString() : undefined,
+                numberOfStudents: booking.numberOfStudents,
+                hoursPerDay: parseFloat(booking.hoursPerDay)
+            });
+        } catch (error) {
+            console.error('Failed to send instructor notification:', error);
+            // Don't throw - notification failure shouldn't break cancellation
+        }
+
+        // Send confirmation to client
+        try {
+            await sendCancellationConfirmationToClient({
+                clientEmail: booking.clientEmail,
+                clientName: booking.clientName,
+                instructorName: `${instructor.name} ${instructor.lastName}`,
+                bookingRequestId: booking.id,
+                startDate: new Date(booking.startDate).toLocaleDateString(),
+                endDate: booking.endDate ? new Date(booking.endDate).toLocaleDateString() : undefined,
+                depositRefunded,
+                refundAmount: depositRefunded ? refundAmount : undefined,
+                currency: depositRefunded ? currency : undefined
+            });
+        } catch (error) {
+            console.error('Failed to send client confirmation:', error);
+            // Don't throw - notification failure shouldn't break cancellation
+        }
+
+        return {
+            success: true,
+            bookingRequestId,
+            depositRefunded,
+            refundAmount: depositRefunded ? refundAmount : 0,
+            currency,
+            usedLaunchCode: !!booking.usedLaunchCode
+        };
     }
 }

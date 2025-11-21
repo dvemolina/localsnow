@@ -37,8 +37,19 @@ export const actions: Actions = {
         const bookingRequestId = parseInt(formData.get('bookingRequestId') as string);
 
         try {
-            await bookingService.cancelBookingRequest(bookingRequestId, locals.user.email);
-            return { success: true, message: 'Booking request cancelled successfully' };
+            const result = await bookingService.cancelBookingRequest(bookingRequestId, locals.user.email);
+
+            // Build detailed success message
+            let message = 'Booking request cancelled successfully.';
+            if (result.usedLaunchCode) {
+                message += ' (No deposit to refund - launch code booking)';
+            } else if (result.depositRefunded) {
+                message += ` Your deposit of ${result.refundAmount} ${result.currency} has been refunded.`;
+            } else {
+                message += ' No deposit was found for this booking.';
+            }
+
+            return { success: true, message };
         } catch (error) {
             console.error('Error cancelling booking:', error);
             return fail(400, { error: (error as Error).message || 'Failed to cancel booking request' });
