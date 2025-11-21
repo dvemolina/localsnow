@@ -95,6 +95,11 @@
 			<Dialog.Description>
 				Review the booking details and take action
 			</Dialog.Description>
+			{#if booking.createdAt}
+				<p class="text-xs text-muted-foreground mt-2">
+					Created: {new Date(booking.createdAt).toLocaleString()}
+				</p>
+			{/if}
 		</Dialog.Header>
 
 		<div class="space-y-6 py-4">

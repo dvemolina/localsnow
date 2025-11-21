@@ -52,6 +52,9 @@
 				<p class="text-muted-foreground">
 					{m.client_created_on({ date: new Date(booking.createdAt).toLocaleDateString() })}
 				</p>
+				<p class="text-xs text-muted-foreground mt-1">
+					{new Date(booking.createdAt).toLocaleString()}
+				</p>
 			</div>
 			<Badge variant={statusConfig.variant} class={statusConfig.class}>
 				{statusConfig.label}

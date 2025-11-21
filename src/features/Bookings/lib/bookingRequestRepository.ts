@@ -99,6 +99,7 @@ export class BookingRequestRepository {
                 startDate: bookingRequests.startDate,
                 endDate: bookingRequests.endDate,
                 hoursPerDay: bookingRequests.hoursPerDay,
+                timeSlots: bookingRequests.timeSlots,
                 skillLevel: bookingRequests.skillLevel,
                 message: bookingRequests.message,
                 estimatedPrice: bookingRequests.estimatedPrice,
