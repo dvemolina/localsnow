@@ -274,7 +274,7 @@
 
 				{#if timeSlots.length > 0}
 					<div class="mt-4">
-						<span class="text-muted-foreground text-sm">Requested Time Slots:</span>
+						<span class="text-muted-foreground text-sm">{m.client_requested_times()}</span>
 						<div class="mt-2 flex flex-wrap gap-2">
 							{#each timeSlots as slot}
 								<Badge variant="secondary" class="text-sm">
