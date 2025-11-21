@@ -27,6 +27,9 @@ export const GET: RequestHandler = async ({ url }) => {
     let session: Stripe.Checkout.Session;
     let booking: any;
     let deposit: any;
+    let sessionError: string | null = null;
+    let depositError = false;
+    let tentativeError = false;
 
     // ✅ Retrieve and validate Stripe session
     try {
@@ -38,34 +41,32 @@ export const GET: RequestHandler = async ({ url }) => {
         const paymentIntent = session.payment_intent as Stripe.PaymentIntent;
 
         if (session.status !== 'complete' || !paymentIntent) {
-            redirect(303, '/booking/booking-error?reason=payment_failed');
-        }
+            sessionError = 'payment_failed';
+        } else if (paymentIntent.status !== 'requires_capture' && paymentIntent.status !== 'succeeded') {
+            sessionError = 'payment_failed';
+        } else {
+            const metadata = paymentIntent.metadata;
+            const bookingRequestId = parseInt(metadata?.bookingRequestId || '0');
 
-        // For manual capture, the payment_intent should have status 'requires_capture'
-        if (paymentIntent.status !== 'requires_capture' && paymentIntent.status !== 'succeeded') {
-            redirect(303, '/booking/booking-error?reason=payment_failed');
-        }
+            if (!bookingRequestId) {
+                sessionError = 'invalid_session';
+            } else {
+                // ✅ Get booking data from database
+                booking = await bookingService.getBookingRequestById(bookingRequestId);
 
-        const metadata = paymentIntent.metadata;
-        const bookingRequestId = parseInt(metadata?.bookingRequestId || '0');
-
-        if (!bookingRequestId) {
-            redirect(303, '/booking/booking-error?reason=invalid_session');
-        }
-
-        // ✅ Get booking data from database
-        booking = await bookingService.getBookingRequestById(bookingRequestId);
-
-        if (!booking) {
-            redirect(303, '/booking/booking-error?reason=booking_not_found');
+                if (!booking) {
+                    sessionError = 'booking_not_found';
+                }
+            }
         }
     } catch (error) {
-        // ⚠️ CRITICAL: Re-throw redirects, don't catch them!
-        if (error instanceof Response) {
-            throw error;
-        }
         console.error('Error retrieving session or booking:', error);
-        redirect(303, '/booking/booking-error?reason=processing_error');
+        sessionError = 'processing_error';
+    }
+
+    // Redirect OUTSIDE try-catch if session validation failed
+    if (sessionError) {
+        redirect(303, `/booking/booking-error?reason=${sessionError}`);
     }
 
     // ✅ Create deposit record
@@ -76,26 +77,23 @@ export const GET: RequestHandler = async ({ url }) => {
             (session.payment_intent as Stripe.PaymentIntent).id
         );
     } catch (error) {
-        // ⚠️ Re-throw redirects
-        if (error instanceof Response) {
-            throw error;
-        }
         console.error('Error creating deposit:', error);
+        depositError = true;
+    }
+
+    // Redirect OUTSIDE try-catch if deposit creation failed
+    if (depositError) {
         redirect(303, '/booking/booking-error?reason=processing_error');
     }
 
     // ✅ Create tentative blocks with race condition protection
     const timeSlots = booking.timeSlots ? JSON.parse(booking.timeSlots) : [];
-    
+
     try {
         await tentativeService.createTentativeBlock(booking.id, timeSlots);
     } catch (tentativeError) {
-        // ⚠️ Re-throw redirects
-        if (tentativeError instanceof Response) {
-            throw tentativeError;
-        }
         console.error('Race condition detected:', tentativeError);
-        
+
         // Cleanup: refund deposit and mark booking as expired
         try {
             await depositService.refundDeposit(deposit.id, 'slots_no_longer_available');
@@ -103,13 +101,18 @@ export const GET: RequestHandler = async ({ url }) => {
         } catch (cleanupError) {
             console.error('Error during cleanup:', cleanupError);
         }
-        
+
+        tentativeError = true;
+    }
+
+    // Redirect OUTSIDE try-catch if tentative booking failed
+    if (tentativeError) {
         redirect(303, '/booking/booking-error?reason=slots_taken');
     }
 
     // ✅ Send notification emails (fire and forget - don't block on email errors)
     const instructorData = await instructorService.getInstructorWithLessons(booking.instructorId);
-    
+
     if (instructorData?.instructor?.email) {
         const baseUrl = url.origin;
         sendBookingNotificationToInstructor({
@@ -140,6 +143,6 @@ export const GET: RequestHandler = async ({ url }) => {
         currency: booking.currency || undefined
     }).catch(err => console.error('Email error:', err));
 
-    // ✅ Success - redirect (not in try-catch)
+    // ✅ Success - redirect OUTSIDE try-catch
     redirect(303, `/booking/booking-success?bookingId=${booking.id}`);
 };
