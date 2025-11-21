@@ -1,9 +1,10 @@
 import { db } from "$lib/server/db";
 import { bookingRequests, leadPayments, bookingRequestSports, sports } from "$lib/server/db/schema";
-import { eq, desc, and, inArray } from "drizzle-orm";
+import { eq, desc, and, inArray, or, isNull } from "drizzle-orm";
 
 export interface BookingRequestData {
     instructorId: number;
+    clientUserId?: number | null; // Authenticated user ID (preferred for security and performance)
     clientName: string;
     clientEmail: string;
     clientCountryCode: string;
@@ -27,6 +28,7 @@ export class BookingRequestRepository {
             // Create the booking request
             const [request] = await tx.insert(bookingRequests).values({
                 instructorId: data.instructorId,
+                clientUserId: data.clientUserId || null, // Store user ID for authenticated users
                 clientName: data.clientName,
                 clientEmail: data.clientEmail.toLowerCase().trim(),
                 clientPhone: data.clientPhone || null,
@@ -177,25 +179,56 @@ export class BookingRequestRepository {
             .returning();
     }
 
-    async checkExistingRequest(instructorId: number, clientEmail: string): Promise<boolean> {
-    const result = await db.select()
-        .from(bookingRequests)
-        .where(
-            and(
-                eq(bookingRequests.instructorId, instructorId),
-                eq(bookingRequests.clientEmail, clientEmail.toLowerCase().trim()),
-                inArray(bookingRequests.status, ['pending', 'viewed', 'accepted'])
-            )
-        );
-    return result.length > 0;
-}
+    /**
+     * Check if client already has an active request with this instructor
+     * @param instructorId - Instructor user ID
+     * @param clientUserId - Client user ID (preferred)
+     * @param clientEmail - Client email (fallback)
+     */
+    async checkExistingRequest(instructorId: number, clientUserId?: number | null, clientEmail?: string | null): Promise<boolean> {
+        // Build WHERE clause based on available identifiers
+        let clientCondition;
+        if (clientUserId) {
+            clientCondition = eq(bookingRequests.clientUserId, clientUserId);
+        } else if (clientEmail) {
+            clientCondition = eq(bookingRequests.clientEmail, clientEmail.toLowerCase().trim());
+        } else {
+            return false;
+        }
 
-    async getActiveRequestCount(clientEmail: string): Promise<number> {
         const result = await db.select()
             .from(bookingRequests)
             .where(
                 and(
-                    eq(bookingRequests.clientEmail, clientEmail.toLowerCase().trim()),
+                    eq(bookingRequests.instructorId, instructorId),
+                    clientCondition,
+                    inArray(bookingRequests.status, ['pending', 'viewed', 'accepted'])
+                )
+            );
+        return result.length > 0;
+    }
+
+    /**
+     * Get count of active booking requests for a client
+     * @param clientUserId - Client user ID (preferred)
+     * @param clientEmail - Client email (fallback)
+     */
+    async getActiveRequestCount(clientUserId?: number | null, clientEmail?: string | null): Promise<number> {
+        // Build WHERE clause based on available identifiers
+        let clientCondition;
+        if (clientUserId) {
+            clientCondition = eq(bookingRequests.clientUserId, clientUserId);
+        } else if (clientEmail) {
+            clientCondition = eq(bookingRequests.clientEmail, clientEmail.toLowerCase().trim());
+        } else {
+            return 0;
+        }
+
+        const result = await db.select()
+            .from(bookingRequests)
+            .where(
+                and(
+                    clientCondition,
                     inArray(bookingRequests.status, ['pending', 'viewed'])
                 )
             );
@@ -213,11 +246,35 @@ export class BookingRequestRepository {
             .returning();
     }
 
-    async getBookingRequestsByClient(clientEmail: string) {
+    /**
+     * Get bookings by client user ID (preferred) with email fallback
+     * @param clientUserId - Authenticated user ID (preferred)
+     * @param clientEmail - Email address (fallback for legacy bookings)
+     */
+    async getBookingRequestsByClient(clientUserId?: number | null, clientEmail?: string | null) {
+        // Build WHERE clause: prioritize user ID, fallback to email
+        let whereClause;
+        if (clientUserId) {
+            // Primary path: Query by user ID (most secure and performant)
+            whereClause = eq(bookingRequests.clientUserId, clientUserId);
+        } else if (clientEmail) {
+            // Fallback path: Query by email (for legacy bookings or guest users)
+            whereClause = and(
+                eq(bookingRequests.clientEmail, clientEmail.toLowerCase().trim()),
+                // Ensure we only get bookings that don't have a user ID set
+                // This prevents duplicate results if a user has both authenticated and legacy bookings
+                isNull(bookingRequests.clientUserId)
+            );
+        } else {
+            // No valid identifier provided
+            return [];
+        }
+
         const bookingsQuery = await db
             .select({
                 id: bookingRequests.id,
                 instructorId: bookingRequests.instructorId,
+                clientUserId: bookingRequests.clientUserId,
                 clientName: bookingRequests.clientName,
                 clientEmail: bookingRequests.clientEmail,
                 clientPhone: bookingRequests.clientPhone,
@@ -239,7 +296,7 @@ export class BookingRequestRepository {
                 updatedAt: bookingRequests.updatedAt
             })
             .from(bookingRequests)
-            .where(eq(bookingRequests.clientEmail, clientEmail.toLowerCase().trim()))
+            .where(whereClause)
             .orderBy(desc(bookingRequests.createdAt));
 
         // Get sports and instructor details for each booking
