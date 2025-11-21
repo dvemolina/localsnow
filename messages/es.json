@@ -588,6 +588,8 @@
 	"booking_success_step2": "Si acepta, recibirás su información de contacto por email",
 	"booking_success_step3": "Después de completar la clase, tu depósito de 15€ será reembolsado",
 	"booking_success_step4": "Si ningún instructor acepta en 48 horas, recibirás un reembolso automático",
+	"booking_success_deposit_title": "Acerca de Tu Depósito de 15€",
+	"booking_success_deposit_info": "Tu depósito se retiene temporalmente y será reembolsado automáticamente después de que se complete la clase o si la solicitud no es aceptada en 48 horas.",
 	"booking_what_happens_next_title": "¿Qué Sucede Ahora?",
 	"booking_step1": "El instructor revisará tu solicitud en 24 horas",
 	"booking_step2": "Si acepta, recibirás su información de contacto por email",

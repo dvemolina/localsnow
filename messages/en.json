@@ -588,6 +588,8 @@
 	"booking_success_step2": "If they accept, you'll receive their contact information via email",
 	"booking_success_step3": "After the lesson is completed, your €15 deposit will be refunded",
 	"booking_success_step4": "If no instructor accepts within 48 hours, you'll receive an automatic refund",
+	"booking_success_deposit_title": "About Your €15 Deposit",
+	"booking_success_deposit_info": "Your deposit is held temporarily and will be automatically refunded after the lesson is completed or if the request is not accepted within 48 hours.",
 	"booking_what_happens_next_title": "What Happens Next?",
 	"booking_step1": "The instructor will review your request within 24 hours",
 	"booking_step2": "If they accept, you'll receive their contact information via email",
