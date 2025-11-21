@@ -96,4 +96,26 @@ export class BookingRequestService {
     async markAsViewed(bookingRequestId: number) {
         return await this.repository.markAsViewed(bookingRequestId);
     }
+
+    async getBookingRequestsByClient(clientEmail: string) {
+        return await this.repository.getBookingRequestsByClient(clientEmail);
+    }
+
+    async cancelBookingRequest(bookingRequestId: number, clientEmail: string) {
+        // Verify the booking belongs to this client
+        const booking = await this.repository.getBookingRequestById(bookingRequestId);
+        if (!booking || booking.clientEmail !== clientEmail) {
+            throw new Error('Booking request not found or unauthorized');
+        }
+
+        // Only allow cancellation of pending or viewed bookings
+        if (!['pending', 'viewed'].includes(booking.status)) {
+            throw new Error('Cannot cancel this booking request');
+        }
+
+        // Update status to cancelled
+        const result = await this.updateBookingStatus(bookingRequestId, 'cancelled');
+
+        return result;
+    }
 }
