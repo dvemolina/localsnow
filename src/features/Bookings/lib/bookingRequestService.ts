@@ -110,7 +110,7 @@ export class BookingRequestService {
     async cancelBookingRequest(bookingRequestId: number, clientEmail: string) {
         // Verify the booking belongs to this client
         const booking = await this.repository.getBookingRequestById(bookingRequestId);
-        if (!booking || booking.clientEmail !== clientEmail) {
+        if (!booking || booking.clientEmail !== clientEmail.toLowerCase().trim()) {
             throw new Error('Booking request not found or unauthorized');
         }
 

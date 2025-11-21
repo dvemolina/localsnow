@@ -28,14 +28,14 @@ export class BookingRequestRepository {
             const [request] = await tx.insert(bookingRequests).values({
                 instructorId: data.instructorId,
                 clientName: data.clientName,
-                clientEmail: data.clientEmail,
+                clientEmail: data.clientEmail.toLowerCase().trim(),
                 clientPhone: data.clientPhone || null,
                 clientCountryCode: data.clientCountryCode,
                 numberOfStudents: data.numberOfStudents,
                 startDate: data.startDate,
                 endDate: data.endDate || null,
                 hoursPerDay: data.hoursPerDay.toString(),
-                timeSlots: JSON.stringify(data.timeSlots || []), 
+                timeSlots: JSON.stringify(data.timeSlots || []),
                 skillLevel: data.skillLevel,
                 message: data.message || null,
                 promoCode: data.promoCode || null,
@@ -183,7 +183,7 @@ export class BookingRequestRepository {
         .where(
             and(
                 eq(bookingRequests.instructorId, instructorId),
-                eq(bookingRequests.clientEmail, clientEmail),
+                eq(bookingRequests.clientEmail, clientEmail.toLowerCase().trim()),
                 inArray(bookingRequests.status, ['pending', 'viewed', 'accepted'])
             )
         );
@@ -195,7 +195,7 @@ export class BookingRequestRepository {
             .from(bookingRequests)
             .where(
                 and(
-                    eq(bookingRequests.clientEmail, clientEmail),
+                    eq(bookingRequests.clientEmail, clientEmail.toLowerCase().trim()),
                     inArray(bookingRequests.status, ['pending', 'viewed'])
                 )
             );
@@ -239,7 +239,7 @@ export class BookingRequestRepository {
                 updatedAt: bookingRequests.updatedAt
             })
             .from(bookingRequests)
-            .where(eq(bookingRequests.clientEmail, clientEmail))
+            .where(eq(bookingRequests.clientEmail, clientEmail.toLowerCase().trim()))
             .orderBy(desc(bookingRequests.createdAt));
 
         // Get sports and instructor details for each booking
