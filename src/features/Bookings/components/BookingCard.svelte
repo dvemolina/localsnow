@@ -24,16 +24,34 @@
 			variant: 'default' as const,
 			color: 'bg-green-100 text-green-800 border-green-200'
 		},
+		viewed: {  // Instructor unlocked but not accepted yet
+			label: m.status_unlocked ? m.status_unlocked() : 'Unlocked',
+			variant: 'default' as const,
+			color: 'bg-blue-100 text-blue-800 border-blue-200'
+		},
 		rejected: {
 			label: m.status_rejected(),
 			variant: 'outline' as const,
 			color: 'bg-red-100 text-red-800 border-red-200'
+		},
+		cancelled: {
+			label: m.status_cancelled ? m.status_cancelled() : 'Cancelled',
+			variant: 'outline' as const,
+			color: 'bg-gray-100 text-gray-800 border-gray-200'
+		},
+		expired: {
+			label: m.status_expired ? m.status_expired() : 'Expired',
+			variant: 'outline' as const,
+			color: 'bg-gray-100 text-gray-800 border-gray-200'
 		}
 	});
 
 	const getStatus = () => {
 		if (booking.status === 'rejected') return 'rejected';
-		if (booking.contactInfoUnlocked) return 'accepted';  // Payment = Accepted
+		if (booking.status === 'cancelled') return 'cancelled';
+		if (booking.status === 'expired') return 'expired';
+		if (booking.status === 'accepted') return 'accepted';
+		if (booking.status === 'viewed' || booking.contactInfoUnlocked) return 'viewed';
 		return 'pending';
 	};
 

@@ -17,23 +17,31 @@
 
 	let isSubmitting = $state(false);
 	let actionResult = $state<{ success?: boolean; message?: string } | null>(null);
+	let showRejectConfirm = $state(false);
 
 	const statusConfig = $derived({
 		pending: { label: m.status_pending_payment(), color: 'bg-yellow-100 text-yellow-800' },
-		unlocked: { label: m.status_unlocked(), color: 'bg-green-100 text-green-800' },
+		unlocked: { label: m.status_unlocked(), color: 'bg-blue-100 text-blue-800' },
 		accepted: { label: m.status_accepted(), color: 'bg-green-100 text-green-800' },
-		rejected: { label: m.status_rejected(), color: 'bg-red-100 text-red-800' }
+		rejected: { label: m.status_rejected(), color: 'bg-red-100 text-red-800' },
+		cancelled: { label: m.status_cancelled ? m.status_cancelled() : 'Cancelled by Client', color: 'bg-gray-100 text-gray-800' },
+		expired: { label: m.status_expired ? m.status_expired() : 'Expired', color: 'bg-gray-100 text-gray-800' }
 	});
 
 	const getStatus = () => {
 		if (booking.status === 'rejected') return 'rejected';
+		if (booking.status === 'cancelled') return 'cancelled';
+		if (booking.status === 'expired') return 'expired';
 		if (booking.status === 'accepted') return 'accepted';
-		if (booking.contactInfoUnlocked) return 'unlocked';
+		if (booking.contactInfoUnlocked || booking.status === 'viewed') return 'unlocked';
 		return 'pending';
 	};
 
 	const currentStatus = $derived(getStatus());
 	const statusInfo = $derived(statusConfig[currentStatus]);
+
+	// Determine if booking is in an inactive state
+	const isInactiveBooking = $derived(['rejected', 'cancelled', 'expired'].includes(booking.status));
 
 	let depositStatus = $state<any>(null);
 	let isLoadingDeposit = $state(false);
@@ -75,6 +83,37 @@
 		</Dialog.Header>
 
 		<div class="space-y-6 py-4">
+			<!-- Status Message for Cancelled/Rejected/Expired -->
+			{#if isInactiveBooking}
+				<div class="rounded-lg border-2 {booking.status === 'cancelled' ? 'border-gray-200 bg-gray-50' : 'border-red-200 bg-red-50'} p-4">
+					<div class="flex items-center gap-3">
+						<svg class="h-6 w-6 {booking.status === 'cancelled' ? 'text-gray-600' : 'text-red-600'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+						</svg>
+						<div class="flex-1">
+							<h3 class="font-semibold {booking.status === 'cancelled' ? 'text-gray-900' : 'text-red-900'}">
+								{#if booking.status === 'cancelled'}
+									Booking Cancelled by Client
+								{:else if booking.status === 'expired'}
+									Booking Expired
+								{:else}
+									Booking Rejected
+								{/if}
+							</h3>
+							<p class="text-sm {booking.status === 'cancelled' ? 'text-gray-600' : 'text-red-600'} mt-1">
+								{#if booking.status === 'cancelled'}
+									The client has cancelled this booking request.
+								{:else if booking.status === 'expired'}
+									This booking request has expired.
+								{:else}
+									You have rejected this booking request.
+								{/if}
+							</p>
+						</div>
+					</div>
+				</div>
+			{/if}
+
 			<!-- Contact Information / Payment Section -->
 			{#if booking.contactInfoUnlocked}
 				<div class="rounded-lg border-2 border-primary/20 bg-primary/5 p-4">
@@ -109,8 +148,8 @@
 						{/if}
 					</div>
 				</div>
-			{:else}
-				<!-- Preview with blur effect -->
+			{:else if !isInactiveBooking}
+				<!-- Preview with blur effect - Only show for active pending bookings -->
 				<div class="rounded-lg border-2 border-yellow-200 bg-yellow-50 p-4">
 					<div class="mb-3 flex items-center justify-between">
 						<h3 class="font-semibold text-yellow-800">🔒 Contact Information Locked</h3>
@@ -259,31 +298,15 @@
 			<!-- BEFORE PAYMENT: Two clear options -->
 			{#if !booking.contactInfoUnlocked && booking.status === 'pending'}
 				<div class="flex gap-3 pt-4">
-					<!-- Option 1: Free Reject -->
-					<form
-						method="POST"
-						action="?/rejectBooking"
+					<!-- Option 1: Free Reject (with confirmation) -->
+					<Button
+						variant="outline"
 						class="flex-1"
-						use:enhance={() => {
-							isSubmitting = true;
-							return async ({ result, update }) => {
-								isSubmitting = false;
-								if (result.type === 'success') {
-									actionResult = { success: true, message: 'Booking rejected' };
-									setTimeout(() => {
-										open = false;
-										window.location.reload();
-									}, 1500);
-								}
-								await update();
-							};
-						}}
+						onclick={() => showRejectConfirm = true}
+						disabled={isSubmitting}
 					>
-						<input type="hidden" name="bookingId" value={booking.id} />
-						<Button type="submit" variant="outline" class="w-full" disabled={isSubmitting}>
-							Not Interested
-						</Button>
-					</form>
+						Not Interested
+					</Button>
 
 					<!-- Option 2: Pay & Accept (combined action) -->
 					<Button
@@ -313,6 +336,75 @@
 					</p>
 				</div>
 			{/if}
+		</div>
+	</Dialog.Content>
+</Dialog.Root>
+
+<!-- Rejection Confirmation Dialog -->
+<Dialog.Root bind:open={showRejectConfirm}>
+	<Dialog.Content class="sm:max-w-md">
+		<Dialog.Header>
+			<Dialog.Title>Reject Booking Request?</Dialog.Title>
+			<Dialog.Description>
+				Are you sure you want to reject this booking request?
+			</Dialog.Description>
+		</Dialog.Header>
+
+		<div class="space-y-4 py-4">
+			<div class="rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 p-4">
+				<div class="flex gap-3">
+					<svg class="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+					</svg>
+					<div class="text-sm text-amber-800 dark:text-amber-200">
+						<p class="font-semibold mb-1">Important Information:</p>
+						<ul class="list-disc list-inside space-y-1">
+							<li>This action cannot be undone</li>
+							<li>The client will be notified</li>
+							<li>You won't be able to see this request again</li>
+							<li>The time slots will be released back to your calendar</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="flex gap-3 justify-end">
+			<Button
+				variant="outline"
+				onclick={() => showRejectConfirm = false}
+			>
+				Cancel
+			</Button>
+
+			<form
+				method="POST"
+				action="?/rejectBooking"
+				use:enhance={() => {
+					isSubmitting = true;
+					showRejectConfirm = false;
+					return async ({ result, update }) => {
+						isSubmitting = false;
+						if (result.type === 'success') {
+							actionResult = { success: true, message: 'Booking rejected' };
+							setTimeout(() => {
+								open = false;
+								window.location.reload();
+							}, 1500);
+						}
+						await update();
+					};
+				}}
+			>
+				<input type="hidden" name="bookingId" value={booking.id} />
+				<Button
+					type="submit"
+					variant="destructive"
+					disabled={isSubmitting}
+				>
+					{isSubmitting ? 'Rejecting...' : 'Yes, Reject Booking'}
+				</Button>
+			</form>
 		</div>
 	</Dialog.Content>
 </Dialog.Root>
