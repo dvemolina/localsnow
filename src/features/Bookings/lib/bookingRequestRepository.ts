@@ -205,11 +205,79 @@ export class BookingRequestRepository {
     async markAsViewed(bookingRequestId: number) {
         return await db
             .update(bookingRequests)
-            .set({ 
+            .set({
                 status: 'viewed',
-                updatedAt: new Date() 
+                updatedAt: new Date()
             })
             .where(eq(bookingRequests.id, bookingRequestId))
             .returning();
+    }
+
+    async getBookingRequestsByClient(clientEmail: string) {
+        const bookingsQuery = await db
+            .select({
+                id: bookingRequests.id,
+                instructorId: bookingRequests.instructorId,
+                clientName: bookingRequests.clientName,
+                clientEmail: bookingRequests.clientEmail,
+                clientPhone: bookingRequests.clientPhone,
+                clientCountryCode: bookingRequests.clientCountryCode,
+                numberOfStudents: bookingRequests.numberOfStudents,
+                startDate: bookingRequests.startDate,
+                endDate: bookingRequests.endDate,
+                hoursPerDay: bookingRequests.hoursPerDay,
+                timeSlots: bookingRequests.timeSlots,
+                skillLevel: bookingRequests.skillLevel,
+                message: bookingRequests.message,
+                estimatedPrice: bookingRequests.estimatedPrice,
+                currency: bookingRequests.currency,
+                status: bookingRequests.status,
+                contactInfoUnlocked: bookingRequests.contactInfoUnlocked,
+                usedLaunchCode: bookingRequests.usedLaunchCode,
+                promoCode: bookingRequests.promoCode,
+                createdAt: bookingRequests.createdAt,
+                updatedAt: bookingRequests.updatedAt
+            })
+            .from(bookingRequests)
+            .where(eq(bookingRequests.clientEmail, clientEmail))
+            .orderBy(desc(bookingRequests.createdAt));
+
+        // Get sports and instructor details for each booking
+        const bookingsWithDetails = await Promise.all(
+            bookingsQuery.map(async (booking) => {
+                // Get sports
+                const bookingSportIds = await this.getBookingRequestSports(booking.id);
+                let sportsWithNames: { sportId: number; sportName: "Ski" | "Snowboard" | "Telemark"; }[] = [];
+                if (bookingSportIds.length > 0) {
+                    sportsWithNames = await db
+                        .select({
+                            sportId: sports.id,
+                            sportName: sports.sport
+                        })
+                        .from(sports)
+                        .where(inArray(sports.id, bookingSportIds));
+                }
+
+                // Get instructor basic info
+                const { users } = await import('$lib/server/db/schema');
+                const instructor = await db.query.users.findFirst({
+                    where: (users, { eq }) => eq(users.id, booking.instructorId),
+                    columns: {
+                        id: true,
+                        name: true,
+                        lastName: true,
+                        email: true
+                    }
+                });
+
+                return {
+                    ...booking,
+                    sports: sportsWithNames,
+                    instructor
+                };
+            })
+        );
+
+        return bookingsWithDetails;
     }
 }

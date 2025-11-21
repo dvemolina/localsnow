@@ -91,10 +91,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
         // ✅ CHECK FOR DUPLICATE BOOKING REQUEST
         const bookingService = new BookingRequestService();
-        const canCreate = await bookingService.canCreateRequest(instructorId, data.clientEmail);
+        const validation = await bookingService.validateBookingRequest(instructorId, data.clientEmail);
 
-        if (!canCreate.allowed) {
-            throw error(409, canCreate.reason || 'You already have an active request with this instructor');
+        if (!validation.allowed) {
+            throw error(409, validation.reason || 'Cannot create booking request');
         }
 
         // ✅ CREATE BOOKING FIRST (get booking ID)
