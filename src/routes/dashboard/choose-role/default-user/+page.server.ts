@@ -5,12 +5,19 @@ import type { PageServerLoad } from "./$types";
 
 const userService = new UserService();
 
+// Helper to get locale from URL path
+function getLocaleFromPath(pathname: string): string {
+    const match = pathname.match(/^\/(en|es)\//);
+    return match ? match[1] : 'en';
+}
+
 export const load: PageServerLoad = async (event) => {
     const user = requireAuth(event, 'Login to choose a Role for your account');
+    const locale = getLocaleFromPath(event.url.pathname);
 
     // If user already has a role, redirect to dashboard
     if (user.role) {
-        redirect(302, '/dashboard');
+        redirect(302, `/${locale}/dashboard`);
     }
 
     return { user };
@@ -19,6 +26,7 @@ export const load: PageServerLoad = async (event) => {
 export const actions: Actions = {
     default: async (event) => {
         const user = requireAuth(event, 'Session Expired. Login again to proceed');
+        const locale = getLocaleFromPath(event.url.pathname);
 
         // Update user role to 'client'
         await userService.updateUser(user.id, {
@@ -26,6 +34,7 @@ export const actions: Actions = {
             updatedAt: new Date()
         });
 
-        redirect(302, '/dashboard');
+        // Use throw redirect to ensure execution stops
+        throw redirect(303, `/${locale}/dashboard`);
     }
 };
