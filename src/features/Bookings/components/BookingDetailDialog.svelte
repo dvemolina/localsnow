@@ -66,6 +66,21 @@
 			isLoadingDeposit = false;
 		}
 	}
+
+	// Parse time slots from JSON string
+	const formatTimeSlots = (timeSlots: string) => {
+		try {
+			const slots = JSON.parse(timeSlots);
+			if (Array.isArray(slots)) {
+				return slots;
+			}
+			return [];
+		} catch {
+			return [];
+		}
+	};
+
+	const timeSlots = $derived(formatTimeSlots(booking.timeSlots || '[]'));
 </script>
 
 <Dialog.Root bind:open>
@@ -256,6 +271,19 @@
 						</div>
 					</div>
 				</div>
+
+				{#if timeSlots.length > 0}
+					<div class="mt-4">
+						<span class="text-muted-foreground text-sm">Requested Time Slots:</span>
+						<div class="mt-2 flex flex-wrap gap-2">
+							{#each timeSlots as slot}
+								<Badge variant="secondary" class="text-sm">
+									{slot}
+								</Badge>
+							{/each}
+						</div>
+					</div>
+				{/if}
 			</div>
 
 			<!-- Price Estimate -->
