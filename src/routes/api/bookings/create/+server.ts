@@ -209,7 +209,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
                 }
             },
             success_url: `${baseUrl}/api/bookings/webhooks/deposit-paid?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${baseUrl}/booking-request-cancelled?bookingId=${bookingRequest.id}`,
+            cancel_url: `${baseUrl}/booking/booking-request-cancelled?bookingId=${bookingRequest.id}`,
             customer_email: data.clientEmail,
             metadata: {
                 type: 'client_deposit',
