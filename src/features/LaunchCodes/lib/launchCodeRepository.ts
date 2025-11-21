@@ -1,6 +1,6 @@
 import { db } from "$lib/server/db";
 import { launchCodes } from "$lib/server/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 
 /**
  * Repository for launch codes data access
@@ -43,7 +43,7 @@ export class LaunchCodeRepository {
         await db
             .update(launchCodes)
             .set({
-                currentUses: db.$sql`${launchCodes.currentUses} + 1`
+                currentUses: sql`${launchCodes.currentUses} + 1`
             })
             .where(eq(launchCodes.id, codeId));
     }
