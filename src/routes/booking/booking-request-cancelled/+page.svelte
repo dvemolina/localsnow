@@ -4,17 +4,34 @@
 	import { onMount } from 'svelte';
 
 	const bookingId = page.url.searchParams.get('bookingId');
+	let cleanupStatus = $state<'pending' | 'success' | 'error'>('pending');
+	let errorMessage = $state<string>('');
 
 	// Cleanup the booking if user cancelled
 	onMount(async () => {
 		if (bookingId) {
 			try {
-				await fetch(`/api/bookings/${bookingId}`, {
-					method: 'DELETE'
+				const response = await fetch(`/api/bookings/${bookingId}`, {
+					method: 'DELETE',
+					headers: {
+						'Content-Type': 'application/json'
+					}
 				});
+
+				if (!response.ok) {
+					const data = await response.json().catch(() => ({ message: 'Unknown error' }));
+					throw new Error(data.message || `HTTP ${response.status}`);
+				}
+
+				cleanupStatus = 'success';
 			} catch (err) {
 				console.error('Failed to cleanup booking:', err);
+				cleanupStatus = 'error';
+				errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
 			}
+		} else {
+			cleanupStatus = 'error';
+			errorMessage = 'No booking ID provided';
 		}
 	});
 </script>
@@ -44,6 +61,18 @@
 				You can restart the booking process at any time by selecting an instructor and filling out the booking form again.
 			</p>
 		</div>
+
+		<!-- Cleanup Status -->
+		{#if cleanupStatus === 'error'}
+			<div class="mb-6 rounded-lg border border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950/20 p-4">
+				<p class="text-sm text-red-600 dark:text-red-400">
+					<strong>Note:</strong> There was an issue cleaning up the booking request. Please contact support if you cannot create a new booking with this instructor.
+				</p>
+				{#if errorMessage}
+					<p class="text-xs text-red-500 dark:text-red-500 mt-2">Error: {errorMessage}</p>
+				{/if}
+			</div>
+		{/if}
 
 		<!-- Actions -->
 		<div class="flex flex-col gap-3 sm:flex-row sm:justify-center">
