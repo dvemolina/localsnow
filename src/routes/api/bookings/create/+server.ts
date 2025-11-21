@@ -15,7 +15,7 @@ const stripe = new Stripe(env.STRIPE_SECRET_KEY!, {
 const launchCodeService = new LaunchCodeService();
 const tentativeService = new TentativeBookingService();
 
-export const POST: RequestHandler = async ({ request, url }) => {
+export const POST: RequestHandler = async ({ request, url, locals }) => {
     try {
         const data = await request.json();
         
@@ -91,7 +91,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
         // ✅ CHECK FOR DUPLICATE BOOKING REQUEST
         const bookingService = new BookingRequestService();
-        const validation = await bookingService.validateBookingRequest(instructorId, data.clientEmail);
+
+        // Get authenticated user ID if available (preferred for security and performance)
+        const clientUserId = locals.user?.id || null;
+
+        const validation = await bookingService.validateBookingRequest(instructorId, clientUserId, data.clientEmail);
 
         if (!validation.allowed) {
             throw error(409, validation.reason || 'Cannot create booking request');
@@ -100,6 +104,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         // ✅ CREATE BOOKING FIRST (get booking ID)
         const bookingRequest = await bookingService.createBookingRequest({
             instructorId,
+            clientUserId, // Store user ID for authenticated users (production-ready approach)
             clientName: data.clientName,
             clientEmail: data.clientEmail,
             clientPhone: data.clientPhone || null,

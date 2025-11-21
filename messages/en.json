@@ -598,6 +598,7 @@
 	"booking_step4": "If no instructor accepts within 48 hours, you'll receive an automatic refund",
 	"booking_deposit_info_title": "About Your Deposit",
 	"booking_deposit_info_text": "Your €15 deposit is held securely by Stripe and will be automatically refunded based on the outcome of your booking.",
+	"booking_reference": "Booking Reference",
 	"booking_reference_label": "Booking Reference: #{bookingId}",
 
 	"error_heading": "Error",

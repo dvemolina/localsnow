@@ -69,14 +69,14 @@ export class BookingRequestService {
     }
 
 
-    async validateBookingRequest(instructorId: number, clientEmail: string): Promise<{
+    async validateBookingRequest(instructorId: number, clientUserId?: number | null, clientEmail?: string | null): Promise<{
         allowed: boolean;
         reason?: string;
         requiresPayment?: boolean;
         activeCount?: number;
     }> {
         // Check if already requested from this instructor
-        const existingRequest = await this.repository.checkExistingRequest(instructorId, clientEmail);
+        const existingRequest = await this.repository.checkExistingRequest(instructorId, clientUserId, clientEmail);
         if (existingRequest) {
             return {
                 allowed: false,
@@ -85,8 +85,8 @@ export class BookingRequestService {
         }
 
         // Check total active requests
-        const activeCount = await this.repository.getActiveRequestCount(clientEmail);
-        
+        const activeCount = await this.repository.getActiveRequestCount(clientUserId, clientEmail);
+
         if (activeCount >= MAX_FREE_REQUESTS) {
             return {
                 allowed: false,
@@ -103,14 +103,28 @@ export class BookingRequestService {
         return await this.repository.markAsViewed(bookingRequestId);
     }
 
-    async getBookingRequestsByClient(clientEmail: string) {
-        return await this.repository.getBookingRequestsByClient(clientEmail);
+    /**
+     * Get booking requests for a client by user ID (preferred) or email (fallback)
+     * @param clientUserId - Authenticated user ID (preferred)
+     * @param clientEmail - Email address (fallback)
+     */
+    async getBookingRequestsByClient(clientUserId?: number | null, clientEmail?: string | null) {
+        return await this.repository.getBookingRequestsByClient(clientUserId, clientEmail);
     }
 
-    async cancelBookingRequest(bookingRequestId: number, clientEmail: string) {
+    async cancelBookingRequest(bookingRequestId: number, clientUserId?: number | null, clientEmail?: string | null) {
         // Verify the booking belongs to this client
         const booking = await this.repository.getBookingRequestById(bookingRequestId);
-        if (!booking || booking.clientEmail !== clientEmail) {
+
+        // Check ownership: prefer user ID, fallback to email
+        let isOwner = false;
+        if (clientUserId && booking.clientUserId) {
+            isOwner = booking.clientUserId === clientUserId;
+        } else if (clientEmail) {
+            isOwner = booking.clientEmail === clientEmail.toLowerCase().trim();
+        }
+
+        if (!booking || !isOwner) {
             throw new Error('Booking request not found or unauthorized');
         }
 

@@ -28,7 +28,7 @@ export class ReviewService {
 		}
 
 		// Verify client email matches
-		if (booking.clientEmail !== input.clientEmail) {
+		if (booking.clientEmail !== input.clientEmail.toLowerCase().trim()) {
 			throw new Error('Email does not match booking');
 		}
 
@@ -55,7 +55,7 @@ export class ReviewService {
 		const review = await this.reviewRepo.createReview({
 			bookingRequestId: input.bookingRequestId,
 			instructorId: booking.instructorId,
-			clientEmail: input.clientEmail,
+			clientEmail: input.clientEmail.toLowerCase().trim(),
 			rating: input.rating,
 			comment: input.comment
 		});
@@ -76,7 +76,7 @@ export class ReviewService {
 			return { canReview: false, reason: 'Booking not found' };
 		}
 
-		if (booking.clientEmail !== clientEmail) {
+		if (booking.clientEmail !== clientEmail.toLowerCase().trim()) {
 			return { canReview: false, reason: 'Email does not match booking' };
 		}
 

@@ -9,8 +9,10 @@ export const load: PageServerLoad = async ({ locals }) => {
         redirect(302, '/login');
     }
 
+    // Use user ID (preferred) with email fallback for backward compatibility
+    const clientUserId = locals.user.id;
     const clientEmail = locals.user.email;
-    const bookingRequests = await bookingService.getBookingRequestsByClient(clientEmail);
+    const bookingRequests = await bookingService.getBookingRequestsByClient(clientUserId, clientEmail);
 
     // Get counts for filtering
     const counts = {
@@ -37,7 +39,12 @@ export const actions: Actions = {
         const bookingRequestId = parseInt(formData.get('bookingRequestId') as string);
 
         try {
-            const result = await bookingService.cancelBookingRequest(bookingRequestId, locals.user.email);
+            // Use user ID (preferred) with email fallback
+            const result = await bookingService.cancelBookingRequest(
+                bookingRequestId,
+                locals.user.id,
+                locals.user.email
+            );
 
             // Build detailed success message
             let message = 'Booking request cancelled successfully.';
