@@ -598,6 +598,7 @@
 	"booking_step4": "Si ningún instructor acepta en 48 horas, recibirás un reembolso automático",
 	"booking_deposit_info_title": "Sobre Tu Depósito",
 	"booking_deposit_info_text": "Tu depósito de 15€ está guardado de forma segura por Stripe y será reembolsado automáticamente según el resultado de tu reserva.",
+	"booking_reference": "Referencia de Reserva",
 	"booking_reference_label": "Referencia de Reserva: #{bookingId}",
 
 	"error_heading": "Error",
