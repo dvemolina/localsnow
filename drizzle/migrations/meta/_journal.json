@@ -253,6 +253,13 @@
       "when": 1763739346633,
       "tag": "0035_lucky_thena",
       "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1763741297437,
+      "tag": "0036_cooing_black_crow",
+      "breakpoints": true
     }
   ]
 }
