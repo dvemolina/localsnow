@@ -13,11 +13,22 @@ const schoolService = new SchoolService()
 const storageService = new StorageService();
 const ipBucket = new RefillingTokenBucket<string>(3, 10);
 
+// Helper to get locale from URL path
+function getLocaleFromPath(pathname: string): string {
+    const match = pathname.match(/^\/(en|es)\//);
+    return match ? match[1] : 'en';
+}
+
 export const load: PageServerLoad = async (event) => {
     const user = requireAuth(event, 'Login to choose a Role for your account');
-    if (user.role) redirect(302, '/dashboard')
+    const locale = getLocaleFromPath(event.url.pathname);
+
+    if (user.role) {
+        redirect(302, `/${locale}/dashboard`);
+    }
+
     const form = await superValidate(zod(schoolSignupSchema));
-    
+
     return { form }
 };
 
@@ -73,8 +84,9 @@ export const actions: Actions = {
         }
 
         await schoolService.createSchool(schoolSignupData);
-        
+
+        const locale = getLocaleFromPath(event.url.pathname);
         //To improve set a Flash Message System (sveltekit-flash-messages library maybe?)
-        redirect(302, '/dashboard')
+        throw redirect(303, `/${locale}/dashboard`);
     }
 };
