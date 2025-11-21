@@ -89,8 +89,15 @@ export const POST: RequestHandler = async ({ request, url }) => {
             isUsingLaunchCode = true;
         }
 
-        // ✅ CREATE BOOKING FIRST (get booking ID)
+        // ✅ CHECK FOR DUPLICATE BOOKING REQUEST
         const bookingService = new BookingRequestService();
+        const canCreate = await bookingService.canCreateRequest(instructorId, data.clientEmail);
+
+        if (!canCreate.allowed) {
+            throw error(409, canCreate.reason || 'You already have an active request with this instructor');
+        }
+
+        // ✅ CREATE BOOKING FIRST (get booking ID)
         const bookingRequest = await bookingService.createBookingRequest({
             instructorId,
             clientName: data.clientName,
