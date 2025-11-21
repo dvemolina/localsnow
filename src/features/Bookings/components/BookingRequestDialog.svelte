@@ -167,9 +167,13 @@
 			}
 
 			const result = await response.json();
-			
-			// ✅ Redirect to Stripe Checkout
-			if (result.checkoutUrl) {
+
+			// ✅ Handle launch code path (bypass Stripe)
+			if (result.usedLaunchCode || result.redirectUrl) {
+				window.location.href = result.redirectUrl;
+			}
+			// ✅ Handle normal payment path (Stripe Checkout)
+			else if (result.checkoutUrl) {
 				window.location.href = result.checkoutUrl;
 			} else {
 				submitError = 'Failed to create payment session';
