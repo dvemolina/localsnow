@@ -3,11 +3,14 @@ import { json, error, type RequestHandler } from '@sveltejs/kit';
 import Stripe from 'stripe';
 import { env } from '$env/dynamic/private';
 import { LeadPaymentService } from '$src/features/Bookings/lib/leadPaymentService';
+import { ClientDepositService } from '$src/features/Bookings/lib/clientDepositService';
+
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY!, {
     apiVersion: '2025-10-29.clover'
 });
 
+const depositService = new ClientDepositService();
 const paymentService = new LeadPaymentService();
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -44,6 +47,12 @@ export const POST: RequestHandler = async ({ request }) => {
                     console.error('Error processing lead payment:', err);
                 }
             }
+
+            // In checkout.session.completed:
+            if (session.metadata?.type === 'client_deposit' && session.payment_status === 'paid') {
+                await depositService.handleSuccessfulDeposit(session.id);
+                console.log('Client deposit processed:', session.id);
+            }
             break;
         }
 
@@ -60,3 +69,4 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json({ received: true });
 };
+
