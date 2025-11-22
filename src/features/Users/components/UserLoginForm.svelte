@@ -6,7 +6,7 @@
 	import { Input } from '$src/lib/components/ui/input';
 	import { buttonVariants } from '$src/lib/components/ui/button';
 	import * as m from '$lib/paraglide/messages';
-	import { localizeHref } from '$lib/paraglide/runtime';
+	import { route } from '$lib/i18n/routeHelpers';
 
 	let { data }: { data: { form: SuperValidated<Infer<UserLoginSchema>> } } = $props();
 
@@ -38,7 +38,7 @@
 	</Form.Field>
 	<div class="mt-6 flex w-full flex-row items-center justify-start gap-2">
 		<Form.Button>{m.common_submit()}</Form.Button>
-		<a href={localizeHref('/signup')} class="text-sm {buttonVariants({ variant: 'outline-solid' })}">
+		<a href={route('/signup')} class="text-sm {buttonVariants({ variant: 'outline-solid' })}">
 			{m.login_no_account()}</a
 		>
 	</div>

@@ -3,7 +3,7 @@
 	import { isMobile } from '$src/lib/hooks/is-mobile.svelte';
 	import { get } from 'svelte/store';
 	import { page } from '$app/stores';
-	import { localizeHref } from '$lib/paraglide/runtime';
+	import { route } from '$lib/i18n/routeHelpers';
 	import * as m from '$lib/paraglide/messages';
 	import LanguageSwitch from '$lib/components/shared/LanguageSwitch.svelte';
 
@@ -73,7 +73,7 @@
 
 <Sidebar.Root class="bg-background">
 	<Sidebar.Header class="bg-white">
-		<a href={localizeHref('/')} class="group flex flex-row items-center justify-center gap-1">
+		<a href={route('/')} class="group flex flex-row items-center justify-center gap-1">
 			<div class="m-1 size-12 overflow-hidden object-cover">
 				<img
 					src="/local-snow-head-big.png"
@@ -99,7 +99,7 @@
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}
 								<a
-									href={localizeHref(item.url)}
+									href={route(item.url)}
 									{...props}
 									onclick={handleClick}
 									class:font-semibold={isActive(item.url)}
@@ -118,7 +118,7 @@
 	</Sidebar.Content>
 	<Sidebar.Footer class="bg-white p-4">
 		<div class="flex flex-col gap-3">
-			<a href={localizeHref('/dashboard')} class="text-sm text-muted-foreground hover:text-foreground">
+			<a href={route('/dashboard')} class="text-sm text-muted-foreground hover:text-foreground">
 				← {m.admin_back_to_dashboard()}
 			</a>
 			<div class="flex items-center justify-between border-t pt-3">

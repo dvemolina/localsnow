@@ -5,7 +5,7 @@
 	import Breadcrumb from './Breadcrumb.svelte';
 	import { isCurrentPath } from "$src/lib/utils/generics";
 	import * as m from '$lib/paraglide/messages';
-	import { localizeHref } from '$lib/paraglide/runtime';
+	import { route } from '$lib/i18n/routeHelpers';
 
 	type User = {
 		id: string;
@@ -21,12 +21,12 @@
 	// Navigation items - use $derived so translations update on locale change
 	// Conditionally show Dashboard or Sign Up based on user state
 	const items = $derived([
-		{ href: localizeHref('/resorts'), label: m.nav_resorts() },
-		{ href: localizeHref('/how-it-works'), label: m.nav_how_it_works() },
-		{ href: localizeHref('/about'), label: m.nav_about() },
+		{ href: route('/resorts'), label: m.nav_resorts() },
+		{ href: route('/how-it-works'), label: m.nav_how_it_works() },
+		{ href: route('/about'), label: m.nav_about() },
 		user
-			? { href: localizeHref('/dashboard'), label: m.nav_dashboard() }
-			: { href: localizeHref('/signup'), label: m.nav_signup() }
+			? { href: route('/dashboard'), label: m.nav_dashboard() }
+			: { href: route('/signup'), label: m.nav_signup() }
 	]);
 
 	// Prevent scrolling when menu is open
@@ -46,7 +46,7 @@
 			<div
 				class="header flex w-full flex-row items-center justify-evenly gap-4 pr-4 rounded-full shadow-xs border border-border bg-card sm:gap-12"
 			>
-				<a href={localizeHref('/')} class="group flex flex-row items-center justify-center">
+				<a href={route('/')} class="group flex flex-row items-center justify-center">
 					<div class="m-1 size-12 overflow-hidden rounded-full object-cover">
 						<img
 							src="/local-snow-head-big.png"
@@ -128,7 +128,7 @@
 					</button>
 
 					<nav class="flex flex-col items-center justify-center space-y-8 mb-8">
-						<a href={localizeHref('/')} class="group flex flex-row items-center justify-center gap-1">
+						<a href={route('/')} class="group flex flex-row items-center justify-center gap-1">
 							<div class="m-1 size-12 overflow-hidden object-cover">
 								<img
 									src="/local-snow-head-big.png"

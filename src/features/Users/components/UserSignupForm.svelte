@@ -8,7 +8,7 @@
 	import { Checkbox } from '$src/lib/components/ui/checkbox';
 	import { Label } from '$src/lib/components/ui/label';
 	import * as m from '$lib/paraglide/messages';
-	import { localizeHref } from '$lib/paraglide/runtime';
+	import { route } from '$lib/i18n/routeHelpers';
 
 	let { data }: { data: { form: SuperValidated<Infer<UserSignupSchema>> } } = $props();
 
@@ -98,6 +98,6 @@
 	
     <div class="flex flex-row gap-2 items-center justify-center w-full mt-6">
         <Form.Button>{m.common_submit()}</Form.Button>
-        <a href={localizeHref('/login')} class="text-sm {buttonVariants({ variant: "outline-solid" })}">{m.login_already_have_account()}</a>
+        <a href={route('/login')} class="text-sm {buttonVariants({ variant: "outline-solid" })}">{m.login_already_have_account()}</a>
     </div>
 </form>

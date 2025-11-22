@@ -2,7 +2,7 @@
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { isMobile } from '$src/lib/hooks/is-mobile.svelte';
 	import { get } from 'svelte/store';
-	import { localizeHref } from '$lib/paraglide/runtime';
+	import { route } from '$lib/i18n/routeHelpers';
 	import * as m from '$lib/paraglide/messages';
 	import LanguageSwitch from '$lib/components/shared/LanguageSwitch.svelte';
 
@@ -68,7 +68,7 @@
 
 <Sidebar.Root class="bg-background">
 	<Sidebar.Header class="bg-white">
-		<a href={localizeHref('/')} class="group flex flex-row items-center justify-center gap-1">
+		<a href={route('/')} class="group flex flex-row items-center justify-center gap-1">
 			<div class="m-1 size-12 overflow-hidden object-cover">
 				<img
 					src="/local-snow-head-big.png"
@@ -91,7 +91,7 @@
 						<Sidebar.MenuItem>
 							<Sidebar.MenuButton>
 								{#snippet child({ props })}
-									<a href={localizeHref(item.url)} {...props} onclick={handleClick}>
+									<a href={route(item.url)} {...props} onclick={handleClick}>
 										<img src={item.icon} alt={item.title} class="size-5" />
 										<span>{item.title}</span>
 									</a>
@@ -104,7 +104,7 @@
 						<Sidebar.MenuItem>
 							<Sidebar.MenuButton>
 								{#snippet child({ props })}
-									<a href={localizeHref(item.url)} {...props} onclick={handleClick}>
+									<a href={route(item.url)} {...props} onclick={handleClick}>
 										<img src={item.icon} alt={item.title} class="size-5" />
 										<span>{item.title}</span>
 									</a>

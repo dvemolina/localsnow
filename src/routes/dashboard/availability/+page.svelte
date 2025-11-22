@@ -5,7 +5,7 @@
 	import { toast } from 'svelte-sonner';
 	import { invalidateAll } from '$app/navigation';
 	import * as m from '$lib/paraglide/messages';
-	import { localizeHref } from '$lib/paraglide/runtime';
+	import { route } from '$lib/i18n/routeHelpers';
 
 	let { data } = $props();
 
@@ -337,7 +337,7 @@
 			{/if}
 		</Card.Content>
 		<Card.Footer>
-			<Button href={localizeHref('/dashboard/availability/working-hours')} class="w-full">
+			<Button href={route('/dashboard/availability/working-hours')} class="w-full">
 				{data.workingHoursConfigured ? m.button_edit_working_hours() : m.button_set_working_hours()}
 			</Button>
 		</Card.Footer>

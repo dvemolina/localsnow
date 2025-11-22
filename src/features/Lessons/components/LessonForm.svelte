@@ -11,7 +11,7 @@
 	import { lessonSchema, type LessonSchema } from '../lib/lessonSchema';
 	import SportsCheckboxes from '$src/features/Sports/components/SportsCheckboxes.svelte';
 	import CurrencySelect from '$src/lib/components/shared/CurrencySelect.svelte';
-	import { localizeHref } from '$lib/paraglide/runtime';
+	import { route } from '$lib/i18n/routeHelpers';
 	import * as m from '$lib/paraglide/messages';
 
 
@@ -53,7 +53,7 @@
 
 
 	<div class="mt-6 flex w-full flex-row items-center justify-center gap-2">
-		<a href={localizeHref('/dashboard')} class="text-sm {buttonVariants({ variant: 'outline' })}">{m.button_go_back()}</a>
+		<a href={route('/dashboard')} class="text-sm {buttonVariants({ variant: 'outline' })}">{m.button_go_back()}</a>
 		<Form.Button type="submit">{m.common_submit()}</Form.Button>
 	</div>
 </form>
