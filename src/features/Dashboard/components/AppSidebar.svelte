@@ -21,7 +21,7 @@
 		},
 		{
 			title: m.sidebar_bookings(),
-			url: '/dashboard/bookings',
+			url: '/dashboard/my-bookings',
 			icon: '/icons/notebook.svg'
 		}
 	]);
