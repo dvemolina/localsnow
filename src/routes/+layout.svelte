@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { locales } from '$lib/paraglide/runtime';
-	import { getCanonicalUrl, getAlternateUrls } from '$lib/i18n/routeHelpers';
+	import { getCanonicalUrl, getAlternateUrls, isRoute } from '$lib/i18n/routeHelpers';
 	import type { Locale } from '$lib/i18n/routes';
 	import Header from '$src/lib/components/shared/Header.svelte';
 	import '../app.css';
@@ -11,14 +11,12 @@
 	import { Toaster } from 'svelte-sonner';
 
 	let { data, children } = $props();
-	let isDashboard = $state(
-		page.url.pathname.includes('/dashboard') || page.url.pathname.includes('/admin')
-	);
 
-	$effect(() => {
-		isDashboard =
-			page.url.pathname.includes('/dashboard') || page.url.pathname.includes('/admin');
-	});
+	// Use isRoute helper to check dashboard/admin - works with translated URLs
+	// This automatically handles /dashboard (en) and /panel (es) and /admin in both languages
+	const isDashboard = $derived(
+		isRoute(page.url.pathname, '/dashboard') || isRoute(page.url.pathname, '/admin')
+	);
 
 	// Get alternate URLs for hreflang
 	const alternateUrls = $derived(getAlternateUrls(page.url.pathname));

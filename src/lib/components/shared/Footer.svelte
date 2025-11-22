@@ -2,22 +2,22 @@
 	import { page } from '$app/state';
 	import { isCurrentPath } from '$src/lib/utils/generics';
 	import * as m from '$lib/paraglide/messages';
-	import { localizeHref } from '$lib/paraglide/runtime';
+	import { route } from '$lib/i18n/routeHelpers';
 
 	// Navigation items - use $derived for translation reactivity
 	const items = $derived([
-		{ label: m.nav_instructors(), href: localizeHref('/instructors') },
-		{ label: m.nav_resorts(), href: localizeHref('/resorts') },
-		{ label: m.nav_how_it_works(), href: localizeHref('/how-it-works') },
-		{ label: m.nav_about(), href: localizeHref('/about') },
-		{ label: m.nav_signup(), href: localizeHref('/signup') }
+		{ label: m.nav_instructors(), href: route('/instructors') },
+		{ label: m.nav_resorts(), href: route('/resorts') },
+		{ label: m.nav_how_it_works(), href: route('/how-it-works') },
+		{ label: m.nav_about(), href: route('/about') },
+		{ label: m.nav_signup(), href: route('/signup') }
 	]);
 
 	// Legal links - use $derived for translation reactivity
 	const legalLinks = $derived([
-		{ label: m.footer_privacy(), href: localizeHref('/legal/privacy') },
-		{ label: m.footer_terms(), href: localizeHref('/legal/terms') },
-		{ label: m.footer_cookies(), href: localizeHref('/legal/cookies') }
+		{ label: m.footer_privacy(), href: route('/legal/privacy') },
+		{ label: m.footer_terms(), href: route('/legal/terms') },
+		{ label: m.footer_cookies(), href: route('/legal/cookies') }
 	]);
 </script>
 

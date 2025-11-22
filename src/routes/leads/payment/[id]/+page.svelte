@@ -3,7 +3,7 @@
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { Input } from '$src/lib/components/ui/input';
 	import { enhance } from '$app/forms';
-	import { localizeHref } from '$lib/paraglide/runtime';
+	import { route } from '$lib/i18n/routeHelpers';
 	import * as m from '$lib/paraglide/messages';
 
 	let { data, form } = $props();
@@ -32,7 +32,7 @@
 <section class="mx-auto max-w-2xl py-8">
 	<div class="mb-6">
 		<a
-			href={localizeHref('/dashboard')}
+			href={route('/dashboard')}
 			class="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
 		>
 			<svg

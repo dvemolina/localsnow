@@ -6,7 +6,7 @@
  */
 
 import { getLocale } from '$lib/paraglide/runtime';
-import { getLocalizedPath, shouldTranslatePath, extractLocale, type Locale } from './routes';
+import { getLocalizedPath, shouldTranslatePath, extractLocale, getRouteKey, type Locale } from './routes';
 
 /**
  * Generate a localized URL for a route
@@ -102,13 +102,57 @@ export function getCanonicalUrl(url: URL, locale: Locale): string {
 /**
  * Redirect to localized version of current path
  *
- * @param pathname - Current pathname
+ * @param pathname - Current pathname (localized, e.g., /es/acerca-de)
  * @param targetLocale - Locale to redirect to
- * @returns Redirect URL
+ * @returns Redirect URL in target locale (e.g., /en/about)
  */
 export function getLocalizedRedirect(pathname: string, targetLocale: Locale): string {
-	const { path } = extractLocale(pathname);
-	return route(path, targetLocale);
+	const { locale: currentLocale, path } = extractLocale(pathname);
+
+	if (!currentLocale) {
+		// No locale in URL, just add target locale
+		return route(pathname, targetLocale);
+	}
+
+	// We have a localized path (e.g., /es/acerca-de)
+	// Need to find its route key first, then translate to target locale
+
+	// Try exact match for the full path
+	const routeKey = getRouteKey(pathname);
+
+	if (routeKey) {
+		// Found exact match - generate URL in target locale
+		// E.g., /es/acerca-de -> route key '/about' -> /en/about
+		return route(routeKey, targetLocale);
+	}
+
+	// Try to match dynamic routes (e.g., /es/instructores/123)
+	const segments = path.split('/').filter(Boolean);
+
+	for (let i = segments.length; i > 0; i--) {
+		const testPath = '/' + segments.slice(0, i).join('/');
+		const fullTestPath = `/${currentLocale}${testPath}`;
+		const key = getRouteKey(fullTestPath);
+
+		if (key) {
+			// Found base route, preserve dynamic segments
+			// E.g., /es/instructores/123 -> key '/instructors' -> /en/instructors/123
+			const remainingSegments = segments.slice(i);
+			const baseUrl = route(key, targetLocale);
+
+			if (remainingSegments.length > 0) {
+				// Remove locale prefix from baseUrl and add remaining segments
+				const { path: basePath } = extractLocale(baseUrl);
+				return `/${targetLocale}${basePath}/${remainingSegments.join('/')}`;
+			}
+
+			return baseUrl;
+		}
+	}
+
+	// Fallback: couldn't find route key, just swap locale prefix
+	// This handles unknown/non-translated routes
+	return `/${targetLocale}${path}`;
 }
 
 /**

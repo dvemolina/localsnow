@@ -5,7 +5,8 @@
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import * as m from '$lib/paraglide/messages';
-	import { localizeHref, getLocale } from '$lib/paraglide/runtime';
+	import { getLocale } from '$lib/paraglide/runtime';
+	import { route } from '$lib/i18n/routeHelpers';
 
 	let { data } = $props();
 
@@ -196,7 +197,7 @@
 	<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
 		{#each topResorts as resort}
 			<a
-				href={localizeHref(`/instructors?resort=${resort.slug}`)}
+				href={route(`/instructors?resort=${resort.slug}`)}
 				class="resort-card group relative overflow-hidden rounded-lg border border-border shadow-lg transition-all hover:shadow-xl"
 			>
 				<!-- Background Image -->
@@ -225,7 +226,7 @@
 	</div>
 
 	<div class="mt-8 text-center">
-		<a href={localizeHref('/resorts')} class="bg-primary inline-block rounded-md px-6 py-3 font-medium text-white">
+		<a href={route('/resorts')} class="bg-primary inline-block rounded-md px-6 py-3 font-medium text-white">
 			{m.home_resorts_view_all()}
 		</a>
 	</div>
@@ -275,7 +276,7 @@
 
 	<div class="mt-10 text-center">
 		<a
-			href={localizeHref('/how-it-works')}
+			href={route('/how-it-works')}
 			class="inline-block rounded-md border border-primary px-6 py-3 font-medium text-primary transition-all hover:bg-primary hover:text-white"
 		>
 			{m.home_how_it_works_cta()} →
@@ -458,7 +459,7 @@
 
 	<div class="mt-10 text-center">
 		<a
-			href={localizeHref('/signup')}
+			href={route('/signup')}
 			class="bg-primary inline-block rounded-md px-8 py-3 font-semibold text-white shadow-sm transition-all hover:shadow-md"
 		>
 			{m.home_instructors_cta()}
@@ -576,13 +577,13 @@
 	</p>
 	<div class="flex flex-col gap-4 sm:flex-row sm:justify-center">
 		<a
-			href={localizeHref('/instructors')}
+			href={route('/instructors')}
 			class="bg-primary inline-block rounded-md px-8 py-3 font-semibold text-white shadow-sm transition-all hover:shadow-md"
 		>
 			{m.home_cta_find_instructor()}
 		</a>
 		<a
-			href={localizeHref('/signup')}
+			href={route('/signup')}
 			class="inline-block rounded-md border border-border bg-card px-8 py-3 font-semibold shadow-sm transition-all hover:shadow-md"
 		>
 			{m.home_cta_list_instructor()}
