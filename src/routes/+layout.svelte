@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { locales } from '$lib/paraglide/runtime';
-	import { getCanonicalUrl } from '$lib/utils/seo';
+	import { getCanonicalUrl, getAlternateUrls } from '$lib/i18n/routeHelpers';
+	import type { Locale } from '$lib/i18n/routes';
 	import Header from '$src/lib/components/shared/Header.svelte';
 	import '../app.css';
 	import ScreenSize from '$src/lib/components/shared/ScreenSize.svelte';
@@ -18,18 +19,25 @@
 		isDashboard =
 			page.url.pathname.includes('/dashboard') || page.url.pathname.includes('/admin');
 	});
+
+	// Get alternate URLs for hreflang
+	const alternateUrls = $derived(getAlternateUrls(page.url.pathname));
 </script>
 
 <Toaster position="top-right" />
 
 <svelte:head>
-	<!-- hreflang implementation -->
-	{#each locales as lang}
-		<link rel="alternate" hreflang={lang} href={getCanonicalUrl(page.url, lang)} />
+	<!-- hreflang implementation for multilingual SEO -->
+	{#each alternateUrls as { locale, url }}
+		<link rel="alternate" hreflang={locale} href={`${page.url.origin}${url}`} />
 	{/each}
 
-	<!-- x-default for unspecified languages -->
-	<link rel="alternate" hreflang="x-default" href={getCanonicalUrl(page.url, 'en')} />
+	<!-- x-default for unspecified languages (points to English) -->
+	<link
+		rel="alternate"
+		hreflang="x-default"
+		href={`${page.url.origin}${alternateUrls.find((a) => a.locale === 'en')?.url || '/en/'}`}
+	/>
 </svelte:head>
 
 <!-- 

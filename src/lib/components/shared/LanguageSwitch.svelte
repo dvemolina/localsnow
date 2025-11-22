@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { locales, getLocale } from '$lib/paraglide/runtime';
-	import { localizeHref } from '$lib/paraglide/runtime';
+	import { getLocalizedRedirect } from '$lib/i18n/routeHelpers';
+	import type { Locale } from '$lib/i18n/routes';
 
 	// Use $derived to make locale reactive when it changes
 	const currentLocale = $derived(getLocale());
@@ -9,7 +10,11 @@
 
 	function selectLocale(locale: string) {
 		isOpen = false;
-		window.location.href = localizeHref(page.url.pathname + page.url.search, { locale });
+		// Get the current pathname and redirect to the localized version
+		const localizedUrl = getLocalizedRedirect(page.url.pathname, locale as Locale);
+		// Preserve query parameters
+		const searchParams = page.url.search;
+		window.location.href = localizedUrl + searchParams;
 	}
 
 	function toggleDropdown() {
