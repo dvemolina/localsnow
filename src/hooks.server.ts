@@ -1,10 +1,13 @@
 import { sequence } from '@sveltejs/kit/hooks';
 import type { Handle } from '@sveltejs/kit';
 import { paraglideMiddleware } from '$lib/paraglide/server';
-import { getCanonicalUrl } from '$lib/utils/seo';
+import { getCanonicalUrl } from '$lib/i18n/routeHelpers';
 import * as auth from '$src/lib/server/session.js';
 import { RefillingTokenBucket } from './lib/server/rate-limit';
 import { getClientIP } from './lib/utils/auth';
+import { extractLocale, shouldTranslatePath, type Locale } from '$lib/i18n/routes';
+import { redirect } from '@sveltejs/kit';
+import { route } from '$lib/i18n/routeHelpers';
 
 const bucket = new RefillingTokenBucket<string>(100, 1);
 
@@ -27,6 +30,56 @@ const rateLimitHandle: Handle = async ({ event, resolve }) => {
 	return resolve(event);
 };
 
+/**
+ * Handle for language detection and redirects
+ * Ensures users are redirected to properly localized URLs
+ */
+const languageHandle: Handle = async ({ event, resolve }) => {
+	const pathname = event.url.pathname;
+
+	// Skip non-page requests (API, static files, etc.)
+	if (!shouldTranslatePath(pathname)) {
+		return resolve(event);
+	}
+
+	const { locale, path } = extractLocale(pathname);
+
+	// If URL doesn't have locale prefix, redirect to localized version
+	if (!locale) {
+		// Detect preferred language from Accept-Language header or cookie
+		const acceptLanguage = event.request.headers.get('accept-language');
+		const cookieLocale = event.cookies.get('locale');
+
+		let preferredLocale: Locale = 'en'; // Default to English
+
+		// Check cookie first
+		if (cookieLocale === 'es' || cookieLocale === 'en') {
+			preferredLocale = cookieLocale;
+		}
+		// Then check Accept-Language header
+		else if (acceptLanguage) {
+			// Prefer Spanish for Spain-focused platform if user accepts it
+			if (acceptLanguage.includes('es')) {
+				preferredLocale = 'es';
+			}
+		}
+
+		// Redirect to localized URL
+		const localizedUrl = route(pathname, preferredLocale);
+		throw redirect(307, localizedUrl);
+	}
+
+	// Set locale cookie for future visits
+	event.cookies.set('locale', locale, {
+		path: '/',
+		maxAge: 60 * 60 * 24 * 365, // 1 year
+		sameSite: 'lax',
+		httpOnly: false // Accessible to client-side for language switcher
+	});
+
+	return resolve(event);
+};
+
 const handleAuth: Handle = async ({ event, resolve }) => {
 	const sessionToken = event.cookies.get(auth.sessionCookieName);
 	if (!sessionToken) {
@@ -46,7 +99,7 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 	event.locals.session = session;
 
 	return resolve(event);
-}; 
+};
 
 const paraglideHandle: Handle = ({ event, resolve }) =>
 	paraglideMiddleware(event.request, ({ request: localizedRequest, locale }) => {
@@ -55,10 +108,10 @@ const paraglideHandle: Handle = ({ event, resolve }) =>
 		transformPageChunk: ({ html }) => {
 		  return html
 			.replace('%lang%', locale)
-			.replace('%canonical%', getCanonicalUrl(event.url, locale));
+			.replace('%canonical%', getCanonicalUrl(event.url, locale as Locale));
 		}
 	  });
 	});
 
 
-export const handle: Handle = sequence(rateLimitHandle, paraglideHandle, handleAuth);
+export const handle: Handle = sequence(rateLimitHandle, languageHandle, paraglideHandle, handleAuth);
