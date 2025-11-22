@@ -101,17 +101,34 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 	return resolve(event);
 };
 
-const paraglideHandle: Handle = ({ event, resolve }) =>
-	paraglideMiddleware(event.request, ({ request: localizedRequest, locale }) => {
-	  event.request = localizedRequest;
-	  return resolve(event, {
-		transformPageChunk: ({ html }) => {
-		  return html
-			.replace('%lang%', locale)
-			.replace('%canonical%', getCanonicalUrl(event.url, locale as Locale));
-		}
-	  });
+const paraglideHandle: Handle = async ({ event, resolve }) => {
+	// Extract locale from our translated URL (already set by languageHandle)
+	const { locale: detectedLocale } = extractLocale(event.url.pathname);
+	const currentLocale = (detectedLocale || 'en') as string;
+
+	// Create a standardized URL for Paraglide with /<locale>/<path> format
+	// Paraglide expects this pattern to detect the language
+	const originalPathname = event.url.pathname;
+	const modifiedUrl = new URL(event.request.url);
+
+	// If we don't have a locale prefix yet, add it
+	if (!detectedLocale) {
+		modifiedUrl.pathname = `/${currentLocale}${originalPathname}`;
+	}
+
+	const modifiedRequest = new Request(modifiedUrl, event.request);
+
+	return paraglideMiddleware(modifiedRequest, ({ request: localizedRequest, locale }) => {
+		event.request = localizedRequest;
+		return resolve(event, {
+			transformPageChunk: ({ html }) => {
+				return html
+					.replace('%lang%', locale)
+					.replace('%canonical%', getCanonicalUrl(event.url, locale as Locale));
+			}
+		});
 	});
+};
 
 
 export const handle: Handle = sequence(rateLimitHandle, languageHandle, paraglideHandle, handleAuth);
