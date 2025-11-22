@@ -94,9 +94,10 @@
 	<section class="my-6">
 		<h2 class="title3">{m.about_contact_title()}</h2>
 		<p>
-			{@html m.about_contact_p1()
-				.replace('{createProfile}', `<a href="/signup">${m.about_contact_create_profile()}</a>`)
-				.replace('{email}', `<strong>${m.about_contact_email()}</strong>`)}
+			{@html m.about_contact_p1({
+				createProfile: `<a href="/signup">${m.about_contact_create_profile()}</a>`,
+				email: `<strong>${m.about_contact_email()}</strong>`
+			})}
 		</p>
 		<p>{m.about_contact_p2()}</p>
 	</section>
