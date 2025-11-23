@@ -1,0 +1,193 @@
+version: '3.8'
+
+# =============================================================================
+# LocalSnow Production Deployment - Docker Swarm
+# =============================================================================
+# This docker-compose file is optimized for production deployment with:
+# - Integration with existing Traefik reverse proxy
+# - PostgreSQL database with health checks
+# - Secure environment variable management
+# - Automatic SSL via Traefik
+# - Rolling updates with zero downtime
+# - Health checks and auto-recovery
+# =============================================================================
+
+networks:
+  # Internal network for app <-> database communication
+  localsnow_network:
+    driver: overlay
+    attachable: true
+
+  # Connect to EXISTING Traefik network (must already exist on VPS)
+  traefik_network:
+    external: true
+    name: traefik_network
+
+volumes:
+  # Persistent storage for PostgreSQL data
+  postgres_data:
+    driver: local
+
+services:
+  # ===========================================================================
+  # PostgreSQL Database
+  # ===========================================================================
+  postgres:
+    image: postgres:16-alpine
+    networks:
+      - localsnow_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-localsnow}
+      POSTGRES_USER: ${POSTGRES_USER:-localsnow}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-localsnow} -d ${POSTGRES_DB:-localsnow}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ===========================================================================
+  # LocalSnow Application
+  # ===========================================================================
+  app:
+    image: ghcr.io/dvemolina/localsnow:${IMAGE_TAG:-latest}
+    networks:
+      - localsnow_network
+      - traefik_network
+    environment:
+      # Application Configuration
+      NODE_ENV: production
+      PROJECT_URL: ${PROJECT_URL:-https://localsnow.org}
+
+      # Database
+      DATABASE_URL: postgresql://${POSTGRES_USER:-localsnow}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-localsnow}
+
+      # Stripe Payment (LIVE KEYS - ensure these are correct!)
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+
+      # Google OAuth
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+
+      # Cloudflare R2 Storage
+      R2_ACCOUNT_ID: ${R2_ACCOUNT_ID}
+      R2_ACCESS_KEY_ID: ${R2_ACCESS_KEY_ID}
+      R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY}
+      R2_BUCKET_NAME: ${R2_BUCKET_NAME:-localsnow-uploads}
+      R2_PUBLIC_URL: ${R2_PUBLIC_URL}
+
+      # n8n Webhooks for Email Notifications
+      N8N_WEBHOOK_URL: ${N8N_WEBHOOK_URL}
+
+      # Cron Job Authentication
+      CRON_SECRET: ${CRON_SECRET}
+
+      # Optional: Error Tracking & Analytics
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      GA_MEASUREMENT_ID: ${GA_MEASUREMENT_ID:-}
+
+    deploy:
+      # Run 2 replicas for high availability
+      replicas: 2
+
+      # Rolling update configuration (zero downtime)
+      update_config:
+        parallelism: 1          # Update one container at a time
+        delay: 10s              # Wait 10s between updates
+        failure_action: rollback # Auto rollback on failure
+        order: start-first      # Start new container before stopping old one
+
+      # Rollback configuration
+      rollback_config:
+        parallelism: 1
+        delay: 5s
+
+      # Restart policy
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+      # Resource limits
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+
+      # Traefik labels for routing and SSL
+      labels:
+        # Enable Traefik
+        - "traefik.enable=true"
+
+        # HTTP Router - Match domain
+        - "traefik.http.routers.localsnow.rule=Host(`localsnow.org`) || Host(`www.localsnow.org`)"
+        - "traefik.http.routers.localsnow.entrypoints=websecure"
+        - "traefik.http.routers.localsnow.tls=true"
+        - "traefik.http.routers.localsnow.tls.certresolver=cloudflare"
+
+        # Load Balancer - Target application port
+        - "traefik.http.services.localsnow.loadbalancer.server.port=3000"
+
+        # Health check for load balancer
+        - "traefik.http.services.localsnow.loadbalancer.healthcheck.path=/api/health"
+        - "traefik.http.services.localsnow.loadbalancer.healthcheck.interval=30s"
+
+        # Security Headers Middleware
+        - "traefik.http.middlewares.localsnow-security.headers.sslredirect=true"
+        - "traefik.http.middlewares.localsnow-security.headers.stsSeconds=31536000"
+        - "traefik.http.middlewares.localsnow-security.headers.stsIncludeSubdomains=true"
+        - "traefik.http.middlewares.localsnow-security.headers.stsPreload=true"
+        - "traefik.http.middlewares.localsnow-security.headers.frameDeny=true"
+        - "traefik.http.middlewares.localsnow-security.headers.contentTypeNosniff=true"
+        - "traefik.http.middlewares.localsnow-security.headers.browserXssFilter=true"
+        - "traefik.http.middlewares.localsnow-security.headers.referrerPolicy=strict-origin-when-cross-origin"
+
+        # Content Security Policy (CSP)
+        - "traefik.http.middlewares.localsnow-security.headers.contentSecurityPolicy=default-src 'self'; script-src 'self' 'unsafe-inline' https://js.stripe.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.stripe.com; frame-src https://js.stripe.com;"
+
+        # WWW Redirect Middleware (redirect www to non-www)
+        - "traefik.http.middlewares.localsnow-www-redirect.redirectregex.regex=^https://www\\.localsnow\\.org/(.*)"
+        - "traefik.http.middlewares.localsnow-www-redirect.redirectregex.replacement=https://localsnow.org/$${1}"
+        - "traefik.http.middlewares.localsnow-www-redirect.redirectregex.permanent=true"
+
+        # Apply all middlewares to router
+        - "traefik.http.routers.localsnow.middlewares=localsnow-www-redirect,localsnow-security"
+
+        # Docker Swarm specific - use overlay network
+        - "traefik.docker.network=traefik_network"
+
+    # Health check for the application
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+    # Wait for postgres to be healthy before starting
+    depends_on:
+      - postgres
