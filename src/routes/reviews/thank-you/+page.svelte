@@ -5,6 +5,7 @@
 
 <svelte:head>
 	<title>Thank You for Your Review | Local Snow</title>
+	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
 <section class="container mx-auto max-w-2xl px-4 py-12">

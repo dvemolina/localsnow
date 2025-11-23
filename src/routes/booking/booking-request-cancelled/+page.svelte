@@ -38,6 +38,7 @@
 
 <svelte:head>
 	<title>Booking Cancelled - Local Snow</title>
+	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
 <section class="mx-auto max-w-2xl py-12">

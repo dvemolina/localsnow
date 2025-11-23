@@ -1,13 +1,78 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages';
+
+	// FAQ Schema for SEO
+	const faqSchema = {
+		'@context': 'https://schema.org',
+		'@type': 'FAQPage',
+		mainEntity: [
+			{
+				'@type': 'Question',
+				name: m.how_it_works_page_faq_deposit_q(),
+				acceptedAnswer: {
+					'@type': 'Answer',
+					text: m.how_it_works_page_faq_deposit_a()
+				}
+			},
+			{
+				'@type': 'Question',
+				name: m.how_it_works_page_faq_lead_fee_q(),
+				acceptedAnswer: {
+					'@type': 'Answer',
+					text: m.how_it_works_page_faq_lead_fee_a()
+				}
+			},
+			{
+				'@type': 'Question',
+				name: m.how_it_works_page_faq_payments_q(),
+				acceptedAnswer: {
+					'@type': 'Answer',
+					text: m.how_it_works_page_faq_payments_a()
+				}
+			},
+			{
+				'@type': 'Question',
+				name: m.how_it_works_page_faq_no_response_q(),
+				acceptedAnswer: {
+					'@type': 'Answer',
+					text: m.how_it_works_page_faq_no_response_a()
+				}
+			},
+			{
+				'@type': 'Question',
+				name: m.how_it_works_page_faq_contact_q(),
+				acceptedAnswer: {
+					'@type': 'Answer',
+					text: m.how_it_works_page_faq_contact_a()
+				}
+			}
+		]
+	};
 </script>
 
 <svelte:head>
 	<title>{m.seo_meta_how_it_works_title()}</title>
-	<meta
-		name="description"
-		content={m.seo_meta_how_it_works_description()}
-	/>
+	<meta name="description" content={m.seo_meta_how_it_works_description()} />
+
+	<!-- Open Graph -->
+	<meta property="og:title" content={m.seo_meta_how_it_works_title()} />
+	<meta property="og:description" content={m.seo_meta_how_it_works_description()} />
+	<meta property="og:url" content="https://localsnow.org/how-it-works" />
+	<meta property="og:image" content="https://localsnow.org/og-image.jpg" />
+	<meta property="og:type" content="website" />
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content={m.seo_meta_how_it_works_title()} />
+	<meta name="twitter:description" content={m.seo_meta_how_it_works_description()} />
+	<meta name="twitter:image" content="https://localsnow.org/og-image.jpg" />
+
+	<!-- FAQ Schema -->
+	<script type="application/ld+json">
+		{JSON.stringify(faqSchema)}
+	</script>
+
+	<link rel="canonical" href="https://localsnow.org/how-it-works" />
 </svelte:head>
 
 <article class="prose prose-sm mx-auto max-w-3xl ">

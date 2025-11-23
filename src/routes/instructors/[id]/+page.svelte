@@ -39,15 +39,87 @@
 	});
 	
 	const isIndependent = instructor.role === 'instructor-independent';
+
+	// Construct profile URL
+	const profileUrl = `https://localsnow.org/instructors/${instructor.id}`;
+	const instructorFullName = `${instructor.name} ${instructor.lastName.charAt(0)}.`;
+	const instructorImageUrl = instructor.profileImageUrl || 'https://localsnow.org/local-snow-head.png';
+
+	// Create meta description
+	const metaDescription = instructor.bio
+		? instructor.bio.substring(0, 160)
+		: `Book ski lessons with ${instructorFullName}, a certified ski instructor. ${reviewStats && reviewStats.totalReviews > 0 ? `Rated ${reviewStats.averageRating.toFixed(1)}/5 from ${reviewStats.totalReviews} reviews.` : 'Professional instruction for all skill levels.'}`;
+
+	// Create structured data for instructor profile
+	const personSchema = {
+		'@context': 'https://schema.org',
+		'@type': 'Person',
+		name: instructorFullName,
+		jobTitle: isIndependent ? 'Independent Ski Instructor' : 'Ski Instructor',
+		description: instructor.bio || `Professional ski instructor at ${resorts.length > 0 ? resorts[0].name : 'Spanish ski resorts'}`,
+		image: instructorImageUrl,
+		url: profileUrl,
+		...(reviewStats && reviewStats.totalReviews > 0 && {
+			aggregateRating: {
+				'@type': 'AggregateRating',
+				ratingValue: reviewStats.averageRating.toFixed(1),
+				reviewCount: reviewStats.totalReviews,
+				bestRating: 5,
+				worstRating: 1
+			}
+		}),
+		...(instructor.spokenLanguages && instructor.spokenLanguages.length > 0 && {
+			knowsLanguage: instructor.spokenLanguages.map(lang => ({
+				'@type': 'Language',
+				name: lang
+			}))
+		}),
+		...(data.baseLesson && {
+			offers: {
+				'@type': 'Offer',
+				description: 'Private ski and snowboard lessons',
+				price: data.baseLesson.basePrice,
+				priceCurrency: data.baseLesson.currency || 'EUR',
+				availability: 'https://schema.org/InStock',
+				priceSpecification: {
+					'@type': 'UnitPriceSpecification',
+					price: data.baseLesson.basePrice,
+					priceCurrency: data.baseLesson.currency || 'EUR',
+					unitText: 'per hour'
+				}
+			}
+		})
+	};
 </script>
 
 <svelte:head>
-	<title>{instructor.name} {instructor.lastName.charAt(0)} - Ski Instructor | Local Snow</title>
-	<meta
-		name="description"
-		content={instructor.bio ||
-			`Book ski lessons with ${instructor.name} ${instructor.lastName.charAt(0)}, a certified instructor.`}
-	/>
+	<title>{instructorFullName} - Ski Instructor | Local Snow</title>
+	<meta name="description" content={metaDescription} />
+
+	<!-- Open Graph -->
+	<meta property="og:title" content="{instructorFullName} - Ski Instructor | Local Snow" />
+	<meta property="og:description" content={metaDescription} />
+	<meta property="og:url" content={profileUrl} />
+	<meta property="og:image" content={instructorImageUrl} />
+	<meta property="og:image:alt" content="Profile photo of {instructorFullName}" />
+	<meta property="og:type" content="profile" />
+	{#if reviewStats && reviewStats.totalReviews > 0}
+		<meta property="og:rating" content={reviewStats.averageRating.toFixed(1)} />
+		<meta property="og:rating:scale" content="5" />
+	{/if}
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="{instructorFullName} - Ski Instructor" />
+	<meta name="twitter:description" content={metaDescription} />
+	<meta name="twitter:image" content={instructorImageUrl} />
+
+	<!-- Structured Data -->
+	<script type="application/ld+json">
+		{JSON.stringify(personSchema)}
+	</script>
+
+	<link rel="canonical" href={profileUrl} />
 </svelte:head>
 
 <section class="w-full">

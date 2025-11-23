@@ -60,6 +60,24 @@
 		}
 	};
 
+	const organizationSchema = {
+		'@context': 'https://schema.org',
+		'@type': 'Organization',
+		name: 'Local Snow',
+		url: 'https://localsnow.org',
+		logo: 'https://localsnow.org/local-snow-head.png',
+		description:
+			'Platform connecting ski and snowboard instructors with clients at Spanish resorts. No booking fees, direct contact with certified instructors.',
+		email: 'support@localsnow.org',
+		areaServed: {
+			'@type': 'Country',
+			name: 'Spain'
+		},
+		serviceType: 'Ski Instructor Marketplace',
+		foundingDate: '2024',
+		sameAs: []
+	};
+
 	// Hero Resort Search Form
 	const form = superForm(data.form, {
 		validators: zodClient(heroResortSearchSchema)
@@ -91,6 +109,9 @@
 
 	<script type="application/ld+json">
       {JSON.stringify(websiteSchema)}
+	</script>
+	<script type="application/ld+json">
+      {JSON.stringify(organizationSchema)}
 	</script>
 	<link rel="canonical" href="https://localsnow.org/" />
 </svelte:head>
@@ -467,105 +488,6 @@
 		<p class="mt-4 text-sm text-gray-600">
 			{m.home_instructors_cta_note()}
 		</p>
-	</div>
-</section>
-
-<!-- Social Proof Section -->
-<section class="section">
-	<div class="mb-10 text-center">
-		<h2 class="mb-4 text-center text-3xl font-bold">{m.home_testimonials_title()}</h2>
-		<p class="text-center text-gray-600">
-			{m.home_testimonials_subtitle()}
-		</p>
-	</div>
-
-	<div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-		<div class="rounded-lg border border-border bg-card p-6 shadow-sm">
-			<div class="mb-4 flex items-center gap-1">
-				{#each [1, 2, 3, 4, 5] as star}
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="text-primary h-5 w-5"
-						viewBox="0 0 20 20"
-						fill="currentColor"
-					>
-						<path
-							d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-						/>
-					</svg>
-				{/each}
-			</div>
-			<p class="mb-4 text-gray-700">
-				"{m.home_testimonials_maria_text()}"
-			</p>
-			<div class="flex items-center gap-3">
-				<div class="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-full">
-					<span class="text-primary font-semibold">MC</span>
-				</div>
-				<div>
-					<p class="font-semibold">{m.home_testimonials_maria_name()}</p>
-					<p class="text-sm text-muted-foreground">{m.home_testimonials_maria_role()}</p>
-				</div>
-			</div>
-		</div>
-
-		<div class="rounded-lg border border-border bg-card p-6 shadow-sm">
-			<div class="mb-4 flex items-center gap-1">
-				{#each [1, 2, 3, 4, 5] as star}
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="text-primary h-5 w-5"
-						viewBox="0 0 20 20"
-						fill="currentColor"
-					>
-						<path
-							d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-						/>
-					</svg>
-				{/each}
-			</div>
-			<p class="mb-4 text-gray-700">
-				"{m.home_testimonials_james_text()}"
-			</p>
-			<div class="flex items-center gap-3">
-				<div class="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-full">
-					<span class="text-primary font-semibold">JM</span>
-				</div>
-				<div>
-					<p class="font-semibold">{m.home_testimonials_james_name()}</p>
-					<p class="text-sm text-muted-foreground">{m.home_testimonials_james_role()}</p>
-				</div>
-			</div>
-		</div>
-
-		<div class="rounded-lg border border-border bg-card p-6 shadow-sm">
-			<div class="mb-4 flex items-center gap-1">
-				{#each [1, 2, 3, 4, 5] as star}
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="text-primary h-5 w-5"
-						viewBox="0 0 20 20"
-						fill="currentColor"
-					>
-						<path
-							d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-						/>
-					</svg>
-				{/each}
-			</div>
-			<p class="mb-4 text-gray-700">
-				"{m.home_testimonials_pablo_text()}"
-			</p>
-			<div class="flex items-center gap-3">
-				<div class="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-full">
-					<span class="text-primary font-semibold">PG</span>
-				</div>
-				<div>
-					<p class="font-semibold">{m.home_testimonials_pablo_name()}</p>
-					<p class="text-sm text-muted-foreground">{m.home_testimonials_pablo_role()}</p>
-				</div>
-			</div>
-		</div>
 	</div>
 </section>
 
