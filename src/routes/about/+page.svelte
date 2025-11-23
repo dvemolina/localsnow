@@ -4,10 +4,22 @@
 
 <svelte:head>
 	<title>{m.about_title()} | Local Snow</title>
-	<meta
-		name="description"
-		content={m.about_meta_description()}
-	/>
+	<meta name="description" content={m.about_meta_description()} />
+
+	<!-- Open Graph -->
+	<meta property="og:title" content="{m.about_title()} | Local Snow" />
+	<meta property="og:description" content={m.about_meta_description()} />
+	<meta property="og:url" content="https://localsnow.org/about" />
+	<meta property="og:image" content="https://localsnow.org/og-image.jpg" />
+	<meta property="og:type" content="website" />
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="{m.about_title()} | Local Snow" />
+	<meta name="twitter:description" content={m.about_meta_description()} />
+	<meta name="twitter:image" content="https://localsnow.org/og-image.jpg" />
+
+	<link rel="canonical" href="https://localsnow.org/about" />
 </svelte:head>
 
 <article class="prose prose-sm mx-auto max-w-2xl">

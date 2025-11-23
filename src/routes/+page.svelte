@@ -60,6 +60,24 @@
 		}
 	};
 
+	const organizationSchema = {
+		'@context': 'https://schema.org',
+		'@type': 'Organization',
+		name: 'Local Snow',
+		url: 'https://localsnow.org',
+		logo: 'https://localsnow.org/local-snow-head.png',
+		description:
+			'Platform connecting ski and snowboard instructors with clients at Spanish resorts. No booking fees, direct contact with certified instructors.',
+		email: 'support@localsnow.org',
+		areaServed: {
+			'@type': 'Country',
+			name: 'Spain'
+		},
+		serviceType: 'Ski Instructor Marketplace',
+		foundingDate: '2024',
+		sameAs: []
+	};
+
 	// Hero Resort Search Form
 	const form = superForm(data.form, {
 		validators: zodClient(heroResortSearchSchema)
@@ -91,6 +109,9 @@
 
 	<script type="application/ld+json">
       {JSON.stringify(websiteSchema)}
+	</script>
+	<script type="application/ld+json">
+      {JSON.stringify(organizationSchema)}
 	</script>
 	<link rel="canonical" href="https://localsnow.org/" />
 </svelte:head>

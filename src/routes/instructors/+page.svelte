@@ -140,6 +140,27 @@
 		};
 		return type ? types[type] || type : '';
 	}
+
+	// ItemList schema for SEO
+	const itemListSchema = {
+		'@context': 'https://schema.org',
+		'@type': 'ItemList',
+		name: 'Ski and Snowboard Instructors',
+		description: 'Browse certified ski and snowboard instructors at top Spanish resorts',
+		numberOfItems: data.instructors.length,
+		itemListElement: data.instructors.slice(0, 20).map((instructor, index) => ({
+			'@type': 'ListItem',
+			position: index + 1,
+			item: {
+				'@type': 'Person',
+				name: `${instructor.name} ${instructor.lastName.charAt(0)}.`,
+				jobTitle: instructor.role?.includes('independent')
+					? 'Independent Ski Instructor'
+					: 'Ski Instructor',
+				url: `https://localsnow.org/instructors/${instructor.id}`
+			}
+		}))
+	};
 </script>
 
 <svelte:head>
@@ -159,6 +180,13 @@
 	<meta name="twitter:title" content={m.seo_meta_instructors_title()} />
 	<meta name="twitter:description" content={m.seo_meta_instructors_description()} />
 	<meta name="twitter:image" content="https://localsnow.org/ski-instructor-turn.webp" />
+
+	<!-- Structured Data -->
+	<script type="application/ld+json">
+		{JSON.stringify(itemListSchema)}
+	</script>
+
+	<link rel="canonical" href="https://localsnow.org/instructors" />
 </svelte:head>
 
 <section class="w-full">

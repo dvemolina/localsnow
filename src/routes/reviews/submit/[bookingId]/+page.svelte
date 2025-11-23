@@ -21,6 +21,7 @@
 
 <svelte:head>
 	<title>Leave a Review | Local Snow</title>
+	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
 <section class="container mx-auto max-w-3xl px-4 py-8">
