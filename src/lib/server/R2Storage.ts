@@ -77,6 +77,17 @@ export class StorageService {
  
     
     async uploadQualificationPDF(fileBuffer: Buffer, userId: number): Promise<string> {
+        // Validate file size (max 5MB)
+        if (fileBuffer.length > 5 * 1024 * 1024) {
+            throw new Error('File too large (max 5MB)');
+        }
+        
+        /* Validate PDF magic number
+        const magicNumber = fileBuffer.slice(0, 4).toString();
+        if (!magicNumber.includes('%PDF')) {
+            throw new Error('Invalid PDF file');
+        }*/
+
         try {
             const finalFileName = `qualifications/${userId}-qualification`;
 

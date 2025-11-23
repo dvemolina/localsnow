@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/sveltekit';
 import { sequence } from '@sveltejs/kit/hooks';
 import type { Handle } from '@sveltejs/kit';
 import { paraglideMiddleware } from '$lib/paraglide/server';
@@ -17,13 +18,13 @@ const rateLimitHandle: Handle = async ({ event, resolve }) => {
 		return resolve(event);
 	}
 	let cost: number;
-	if (event.request.method === "GET" || event.request.method === "OPTIONS") {
+	if (event.request.method === 'GET' || event.request.method === 'OPTIONS') {
 		cost = 1;
 	} else {
 		cost = 3;
 	}
 	if (!bucket.consume(clientIP, cost)) {
-		return new Response("Too many requests", {
+		return new Response('Too many requests', {
 			status: 429
 		});
 	}
@@ -130,5 +131,8 @@ const paraglideHandle: Handle = async ({ event, resolve }) => {
 	});
 };
 
-
-export const handle: Handle = sequence(rateLimitHandle, languageHandle, paraglideHandle, handleAuth);
+export const handle: Handle = sequence(
+	Sentry.sentryHandle(),
+	sequence(rateLimitHandle, languageHandle, paraglideHandle, handleAuth)
+);
+export const handleError = Sentry.handleErrorWithSentry();
