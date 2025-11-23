@@ -1,17 +1,11 @@
-# https://www.robotstxt.org/robotstxt.html
+
 User-agent: *
 Allow: /
-
-# Disallow admin and dashboard areas
 Disallow: /admin/
 Disallow: /dashboard/
 Disallow: /api/
 Disallow: /oauth/
-
-# Disallow booking flow pages (private)
 Disallow: /booking/
 Disallow: /leads/
 Disallow: /reviews/submit
-
-# Sitemap
 Sitemap: https://localsnow.org/sitemap.xml
