@@ -10,7 +10,8 @@
 		{ label: m.nav_resorts(), href: route('/resorts') },
 		{ label: m.nav_how_it_works(), href: route('/how-it-works') },
 		{ label: m.nav_about(), href: route('/about') },
-		{ label: m.nav_signup(), href: route('/signup') }
+		{ label: m.nav_signup(), href: route('/signup') },
+		{ label: m.nav_contact(), href: route('/contact')}
 	]);
 
 	// Legal links - use $derived for translation reactivity
@@ -32,7 +33,7 @@
 
 		<div class="flex flex-col gap-6 sm:flex-row sm:gap-12">
 			<!-- Main Navigation -->
-			<nav class="flex flex-col items-center justify-center">
+			<nav class="flex flex-col items-center justify-start">
 				<h4 class="mb-2 text-sm font-semibold text-foreground">{m.footer_navigation()}</h4>
 				<ul class="flex flex-col items-start gap-1">
 					{#each items as { href, label }}
@@ -51,7 +52,7 @@
 			</nav>
 
 			<!-- Legal Links -->
-			<nav class="flex flex-col items-center justify-center">
+			<nav class="flex flex-col items-center justify-start">
 				<h4 class="mb-2 text-sm font-semibold text-foreground">{m.footer_legal()}</h4>
 				<ul class="flex flex-col items-start gap-1">
 					{#each legalLinks as { href, label }}
