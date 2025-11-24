@@ -2,9 +2,9 @@ import { ClientDepositRepository } from "./clientDepositRepository";
 import { BookingRequestRepository } from "./bookingRequestRepository";
 import { ReviewService } from "$src/features/Reviews/lib/reviewService";
 import Stripe from 'stripe';
-import { env } from '$env/dynamic/private';
+import { STRIPE_SECRET_KEY } from '$lib/server/config';
 
-const stripe = new Stripe(env.STRIPE_SECRET_KEY!, {
+const stripe = new Stripe(STRIPE_SECRET_KEY, {
     apiVersion: '2025-10-29.clover'
 });
 

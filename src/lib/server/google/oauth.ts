@@ -1,25 +1,19 @@
 import 'dotenv/config'
 import { Google } from "arctic";
 import { google as googleApis } from 'googleapis';
-import { env } from '$env/dynamic/private';
 import { db } from '$lib/server/db';
 import { instructorGoogleTokens } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { decrypt, encrypt } from '$src/lib/utils/encryption';
+import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, PROJECT_URL, NODE_ENV } from '../config';
 
 // ============================================
 // User Authentication OAuth
 // ============================================
-let callbackUrl: string;
+const callbackUrl = `${PROJECT_URL}/oauth/google/callback`;
 
-if(process.env.NODE_ENV === "production") {
-	callbackUrl = `${process.env.PROJECT_URL}/oauth/google/callback`
-} else {
-	callbackUrl = `${env.PROJECT_URL}/oauth/google/callback`
-}
-
-const clientId = env.GOOGLE_CLIENT_ID;
-const clientSecret = env.GOOGLE_CLIENT_SECRET;
+const clientId = GOOGLE_CLIENT_ID;
+const clientSecret = GOOGLE_CLIENT_SECRET;
 
 export const google = new Google(
 	clientId,
@@ -57,12 +51,7 @@ export type GoogleClaims = {
 
 const CALENDAR_SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
 
-let calendarCallbackUrl: string;
-if(process.env.NODE_ENV === "production") {
-	calendarCallbackUrl = `${process.env.PROJECT_URL}/api/calendar/auth/callback`
-} else {
-	calendarCallbackUrl = `${env.PROJECT_URL}/api/calendar/auth/callback`
-}
+const calendarCallbackUrl = `${PROJECT_URL}/api/calendar/auth/callback`;
 
 /**
  * Get OAuth2 client for Calendar API

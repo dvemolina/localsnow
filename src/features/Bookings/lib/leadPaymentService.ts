@@ -2,9 +2,9 @@ import { db } from "$lib/server/db";
 import { bookingRequests, leadPayments } from "$lib/server/db/schema";
 import { eq } from "drizzle-orm";
 import Stripe from 'stripe';
-import { env } from '$env/dynamic/private';
+import { STRIPE_SECRET_KEY } from '$lib/server/config';
 
-const stripe = new Stripe(env.STRIPE_SECRET_KEY!, {
+const stripe = new Stripe(STRIPE_SECRET_KEY, {
     apiVersion: '2025-10-29.clover'
 });
 

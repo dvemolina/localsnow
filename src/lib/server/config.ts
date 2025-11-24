@@ -64,9 +64,6 @@ export const R2_SECRET_ACCESS_KEY = getSecret('R2_SECRET_ACCESS_KEY');
 export const R2_BUCKET_NAME = getSecret('R2_BUCKET_NAME', 'localsnow-uploads');
 export const R2_PUBLIC_URL = getSecret('R2_PUBLIC_URL');
 
-// n8n Webhook
-export const N8N_WEBHOOK_URL = getSecret('N8N_WEBHOOK_URL');
-
 // Cron Job Authentication
 export const CRON_SECRET = getSecret('CRON_SECRET');
 
@@ -103,7 +100,6 @@ export function validateConfig(): { valid: boolean; missing: string[] } {
 		{ name: 'R2_ACCESS_KEY_ID', value: R2_ACCESS_KEY_ID },
 		{ name: 'R2_SECRET_ACCESS_KEY', value: R2_SECRET_ACCESS_KEY },
 		{ name: 'R2_PUBLIC_URL', value: R2_PUBLIC_URL },
-		{ name: 'N8N_WEBHOOK_URL', value: N8N_WEBHOOK_URL },
 		{ name: 'CRON_SECRET', value: CRON_SECRET }
 	];
 

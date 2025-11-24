@@ -20,6 +20,9 @@ Thumbs.db
 !.env.test
 !.env.production.template
 
+# Production secrets - NEVER COMMIT
+secrets/
+
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
