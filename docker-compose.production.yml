@@ -113,7 +113,7 @@ services:
   # LocalSnow Application
   # ===========================================================================
   app:
-    image: ghcr.io/dvemolina/localsnow:${IMAGE_TAG:-latest}
+    image: ghcr.io/dvemolina/localsnow/localsnow:${IMAGE_TAG:-latest}
     networks:
       - localsnow_network
       - traefik_network
