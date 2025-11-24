@@ -12,7 +12,13 @@ const config = {
 		// adapter-auto only supports some environments, see https://svelte.dev/docs/kit/adapter-auto for a list.
 		// If your environment is not supported, or you settled on a specific environment, switch out the adapter.
 		// See https://svelte.dev/docs/kit/adapters for more information about adapters.
-		adapter: adapter(),
+		adapter: adapter({
+			// Trust proxy headers from Traefik
+			// This is required when running behind a reverse proxy
+			out: 'build',
+			precompress: false,
+			envPrefix: ''
+		}),
 
 		alias: {
 			$src: 'src/*'
