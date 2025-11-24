@@ -21,7 +21,7 @@ networks:
   # Connect to EXISTING Traefik network (must already exist on VPS)
   traefik_network:
     external: true
-    name: traefik_network
+    name: proxy
 
 volumes:
   # Persistent storage for PostgreSQL data
@@ -224,7 +224,7 @@ services:
         - "traefik.http.routers.localsnow.middlewares=localsnow-www-redirect,localsnow-security"
 
         # Docker Swarm specific - use overlay network
-        - "traefik.docker.network=traefik_network"
+        - "traefik.docker.network=proxy"
 
     # Health check for the application
     healthcheck:
