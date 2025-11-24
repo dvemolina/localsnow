@@ -1,4 +1,4 @@
-import { CALENDAR_TOKEN_ENCRYPTION_KEY } from '$env/static/private';
+import { CALENDAR_TOKEN_ENCRYPTION_KEY } from '$lib/server/config';
 import crypto from 'crypto';
 
 const ALGORITHM = 'aes-256-gcm';

@@ -67,6 +67,12 @@ export const R2_PUBLIC_URL = getSecret('R2_PUBLIC_URL');
 // Cron Job Authentication
 export const CRON_SECRET = getSecret('CRON_SECRET');
 
+// Calendar Token Encryption
+export const CALENDAR_TOKEN_ENCRYPTION_KEY = getSecret('CALENDAR_TOKEN_ENCRYPTION_KEY');
+
+// n8n Email Webhook Authentication
+export const EMAIL_HEADER_SECRET = getSecret('EMAIL_HEADER_SECRET');
+
 // =============================================================================
 // OPTIONAL CONFIGURATION
 // =============================================================================
@@ -100,7 +106,9 @@ export function validateConfig(): { valid: boolean; missing: string[] } {
 		{ name: 'R2_ACCESS_KEY_ID', value: R2_ACCESS_KEY_ID },
 		{ name: 'R2_SECRET_ACCESS_KEY', value: R2_SECRET_ACCESS_KEY },
 		{ name: 'R2_PUBLIC_URL', value: R2_PUBLIC_URL },
-		{ name: 'CRON_SECRET', value: CRON_SECRET }
+		{ name: 'CRON_SECRET', value: CRON_SECRET },
+		{ name: 'CALENDAR_TOKEN_ENCRYPTION_KEY', value: CALENDAR_TOKEN_ENCRYPTION_KEY },
+		{ name: 'EMAIL_HEADER_SECRET', value: EMAIL_HEADER_SECRET }
 	];
 
 	const missing = required

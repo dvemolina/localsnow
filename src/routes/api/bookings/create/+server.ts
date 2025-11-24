@@ -3,12 +3,12 @@ import type { RequestHandler } from './$types';
 import { SlotGenerationService } from '$src/features/Availability/lib/slotGenerationService';
 import { TentativeBookingService } from '$src/features/Availability/lib/tentativeBookingService';
 import Stripe from 'stripe';
-import { env } from '$env/dynamic/private';
+import { STRIPE_SECRET_KEY } from '$lib/server/config';
 import { BookingRequestService } from '$src/features/Bookings/lib/bookingRequestService';
 import { LaunchCodeService } from '$src/features/LaunchCodes/lib/launchCodeService';
 import { sendBookingNotificationToInstructor, sendBookingConfirmationToClient } from '$lib/server/webhooks/n8n/email-n8n';
 
-const stripe = new Stripe(env.STRIPE_SECRET_KEY!, {
+const stripe = new Stripe(STRIPE_SECRET_KEY, {
     apiVersion: '2025-10-29.clover'
 });
 

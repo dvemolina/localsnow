@@ -55,6 +55,8 @@ REQUIRED_SECRETS=(
     "R2_SECRET_ACCESS_KEY"
     "R2_BUCKET_NAME"
     "R2_PUBLIC_URL"
+    "CALENDAR_TOKEN_ENCRYPTION_KEY"
+    "EMAIL_HEADER_SECRET"
 )
 
 MISSING=()
@@ -176,6 +178,12 @@ create_or_update_secret "r2_public_url" "${R2_PUBLIC_URL}"
 
 # Cron secret
 create_or_update_secret "cron_secret" "${CRON_SECRET}"
+
+# Calendar encryption key
+create_or_update_secret "calendar_token_encryption_key" "${CALENDAR_TOKEN_ENCRYPTION_KEY}"
+
+# n8n email webhook secret
+create_or_update_secret "email_header_secret" "${EMAIL_HEADER_SECRET}"
 
 # Optional secrets (if provided)
 $([ -n "${SENTRY_DSN:-}" ] && echo "create_or_update_secret \"sentry_dsn\" \"${SENTRY_DSN}\"" || echo "echo '⏭️  Skipping sentry_dsn (not provided)'")

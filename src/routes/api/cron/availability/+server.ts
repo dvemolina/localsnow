@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { syncAllInstructorCalendars } from '$lib/server/google/sync';
-import { env } from '$env/dynamic/private';
+import { CRON_SECRET } from '$lib/server/config';
 import { TentativeBookingService } from '$src/features/Availability/lib/tentativeBookingService';
 
 const tentativeBookingService = new TentativeBookingService();
@@ -14,12 +14,12 @@ export const POST: RequestHandler = async ({ request }) => {
 	// Verify cron secret (add CRON_SECRET to your .env)
 	const authHeader = request.headers.get('authorization');
 
-	if (!env.CRON_SECRET) {
+	if (!CRON_SECRET) {
 		console.error('CRON_SECRET environment variable is not set');
 		return json({ error: 'Server configuration error' }, { status: 500 });
 	}
 
-	if (authHeader !== `Bearer ${env.CRON_SECRET}`) {
+	if (authHeader !== `Bearer ${CRON_SECRET}`) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
 

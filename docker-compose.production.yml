@@ -61,6 +61,10 @@ secrets:
     external: true
   cron_secret:
     external: true
+  calendar_token_encryption_key:
+    external: true
+  email_header_secret:
+    external: true
 
 services:
   # ===========================================================================
@@ -124,6 +128,8 @@ services:
       - r2_bucket_name
       - r2_public_url
       - cron_secret
+      - calendar_token_encryption_key
+      - email_header_secret
     environment:
       # Non-secret configuration
       NODE_ENV: production
@@ -142,6 +148,8 @@ services:
       R2_BUCKET_NAME_FILE: /run/secrets/r2_bucket_name
       R2_PUBLIC_URL_FILE: /run/secrets/r2_public_url
       CRON_SECRET_FILE: /run/secrets/cron_secret
+      CALENDAR_TOKEN_ENCRYPTION_KEY_FILE: /run/secrets/calendar_token_encryption_key
+      EMAIL_HEADER_SECRET_FILE: /run/secrets/email_header_secret
 
     deploy:
       # Run 2 replicas for high availability
