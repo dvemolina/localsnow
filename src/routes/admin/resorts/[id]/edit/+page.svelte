@@ -18,7 +18,7 @@
 	let showDeleteDialog = $state(false);
 	let previewUrl = $state<string | null>(resort.image || null);
 	let fileInput: HTMLInputElement;
-	let selectedFile: File | null = null;
+	let selectedFile: File | null = $state(null);
 
 	let selectedCountryId = $state<string>(resort.countryId.toString());
 	let selectedRegionId = $state<string>(resort.regionId?.toString() || '');

@@ -12,7 +12,7 @@
 	let uploading = $state(false);
 	let previewUrl = $state<string | null>(resort.image || null);
 	let fileInput: HTMLInputElement;
-	let selectedFile: File | null = null;
+	let selectedFile: File | null = $state(null);
 
 	function handleFileSelect(event: Event) {
 		const target = event.target as HTMLInputElement;
