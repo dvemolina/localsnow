@@ -1,5 +1,6 @@
-onlyBuiltDependencies:
-  - aws-sdk
-
 ignoredBuiltDependencies:
   - '@tailwindcss/oxide'
+
+onlyBuiltDependencies:
+  - '@sentry/cli'
+  - aws-sdk
