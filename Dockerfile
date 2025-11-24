@@ -71,6 +71,7 @@ COPY --from=builder --chown=sveltekit:nodejs /app/static ./static
 COPY --from=builder --chown=sveltekit:nodejs /app/drizzle ./drizzle
 COPY --from=builder --chown=sveltekit:nodejs /app/scripts/migrate.js ./scripts/migrate.js
 COPY --from=builder --chown=sveltekit:nodejs /app/scripts/seed-production.js ./scripts/seed-production.js
+COPY --from=builder --chown=sveltekit:nodejs /app/scripts/start.sh ./scripts/start.sh
 COPY --from=builder --chown=sveltekit:nodejs /app/scripts/db-init.sh ./scripts/db-init.sh
 COPY --from=builder --chown=sveltekit:nodejs /app/src/lib/server/db/seeds/data ./src/lib/server/db/seeds/data
 
