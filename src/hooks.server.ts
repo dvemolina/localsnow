@@ -9,6 +9,7 @@ import { getClientIP } from './lib/utils/auth';
 import { extractLocale, shouldTranslatePath, type Locale } from '$lib/i18n/routes';
 import { redirect } from '@sveltejs/kit';
 import { route } from '$lib/i18n/routeHelpers';
+import { validateConfig } from './lib/server/config';
 
 const bucket = new RefillingTokenBucket<string>(100, 1);
 
@@ -130,6 +131,15 @@ const paraglideHandle: Handle = async ({ event, resolve }) => {
 		});
 	});
 };
+
+if (process.env.NODE_ENV === 'production') {
+	const { valid, missing } = validateConfig();
+	if (!valid) {
+		console.error('❌ FATAL: Missing required configuration:', missing);
+		process.exit(1);
+	}
+	console.log('✅ Configuration validated successfully');
+}
 
 export const handle: Handle = sequence(
 	Sentry.sentryHandle(),
