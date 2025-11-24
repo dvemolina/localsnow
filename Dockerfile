@@ -74,8 +74,8 @@ USER sveltekit
 EXPOSE 3000
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=90s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:3000/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 \
+    CMD node -e "require('http').get('http://localhost:3000/api/health', (r) => {let body='';r.on('data', (d) => body+=d);r.on('end', () => {const ok=r.statusCode===200;process.exit(ok?0:1);});}).on('error', () => process.exit(1))"
 
 # Set environment to production
 ENV NODE_ENV=production
