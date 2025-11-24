@@ -37,6 +37,8 @@ COPY . .
 COPY .env.build .env
 
 # Export all vars from .env file and build
+# Increase Node.js memory limit to prevent heap out of memory errors during build
+ENV NODE_OPTIONS="--max-old-space-size=4096"
 RUN export $(cat .env | xargs) && pnpm run build
 
 # -----------------------------------------------------------------------------
