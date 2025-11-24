@@ -31,39 +31,40 @@ volumes:
 # =============================================================================
 # DOCKER SECRETS DEFINITION
 # All secrets are created via scripts/deploy-secrets.sh
+# Using localsnow_ prefix to avoid conflicts with other apps
 # =============================================================================
 secrets:
-  postgres_password:
+  localsnow_postgres_password:
     external: true
-  postgres_user:
+  localsnow_postgres_user:
     external: true
-  postgres_db:
+  localsnow_postgres_db:
     external: true
-  database_url:
+  localsnow_database_url:
     external: true
-  stripe_secret_key:
+  localsnow_stripe_secret_key:
     external: true
-  stripe_webhook_secret:
+  localsnow_stripe_webhook_secret:
     external: true
-  google_client_id:
+  localsnow_google_client_id:
     external: true
-  google_client_secret:
+  localsnow_google_client_secret:
     external: true
-  r2_account_id:
+  localsnow_r2_account_id:
     external: true
-  r2_access_key_id:
+  localsnow_r2_access_key_id:
     external: true
-  r2_secret_access_key:
+  localsnow_r2_secret_access_key:
     external: true
-  r2_bucket_name:
+  localsnow_r2_bucket_name:
     external: true
-  r2_public_url:
+  localsnow_r2_public_url:
     external: true
-  cron_secret:
+  localsnow_cron_secret:
     external: true
-  calendar_token_encryption_key:
+  localsnow_calendar_token_encryption_key:
     external: true
-  email_header_secret:
+  localsnow_email_header_secret:
     external: true
 
 services:
@@ -77,14 +78,14 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     secrets:
-      - postgres_db
-      - postgres_user
-      - postgres_password
+      - localsnow_postgres_db
+      - localsnow_postgres_user
+      - localsnow_postgres_password
     environment:
       # PostgreSQL reads these _FILE variants natively
-      POSTGRES_DB_FILE: /run/secrets/postgres_db
-      POSTGRES_USER_FILE: /run/secrets/postgres_user
-      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+      POSTGRES_DB_FILE: /run/secrets/localsnow_postgres_db
+      POSTGRES_USER_FILE: /run/secrets/localsnow_postgres_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/localsnow_postgres_password
     deploy:
       replicas: 1
       placement:
@@ -102,7 +103,7 @@ services:
           memory: 512M
           cpus: '0.5'
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $(cat /run/secrets/postgres_user) -d $(cat /run/secrets/postgres_db)"]
+      test: ["CMD-SHELL", "pg_isready -U $(cat /run/secrets/localsnow_postgres_user) -d $(cat /run/secrets/localsnow_postgres_db)"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -117,19 +118,19 @@ services:
       - localsnow_network
       - traefik_network
     secrets:
-      - database_url
-      - stripe_secret_key
-      - stripe_webhook_secret
-      - google_client_id
-      - google_client_secret
-      - r2_account_id
-      - r2_access_key_id
-      - r2_secret_access_key
-      - r2_bucket_name
-      - r2_public_url
-      - cron_secret
-      - calendar_token_encryption_key
-      - email_header_secret
+      - localsnow_database_url
+      - localsnow_stripe_secret_key
+      - localsnow_stripe_webhook_secret
+      - localsnow_google_client_id
+      - localsnow_google_client_secret
+      - localsnow_r2_account_id
+      - localsnow_r2_access_key_id
+      - localsnow_r2_secret_access_key
+      - localsnow_r2_bucket_name
+      - localsnow_r2_public_url
+      - localsnow_cron_secret
+      - localsnow_calendar_token_encryption_key
+      - localsnow_email_header_secret
     environment:
       # Non-secret configuration
       NODE_ENV: production
@@ -137,19 +138,19 @@ services:
 
       # Point to Docker secret files
       # Our config.ts reads these _FILE env vars and loads the secret files
-      DATABASE_URL_FILE: /run/secrets/database_url
-      STRIPE_SECRET_KEY_FILE: /run/secrets/stripe_secret_key
-      STRIPE_WEBHOOK_SECRET_FILE: /run/secrets/stripe_webhook_secret
-      GOOGLE_CLIENT_ID_FILE: /run/secrets/google_client_id
-      GOOGLE_CLIENT_SECRET_FILE: /run/secrets/google_client_secret
-      R2_ACCOUNT_ID_FILE: /run/secrets/r2_account_id
-      R2_ACCESS_KEY_ID_FILE: /run/secrets/r2_access_key_id
-      R2_SECRET_ACCESS_KEY_FILE: /run/secrets/r2_secret_access_key
-      R2_BUCKET_NAME_FILE: /run/secrets/r2_bucket_name
-      R2_PUBLIC_URL_FILE: /run/secrets/r2_public_url
-      CRON_SECRET_FILE: /run/secrets/cron_secret
-      CALENDAR_TOKEN_ENCRYPTION_KEY_FILE: /run/secrets/calendar_token_encryption_key
-      EMAIL_HEADER_SECRET_FILE: /run/secrets/email_header_secret
+      DATABASE_URL_FILE: /run/secrets/localsnow_database_url
+      STRIPE_SECRET_KEY_FILE: /run/secrets/localsnow_stripe_secret_key
+      STRIPE_WEBHOOK_SECRET_FILE: /run/secrets/localsnow_stripe_webhook_secret
+      GOOGLE_CLIENT_ID_FILE: /run/secrets/localsnow_google_client_id
+      GOOGLE_CLIENT_SECRET_FILE: /run/secrets/localsnow_google_client_secret
+      R2_ACCOUNT_ID_FILE: /run/secrets/localsnow_r2_account_id
+      R2_ACCESS_KEY_ID_FILE: /run/secrets/localsnow_r2_access_key_id
+      R2_SECRET_ACCESS_KEY_FILE: /run/secrets/localsnow_r2_secret_access_key
+      R2_BUCKET_NAME_FILE: /run/secrets/localsnow_r2_bucket_name
+      R2_PUBLIC_URL_FILE: /run/secrets/localsnow_r2_public_url
+      CRON_SECRET_FILE: /run/secrets/localsnow_cron_secret
+      CALENDAR_TOKEN_ENCRYPTION_KEY_FILE: /run/secrets/localsnow_calendar_token_encryption_key
+      EMAIL_HEADER_SECRET_FILE: /run/secrets/localsnow_email_header_secret
 
     deploy:
       # Run 2 replicas for high availability
