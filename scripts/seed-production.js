@@ -44,14 +44,19 @@ const pool = new Pool({
 // Load seed data safely
 async function loadSeedData() {
   try {
-    const countries = (await import("../src/lib/server/db/seeds/data/countries.js")).default;
-    const regions = (await import("../src/lib/server/db/seeds/data/regions.js")).default;
-    const resorts = (await import("../src/lib/server/db/seeds/data/resorts.js")).default;
-    const sports = (await import("../src/lib/server/db/seeds/data/sports.js")).default;
+    const countriesModule = await import('../src/lib/server/db/seeds/data/countries.js');
+    const regionsModule = await import('../src/lib/server/db/seeds/data/regions.js');
+    const resortsModule = await import('../src/lib/server/db/seeds/data/resorts.js');
+    const sportsModule = await import('../src/lib/server/db/seeds/data/sports.js');
 
-    return { countries, regions, resorts, sports };
+    return {
+      countries: countriesModule.countries || countriesModule.default,
+      regions: regionsModule.regions || regionsModule.default,
+      resorts: resortsModule.resorts || resortsModule.default,
+      sports: sportsModule.sports || sportsModule.default
+    };
   } catch (err) {
-    console.error("❌ Failed to load seed files:", err.message);
+    console.error('❌ Failed to load seed files:', err);
     process.exit(1);
   }
 }
