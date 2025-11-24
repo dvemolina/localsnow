@@ -104,7 +104,24 @@ async function recordMigration(hash) {
 async function runMigrations() {
   console.log('🗄️  Starting database migrations...\n');
 
+  // Use advisory lock to ensure only one instance runs migrations at a time
+  const lockClient = await pool.connect();
+  let hasLock = false;
+
   try {
+    // Try to acquire advisory lock (non-blocking)
+    // Lock ID: 123456789 (arbitrary number for migration lock)
+    const lockResult = await lockClient.query('SELECT pg_try_advisory_lock(123456789) as acquired');
+    hasLock = lockResult.rows[0].acquired;
+
+    if (!hasLock) {
+      console.log('⏳ Another instance is running migrations, waiting...');
+      // Wait for lock (blocking)
+      await lockClient.query('SELECT pg_advisory_lock(123456789)');
+      hasLock = true;
+      console.log('✅ Lock acquired, checking if migrations still needed...\n');
+    }
+
     // Create migrations tracking table
     await createMigrationsTable();
 
@@ -186,6 +203,11 @@ async function runMigrations() {
     console.error('\n❌ Migration failed:', error);
     process.exit(1);
   } finally {
+    // Release advisory lock
+    if (hasLock) {
+      await lockClient.query('SELECT pg_advisory_unlock(123456789)');
+    }
+    lockClient.release();
     await pool.end();
   }
 }
