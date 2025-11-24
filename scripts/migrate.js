@@ -49,6 +49,7 @@ const SAFE_ERROR_CODES = new Set([
   '42710', // object already exists (type, enum, etc.)
   '42P06', // schema already exists
   '42P16', // invalid table definition
+  '42701', // duplicate_column (column already exists)
   '23505', // unique_violation (when creating constraints that exist)
 ]);
 
