@@ -135,6 +135,9 @@ services:
       # Non-secret configuration
       NODE_ENV: production
       PROJECT_URL: https://localsnow.org
+      ORIGIN: https://localsnow.org
+      PROTOCOL_HEADER: x-forwarded-proto
+      HOST_HEADER: x-forwarded-host
 
       # Point to Docker secret files
       # Our config.ts reads these _FILE env vars and loads the secret files
