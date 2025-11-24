@@ -56,7 +56,7 @@
 		</div>
 	</div>
 	{/if}
-	<ScreenSize />
+	<!-- <ScreenSize />-->
 	<CookieConsent />
 
 
