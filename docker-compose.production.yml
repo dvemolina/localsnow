@@ -133,6 +133,7 @@ services:
       - localsnow_email_header_secret
     environment:
       # Non-secret configuration
+      SEED_DATA: true
       NODE_ENV: production
       PROJECT_URL: https://localsnow.org
       ORIGIN: https://localsnow.org
