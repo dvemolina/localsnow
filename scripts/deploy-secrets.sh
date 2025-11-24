@@ -156,38 +156,38 @@ create_or_update_secret() {
 }
 
 # Database secrets
-create_or_update_secret "postgres_password" "${POSTGRES_PASSWORD}"
-create_or_update_secret "postgres_user" "${POSTGRES_USER}"
-create_or_update_secret "postgres_db" "${POSTGRES_DB}"
-create_or_update_secret "database_url" "${DATABASE_URL}"
+create_or_update_secret "localsnow_postgres_password" "${POSTGRES_PASSWORD}"
+create_or_update_secret "localsnow_postgres_user" "${POSTGRES_USER}"
+create_or_update_secret "localsnow_postgres_db" "${POSTGRES_DB}"
+create_or_update_secret "localsnow_database_url" "${DATABASE_URL}"
 
 # Stripe secrets
-create_or_update_secret "stripe_secret_key" "${STRIPE_SECRET_KEY}"
-create_or_update_secret "stripe_webhook_secret" "${STRIPE_WEBHOOK_SECRET}"
+create_or_update_secret "localsnow_stripe_secret_key" "${STRIPE_SECRET_KEY}"
+create_or_update_secret "localsnow_stripe_webhook_secret" "${STRIPE_WEBHOOK_SECRET}"
 
 # Google OAuth secrets
-create_or_update_secret "google_client_id" "${GOOGLE_CLIENT_ID}"
-create_or_update_secret "google_client_secret" "${GOOGLE_CLIENT_SECRET}"
+create_or_update_secret "localsnow_google_client_id" "${GOOGLE_CLIENT_ID}"
+create_or_update_secret "localsnow_google_client_secret" "${GOOGLE_CLIENT_SECRET}"
 
 # Cloudflare R2 secrets
-create_or_update_secret "r2_account_id" "${R2_ACCOUNT_ID}"
-create_or_update_secret "r2_access_key_id" "${R2_ACCESS_KEY_ID}"
-create_or_update_secret "r2_secret_access_key" "${R2_SECRET_ACCESS_KEY}"
-create_or_update_secret "r2_bucket_name" "${R2_BUCKET_NAME}"
-create_or_update_secret "r2_public_url" "${R2_PUBLIC_URL}"
+create_or_update_secret "localsnow_r2_account_id" "${R2_ACCOUNT_ID}"
+create_or_update_secret "localsnow_r2_access_key_id" "${R2_ACCESS_KEY_ID}"
+create_or_update_secret "localsnow_r2_secret_access_key" "${R2_SECRET_ACCESS_KEY}"
+create_or_update_secret "localsnow_r2_bucket_name" "${R2_BUCKET_NAME}"
+create_or_update_secret "localsnow_r2_public_url" "${R2_PUBLIC_URL}"
 
 # Cron secret
-create_or_update_secret "cron_secret" "${CRON_SECRET}"
+create_or_update_secret "localsnow_cron_secret" "${CRON_SECRET}"
 
 # Calendar encryption key
-create_or_update_secret "calendar_token_encryption_key" "${CALENDAR_TOKEN_ENCRYPTION_KEY}"
+create_or_update_secret "localsnow_calendar_token_encryption_key" "${CALENDAR_TOKEN_ENCRYPTION_KEY}"
 
 # n8n email webhook secret
-create_or_update_secret "email_header_secret" "${EMAIL_HEADER_SECRET}"
+create_or_update_secret "localsnow_email_header_secret" "${EMAIL_HEADER_SECRET}"
 
 # Optional secrets (if provided)
-$([ -n "${SENTRY_DSN:-}" ] && echo "create_or_update_secret \"sentry_dsn\" \"${SENTRY_DSN}\"" || echo "echo '⏭️  Skipping sentry_dsn (not provided)'")
-$([ -n "${GA_MEASUREMENT_ID:-}" ] && echo "create_or_update_secret \"ga_measurement_id\" \"${GA_MEASUREMENT_ID}\"" || echo "echo '⏭️  Skipping ga_measurement_id (not provided)'")
+$([ -n "${SENTRY_DSN:-}" ] && echo "create_or_update_secret \"localsnow_sentry_dsn\" \"${SENTRY_DSN}\"" || echo "echo '⏭️  Skipping sentry_dsn (not provided)'")
+$([ -n "${GA_MEASUREMENT_ID:-}" ] && echo "create_or_update_secret \"localsnow_ga_measurement_id\" \"${GA_MEASUREMENT_ID}\"" || echo "echo '⏭️  Skipping ga_measurement_id (not provided)'")
 
 echo ""
 echo "✅ All secrets deployed successfully!"
