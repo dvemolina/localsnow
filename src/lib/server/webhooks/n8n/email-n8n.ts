@@ -1,7 +1,7 @@
-import { env } from "$env/dynamic/private";
+import { EMAIL_HEADER_SECRET } from '$lib/server/config';
 
 const N8N_BASE_URL = 'https://automation.personalflow.net/webhook'; //Delete the "-test" for production
-const EMAIL_SECRET = env.EMAIL_HEADER_SECRET;
+const EMAIL_SECRET = EMAIL_HEADER_SECRET;
 
 export async function sendSignupEmail(name: string, email: string, betaCode: string = 'BETA2025') {
 	try {

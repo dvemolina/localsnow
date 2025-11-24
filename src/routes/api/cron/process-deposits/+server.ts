@@ -1,13 +1,13 @@
 import { json } from '@sveltejs/kit';
 import { ClientDepositService } from '$src/features/Bookings/lib/clientDepositService';
-import { env } from '$env/dynamic/private';
+import { CRON_SECRET } from '$lib/server/config';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ request }) => {
     try {
         // Verify cron secret to prevent unauthorized access
         const authHeader = request.headers.get('authorization');
-        const cronSecret = env.CRON_SECRET;
+        const cronSecret = CRON_SECRET;
 
         if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
             return json({ error: 'Unauthorized' }, { status: 401 });

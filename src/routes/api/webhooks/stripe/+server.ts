@@ -1,12 +1,10 @@
-
 import { json, error, type RequestHandler } from '@sveltejs/kit';
 import Stripe from 'stripe';
-import { env } from '$env/dynamic/private';
+import { STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET } from '$lib/server/config';
 import { LeadPaymentService } from '$src/features/Bookings/lib/leadPaymentService';
 import { ClientDepositService } from '$src/features/Bookings/lib/clientDepositService';
 
-
-const stripe = new Stripe(env.STRIPE_SECRET_KEY!, {
+const stripe = new Stripe(STRIPE_SECRET_KEY, {
     apiVersion: '2025-10-29.clover'
 });
 
@@ -27,7 +25,7 @@ export const POST: RequestHandler = async ({ request }) => {
         event = stripe.webhooks.constructEvent(
             body,
             signature,
-            env.STRIPE_WEBHOOK_SECRET!
+            STRIPE_WEBHOOK_SECRET
         );
     } catch (err) {
         console.error('Webhook signature verification failed:', err);

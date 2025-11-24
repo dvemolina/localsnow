@@ -6,9 +6,9 @@ import { InstructorService } from '$src/features/Instructors/lib/instructorServi
 import { sendBookingNotificationToInstructor, sendBookingConfirmationToClient } from '$src/lib/server/webhooks/n8n/email-n8n';
 import type { RequestHandler } from './$types';
 import Stripe from 'stripe';
-import { env } from '$env/dynamic/private';
+import { STRIPE_SECRET_KEY } from '$lib/server/config';
 
-const stripe = new Stripe(env.STRIPE_SECRET_KEY!, {
+const stripe = new Stripe(STRIPE_SECRET_KEY, {
     apiVersion: '2025-10-29.clover'
 });
 
