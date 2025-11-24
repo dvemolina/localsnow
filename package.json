@@ -23,7 +23,8 @@
 		"seed": "tsx --tsconfig tsconfig.seeds.json src/lib/server/db/seeds/index.ts",
 		"seed:import-csv": "tsx --tsconfig tsconfig.seeds.json src/lib/server/db/seeds/importFromCSV.ts",
 		"seed:all": "tsx --tsconfig tsconfig.seeds.json src/lib/server/db/seeds/seedAll.ts",
-		"seed:clear": "tsx --tsconfig tsconfig.seeds.json src/lib/server/db/seeds/clearData.ts"
+		"seed:clear": "tsx --tsconfig tsconfig.seeds.json src/lib/server/db/seeds/clearData.ts",
+		"build:seeds": "node scripts/build-seeds.js"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",
@@ -46,6 +47,7 @@
 		"bits-ui": "^2.14.0",
 		"clsx": "^2.1.1",
 		"drizzle-kit": "^0.30.2",
+		"esbuild": "^0.27.0",
 		"eslint": "^9.18.0",
 		"eslint-config-prettier": "^10.0.1",
 		"eslint-plugin-svelte": "^2.46.1",

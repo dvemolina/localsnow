@@ -48,6 +48,7 @@ COPY .env.build .env
 # Increase Node.js memory limit to prevent heap out of memory errors during build
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 RUN export $(cat .env | xargs) && pnpm run build
+RUN pnpm run build:seeds
 
 # -----------------------------------------------------------------------------
 # Stage 3: Runner (Production)
@@ -81,7 +82,7 @@ COPY --from=builder --chown=sveltekit:nodejs /app/scripts/migrate.js ./scripts/m
 COPY --from=builder --chown=sveltekit:nodejs /app/scripts/seed-production.js ./scripts/seed-production.js
 COPY --from=builder --chown=sveltekit:nodejs /app/scripts/start.sh ./scripts/start.sh
 COPY --from=builder --chown=sveltekit:nodejs /app/scripts/db-init.sh ./scripts/db-init.sh
-COPY --from=builder --chown=sveltekit:nodejs /app/src/lib/server/db/seeds/data ./src/lib/server/db/seeds/data
+COPY --from=builder --chown=sveltekit:nodejs /app/build/seed-data ./src/lib/server/db/seeds/data
 
 # Make scripts executable
 USER root
