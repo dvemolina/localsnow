@@ -89,7 +89,7 @@ echo ""
 
 # Deploy secrets to VPS via SSH
 # shellcheck disable=SC2087
-ssh localsnow-vps bash << 'ENDSSH'
+ssh dvemolina@contabo bash << 'ENDSSH'
 set -euo pipefail
 
 RED='\033[0;31m'
