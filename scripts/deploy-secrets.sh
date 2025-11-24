@@ -140,7 +140,7 @@ echo ""
 ENDSSH
 
 # Now send the actual secrets through stdin
-ssh localsnow-vps bash << ENDSSH
+ssh dvemolina@contabo bash << ENDSSH
 set -euo pipefail
 
 # Function definition (repeated for this context)
