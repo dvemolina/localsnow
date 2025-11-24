@@ -7,10 +7,11 @@
 # Stage 1: Dependencies
 # -----------------------------------------------------------------------------
 FROM node:25-alpine AS deps
-WORKDIR /app
 
 # Install pnpm
-RUN npm install -g pnpm
+RUN npm install -g pnpm@latest
+
+WORKDIR /app
 
 # Copy package files
 COPY package.json pnpm-lock.yaml ./
@@ -22,11 +23,18 @@ RUN pnpm install --frozen-lockfile
 # Stage 2: Builder
 # -----------------------------------------------------------------------------
 FROM node:25-alpine AS builder
-WORKDIR /app
+
+RUN apk add --no-cache \
+libpng-dev \
+libjpeg-turbo-dev \
+libwebp-dev \
+vips-dev
+
 
 # Install pnpm
-RUN npm install -g pnpm
+RUN npm install -g pnpm@latest
 
+WORKDIR /app
 # Copy dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules
 
