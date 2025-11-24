@@ -92,5 +92,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 \
 # Set environment to production
 ENV NODE_ENV=production
 
-# Start the application
-CMD ["node", "build/index.js"]
+# Start the application (startup script runs migrations first, then starts app)
+CMD ["/app/scripts/start.sh"]
