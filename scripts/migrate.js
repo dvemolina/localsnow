@@ -52,8 +52,7 @@ const SAFE_ERROR_CODES = new Set([
   '23505', // unique_violation (when creating constraints that exist)
 ]);
 
-async function createMigrationsTable() {
-  const client = await pool.connect();
+async function createMigrationsTable(client) {
   try {
     await client.query(`
       CREATE TABLE IF NOT EXISTS __drizzle_migrations (
@@ -69,13 +68,10 @@ async function createMigrationsTable() {
       throw error;
     }
     console.log('✅ Migrations table ready (already exists)');
-  } finally {
-    client.release();
   }
 }
 
-async function getAppliedMigrations() {
-  const client = await pool.connect();
+async function getAppliedMigrations(client) {
   try {
     const result = await client.query(
       'SELECT hash FROM __drizzle_migrations ORDER BY created_at'
@@ -84,21 +80,14 @@ async function getAppliedMigrations() {
   } catch (error) {
     // If table doesn't exist yet, return empty set
     return new Set();
-  } finally {
-    client.release();
   }
 }
 
-async function recordMigration(hash) {
-  const client = await pool.connect();
-  try {
-    await client.query(
-      'INSERT INTO __drizzle_migrations (hash, created_at) VALUES ($1, $2) ON CONFLICT (hash) DO NOTHING',
-      [hash, Date.now()]
-    );
-  } finally {
-    client.release();
-  }
+async function recordMigration(client, hash) {
+  await client.query(
+    'INSERT INTO __drizzle_migrations (hash, created_at) VALUES ($1, $2) ON CONFLICT (hash) DO NOTHING',
+    [hash, Date.now()]
+  );
 }
 
 async function runMigrations() {
@@ -123,10 +112,10 @@ async function runMigrations() {
     }
 
     // Create migrations tracking table
-    await createMigrationsTable();
+    await createMigrationsTable(lockClient);
 
     // Get already applied migrations
-    const appliedMigrations = await getAppliedMigrations();
+    const appliedMigrations = await getAppliedMigrations(lockClient);
 
     // Find migration directory
     const migrationsDir = path.join(__dirname, '../drizzle/migrations');
@@ -165,12 +154,11 @@ async function runMigrations() {
       console.log(`▶️  Applying ${file}...`);
 
       const sql = fs.readFileSync(migrationPath, 'utf-8');
-      const client = await pool.connect();
 
       try {
         // Try to apply the migration
-        await client.query(sql);
-        await recordMigration(hash);
+        await lockClient.query(sql);
+        await recordMigration(lockClient, hash);
         console.log(`✅ Applied ${file}`);
         applied++;
       } catch (error) {
@@ -178,7 +166,7 @@ async function runMigrations() {
         if (SAFE_ERROR_CODES.has(error.code)) {
           console.log(`⚠️  ${file}: Some objects already exist (${error.message.split('\n')[0]})`);
           console.log(`   Marking as applied anyway...`);
-          await recordMigration(hash);
+          await recordMigration(lockClient, hash);
           warnings++;
         } else {
           // This is a real error
@@ -186,8 +174,6 @@ async function runMigrations() {
           console.error(`   Error code: ${error.code}`);
           throw error;
         }
-      } finally {
-        client.release();
       }
     }
 
