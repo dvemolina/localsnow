@@ -11,7 +11,8 @@ dist
 
 # Environment files
 .env
-.env.*
+.env.production.secrets
+.env.sentry-build-plugin
 !.env.example
 
 # Git
