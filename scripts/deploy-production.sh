@@ -18,7 +18,7 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 IMAGE_NAME="ghcr.io/dvemolina/localsnow/localsnow"
 IMAGE_TAG="${IMAGE_TAG:-latest}"
 COMPOSE_FILE="docker-compose.production.yml"
-VPS_HOST="${VPS_HOST:-dvemolina@vmi2543894}"
+VPS_HOST="${VPS_HOST:-dvemolina@contabo}"
 
 # Colors
 GREEN='\033[0;32m'
@@ -75,6 +75,9 @@ done
 
 # Step 1: Build and push Docker image
 if [ "$SKIP_BUILD" = false ]; then
+  echo -e "${YELLOW}➡️ Switching to Docker context: default${NC}"
+  docker context use default
+
   echo -e "${YELLOW}📦 Step 1: Building Docker image...${NC}"
   echo ""
 
@@ -174,6 +177,9 @@ fi
 
 # Step 4: Deploy/update service
 if [ "$SKIP_DEPLOY" = false ]; then
+  echo -e "${YELLOW}➡️ Switching to Docker context: localsnow${NC}"
+  docker context use localsnow
+
   echo -e "${YELLOW}🚀 Step 4: Deploying service...${NC}"
   echo ""
 
