@@ -67,6 +67,18 @@ COPY --from=builder --chown=sveltekit:nodejs /app/package.json ./package.json
 # Copy static files if needed
 COPY --from=builder --chown=sveltekit:nodejs /app/static ./static
 
+# Copy database migration files and scripts
+COPY --from=builder --chown=sveltekit:nodejs /app/drizzle ./drizzle
+COPY --from=builder --chown=sveltekit:nodejs /app/scripts/migrate.js ./scripts/migrate.js
+COPY --from=builder --chown=sveltekit:nodejs /app/scripts/seed-production.js ./scripts/seed-production.js
+COPY --from=builder --chown=sveltekit:nodejs /app/scripts/db-init.sh ./scripts/db-init.sh
+COPY --from=builder --chown=sveltekit:nodejs /app/src/lib/server/db/seeds/data ./src/lib/server/db/seeds/data
+
+# Make scripts executable
+USER root
+RUN chmod +x /app/scripts/*.sh /app/scripts/*.js
+USER sveltekit
+
 # Set user
 USER sveltekit
 
