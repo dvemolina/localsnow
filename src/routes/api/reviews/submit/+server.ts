@@ -2,7 +2,6 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { ReviewService } from '$src/features/Reviews/lib/reviewService';
 import { submitReviewSchema } from '$src/features/Reviews/lib/reviewSchema';
-import { sendEmail } from '$lib/server/webhooks/n8n/email-n8n';
 import { db } from '$lib/server/db';
 import { bookingRequests } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
@@ -45,6 +44,8 @@ export const POST: RequestHandler = async ({ request }) => {
 		// Submit review
 		const review = await reviewService.submitReview(validatedData);
 
+		//UNCOMMENT THIS BUT IMPLEMENT sendThanksForReviewing in email-n8n.ts
+		/*
 		// Optional: Send thank you email to client
 		try {
 			await sendEmail({
@@ -57,6 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			console.error('Failed to send review thank you email:', emailError);
 			// Don't fail the review submission if email fails
 		}
+			*/
 
 		return json({
 			success: true,
