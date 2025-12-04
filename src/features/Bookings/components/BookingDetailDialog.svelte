@@ -270,16 +270,46 @@
 						<span class="font-semibold">Next Steps</span>
 					</div>
 					<p class="text-sm text-blue-700 mb-3">
-						Review the booking details and contact the client directly using the information above. If you're not interested, you can reject this request.
+						Review the booking details and contact the client directly using the information above. You can accept this request to confirm your availability, or reject it if you're not interested.
 					</p>
-					<Button
-						variant="outline"
-						class="w-full"
-						onclick={() => showRejectConfirm = true}
-						disabled={isSubmitting}
-					>
-						Not Interested - Reject Request
-					</Button>
+					<div class="flex gap-3">
+						<form
+							method="POST"
+							action="?/acceptBooking"
+							class="flex-1"
+							use:enhance={() => {
+								isSubmitting = true;
+								return async ({ result, update }) => {
+									isSubmitting = false;
+									if (result.type === 'success') {
+										actionResult = { success: true, message: 'Booking accepted! The client has been notified.' };
+										setTimeout(() => {
+											open = false;
+											window.location.reload();
+										}, 1500);
+									}
+									await update();
+								};
+							}}
+						>
+							<input type="hidden" name="bookingId" value={booking.id} />
+							<Button
+								type="submit"
+								class="w-full"
+								disabled={isSubmitting}
+							>
+								{isSubmitting ? 'Accepting...' : 'Accept Request'}
+							</Button>
+						</form>
+						<Button
+							variant="outline"
+							class="flex-1"
+							onclick={() => showRejectConfirm = true}
+							disabled={isSubmitting}
+						>
+							Reject
+						</Button>
+					</div>
 				</div>
 			{/if}
 		</div>

@@ -20,7 +20,7 @@
 				name: 'How do you make money if everything is free?',
 				acceptedAnswer: {
 					'@type': 'Answer',
-					text: 'Currently, we don\'t. LocalSnow is open-source and community-driven. In the future, we may explore optional premium features or ads, but the core platform will always remain 100% free.'
+					text: 'Currently, we don\'t. LocalSnow is open-source and community-driven. While we\'re growing the platform, we\'re keeping it completely free. In the future, we may need to introduce minimal fees to cover costs, but we\'ll give plenty of notice and keep them far below what other platforms charge.'
 				}
 			},
 			{
@@ -85,7 +85,7 @@
 		with students. No booking fees, no commissions, no deposits. Just direct contact.
 	</p>
 
-	<!-- Free Forever Highlight -->
+	<!-- Free Highlight -->
 	<div
 		class="my-8 rounded-lg border-2 border-green-500 bg-gradient-to-r from-green-50 to-blue-50 p-6 not-prose"
 	>
@@ -103,11 +103,11 @@
 				class="text-green-600"
 				><polyline points="20 6 9 17 4 12"></polyline></svg
 			>
-			<h3 class="text-xl font-bold text-green-900 m-0">100% Free. Forever.</h3>
+			<h3 class="text-xl font-bold text-green-900 m-0">100% Free Right Now.</h3>
 		</div>
 		<p class="text-gray-700 m-0">
 			No "trial periods." No "premium plans." No catch. LocalSnow is open-source and
-			community-driven. We don't take commissions, we don't charge fees, and we never will.
+			community-driven. We're keeping it free while we build and grow the platform—no commissions, no fees.
 		</p>
 	</div>
 
@@ -298,7 +298,7 @@
 				<li>✅ <strong>€0 listing fees</strong> - create your profile for free</li>
 				<li>✅ <strong>€0 per booking request</strong> - no lead fees or unlock fees</li>
 				<li>✅ <strong>0% commission</strong> - keep 100% of your lesson fees</li>
-				<li>✅ <strong>No monthly subscriptions</strong> - free forever</li>
+				<li>✅ <strong>No monthly subscriptions</strong> - completely free while we grow</li>
 			</ul>
 		</div>
 	</section>
@@ -320,9 +320,8 @@
 			<div class="rounded-lg border border-border p-5">
 				<h3 class="title4 mb-2">How do you make money if everything is free?</h3>
 				<p class="text-sm text-gray-600 mb-0">
-					Currently, we don't. LocalSnow is <strong>open-source and community-driven</strong>. In
-					the future, we may explore optional premium features or ads, but the core platform will
-					always remain 100% free. We're building the platform we wish existed—not maximizing
+					Currently, we don't. LocalSnow is <strong>open-source and community-driven</strong>. While we're growing the platform, we're keeping it completely free. In
+					the future, we may need to introduce minimal fees to cover costs, but we'll give plenty of notice and keep them far below what other platforms charge. We're building the platform we wish existed—not maximizing
 					profit.
 				</p>
 			</div>
