@@ -134,8 +134,8 @@
 				</div>
 			{/if}
 
-			<!-- Contact Information / Payment Section -->
-			{#if booking.contactInfoUnlocked}
+			<!-- Contact Information -->
+			{#if !isInactiveBooking}
 				<div class="rounded-lg border-2 border-primary/20 bg-primary/5 p-4">
 					<h3 class="mb-3 font-semibold flex items-center gap-2">
 						<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,73 +164,6 @@
 										+{booking.clientCountryCode} {booking.clientPhone}
 									</a>
 								</p>
-							</div>
-						{/if}
-					</div>
-				</div>
-			{:else if !isInactiveBooking}
-				<!-- Preview with blur effect - Only show for active pending bookings -->
-				<div class="rounded-lg border-2 border-yellow-200 bg-yellow-50 p-4">
-					<div class="mb-3 flex items-center justify-between">
-						<h3 class="font-semibold text-yellow-800">🔒 Contact Information Locked</h3>
-						<Badge variant="secondary">€5 to unlock</Badge>
-					</div>
-					
-					<!-- Blurred preview -->
-					<div class="relative mb-4 rounded bg-white p-3 text-sm">
-						<div class="absolute inset-0 backdrop-blur-sm bg-white/60 rounded flex items-center justify-center">
-							<svg class="h-12 w-12 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-							</svg>
-						</div>
-						<div class="space-y-2 blur-sm select-none">
-							<p><strong>Name:</strong> John D***</p>
-							<p><strong>Email:</strong> j***@e***.com</p>
-							<p><strong>Phone:</strong> +** *** ****</p>
-						</div>
-					</div>
-
-					<div class="space-y-3">
-						<p class="text-sm text-yellow-800">
-							💡 Review the lesson details below. If interested, pay €5 to unlock contact information and connect with this client.
-						</p>
-						
-						<Button
-							onclick={() => (window.location.href = `/leads/payment/${booking.id}`)}
-							class="w-full"
-							size="lg"
-						>
-							Pay €5 to Unlock Contact Info
-						</Button>
-
-						<p class="text-xs text-center text-muted-foreground">
-							The client will be notified when you unlock their contact information
-						</p>
-					</div>
-				</div>
-			{/if}
-
-			<!-- Deposit Status -->
-			{#if depositStatus?.exists}
-				<div class="rounded-lg border-2 {depositStatus.status === 'held' ? 'border-green-200 bg-green-50' : depositStatus.status === 'refunded' ? 'border-blue-200 bg-blue-50' : 'border-gray-200 bg-gray-50'} p-4">
-					<h3 class="mb-3 font-semibold flex items-center gap-2">
-						<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-						</svg>
-						Client Deposit Status
-					</h3>
-					<div class="grid gap-3 text-sm">
-						<div>
-							<span class="text-muted-foreground">Status:</span>
-							<p class="font-medium capitalize">{depositStatus.status}</p>
-						</div>
-						<div>
-							<span class="text-muted-foreground">Amount:</span>
-							<p class="font-medium">{depositStatus.amount} {depositStatus.currency.toUpperCase()}</p>
-						</div>
-						{#if depositStatus.status === 'held'}
-							<div class="rounded bg-green-100 p-2 text-green-800">
-								<p class="text-xs">✓ Client paid deposit - shows serious commitment</p>
 							</div>
 						{/if}
 					</div>
@@ -328,45 +261,25 @@
 			{/if}
 
 			<!-- Actions -->
-			<!-- BEFORE PAYMENT: Two clear options -->
-			{#if !booking.contactInfoUnlocked && booking.status === 'pending'}
-				<div class="flex gap-3 pt-4">
-					<!-- Option 1: Free Reject (with confirmation) -->
+			{#if booking.status === 'pending' && !isInactiveBooking}
+				<div class="rounded-lg border-2 border-blue-200 bg-blue-50 p-4">
+					<div class="flex items-center gap-2 text-blue-800 mb-2">
+						<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+						</svg>
+						<span class="font-semibold">Next Steps</span>
+					</div>
+					<p class="text-sm text-blue-700 mb-3">
+						Review the booking details and contact the client directly using the information above. If you're not interested, you can reject this request.
+					</p>
 					<Button
 						variant="outline"
-						class="flex-1"
+						class="w-full"
 						onclick={() => showRejectConfirm = true}
 						disabled={isSubmitting}
 					>
-						Not Interested
+						Not Interested - Reject Request
 					</Button>
-
-					<!-- Option 2: Pay & Accept (combined action) -->
-					<Button
-						onclick={() => (window.location.href = `/leads/payment/${booking.id}`)}
-						class="flex-1"
-					>
-						Pay €5 & Accept Booking
-					</Button>
-				</div>
-
-				<p class="text-xs text-center text-muted-foreground mt-2">
-					💡 Only pay if you're ready to accept this booking
-				</p>
-			{/if}
-
-			<!-- AFTER PAYMENT: Show acceptance confirmation, NO MORE ACTIONS -->
-			{#if booking.contactInfoUnlocked}
-				<div class="rounded-lg border-2 border-green-200 bg-green-50 p-4 mb-4">
-					<div class="flex items-center gap-2 text-green-800">
-						<svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-							<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-						</svg>
-						<span class="font-semibold">Booking Accepted</span>
-					</div>
-					<p class="text-sm text-green-700 mt-1">
-						You've unlocked contact info and accepted this booking. Contact the client to arrange details.
-					</p>
 				</div>
 			{/if}
 		</div>
