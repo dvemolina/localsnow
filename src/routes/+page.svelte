@@ -193,9 +193,8 @@
 				{m.home_free_banner_description()}
 			</p>
 
-			<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 p-4">
 				<div class="flex flex-col items-center gap-2 rounded-lg bg-white border-2 border-green-200 px-4 py-4 shadow-sm">
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
 					<div class="text-center">
 						<div class="text-2xl font-bold text-green-900">{m.home_free_banner_booking_fees()}</div>
 						<div class="text-sm text-gray-600">{m.home_free_banner_booking_fees_label()}</div>
@@ -203,7 +202,6 @@
 				</div>
 
 				<div class="flex flex-col items-center gap-2 rounded-lg bg-white border-2 border-green-200 px-4 py-4 shadow-sm">
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
 					<div class="text-center">
 						<div class="text-2xl font-bold text-green-900">{m.home_free_banner_commission()}</div>
 						<div class="text-sm text-gray-600">{m.home_free_banner_commission_label()}</div>
@@ -211,7 +209,6 @@
 				</div>
 
 				<div class="flex flex-col items-center gap-2 rounded-lg bg-white border-2 border-green-200 px-4 py-4 shadow-sm">
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
 					<div class="text-center">
 						<div class="text-2xl font-bold text-green-900">{m.home_free_banner_unlimited()}</div>
 						<div class="text-sm text-gray-600">{m.home_free_banner_unlimited_label()}</div>
@@ -322,7 +319,7 @@
 </section>
 
 <!-- Why We're Free Section -->
-<section class="section bg-gradient-to-br from-gray-50 to-gray-100 py-16 rounded-lg">
+<section class="section  py-16 rounded-lg">
 	<div class="container max-w-4xl">
 		<div class="text-center mb-10">
 			<h2 class="mb-4 text-3xl font-bold text-gray-900">{m.home_why_free_title()}</h2>
