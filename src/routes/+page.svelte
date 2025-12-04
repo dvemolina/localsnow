@@ -51,7 +51,7 @@
 		'@type': 'WebSite',
 		name: 'Local Snow',
 		description:
-			'Find ski and snowboard instructors at Spanish resorts. Direct contact, no booking fees.',
+			'100% free ski and snowboard instructor directory. No booking fees, no commissions, no hidden costs. Direct contact with certified instructors.',
 		url: 'https://localsnow.org',
 		potentialAction: {
 			'@type': 'SearchAction',
@@ -67,13 +67,13 @@
 		url: 'https://localsnow.org',
 		logo: 'https://localsnow.org/local-snow-head.png',
 		description:
-			'Platform connecting ski and snowboard instructors with clients at Spanish resorts. No booking fees, direct contact with certified instructors.',
+			'Community-driven platform connecting ski and snowboard instructors with students. Zero fees, zero commissions, 100% free forever. Built for instructors, not investors.',
 		email: 'support@localsnow.org',
 		areaServed: {
 			'@type': 'Country',
 			name: 'Spain'
 		},
-		serviceType: 'Ski Instructor Marketplace',
+		serviceType: 'Free Ski Instructor Directory',
 		foundingDate: '2024',
 		sameAs: []
 	};
@@ -176,36 +176,49 @@
 	</div>
 </section>
 
-<!-- Beta Launch Banner -->
-<section class="bg-green-50 border-2 border-green-500 py-8 mt-12 rounded-md">
+<!-- Free Forever Banner -->
+<section class="bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-500 py-10 mt-12 rounded-md shadow-sm">
 	<div class="container">
-		<div class="mx-auto max-w-3xl text-center">
-			<div class="mb-4 inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-900 ">
-				<span class="relative flex h-3 w-3">
-					<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-600 opacity-75"></span>
-					<span class="relative inline-flex h-3 w-3 rounded-full bg-green-600"></span>
-				</span>
-				{m.beta_launch_badge()}
+		<div class="mx-auto max-w-4xl text-center">
+			<div class="mb-4 inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-bold text-green-900">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-green-600"><polyline points="20 6 9 17 4 12"></polyline></svg>
+				{m.home_free_banner_badge()}
 			</div>
 
-			<h2 class="mb-3 text-2xl font-bold text-green-900 md:text-3xl ">
-				{m.beta_launch_title()}
+			<h2 class="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">
+				{m.home_free_banner_title()}
 			</h2>
 
-			<p class="mb-4 text-lg text-green-800 ">
-				{m.beta_launch_description()}
+			<p class="mb-6 text-lg text-gray-700 leading-relaxed max-w-2xl mx-auto">
+				{m.home_free_banner_description()}
 			</p>
 
-			<div class="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-				<div class="flex items-center gap-2 rounded-lg bg-white border-2 border-green-200 px-4 py-3 ">
-					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600 dark:text-green-400"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-					<span class="text-sm text-green-900 ">{m.beta_launch_valid_until()}</span>
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 p-4">
+				<div class="flex flex-col items-center gap-2 rounded-lg bg-white border-2 border-green-200 px-4 py-4 shadow-sm">
+					<div class="text-center">
+						<div class="text-2xl font-bold text-green-900">{m.home_free_banner_booking_fees()}</div>
+						<div class="text-sm text-gray-600">{m.home_free_banner_booking_fees_label()}</div>
+					</div>
 				</div>
-				<div class="flex items-center gap-2 rounded-lg bg-white border-2 border-green-200 px-4 py-3 ">
-					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600 dark:text-green-400"><polyline points="20 6 9 17 4 12"></polyline></svg>
-					<span class="text-sm text-green-900 ">{m.beta_launch_no_fees()}</span>
+
+				<div class="flex flex-col items-center gap-2 rounded-lg bg-white border-2 border-green-200 px-4 py-4 shadow-sm">
+					<div class="text-center">
+						<div class="text-2xl font-bold text-green-900">{m.home_free_banner_commission()}</div>
+						<div class="text-sm text-gray-600">{m.home_free_banner_commission_label()}</div>
+					</div>
+				</div>
+
+				<div class="flex flex-col items-center gap-2 rounded-lg bg-white border-2 border-green-200 px-4 py-4 shadow-sm">
+					<div class="text-center">
+						<div class="text-2xl font-bold text-green-900">{m.home_free_banner_unlimited()}</div>
+						<div class="text-sm text-gray-600">{m.home_free_banner_unlimited_label()}</div>
+					</div>
 				</div>
 			</div>
+
+			<p class="mt-6 text-sm text-gray-600 italic">
+				{m.home_free_banner_tagline()}
+			</p>
 		</div>
 	</div>
 </section>
@@ -305,88 +318,80 @@
 	</div>
 </section>
 
-<!-- Trust Signals Section -->
-<section class="section">
-	<div class="mb-10 text-center">
-		<h2 class="mb-4 text-center text-3xl font-bold">{m.home_trust_title()}</h2>
-		<p class="text-center text-gray-600">
-			{m.home_trust_subtitle()}
-		</p>
-	</div>
-
-	<div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-		<div class="rounded-lg border border-border bg-card p-6 text-center shadow-sm">
-			<div
-				class="bg-primary/10 text-primary mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-8 w-8"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-					/>
-				</svg>
-			</div>
-			<h3 class="mb-2 text-xl font-semibold">{m.home_trust_free_title()}</h3>
-			<p class="text-gray-600">
-				{m.home_trust_free_desc()}
+<!-- Why We're Free Section -->
+<section class="section  py-16 rounded-lg">
+	<div class="container max-w-4xl">
+		<div class="text-center mb-10">
+			<h2 class="mb-4 text-3xl font-bold text-gray-900">{m.home_why_free_title()}</h2>
+			<p class="text-xl text-gray-600">
+				{m.home_why_free_subtitle()}
 			</p>
 		</div>
 
-		<div class="rounded-lg border border-border bg-card p-6 text-center shadow-sm">
-			<div
-				class="bg-primary/10 text-primary mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-8 w-8"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
-					/>
-				</svg>
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+			<div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+				<div class="flex items-start gap-4">
+					<div class="bg-red-100 rounded-full p-3 flex-shrink-0">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-600"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+					</div>
+					<div>
+						<h3 class="font-bold text-lg mb-2 text-gray-900">{m.home_why_free_problem_title()}</h3>
+						<p class="text-gray-600 text-sm leading-relaxed">
+							{m.home_why_free_problem_desc()}
+						</p>
+					</div>
+				</div>
 			</div>
-			<h3 class="mb-2 text-xl font-semibold">{m.home_trust_verified_title()}</h3>
-			<p class="text-gray-600">
-				{m.home_trust_verified_desc()}
-			</p>
+
+			<div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+				<div class="flex items-start gap-4">
+					<div class="bg-green-100 rounded-full p-3 flex-shrink-0">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600"><polyline points="20 6 9 17 4 12"></polyline></svg>
+					</div>
+					<div>
+						<h3 class="font-bold text-lg mb-2 text-gray-900">{m.home_why_free_solution_title()}</h3>
+						<p class="text-gray-600 text-sm leading-relaxed">
+							{m.home_why_free_solution_desc()}
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+				<div class="flex items-start gap-4">
+					<div class="bg-blue-100 rounded-full p-3 flex-shrink-0">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-600"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+					</div>
+					<div>
+						<h3 class="font-bold text-lg mb-2 text-gray-900">{m.home_why_free_community_title()}</h3>
+						<p class="text-gray-600 text-sm leading-relaxed">
+							{m.home_why_free_community_desc()}
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+				<div class="flex items-start gap-4">
+					<div class="bg-purple-100 rounded-full p-3 flex-shrink-0">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-600"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+					</div>
+					<div>
+						<h3 class="font-bold text-lg mb-2 text-gray-900">{m.home_why_free_forever_title()}</h3>
+						<p class="text-gray-600 text-sm leading-relaxed">
+							{m.home_why_free_forever_desc()}
+						</p>
+					</div>
+				</div>
+			</div>
 		</div>
 
-		<div class="rounded-lg border border-border bg-card p-6 text-center shadow-sm">
-			<div
-				class="bg-primary/10 text-primary mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-8 w-8"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-					/>
-				</svg>
-			</div>
-			<h3 class="mb-2 text-xl font-semibold">{m.home_trust_built_title()}</h3>
+		<div class="mt-10 text-center bg-white rounded-lg p-6 border-2 border-green-500 shadow-sm">
+			<p class="text-gray-700 text-lg mb-2">
+				<strong>{m.home_why_free_sound_good_title()}</strong>
+			</p>
 			<p class="text-gray-600">
-				{m.home_trust_built_desc()}
+				{m.home_why_free_sound_good_desc()}
 			</p>
 		</div>
 	</div>

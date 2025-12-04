@@ -2,15 +2,9 @@ import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { SlotGenerationService } from '$src/features/Availability/lib/slotGenerationService';
 import { TentativeBookingService } from '$src/features/Availability/lib/tentativeBookingService';
-import Stripe from 'stripe';
-import { STRIPE_SECRET_KEY } from '$lib/server/config';
 import { BookingRequestService } from '$src/features/Bookings/lib/bookingRequestService';
 import { LaunchCodeService } from '$src/features/LaunchCodes/lib/launchCodeService';
 import { sendBookingNotificationToInstructor, sendBookingConfirmationToClient } from '$lib/server/webhooks/n8n/email-n8n';
-
-const stripe = new Stripe(STRIPE_SECRET_KEY, {
-    apiVersion: '2025-10-29.clover'
-});
 
 const launchCodeService = new LaunchCodeService();
 const tentativeService = new TentativeBookingService();
@@ -73,20 +67,18 @@ export const POST: RequestHandler = async ({ request, url, locals }) => {
             currentDate.setDate(currentDate.getDate() + 1);
         }
 
-        // ✅ VALIDATE LAUNCH CODE (if provided)
+        // ✅ VALIDATE LAUNCH CODE (if provided) - for tracking purposes only
         const launchCode = data.launchCode?.trim();
         let isUsingLaunchCode = false;
 
         if (launchCode) {
             const validation = await launchCodeService.validateCode(launchCode);
 
-            if (!validation.valid) {
-                // Launch code provided but invalid - return error to user
-                throw error(400, validation.error || 'Invalid launch code');
+            if (validation.valid) {
+                // Code is valid - track usage for analytics
+                isUsingLaunchCode = true;
             }
-
-            // Code is valid - will bypass payment
-            isUsingLaunchCode = true;
+            // If invalid, just ignore it - no longer blocking
         }
 
         // ✅ CHECK FOR DUPLICATE BOOKING REQUEST
@@ -122,111 +114,78 @@ export const POST: RequestHandler = async ({ request, url, locals }) => {
             sports: data.sports || []
         });
 
-        // ✅ BETA ACCESS PATH: Skip payment if using valid launch code
+        // ✅ FREE DIRECTORY MODEL: All bookings are free
+        // Record launch code usage if provided (for analytics)
         if (isUsingLaunchCode && launchCode) {
-            // Record code usage
             await launchCodeService.recordUsage(launchCode);
 
-            // Update booking to track beta access
-            await bookingService.updateBookingStatus(bookingRequest.id, 'pending');
-
-            // Mark the booking as using a launch code (for analytics)
             const { db } = await import('$lib/server/db');
             const { bookingRequests } = await import('$lib/server/db/schema');
             const { eq } = await import('drizzle-orm');
             await db.update(bookingRequests)
                 .set({ usedLaunchCode: launchCode.toUpperCase() })
                 .where(eq(bookingRequests.id, bookingRequest.id));
-
-            // Create tentative blocks (same as paid flow)
-            try {
-                await tentativeService.createTentativeBlock(bookingRequest.id, data.timeSlots);
-            } catch (tentativeError) {
-                // If slots were taken in race condition, mark booking as expired
-                console.error('Failed to create tentative blocks:', tentativeError);
-                await bookingService.updateBookingStatus(bookingRequest.id, 'expired');
-                throw error(409, 'The selected time slots were just booked by another client. Please select different times.');
-            }
-
-            // Send notification emails (fire and forget - same as paid flow)
-            const instructorService = (await import('$src/features/Instructors/lib/instructorService')).InstructorService;
-            const instructor = await new instructorService().getInstructorById(instructorId);
-
-            sendBookingNotificationToInstructor({
-                instructorEmail: instructor?.email || '',
-                instructorName: instructor?.name || '',
-                bookingRequestId: bookingRequest.id,
-                clientName: data.clientName,
-                numberOfStudents: Number(data.numberOfStudents),
-                startDate: startDate.toISOString(),
-                endDate: endDate?.toISOString() || null,
-                hoursPerDay: Number(data.hoursPerDay),
-                estimatedPrice: data.estimatedPrice || 0,
-                currency: data.currency || 'EUR',
-                leadPrice: 5,
-                paymentUrl: `/leads/payment/${bookingRequest.id}`,
-                dashboardUrl: '/dashboard/bookings'
-            }).catch(err => console.error('Email error:', err));
-
-            sendBookingConfirmationToClient({
-                clientEmail: data.clientEmail,
-                clientName: data.clientName,
-                instructorName: instructor?.name || '',
-                numberOfStudents: Number(data.numberOfStudents),
-                startDate: startDate.toISOString(),
-                endDate: endDate?.toISOString() || null,
-                hoursPerDay: Number(data.hoursPerDay),
-                estimatedPrice: data.estimatedPrice || 0,
-                currency: data.currency || 'EUR'
-            }).catch(err => console.error('Email error:', err));
-
-            // Return success without Stripe checkout
-            return json({
-                success: true,
-                usedLaunchCode: true,
-                bookingId: bookingRequest.id,
-                message: 'Booking request created successfully with beta access!',
-                redirectUrl: `/booking/booking-success?bookingId=${bookingRequest.id}`
-            });
         }
 
-        // ✅ NORMAL PAYMENT PATH: Create Stripe session
-        const baseUrl = url.origin;
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ['card'],
-            line_items: [{
-                price_data: {
-                    currency: 'eur',
-                    product_data: {
-                        name: 'Booking Request Deposit',
-                        description: '€15 refundable deposit',
-                    },
-                    unit_amount: 1500,
-                },
-                quantity: 1,
-            }],
-            mode: 'payment',
-            payment_intent_data: {
-                capture_method: 'manual',
-                metadata: {
-                    type: 'client_deposit',
-                    bookingRequestId: bookingRequest.id.toString()
-                }
-            },
-            success_url: `${baseUrl}/api/bookings/webhooks/deposit-paid?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${baseUrl}/booking/booking-request-cancelled?bookingId=${bookingRequest.id}`,
-            customer_email: data.clientEmail,
-            metadata: {
-                type: 'client_deposit',
-                bookingRequestId: bookingRequest.id.toString()
-            }
-        });
+        // Update booking status to pending and unlock contact info immediately
+        await bookingService.updateBookingStatus(bookingRequest.id, 'pending');
 
+        // Unlock contact info immediately (no payment required)
+        const { db } = await import('$lib/server/db');
+        const { bookingRequests } = await import('$lib/server/db/schema');
+        const { eq } = await import('drizzle-orm');
+        await db.update(bookingRequests)
+            .set({ contactInfoUnlocked: true })
+            .where(eq(bookingRequests.id, bookingRequest.id));
+
+        // Create tentative blocks
+        try {
+            await tentativeService.createTentativeBlock(bookingRequest.id, data.timeSlots);
+        } catch (tentativeError) {
+            // If slots were taken in race condition, mark booking as expired
+            console.error('Failed to create tentative blocks:', tentativeError);
+            await bookingService.updateBookingStatus(bookingRequest.id, 'expired');
+            throw error(409, 'The selected time slots were just booked by another client. Please select different times.');
+        }
+
+        // Send notification emails
+        const instructorService = (await import('$src/features/Instructors/lib/instructorService')).InstructorService;
+        const instructor = await new instructorService().getInstructorById(instructorId);
+
+        sendBookingNotificationToInstructor({
+            instructorEmail: instructor?.email || '',
+            instructorName: instructor?.name || '',
+            bookingRequestId: bookingRequest.id,
+            clientName: data.clientName,
+            numberOfStudents: Number(data.numberOfStudents),
+            startDate: startDate.toISOString(),
+            endDate: endDate?.toISOString() || null,
+            hoursPerDay: Number(data.hoursPerDay),
+            estimatedPrice: data.estimatedPrice || 0,
+            currency: data.currency || 'EUR',
+            leadPrice: 0, // No longer charging for leads
+            paymentUrl: '', // No payment URL needed
+            dashboardUrl: '/dashboard/bookings'
+        }).catch(err => console.error('Email error:', err));
+
+        sendBookingConfirmationToClient({
+            clientEmail: data.clientEmail,
+            clientName: data.clientName,
+            instructorName: instructor?.name || '',
+            numberOfStudents: Number(data.numberOfStudents),
+            startDate: startDate.toISOString(),
+            endDate: endDate?.toISOString() || null,
+            hoursPerDay: Number(data.hoursPerDay),
+            estimatedPrice: data.estimatedPrice || 0,
+            currency: data.currency || 'EUR'
+        }).catch(err => console.error('Email error:', err));
+
+        // Return success - no payment required
         return json({
             success: true,
-            checkoutUrl: session.url,
-            sessionId: session.id,
-            message: 'Redirecting to payment...'
+            bookingId: bookingRequest.id,
+            message: 'Booking request created successfully!',
+            redirectUrl: `/booking/booking-success?bookingId=${bookingRequest.id}`
         });
     } catch (err) {
         console.error('Error creating booking checkout:', err);

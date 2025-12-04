@@ -4,21 +4,47 @@
 	import { getLocalizedRedirect } from '$lib/i18n/routeHelpers';
 	import type { Locale } from '$lib/i18n/routes';
 
-	// Use $derived to make locale reactive when it changes
+	// Props using Svelte 5 syntax
+	const { position = 'auto' }: { position?: 'auto' | 'top' | 'bottom' } = $props();
+
 	const currentLocale = $derived(getLocale());
 	let isOpen = $state(false);
 
-	function selectLocale(locale: string) {
-		isOpen = false;
-		// Get the current pathname and redirect to the localized version
-		const localizedUrl = getLocalizedRedirect(page.url.pathname, locale as Locale);
-		// Preserve query parameters
-		const searchParams = page.url.search;
-		window.location.href = localizedUrl + searchParams;
-	}
+	let triggerEl: HTMLElement | null = null;
+	let dropdownPlacement: 'top' | 'bottom' = $state('bottom');
 
 	function toggleDropdown() {
 		isOpen = !isOpen;
+
+		if (isOpen) updateAutoPosition();
+	}
+
+	/** Smart auto-flip */
+	function updateAutoPosition() {
+		if (position !== 'auto' || !triggerEl) {
+			dropdownPlacement = position === 'top' ? 'top' : 'bottom';
+			return;
+		}
+
+		const rect = triggerEl.getBoundingClientRect();
+		const spaceBelow = window.innerHeight - rect.bottom;
+		const spaceAbove = rect.top;
+
+		// If little space below but enough above → flip
+		if (spaceBelow < 200 && spaceAbove > spaceBelow) {
+			dropdownPlacement = 'top';
+		} else {
+			dropdownPlacement = 'bottom';
+		}
+	}
+
+	function selectLocale(locale: string) {
+		isOpen = false;
+
+		const localizedUrl = getLocalizedRedirect(page.url.pathname, locale as Locale);
+		const searchParams = page.url.search;
+
+		window.location.href = localizedUrl + searchParams;
 	}
 
 	function handleClickOutside(event: MouseEvent) {
@@ -29,10 +55,11 @@
 	}
 </script>
 
-<svelte:window onclick={handleClickOutside} />
+<svelte:window onclick={handleClickOutside} onresize={updateAutoPosition} />
 
 <div class="language-switcher">
 	<button
+		bind:this={triggerEl}
 		type="button"
 		class="custom-select"
 		onclick={toggleDropdown}
@@ -46,7 +73,11 @@
 	</button>
 
 	{#if isOpen}
-		<div class="dropdown">
+		<div
+			class="dropdown"
+			class:top={dropdownPlacement === 'top'}
+			class:bottom={dropdownPlacement === 'bottom'}
+		>
 			{#each locales as locale}
 				<button
 					type="button"
@@ -81,7 +112,6 @@
 		min-width: 36px;
 		min-height: 28px;
 	}
-
 	.custom-select:hover {
 		border-color: #999;
 	}
@@ -98,21 +128,29 @@
 		color: #666;
 		transition: transform 0.2s ease;
 	}
-
 	.chevron.open {
 		transform: rotate(180deg);
 	}
 
 	.dropdown {
 		position: absolute;
-		top: calc(100% + 4px);
 		right: 0;
 		background: white;
 		border: 1px solid #ccc;
 		border-radius: 5px;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 		z-index: 100;
 		overflow: hidden;
+	}
+
+	/* Default bottom placement */
+	.dropdown.bottom {
+		top: calc(100% + 4px);
+	}
+
+	/* Flip upwards */
+	.dropdown.top {
+		bottom: calc(100% + 4px);
 	}
 
 	.dropdown-item {
@@ -125,11 +163,9 @@
 		border: none;
 		width: 100%;
 	}
-
 	.dropdown-item:hover {
 		background: #f5f5f5;
 	}
-
 	.dropdown-item.active {
 		background: #e8f4fd;
 	}

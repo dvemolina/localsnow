@@ -559,38 +559,38 @@
 					</div>
 				{/if}
 
-				<!-- Deposit Information -->
-				<div class="rounded-lg border-2 border-blue-200 bg-blue-50 p-4">
+				<!-- Free Directory Information -->
+				<div class="rounded-lg border-2 border-green-200 bg-green-50 p-4">
 					<div class="mb-3 flex items-center gap-2">
-						<svg class="size-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+						<svg class="size-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
 						</svg>
-						<h3 class="font-medium text-blue-900">€15 Refundable Deposit Required</h3>
+						<h3 class="font-medium text-green-900">100% Free - No Deposit Required</h3>
 					</div>
-					
-					<div class="space-y-2 text-sm text-blue-800">
+
+					<div class="space-y-2 text-sm text-green-800">
 						<p class="flex items-start gap-2">
 							<svg class="mt-0.5 size-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
 								<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
 							</svg>
-							<span>Fully refundable if no instructor accepts within 48 hours</span>
+							<span>No payment required to send booking requests</span>
 						</p>
 						<p class="flex items-start gap-2">
 							<svg class="mt-0.5 size-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
 								<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
 							</svg>
-							<span>Refunded after lesson completion</span>
+							<span>Unlimited booking requests</span>
 						</p>
 						<p class="flex items-start gap-2">
 							<svg class="mt-0.5 size-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
 								<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
 							</svg>
-							<span>Protects against no-shows</span>
+							<span>Instructor contact info shared immediately</span>
 						</p>
 					</div>
 				</div>
 
-				<!-- Add validation warning before submit button -->
+				<!-- Validation warning (only for duplicate instructor requests) -->
 				{#if validationError}
 					<div class="rounded-lg border-2 border-yellow-200 bg-yellow-50 p-4 text-yellow-800">
 						<div class="flex items-start gap-3">
@@ -598,25 +598,10 @@
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
 							</svg>
 							<div>
-								<p class="font-semibold">Request Limit Reached</p>
+								<p class="font-semibold">Cannot Send Request</p>
 								<p class="mt-1 text-sm">{validationError}</p>
-								{#if requiresPayment}
-									<Button class="mt-3" size="sm" onclick={() => window.location.href = '/pricing/additional-request'}>
-										Pay €2 for Additional Request
-									</Button>
-								{/if}
 							</div>
 						</div>
-					</div>
-				{/if}
-
-				<!-- Request counter -->
-				{#if activeRequestCount > 0 && !validationError}
-					<div class="rounded-lg bg-blue-50 p-3 text-blue-800">
-						<p class="text-sm">
-							📊 You have {activeRequestCount} active request{activeRequestCount === 1 ? '' : 's'}. 
-							{3 - activeRequestCount} free request{3 - activeRequestCount === 1 ? '' : 's'} remaining.
-						</p>
 					</div>
 				{/if}
 

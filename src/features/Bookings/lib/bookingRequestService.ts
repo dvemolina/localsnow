@@ -84,18 +84,10 @@ export class BookingRequestService {
             };
         }
 
-        // Check total active requests
+        // Get active count for analytics but don't enforce limits (free directory model)
         const activeCount = await this.repository.getActiveRequestCount(clientUserId, clientEmail);
 
-        if (activeCount >= MAX_FREE_REQUESTS) {
-            return {
-                allowed: false,
-                requiresPayment: true,
-                reason: `You have ${activeCount} active requests. To send more requests, you need to pay €${ADDITIONAL_REQUEST_FEE} fee per additional request or wait for instructors to respond.`,
-                activeCount
-            };
-        }
-
+        // Free directory model - unlimited requests allowed
         return { allowed: true, activeCount };
     }
 

@@ -131,15 +131,6 @@
 				<Button onclick={onViewDetails} class="flex-1" variant="outline">
 					View Details
 				</Button>
-				
-				{#if !booking.contactInfoUnlocked && booking.status === 'pending'}
-					<Button
-						onclick={() => (window.location.href = `/leads/payment/${booking.id}`)}
-						class="flex-1"
-					>
-						Pay €5 to Unlock
-					</Button>
-				{/if}
 			</div>
 		</div>
 	</Card.Content>
