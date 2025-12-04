@@ -182,47 +182,45 @@
 		<div class="mx-auto max-w-4xl text-center">
 			<div class="mb-4 inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-bold text-green-900">
 				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-green-600"><polyline points="20 6 9 17 4 12"></polyline></svg>
-				100% FREE FOREVER
+				{m.home_free_banner_badge()}
 			</div>
 
 			<h2 class="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">
-				No Fees. No Commissions. No Bullshit.
+				{m.home_free_banner_title()}
 			</h2>
 
 			<p class="mb-6 text-lg text-gray-700 leading-relaxed max-w-2xl mx-auto">
-				Other platforms charge instructors <strong>15-30% commission</strong> per lesson.
-				We think that's wrong. LocalSnow is <strong>100% free for students and instructors</strong>.
-				Forever. No hidden costs, no "premium" plans, no catch.
+				{m.home_free_banner_description()}
 			</p>
 
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
 				<div class="flex flex-col items-center gap-2 rounded-lg bg-white border-2 border-green-200 px-4 py-4 shadow-sm">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
 					<div class="text-center">
-						<div class="text-2xl font-bold text-green-900">€0</div>
-						<div class="text-sm text-gray-600">Booking Fees</div>
+						<div class="text-2xl font-bold text-green-900">{m.home_free_banner_booking_fees()}</div>
+						<div class="text-sm text-gray-600">{m.home_free_banner_booking_fees_label()}</div>
 					</div>
 				</div>
 
 				<div class="flex flex-col items-center gap-2 rounded-lg bg-white border-2 border-green-200 px-4 py-4 shadow-sm">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
 					<div class="text-center">
-						<div class="text-2xl font-bold text-green-900">0%</div>
-						<div class="text-sm text-gray-600">Commission</div>
+						<div class="text-2xl font-bold text-green-900">{m.home_free_banner_commission()}</div>
+						<div class="text-sm text-gray-600">{m.home_free_banner_commission_label()}</div>
 					</div>
 				</div>
 
 				<div class="flex flex-col items-center gap-2 rounded-lg bg-white border-2 border-green-200 px-4 py-4 shadow-sm">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
 					<div class="text-center">
-						<div class="text-2xl font-bold text-green-900">∞</div>
-						<div class="text-sm text-gray-600">Unlimited Requests</div>
+						<div class="text-2xl font-bold text-green-900">{m.home_free_banner_unlimited()}</div>
+						<div class="text-sm text-gray-600">{m.home_free_banner_unlimited_label()}</div>
 					</div>
 				</div>
 			</div>
 
 			<p class="mt-6 text-sm text-gray-600 italic">
-				Built for instructors, not investors. Open-source and community-driven.
+				{m.home_free_banner_tagline()}
 			</p>
 		</div>
 	</div>
@@ -327,9 +325,9 @@
 <section class="section bg-gradient-to-br from-gray-50 to-gray-100 py-16 rounded-lg">
 	<div class="container max-w-4xl">
 		<div class="text-center mb-10">
-			<h2 class="mb-4 text-3xl font-bold text-gray-900">Why LocalSnow is 100% Free</h2>
+			<h2 class="mb-4 text-3xl font-bold text-gray-900">{m.home_why_free_title()}</h2>
 			<p class="text-xl text-gray-600">
-				We're building the platform we wish existed.
+				{m.home_why_free_subtitle()}
 			</p>
 		</div>
 
@@ -340,11 +338,9 @@
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-600"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
 					</div>
 					<div>
-						<h3 class="font-bold text-lg mb-2 text-gray-900">The Problem</h3>
+						<h3 class="font-bold text-lg mb-2 text-gray-900">{m.home_why_free_problem_title()}</h3>
 						<p class="text-gray-600 text-sm leading-relaxed">
-							Booking platforms take <strong>15-30% commission</strong> from every lesson.
-							Instructors work hard, students pay premium prices, but a middleman profits
-							the most. That's extractive, not helpful.
+							{m.home_why_free_problem_desc()}
 						</p>
 					</div>
 				</div>
@@ -356,11 +352,9 @@
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600"><polyline points="20 6 9 17 4 12"></polyline></svg>
 					</div>
 					<div>
-						<h3 class="font-bold text-lg mb-2 text-gray-900">Our Solution</h3>
+						<h3 class="font-bold text-lg mb-2 text-gray-900">{m.home_why_free_solution_title()}</h3>
 						<p class="text-gray-600 text-sm leading-relaxed">
-							LocalSnow connects students and instructors <strong>directly</strong>.
-							No commissions, no hidden fees, no payment processing. Instructors keep
-							100% of their lesson fees. Students save money.
+							{m.home_why_free_solution_desc()}
 						</p>
 					</div>
 				</div>
@@ -372,11 +366,9 @@
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-600"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
 					</div>
 					<div>
-						<h3 class="font-bold text-lg mb-2 text-gray-900">Community First</h3>
+						<h3 class="font-bold text-lg mb-2 text-gray-900">{m.home_why_free_community_title()}</h3>
 						<p class="text-gray-600 text-sm leading-relaxed">
-							We're <strong>open-source and community-driven</strong>. No venture capital,
-							no investors demanding profits. This platform is built <em>by</em> instructors,
-							<em>for</em> instructors.
+							{m.home_why_free_community_desc()}
 						</p>
 					</div>
 				</div>
@@ -388,11 +380,9 @@
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-600"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
 					</div>
 					<div>
-						<h3 class="font-bold text-lg mb-2 text-gray-900">Free Forever</h3>
+						<h3 class="font-bold text-lg mb-2 text-gray-900">{m.home_why_free_forever_title()}</h3>
 						<p class="text-gray-600 text-sm leading-relaxed">
-							We mean it. No "freemium" bait-and-switch. No "introductory pricing."
-							LocalSnow will <strong>always be 100% free</strong>. If we need revenue,
-							we'll explore ads or optional premium features—never mandatory fees.
+							{m.home_why_free_forever_desc()}
 						</p>
 					</div>
 				</div>
@@ -401,12 +391,10 @@
 
 		<div class="mt-10 text-center bg-white rounded-lg p-6 border-2 border-green-500 shadow-sm">
 			<p class="text-gray-700 text-lg mb-2">
-				<strong>Sound too good to be true?</strong>
+				<strong>{m.home_why_free_sound_good_title()}</strong>
 			</p>
 			<p class="text-gray-600">
-				We get it. But we're serious. Check our <a href="https://github.com/dvemolina/localsnow" target="_blank" rel="noopener" class="text-primary underline font-medium">open-source code</a>
-				or <a href={route('/how-it-works')} class="text-primary underline font-medium">see how it works</a>.
-				No tricks, no hidden agenda—just a better way to connect instructors and students.
+				{m.home_why_free_sound_good_desc()}
 			</p>
 		</div>
 	</div>
