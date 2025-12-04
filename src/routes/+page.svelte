@@ -67,7 +67,7 @@
 		url: 'https://localsnow.org',
 		logo: 'https://localsnow.org/local-snow-head.png',
 		description:
-			'Free open-source platform connecting ski and snowboard instructors with students. Zero fees, zero commissions, 100% free forever. Built for instructors, not investors.',
+			'Community-driven platform connecting ski and snowboard instructors with students. Zero fees, zero commissions, 100% free forever. Built for instructors, not investors.',
 		email: 'support@localsnow.org',
 		areaServed: {
 			'@type': 'Country',
@@ -395,93 +395,6 @@
 			</p>
 			<p class="text-gray-600">
 				{m.home_why_free_sound_good_desc()}
-			</p>
-		</div>
-	</div>
-</section>
-
-<!-- Trust Signals Section -->
-<section class="section">
-	<div class="mb-10 text-center">
-		<h2 class="mb-4 text-center text-3xl font-bold">{m.home_trust_title()}</h2>
-		<p class="text-center text-gray-600">
-			{m.home_trust_subtitle()}
-		</p>
-	</div>
-
-	<div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-		<div class="rounded-lg border border-border bg-card p-6 text-center shadow-sm">
-			<div
-				class="bg-primary/10 text-primary mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-8 w-8"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-					/>
-				</svg>
-			</div>
-			<h3 class="mb-2 text-xl font-semibold">{m.home_trust_free_title()}</h3>
-			<p class="text-gray-600">
-				{m.home_trust_free_desc()}
-			</p>
-		</div>
-
-		<div class="rounded-lg border border-border bg-card p-6 text-center shadow-sm">
-			<div
-				class="bg-primary/10 text-primary mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-8 w-8"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
-					/>
-				</svg>
-			</div>
-			<h3 class="mb-2 text-xl font-semibold">{m.home_trust_verified_title()}</h3>
-			<p class="text-gray-600">
-				{m.home_trust_verified_desc()}
-			</p>
-		</div>
-
-		<div class="rounded-lg border border-border bg-card p-6 text-center shadow-sm">
-			<div
-				class="bg-primary/10 text-primary mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-8 w-8"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-					/>
-				</svg>
-			</div>
-			<h3 class="mb-2 text-xl font-semibold">{m.home_trust_built_title()}</h3>
-			<p class="text-gray-600">
-				{m.home_trust_built_desc()}
 			</p>
 		</div>
 	</div>
