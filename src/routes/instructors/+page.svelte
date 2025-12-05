@@ -161,6 +161,37 @@
 			}
 		}))
 	};
+
+	// Organization schema
+	const organizationSchema = {
+		'@context': 'https://schema.org',
+		'@type': 'Organization',
+		name: 'Local Snow',
+		url: 'https://localsnow.org',
+		logo: 'https://localsnow.org/local-snow-head.png',
+		description: 'Free directory of independent ski and snowboard instructors in Spain',
+		sameAs: []
+	};
+
+	// Breadcrumb schema
+	const breadcrumbSchema = {
+		'@context': 'https://schema.org',
+		'@type': 'BreadcrumbList',
+		itemListElement: [
+			{
+				'@type': 'ListItem',
+				position: 1,
+				name: 'Home',
+				item: 'https://localsnow.org'
+			},
+			{
+				'@type': 'ListItem',
+				position: 2,
+				name: 'Instructors',
+				item: 'https://localsnow.org/instructors'
+			}
+		]
+	};
 </script>
 
 <svelte:head>
@@ -184,6 +215,12 @@
 	<!-- Structured Data -->
 	<script type="application/ld+json">
 		{JSON.stringify(itemListSchema)}
+	</script>
+	<script type="application/ld+json">
+		{JSON.stringify(organizationSchema)}
+	</script>
+	<script type="application/ld+json">
+		{JSON.stringify(breadcrumbSchema)}
 	</script>
 
 	<link rel="canonical" href="https://localsnow.org/instructors" />

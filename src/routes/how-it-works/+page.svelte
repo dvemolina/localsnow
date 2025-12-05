@@ -9,10 +9,10 @@
 		mainEntity: [
 			{
 				'@type': 'Question',
-				name: 'Is LocalSnow really 100% free?',
+				name: 'Is LocalSnow free to use?',
 				acceptedAnswer: {
 					'@type': 'Answer',
-					text: 'Yes! LocalSnow is completely free for both students and instructors. No booking fees, no commissions, no hidden costs. We connect you directly—you handle payment and scheduling yourselves.'
+					text: 'Yes! LocalSnow is currently free for both students and instructors while we grow the platform. No booking fees, no commissions, no hidden costs. We connect you directly—you handle payment and scheduling yourselves.'
 				}
 			},
 			{
@@ -44,17 +44,17 @@
 </script>
 
 <svelte:head>
-	<title>How It Works - 100% Free Ski Instructor Directory | LocalSnow</title>
+	<title>How It Works - Free Ski Instructor Directory | LocalSnow</title>
 	<meta
 		name="description"
-		content="LocalSnow is a free platform connecting ski instructors and students. No booking fees, no commissions, no hidden costs. See how our free directory works."
+		content="LocalSnow connects ski instructors and students directly. Currently free - no booking fees, no commissions. See how our directory works for instructors and clients."
 	/>
 
 	<!-- Open Graph -->
-	<meta property="og:title" content="How LocalSnow Works - 100% Free Directory" />
+	<meta property="og:title" content="How LocalSnow Works - Free Directory" />
 	<meta
 		property="og:description"
-		content="Completely free platform for finding ski instructors. No fees, no commissions, direct contact."
+		content="Free platform connecting ski instructors with students. No fees, no commissions, direct contact."
 	/>
 	<meta property="og:url" content="https://localsnow.org/how-it-works" />
 	<meta property="og:image" content="https://localsnow.org/og-image.jpg" />
@@ -62,10 +62,10 @@
 
 	<!-- Twitter Card -->
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content="How LocalSnow Works - 100% Free Directory" />
+	<meta name="twitter:title" content="How LocalSnow Works - Free Directory" />
 	<meta
 		name="twitter:description"
-		content="Completely free platform for finding ski instructors. No fees, no commissions, direct contact."
+		content="Free platform for finding ski instructors. No fees, no commissions, direct contact."
 	/>
 	<meta name="twitter:image" content="https://localsnow.org/og-image.jpg" />
 

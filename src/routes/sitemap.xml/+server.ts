@@ -58,7 +58,8 @@ export const GET: RequestHandler = async () => {
 		const instructors = await db
 			.select({
 				id: users.id,
-				updatedAt: users.updatedAt
+				updatedAt: users.updatedAt,
+				role: users.role
 			})
 			.from(users)
 			.where(
@@ -69,7 +70,12 @@ export const GET: RequestHandler = async () => {
 			)
 			.limit(1000); // Limit to prevent performance issues
 
-		instructors.forEach((instructor) => {
+		// Filter for instructor roles only
+		const instructorProfiles = instructors.filter(
+			user => user.role === 'instructor-independent' || user.role === 'instructor-school'
+		);
+
+		instructorProfiles.forEach((instructor) => {
 			const lastmod = instructor.updatedAt
 				? new Date(instructor.updatedAt).toISOString().split('T')[0]
 				: undefined;
