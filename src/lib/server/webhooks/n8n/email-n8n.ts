@@ -39,8 +39,8 @@ export async function sendBookingNotificationToInstructor(data: {
 	hoursPerDay: number;
 	estimatedPrice?: number;
 	currency?: string;
-	leadPrice: number;
-	paymentUrl: string;
+	leadPrice?: number;
+	paymentUrl?: string;
 	dashboardUrl?: string;
 }) {
 	try {

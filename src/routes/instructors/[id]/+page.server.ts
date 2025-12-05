@@ -18,8 +18,6 @@ const userService = new UserService();
 const sportsService = new SportsService();
 const reviewService = new ReviewService();
 
-const LEAD_PRICE = 5; // €5 per lead
-
 export const load: PageServerLoad = async (event) => {
     const instructorId = Number(event.params.id);
     
@@ -172,11 +170,9 @@ export const actions: Actions = {
             const instructor = instructorData?.instructor;
 
             if (instructor?.email) {
-                // Build payment URL
                 const baseUrl = url.origin;
-                const paymentUrl = `${baseUrl}/leads/payment/${bookingRequest.id}`;
 
-                // Send notification to instructor (with payment link)
+                // Send notification to instructor
                 sendBookingNotificationToInstructor({
                     instructorEmail: instructor.email,
                     instructorName: instructor.name,
@@ -188,8 +184,6 @@ export const actions: Actions = {
                     hoursPerDay: data.hoursPerDay,
                     estimatedPrice: data.estimatedPrice,
                     currency: data.currency,
-                    leadPrice: LEAD_PRICE,
-                    paymentUrl,
                     dashboardUrl: `${baseUrl}/dashboard`
                 }).catch(err => console.error('Failed to send instructor notification:', err));
             }
