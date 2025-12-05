@@ -2,41 +2,49 @@
 	import * as m from '$lib/paraglide/messages';
 	import { route } from '$lib/i18n/routeHelpers';
 
-	// FAQ Schema for SEO
+	// FAQ Schema for SEO - using message functions
 	const faqSchema = {
 		'@context': 'https://schema.org',
 		'@type': 'FAQPage',
 		mainEntity: [
 			{
 				'@type': 'Question',
-				name: 'Is LocalSnow free to use?',
+				name: m.how_it_works_page_faq_deposit_q(),
 				acceptedAnswer: {
 					'@type': 'Answer',
-					text: 'Yes! LocalSnow is currently free for both students and instructors while we grow the platform. No booking fees, no commissions, no hidden costs. We connect you directly—you handle payment and scheduling yourselves.'
+					text: m.how_it_works_page_faq_deposit_a()
 				}
 			},
 			{
 				'@type': 'Question',
-				name: 'How do you make money if everything is free?',
+				name: m.how_it_works_page_faq_lead_fee_q(),
 				acceptedAnswer: {
 					'@type': 'Answer',
-					text: 'Currently, we don\'t. LocalSnow is open-source and community-driven. While we\'re growing the platform, we\'re keeping it completely free. In the future, we may need to introduce minimal fees to cover costs, but we\'ll give plenty of notice and keep them far below what other platforms charge.'
+					text: m.how_it_works_page_faq_lead_fee_a()
 				}
 			},
 			{
 				'@type': 'Question',
-				name: 'Do instructors pay anything to receive booking requests?',
+				name: m.how_it_works_page_faq_no_response_q(),
 				acceptedAnswer: {
 					'@type': 'Answer',
-					text: 'No. Instructors receive all contact information immediately and for free. No lead fees, no subscriptions, no payment required.'
+					text: m.how_it_works_page_faq_no_response_a()
 				}
 			},
 			{
 				'@type': 'Question',
-				name: 'How do students pay for lessons?',
+				name: m.how_it_works_page_faq_payments_q(),
 				acceptedAnswer: {
 					'@type': 'Answer',
-					text: 'Students contact instructors directly through the platform, then arrange payment and lesson details outside LocalSnow. We don\'t process any payments—instructors keep 100% of their lesson fees.'
+					text: m.how_it_works_page_faq_payments_a()
+				}
+			},
+			{
+				'@type': 'Question',
+				name: m.how_it_works_page_faq_contact_q(),
+				acceptedAnswer: {
+					'@type': 'Answer',
+					text: m.how_it_works_page_faq_contact_a()
 				}
 			}
 		]
@@ -78,11 +86,10 @@
 </svelte:head>
 
 <article class="prose prose-sm mx-auto max-w-3xl">
-	<h1 class="title2">How LocalSnow Works</h1>
+	<h1 class="title2">{m.how_it_works_page_title()}</h1>
 
 	<p class="text-lg text-muted-foreground">
-		LocalSnow is a <strong>100% free directory</strong> connecting ski and snowboard instructors
-		with students. No booking fees, no commissions, no deposits. Just direct contact.
+		{m.how_it_works_page_intro()}
 	</p>
 
 	<!-- Free Highlight -->
@@ -103,17 +110,16 @@
 				class="text-green-600"
 				><polyline points="20 6 9 17 4 12"></polyline></svg
 			>
-			<h3 class="text-xl font-bold text-green-900 m-0">100% Free Right Now.</h3>
+			<h3 class="text-xl font-bold text-green-900 m-0">{m.how_works_free_forever_badge()}</h3>
 		</div>
 		<p class="text-gray-700 m-0">
-			No "trial periods." No "premium plans." No catch. LocalSnow is open-source and
-			community-driven. We're keeping it free while we build and grow the platform—no commissions, no fees.
+			{m.how_works_free_forever_desc()}
 		</p>
 	</div>
 
 	<!-- For Students Section -->
 	<section class="mt-12 rounded-lg border border-border bg-card p-6 shadow-sm not-prose">
-		<h2 class="title3 mb-6">For Students</h2>
+		<h2 class="title3 mb-6">{m.how_it_works_page_clients_title()}</h2>
 
 		<div class="space-y-6">
 			<div class="flex gap-4">
@@ -123,10 +129,9 @@
 					1
 				</div>
 				<div>
-					<h3 class="title4 mb-2">Search for Instructors</h3>
+					<h3 class="title4 mb-2">{m.how_it_works_page_clients_step1_title()}</h3>
 					<p class="text-sm text-gray-600">
-						Browse our directory of certified ski and snowboard instructors. Filter by resort,
-						sport, language, and experience level. All profiles are free to view.
+						{m.how_it_works_page_clients_step1_desc()}
 					</p>
 				</div>
 			</div>
@@ -138,11 +143,9 @@
 					2
 				</div>
 				<div>
-					<h3 class="title4 mb-2">Send a Booking Request</h3>
+					<h3 class="title4 mb-2">{m.how_it_works_page_clients_step2_title()}</h3>
 					<p class="text-sm text-gray-600">
-						Found the perfect instructor? Send them a booking request with your preferred dates,
-						times, and lesson details. <strong>No payment required</strong>—just fill out the
-						form and submit.
+						{m.how_it_works_page_clients_step2_desc()}
 					</p>
 				</div>
 			</div>
@@ -154,10 +157,12 @@
 					3
 				</div>
 				<div>
-					<h3 class="title4 mb-2">Get Contact Info Immediately</h3>
+					<h3 class="title4 mb-2">{m.how_it_works_page_clients_step3_title()}</h3>
 					<p class="text-sm text-gray-600">
-						The instructor receives your contact information instantly. They'll reach out to you
-						directly to confirm availability, discuss lesson details, and arrange payment.
+						{m.how_it_works_page_clients_step3_desc()}
+					</p>
+					<p class="text-xs text-gray-500 mt-2 italic">
+						{m.how_it_works_page_clients_step3_note()}
 					</p>
 				</div>
 			</div>
@@ -169,11 +174,9 @@
 					4
 				</div>
 				<div>
-					<h3 class="title4 mb-2">Arrange Your Lesson</h3>
+					<h3 class="title4 mb-2">{m.how_it_works_page_clients_step4_title()}</h3>
 					<p class="text-sm text-gray-600">
-						Work directly with your instructor to finalize dates, times, meeting location, and
-						payment. LocalSnow doesn't process payments—you pay the instructor directly using
-						their preferred method.
+						{m.how_it_works_page_clients_step4_desc()}
 					</p>
 				</div>
 			</div>
@@ -185,31 +188,41 @@
 					5
 				</div>
 				<div>
-					<h3 class="title4 mb-2">Enjoy Your Lesson!</h3>
+					<h3 class="title4 mb-2">{m.how_it_works_page_clients_step5_title()}</h3>
 					<p class="text-sm text-gray-600">
-						Hit the slopes with your instructor and have an amazing time. After your lesson,
-						consider leaving a review to help future students.
+						{m.how_it_works_page_clients_step5_desc()}
+					</p>
+				</div>
+			</div>
+
+			<div class="flex gap-4">
+				<div
+					class="bg-primary/10 text-primary flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-lg font-bold"
+				>
+					6
+				</div>
+				<div>
+					<h3 class="title4 mb-2">{m.how_it_works_page_clients_step6_title()}</h3>
+					<p class="text-sm text-gray-600">
+						{m.how_it_works_page_clients_step6_desc()}
 					</p>
 				</div>
 			</div>
 		</div>
 
 		<div class="mt-6 rounded-md bg-green-50 border border-green-200 p-4">
-			<h4 class="font-semibold text-green-900 mb-2">Students Pay:</h4>
+			<h4 class="font-semibold text-green-900 mb-2">{m.how_it_works_page_clients_cost_title()}</h4>
 			<ul class="space-y-1 text-sm text-green-800 mb-0">
-				<li>✅ <strong>€0 booking fees</strong></li>
-				<li>✅ <strong>Unlimited requests</strong> - contact as many instructors as you want</li>
-				<li>✅ <strong>No deposits</strong> - we don't hold any money</li>
-				<li>
-					✅ <strong>Direct payment</strong> - negotiate rates and pay your instructor directly
-				</li>
+				<li>✅ {m.how_it_works_page_clients_cost_no_fees()}</li>
+				<li>✅ {m.how_it_works_page_clients_cost_deposit()}</li>
+				<li>✅ {m.how_it_works_page_clients_cost_unlimited()}</li>
 			</ul>
 		</div>
 	</section>
 
 	<!-- For Instructors Section -->
 	<section class="mt-12 rounded-lg border border-border bg-card p-6 shadow-sm not-prose">
-		<h2 class="title3 mb-6">For Instructors</h2>
+		<h2 class="title3 mb-6">{m.how_it_works_page_instructors_title()}</h2>
 
 		<div class="space-y-6">
 			<div class="flex gap-4">
@@ -219,12 +232,12 @@
 					1
 				</div>
 				<div>
-					<h3 class="title4 mb-2">Create Your Free Profile</h3>
+					<h3 class="title4 mb-2">{m.how_it_works_page_instructors_step1_title()}</h3>
 					<p class="text-sm text-gray-600">
-						Sign up and build your instructor profile with your certifications, experience,
-						languages, and pricing. Add photos and set your availability. <strong
-							>100% free—no subscriptions, no setup fees.</strong
-						>
+						{m.how_it_works_page_instructors_step1_desc()}
+					</p>
+					<p class="text-xs text-gray-500 mt-2 italic">
+						{m.how_it_works_page_instructors_step1_note()}
 					</p>
 				</div>
 			</div>
@@ -236,10 +249,9 @@
 					2
 				</div>
 				<div>
-					<h3 class="title4 mb-2">Receive Booking Requests</h3>
+					<h3 class="title4 mb-2">{m.how_it_works_page_instructors_step2_title()}</h3>
 					<p class="text-sm text-gray-600">
-						When a student sends you a booking request, you'll get an instant email notification
-						with all their details: dates, times, skill level, and full contact information.
+						{m.how_it_works_page_instructors_step2_desc()}
 					</p>
 				</div>
 			</div>
@@ -251,10 +263,9 @@
 					3
 				</div>
 				<div>
-					<h3 class="title4 mb-2">View Contact Info For Free</h3>
+					<h3 class="title4 mb-2">{m.how_it_works_page_instructors_step3_title()}</h3>
 					<p class="text-sm text-gray-600">
-						<strong>No lead fees!</strong> See the student's email and phone number immediately in
-						your dashboard. No payment required to unlock contact information.
+						{m.how_it_works_page_instructors_step3_desc()}
 					</p>
 				</div>
 			</div>
@@ -266,10 +277,12 @@
 					4
 				</div>
 				<div>
-					<h3 class="title4 mb-2">Contact Students Directly</h3>
+					<h3 class="title4 mb-2">{m.how_it_works_page_instructors_step4_title()}</h3>
 					<p class="text-sm text-gray-600">
-						Reach out to the student via email or phone to confirm your availability, discuss
-						lesson details, and arrange payment. You're in control of your schedule and rates.
+						{m.how_it_works_page_instructors_step4_desc()}
+					</p>
+					<p class="text-xs text-gray-500 mt-2 italic">
+						{m.how_it_works_page_instructors_step4_note()}
 					</p>
 				</div>
 			</div>
@@ -281,85 +294,79 @@
 					5
 				</div>
 				<div>
-					<h3 class="title4 mb-2">Teach & Get Paid Directly</h3>
+					<h3 class="title4 mb-2">{m.how_it_works_page_instructors_step5_title()}</h3>
 					<p class="text-sm text-gray-600">
-						Conduct the lesson and receive payment directly from the student using your preferred
-						method (cash, bank transfer, payment app). <strong
-							>LocalSnow takes 0% commission</strong
-						>—you keep every euro you earn.
+						{m.how_it_works_page_instructors_step5_desc()}
+					</p>
+				</div>
+			</div>
+
+			<div class="flex gap-4">
+				<div
+					class="bg-primary/10 text-primary flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-lg font-bold"
+				>
+					6
+				</div>
+				<div>
+					<h3 class="title4 mb-2">{m.how_it_works_page_instructors_step6_title()}</h3>
+					<p class="text-sm text-gray-600">
+						{m.how_it_works_page_instructors_step6_desc()}
+					</p>
+					<p class="text-xs text-gray-500 mt-2 italic">
+						{m.how_it_works_page_instructors_step6_note()}
 					</p>
 				</div>
 			</div>
 		</div>
 
 		<div class="mt-6 rounded-md bg-green-50 border border-green-200 p-4">
-			<h4 class="font-semibold text-green-900 mb-2">Instructors Pay:</h4>
+			<h4 class="font-semibold text-green-900 mb-2">{m.how_it_works_page_instructors_cost_title()}</h4>
 			<ul class="space-y-1 text-sm text-green-800 mb-0">
-				<li>✅ <strong>€0 listing fees</strong> - create your profile for free</li>
-				<li>✅ <strong>€0 per booking request</strong> - no lead fees or unlock fees</li>
-				<li>✅ <strong>0% commission</strong> - keep 100% of your lesson fees</li>
-				<li>✅ <strong>No monthly subscriptions</strong> - completely free while we grow</li>
+				<li>✅ {m.how_it_works_page_instructors_cost_free()}</li>
+				<li>✅ {m.how_it_works_page_instructors_cost_lead()}</li>
+				<li>✅ {m.how_it_works_page_instructors_cost_no_commission()}</li>
+				<li>✅ {m.how_it_works_page_instructors_cost_no_monthly()}</li>
 			</ul>
 		</div>
 	</section>
 
 	<!-- FAQ Section -->
 	<section class="mt-12 not-prose">
-		<h2 class="title3">Frequently Asked Questions</h2>
+		<h2 class="title3">{m.how_it_works_page_faq_title()}</h2>
 
 		<div class="space-y-6 mt-6">
 			<div class="rounded-lg border border-border p-5">
-				<h3 class="title4 mb-2">Is LocalSnow really 100% free?</h3>
+				<h3 class="title4 mb-2">{m.how_it_works_page_faq_deposit_q()}</h3>
 				<p class="text-sm text-gray-600 mb-0">
-					<strong>Yes!</strong> LocalSnow is completely free for both students and instructors. No booking
-					fees, no commissions, no hidden costs. We connect you directly—you handle payment and scheduling
-					yourselves.
+					{m.how_it_works_page_faq_deposit_a()}
 				</p>
 			</div>
 
 			<div class="rounded-lg border border-border p-5">
-				<h3 class="title4 mb-2">How do you make money if everything is free?</h3>
+				<h3 class="title4 mb-2">{m.how_it_works_page_faq_lead_fee_q()}</h3>
 				<p class="text-sm text-gray-600 mb-0">
-					Currently, we don't. LocalSnow is <strong>open-source and community-driven</strong>. While we're growing the platform, we're keeping it completely free. In
-					the future, we may need to introduce minimal fees to cover costs, but we'll give plenty of notice and keep them far below what other platforms charge. We're building the platform we wish existed—not maximizing
-					profit.
+					{m.how_it_works_page_faq_lead_fee_a()}
 				</p>
 			</div>
 
 			<div class="rounded-lg border border-border p-5">
-				<h3 class="title4 mb-2">Do instructors pay anything to receive booking requests?</h3>
+				<h3 class="title4 mb-2">{m.how_it_works_page_faq_no_response_q()}</h3>
 				<p class="text-sm text-gray-600 mb-0">
-					<strong>No.</strong> Instructors receive all contact information immediately and for free.
-					No lead fees, no subscriptions, no payment required. Just direct access to potential students.
+					{m.how_it_works_page_faq_no_response_a()}
 				</p>
 			</div>
 
 			<div class="rounded-lg border border-border p-5">
-				<h3 class="title4 mb-2">How do students pay for lessons?</h3>
+				<h3 class="title4 mb-2">{m.how_it_works_page_faq_payments_q()}</h3>
 				<p class="text-sm text-gray-600 mb-0">
-					Students contact instructors directly through the platform, then arrange payment and
-					lesson details <strong>outside LocalSnow</strong>. We don't process any payments—instructors
-					keep 100% of their lesson fees. Common methods include cash, bank transfer, or payment apps
-					like Bizum.
+					{m.how_it_works_page_faq_payments_a()}
 				</p>
 			</div>
 
 			<div class="rounded-lg border border-border p-5">
-				<h3 class="title4 mb-2">What if an instructor doesn't respond to my request?</h3>
+				<h3 class="title4 mb-2">{m.how_it_works_page_faq_contact_q()}</h3>
 				<p class="text-sm text-gray-600 mb-0">
-					Instructors manage their own schedules and availability. If you don't hear back within 24-48
-					hours, try contacting another instructor. You can send <strong
-						>unlimited booking requests</strong
-					> at no cost.
-				</p>
-			</div>
-
-			<div class="rounded-lg border border-border p-5">
-				<h3 class="title4 mb-2">Is LocalSnow safe?</h3>
-				<p class="text-sm text-gray-600 mb-0">
-					We verify instructor certifications when possible, but ultimately you're responsible for
-					vetting your instructor. Read reviews, ask for credentials, and trust your instincts.
-					Since LocalSnow doesn't process payments, there's no financial risk using our platform.
+					{m.how_it_works_page_faq_contact_a()}
 				</p>
 			</div>
 		</div>
@@ -410,23 +417,20 @@
 
 	<!-- CTA Section -->
 	<section class="mt-12 text-center not-prose">
-		<h2 class="title3 mb-6">Ready to Get Started?</h2>
+		<h2 class="title3 mb-6">{m.how_it_works_page_cta_title()}</h2>
 		<div class="flex flex-col gap-4 sm:flex-row sm:justify-center">
 			<a
 				href={route('/')}
 				class="bg-primary inline-block rounded-md px-6 py-3 font-medium text-white"
 			>
-				Find an Instructor
+				{m.how_it_works_page_cta_find_instructor()}
 			</a>
 			<a
 				href={route('/signup')}
 				class="inline-block rounded-md border border-border bg-card px-6 py-3 font-medium"
 			>
-				List as an Instructor
+				{m.how_it_works_page_cta_list_instructor()}
 			</a>
 		</div>
-		<p class="mt-4 text-sm text-gray-600">
-			100% free. No credit card required. No hidden fees.
-		</p>
 	</section>
 </article>
