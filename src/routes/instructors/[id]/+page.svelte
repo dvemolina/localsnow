@@ -90,6 +90,66 @@
 			}
 		})
 	};
+
+	// Organization schema for LocalSnow
+	const organizationSchema = {
+		'@context': 'https://schema.org',
+		'@type': 'Organization',
+		name: 'Local Snow',
+		url: 'https://localsnow.org',
+		logo: 'https://localsnow.org/local-snow-head.png',
+		description: 'Free directory of independent ski and snowboard instructors in Spain',
+		sameAs: []
+	};
+
+	// Breadcrumb schema
+	const breadcrumbSchema = {
+		'@context': 'https://schema.org',
+		'@type': 'BreadcrumbList',
+		itemListElement: [
+			{
+				'@type': 'ListItem',
+				position: 1,
+				name: 'Home',
+				item: 'https://localsnow.org'
+			},
+			{
+				'@type': 'ListItem',
+				position: 2,
+				name: 'Instructors',
+				item: 'https://localsnow.org/instructors'
+			},
+			{
+				'@type': 'ListItem',
+				position: 3,
+				name: instructorFullName,
+				item: profileUrl
+			}
+		]
+	};
+
+	// Individual review schemas
+	const reviewSchemas = reviews && reviews.length > 0 ? reviews.map((review) => ({
+		'@context': 'https://schema.org',
+		'@type': 'Review',
+		reviewRating: {
+			'@type': 'Rating',
+			ratingValue: review.rating,
+			bestRating: 5,
+			worstRating: 1
+		},
+		author: {
+			'@type': 'Person',
+			name: review.clientEmail.split('@')[0]
+		},
+		reviewBody: review.comment || '',
+		datePublished: review.createdAt ? new Date(review.createdAt).toISOString() : '',
+		itemReviewed: {
+			'@type': 'Person',
+			name: instructorFullName,
+			url: profileUrl
+		}
+	})) : [];
 </script>
 
 <svelte:head>
@@ -118,6 +178,17 @@
 	<script type="application/ld+json">
 		{JSON.stringify(personSchema)}
 	</script>
+	<script type="application/ld+json">
+		{JSON.stringify(organizationSchema)}
+	</script>
+	<script type="application/ld+json">
+		{JSON.stringify(breadcrumbSchema)}
+	</script>
+	{#each reviewSchemas as reviewSchema}
+		<script type="application/ld+json">
+			{JSON.stringify(reviewSchema)}
+		</script>
+	{/each}
 
 	<link rel="canonical" href={profileUrl} />
 </svelte:head>

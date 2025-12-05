@@ -67,7 +67,7 @@
 		url: 'https://localsnow.org',
 		logo: 'https://localsnow.org/local-snow-head.png',
 		description:
-			'Community-driven platform connecting ski and snowboard instructors with students. Zero fees, zero commissions, 100% free forever. Built for instructors, not investors.',
+			'Community-driven platform connecting ski and snowboard instructors with students. Zero fees, zero commissions, 100% free while we grow. Built for instructors, not investors.',
 		email: 'support@localsnow.org',
 		areaServed: {
 			'@type': 'Country',

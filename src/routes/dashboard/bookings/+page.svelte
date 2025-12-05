@@ -27,18 +27,6 @@
 		goto(url.pathname + url.search);
 	};
 
-	// Add console logging to debug the data
-	$effect(() => {
-		console.log('Bookings data:', data.bookings);
-		console.log('Booking IDs:', data.bookings.map((b: any) => b.id));
-
-		// Check for duplicates
-		const ids = data.bookings.map((b: any) => b.id);
-		const duplicates = ids.filter((id: number, index: number) => ids.indexOf(id) !== index);
-		if (duplicates.length > 0) {
-			console.error('Duplicate booking IDs found:', duplicates);
-		}
-	});
 
 	// Count bookings by status
 	const counts = $derived({
