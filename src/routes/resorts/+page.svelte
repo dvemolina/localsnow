@@ -32,7 +32,7 @@
 
 <section class="w-full">
 	<!-- Header -->
-	<div class="mb-6 text-center">
+	<div class="mb-6 mt-4 text-center">
 		<h1 class="title2 mb-2">Ski Resorts in Spain</h1>
 		<p class="text-muted-foreground">
 			Browse {totalResorts} Spanish ski resorts and find professional instructors

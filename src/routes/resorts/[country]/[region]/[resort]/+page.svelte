@@ -49,7 +49,7 @@
 
 <section class="w-full">
 	<!-- Hero Banner -->
-	<div class="relative mb-8 -mt-6 overflow-hidden rounded-lg shadow-xl">
+	<div class="relative mb-8 mt-4 overflow-hidden rounded-lg shadow-xl">
 		<div class="relative h-[300px] md:h-[400px]">
 			<!-- Background Image -->
 			<img

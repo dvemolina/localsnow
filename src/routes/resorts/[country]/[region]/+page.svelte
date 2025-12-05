@@ -24,7 +24,7 @@
 </svelte:head>
 
 <section class="w-full">
-  <div class="mb-6">
+  <div class="mb-6 mt-4">
     <h1 class="title2 mb-2">
       Ski Resorts in {regionData.region.region}
     </h1>
