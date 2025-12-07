@@ -79,4 +79,4 @@ jobs:
         uses: cssnr/cloudflare-purge-cache-action@v2
         with:
           token: ${{ secrets.CLOUDFLARE_ZONE_PURGE_TOKEN }}
-          zones: localsnow.com
+          zones: localsnow.org
