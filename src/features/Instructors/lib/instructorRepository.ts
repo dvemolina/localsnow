@@ -1,5 +1,5 @@
 import { db } from "$lib/server/db/index";
-import { users, instructorSports, instructorResorts, lessons, lessonSports as lessonSportsTable } from "$src/lib/server/db/schema";
+import { users, instructorSports, instructorResorts, lessons, lessonSports as lessonSportsTable, resorts } from "$src/lib/server/db/schema";
 import type { InsertUser, User } from "$src/lib/server/db/schema";
 import { eq, and, or } from "drizzle-orm";
 import type { InstructorSignupData } from "./instructorSchemas";
@@ -88,13 +88,18 @@ export class InstructorRepository {
         return result.map(r => r.sportId);
     }
 
-    async getInstructorResorts(instructorId: number): Promise<number[]> {
+    async getInstructorResorts(instructorId: number): Promise<Array<{ id: number; name: string; slug: string }>> {
         const result = await db
-            .select({ resortId: instructorResorts.resortId })
+            .select({
+                id: resorts.id,
+                name: resorts.name,
+                slug: resorts.slug
+            })
             .from(instructorResorts)
+            .innerJoin(resorts, eq(instructorResorts.resortId, resorts.id))
             .where(eq(instructorResorts.instructorId, instructorId));
-        
-        return result.map(r => r.resortId);
+
+        return result;
     }
 
     async updateInstructor(instructorId: number, updateData: Partial<InstructorData>): Promise<User | null> {
