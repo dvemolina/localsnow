@@ -144,7 +144,7 @@
 				itemprop="headline"
 				class="text-shadow mb-4 text-3xl font-bold sm:text-5xl md:text-6xl lg:text-6xl"
 			>
-				{m.home_hero_title()}
+				Test:{m.home_hero_title()}
 			</h1>
 			<div class="flex align-bottom h-full flex-col justify-center">
 				<p class="text-shadow mb-6 max-w-[600px] text-lg text-white sm:text-xl md:text-2xl">
