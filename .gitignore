@@ -16,6 +16,7 @@ Thumbs.db
 .env
 .env.production.secrets
 .env.*
+!.env.build
 !.env.example
 !.env.test
 !.env.production.template
