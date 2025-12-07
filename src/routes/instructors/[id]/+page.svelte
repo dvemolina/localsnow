@@ -9,6 +9,7 @@
 	import ReviewList from '$src/features/Reviews/components/ReviewList.svelte';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
+	import * as m from '$lib/paraglide/messages';
 
 	let { data } = $props();
 	let showBookingDialog = $state(false);
@@ -259,9 +260,9 @@
 				<!-- Instructor Type Badge -->
 				<div class="mt-4">
 					{#if isIndependent}
-						<Badge variant="secondary" class="text-sm">Independent Instructor</Badge>
+						<Badge variant="secondary" class="text-sm">{m.badge_independent_instructor}</Badge>
 					{:else}
-						<Badge variant="secondary" class="text-sm">School Instructor</Badge>
+						<Badge variant="secondary" class="text-sm">{m.badge_school_instructor}</Badge>
 					{/if}
 				</div>
 			</div>
@@ -310,7 +311,7 @@
 							d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
 						/>
 					</svg>
-					<span class="text-sm">24h response time</span>
+					<span class="text-sm">{m.instructor_response_time}</span>
 				</div>
 			</div>
 		</div>
@@ -322,15 +323,15 @@
 			{#if data.baseLesson && !data.groupTiers?.length && !data.durationPackages?.length }
 				<div class="w-full rounded-lg border border-primary/20 bg-card p-4">
 					<div class="mb-2 flex items-center justify-between">
-						<span class="text-sm font-medium">Hourly Rate</span>
-						<Badge variant="secondary" class="text-xs">From</Badge>
+						<span class="text-sm font-medium">{m.lessons_hourly_rate_label}</span>
+						<Badge variant="secondary" class="text-xs">{m.badge_from}</Badge>
 					</div>
 					<div class="flex items-baseline gap-2">
 						<span class="text-2xl font-bold text-primary">{data.baseLesson.basePrice}</span>
-						<span class="text-sm text-muted-foreground">{data.baseLesson.currency}/hour</span>
+						<span class="text-sm text-muted-foreground">{data.baseLesson.currency}/h</span>
 					</div>
 					<p class="mt-2 text-xs text-muted-foreground">
-						Base rate for private lessons (1 - 2 students)
+						{m.instructor_base_rate_help}
 					</p>
 				</div>
 			{/if}
@@ -360,7 +361,7 @@
 								d="M13 10V3L4 14h7v7l9-11h-7z"
 							/>
 						</svg>
-						Sports Offered
+						{m.instructor_sports_offered}
 					</h2>
 					<div class="flex flex-wrap gap-2">
 						{#each sports as sport}
@@ -394,7 +395,7 @@
 								d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
 							/>
 						</svg>
-						Teaching Location
+						instructor_teaching_location
 					</h2>
 					<div class="flex items-center gap-2">
 						<span class="text-sm text-muted-foreground">
