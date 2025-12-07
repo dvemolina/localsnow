@@ -48,18 +48,18 @@ jobs:
 
       - name: Create environment file
         run: |
-          echo "GIT_COMMIT_HASH=${{ github.sha }}" >> ./envfile
+          echo "GIT_COMMIT_HASH=${{ github.sha }}" >> envfile
 
       - name: 'Stack Deploy'
         uses: cssnr/stack-deploy-action@v1
         with:
-          name: 'stack-name'
+          name: 'localsnow'
           file: 'docker-compose.production.yml'
           host: ${{ secrets.DEPLOY_HOST }}
           port: ${{ secrets.DEPLOY_PORT }}
           user: ${{ secrets.DEPLOY_USER }}
           ssh_key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
-          env_file: .envfile
+          env_file: ./envfile'
           registry_host: 'ghcr.io'
           registry_user: ${{ github.actor }}
           registry_pass: ${{ secrets.GIT_PAT }}
