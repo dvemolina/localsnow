@@ -64,3 +64,19 @@ jobs:
           registry_user: ${{ github.actor }}
           registry_pass: ${{ secrets.GIT_PAT }}
           summary: true
+
+  cleanup:
+    name: 'Cleanup'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: deploy
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: 'Purge Cache'
+        uses: cssnr/cloudflare-purge-cache-action@v2
+        with:
+          token: ${{ secrets.CLOUDFLARE_ZONE_PURGE_TOKEN }}
+          zones: cssnr.com
