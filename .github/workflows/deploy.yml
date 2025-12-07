@@ -29,8 +29,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/dvemolina/localsnow/localsnow:latest
-            ghcr.io/dvemolina/localsnow/localsnow:${{ github.sha }}
+            ghcr.io/dvemolina/localsnow:latest
+            ghcr.io/dvemolina/localsnow:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
