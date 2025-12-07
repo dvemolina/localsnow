@@ -215,7 +215,7 @@
 					d="M15 19l-7-7 7-7"
 				/>
 			</svg>
-			Back to Instructors
+			{m.button_back_to_instructors()}
 		</a>
 	</div>
 
@@ -247,12 +247,12 @@
 								<StarScore score={reviewStats.averageRating} />
 							</div>
 							<span class="text-xs text-muted-foreground">
-								{reviewStats.totalReviews} {reviewStats.totalReviews === 1 ? 'review' : 'reviews'}
+								{reviewStats.totalReviews} {reviewStats.totalReviews === 1 ? m.instructor_review() : m.instructor_reviews()}
 							</span>
 						</div>
 					{:else}
 						<div class="flex justify-center">
-							<span class="text-xs text-muted-foreground">No reviews yet</span>
+							<span class="text-xs text-muted-foreground">{m.instructor_no_reviews_yet()}</span>
 						</div>
 					{/if}
 				</div>
@@ -287,14 +287,14 @@
 						d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
 					/>
 				</svg>
-				Request a Lesson
+				{m.button_request_lesson()}
 			</Button>
 
 			<!-- Quick Info Box -->
 			<div class="mt-4 w-full space-y-3 rounded-lg bg-muted p-4">
 				<div class="flex items-center gap-2">
 					<img src="/icons/certificate.svg" alt="Certification" class="size-5" />
-					<span class="text-sm font-medium">Verified Instructor</span>
+					<span class="text-sm font-medium">{m.instructor_verified_badge()}</span>
 				</div>
 				<div class="flex items-center gap-2">
 					<svg
@@ -395,16 +395,20 @@
 								d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
 							/>
 						</svg>
-						instructor_teaching_location
+						{m.instructor_teaching_location()}
 					</h2>
-					<div class="flex items-center gap-2">
-						<span class="text-sm text-muted-foreground">
-							{#if resorts.length > 0}
-								Teaching at {resorts.length} resort{resorts.length > 1 ? 's' : ''}
-							{:else}
-								Multiple locations available
-							{/if}
-						</span>
+					<div class="flex flex-wrap gap-2">
+						{#if resorts.length > 0}
+							{#each resorts as resort}
+								<span class="text-sm text-muted-foreground">
+									{resort.name}
+								</span>
+							{/each}
+						{:else}
+							<span class="text-sm text-muted-foreground">
+								{m.instructor_multiple_locations()}
+							</span>
+						{/if}
 					</div>
 				</div>
 
@@ -426,7 +430,7 @@
 									d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
 								/>
 							</svg>
-							Languages
+							{m.instructor_languages()}
 						</h2>
 						<div class="flex flex-wrap gap-2">
 							{#each instructor.spokenLanguages as language}
@@ -492,22 +496,20 @@
 	<div class="rounded-lg border border-border bg-card p-6 mt-8">
 			{#if instructor.bio}
 				<div>
-					<h2 class="title4 mb-3">About {instructor.name}</h2>
+					<h2 class="title4 mb-3">{m.instructor_about_heading({ name: instructor.name })}</h2>
 					<p class="hyphens-auto text-sm leading-relaxed text-muted-foreground">
 						{instructor.bio}
 					</p>
 				</div>
 			{:else}
 				<div>
-					<h2 class="title4 mb-3">About {instructor.name}</h2>
+					<h2 class="title4 mb-3">{m.instructor_about_heading({ name: instructor.name })}</h2>
 					<p class="hyphens-auto text-sm leading-relaxed text-muted-foreground">
-						Professional ski instructor ready to help you improve your skills on the slopes. Whether
-						you're a beginner or looking to refine your technique, I provide personalized
-						instruction tailored to your goals.
+						{m.instructor_default_bio()}
 					</p>
 				</div>
 			{/if}
-			
+
 		</div>
 
 	<!-- Additional Info Section -->
@@ -529,7 +531,7 @@
 							d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
 						/>
 					</svg>
-					What to Expect
+					{m.instructor_what_to_expect()}
 				</h2>
 				<ul class="space-y-2.5 text-sm text-muted-foreground">
 					<li class="flex items-start gap-2">
@@ -547,7 +549,7 @@
 								d="M5 13l4 4L19 7"
 							/>
 						</svg>
-						<span>Certified professional instruction</span>
+						<span>{m.instructor_benefit1()}</span>
 					</li>
 					<li class="flex items-start gap-2">
 						<svg
@@ -564,7 +566,7 @@
 								d="M5 13l4 4L19 7"
 							/>
 						</svg>
-						<span>Personalized lessons for all skill levels</span>
+						<span>{m.instructor_benefit2()}</span>
 					</li>
 					<li class="flex items-start gap-2">
 						<svg
@@ -581,7 +583,7 @@
 								d="M5 13l4 4L19 7"
 							/>
 						</svg>
-						<span>Focus on technique and safety</span>
+						<span>{m.instructor_benefit3()}</span>
 					</li>
 					<li class="flex items-start gap-2">
 						<svg
@@ -598,27 +600,26 @@
 								d="M5 13l4 4L19 7"
 							/>
 						</svg>
-						<span>Flexible scheduling to fit your needs</span>
+						<span>{m.instructor_benefit4()}</span>
 					</li>
 				</ul>
 			</div>
 
 		<!-- Booking Info -->
 		<div class="rounded-lg border border-border bg-card p-6">
-			<h2 class="title4 mb-4">Booking Information</h2>
+			<h2 class="title4 mb-4">{m.instructor_booking_information()}</h2>
 			<div class="space-y-3 text-sm text-muted-foreground">
 				<p>
-					<strong class="text-foreground">Lesson Types:</strong> Private and group lessons available
+					{m.instructor_lesson_types()}
 				</p>
 				<p>
-					<strong class="text-foreground">Duration:</strong> Flexible from 1 hour to full day
+					{m.instructor_lesson_duration()}
 				</p>
 				<p>
-					<strong class="text-foreground">Booking:</strong> Fill out the request form and I'll get
-					back to you within 24 hours
+					{m.instructor_booking_process()}
 				</p>
 				<p class="text-xs italic">
-					Note: Final pricing and availability will be confirmed directly with the instructor
+					{m.instructor_booking_note()}
 				</p>
 			</div>
 		</div>
@@ -653,7 +654,7 @@
 				d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
 			/>
 		</svg>
-		Request a Lesson
+		{m.button_request_lesson()}
 	</Button>
 </section>
 <BookingRequestDialog 

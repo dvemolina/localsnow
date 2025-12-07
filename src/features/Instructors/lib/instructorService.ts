@@ -30,7 +30,7 @@ export class InstructorService {
     async getInstructorWithRelations(instructorId: number): Promise<{
         instructor: User | null;
         sports: number[];
-        resorts: number[];
+        resorts: Array<{ id: number; name: string; slug: string }>;
     }> {
         try {
             const [instructor, sports, resorts] = await Promise.all([
@@ -113,7 +113,7 @@ export class InstructorService {
         }
     }
 
-    async getInstructorResorts(instructorId: number): Promise<number[]> {
+    async getInstructorResorts(instructorId: number): Promise<Array<{ id: number; name: string; slug: string }>> {
         try {
             return await this.instructorRepository.getInstructorResorts(instructorId);
         } catch (error) {
