@@ -54,7 +54,7 @@ jobs:
         uses: jtwebman/stack-deploy-action@proposed_registry_login_change
         with:
           name: localsnow
-          file: docker-stack.yaml
+          file: docker-compose.production.yml
           host: ${{ secrets.DEPLOY_HOST }}
           port: ${{ secrets.DEPLOY_PORT }}
           user: ${{ secrets.DEPLOY_USER }}
