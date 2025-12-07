@@ -54,7 +54,7 @@ jobs:
         uses: cssnr/stack-deploy-action@v1
         with:
           name: 'stack-name'
-          file: 'docker-compose-production.yml'
+          file: 'docker-compose.production.yml'
           host: ${{ secrets.DEPLOY_HOST }}
           port: ${{ secrets.DEPLOY_PORT }}
           user: ${{ secrets.DEPLOY_USER }}
