@@ -50,14 +50,17 @@ jobs:
         run: |
           echo "GIT_COMMIT_HASH=${{ github.sha }}" >> ./envfile
 
-      - name: Docker Stack Deploy
-        uses: jtwebman/stack-deploy-action@proposed_registry_login_change
+      - name: 'Stack Deploy'
+        uses: cssnr/stack-deploy-action@v1
         with:
-          name: localsnow
-          file: docker-compose.production.yaml
+          name: 'stack-name'
+          file: 'docker-compose-production.yml'
           host: ${{ secrets.DEPLOY_HOST }}
           port: ${{ secrets.DEPLOY_PORT }}
           user: ${{ secrets.DEPLOY_USER }}
           ssh_key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
-          registry_auth: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-          env_file: ./envfile
+          env_file: .envfile
+          registry_host: 'ghcr.io'
+          registry_user: ${{ github.actor }}
+          registry_pass: ${{ secrets.GIT_PAT }}
+          summary: true
