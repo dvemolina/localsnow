@@ -5,6 +5,7 @@
 	import { MapPin, Mountain, ExternalLink } from '@lucide/svelte';
 	import { page } from '$app/stores';
 	import Breadcrumb from '$lib/components/shared/Breadcrumb.svelte';
+	import * as m from '$src/lib/paraglide/messages.js';
 
 	let { data } = $props();
 	const { landingData, seo } = data;
@@ -73,7 +74,7 @@
 					class="flex items-center gap-1.5 hover:text-foreground"
 				>
 					<ExternalLink class="h-4 w-4" />
-					<span>Resort Website</span>
+					<span>{m.resort_visit_website}</span>
 				</a>
 			{/if}
 		</div>
@@ -115,7 +116,7 @@
 								{instructor.name} {instructor.lastName}
 							</h3>
 							{#if instructor.isVerified}
-								<Badge class="mt-1" size="sm">Verified</Badge>
+								<Badge class="mt-1">Verified</Badge>
 							{/if}
 						</div>
 
