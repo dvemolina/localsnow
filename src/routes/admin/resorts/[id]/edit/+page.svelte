@@ -8,6 +8,7 @@
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import * as m from '$lib/paraglide/messages';
 	import { enhance } from '$app/forms';
+	import { Textarea } from '$src/lib/components/ui/textarea/index.js';
 
 	let { data, form } = $props();
 	const { resort } = data;
@@ -30,7 +31,7 @@
 			: []
 	);
 
-	function handleCountryChange(value: string | undefined) {
+	function handleCountryChange(value: string ) {
 		selectedCountryId = value || '';
 		selectedRegionId = ''; // Reset region when country changes
 	}
@@ -142,14 +143,14 @@
 						<Label for="countryId">{m.label_country()} *</Label>
 						<input type="hidden" name="countryId" value={selectedCountryId} />
 						<Select.Root
-							selected={{
-								value: selectedCountryId,
-								label: data.countries.find((c) => c.id.toString() === selectedCountryId)?.country || ''
-							}}
-							onSelectedChange={(v) => handleCountryChange(v?.value)}
+							type="single"
+							value={selectedCountryId}
+							onValueChange={handleCountryChange}
 						>
 							<Select.Trigger>
-								<Select.Value />
+								{selectedCountryId
+								? data.countries.find((c) => c.id.toString() === selectedCountryId)?.country
+								: m.admin_filter_country()}
 							</Select.Trigger>
 							<Select.Content>
 								{#each data.countries as country}
@@ -159,6 +160,7 @@
 								{/each}
 							</Select.Content>
 						</Select.Root>
+
 					</div>
 
 					<!-- Region -->
@@ -166,14 +168,14 @@
 						<Label for="regionId">{m.label_region()}</Label>
 						<input type="hidden" name="regionId" value={selectedRegionId} />
 						<Select.Root
-							selected={selectedRegionId ? {
-								value: selectedRegionId,
-								label: filteredRegions.find((r) => r.id.toString() === selectedRegionId)?.region || ''
-							} : undefined}
-							onSelectedChange={(v) => (selectedRegionId = v?.value || '')}
+							type="single"
+							value={selectedRegionId}
+							onValueChange={(v) => (selectedRegionId = v || '')}
 						>
 							<Select.Trigger>
-								<Select.Value placeholder={m.admin_select_region()} />
+								{selectedRegionId
+								? data.regions.find((r) => r.id.toString() === selectedRegionId)?.region
+								: m.admin_filter_region()}
 							</Select.Trigger>
 							<Select.Content>
 								<Select.Item value="">
@@ -186,6 +188,7 @@
 								{/each}
 							</Select.Content>
 						</Select.Root>
+
 					</div>
 
 					<!-- Min Elevation -->
@@ -226,6 +229,17 @@
 					<div class="col-span-2 space-y-2">
 						<Label for="website">{m.label_website()}</Label>
 						<Input id="website" name="website" type="url" value={resort.website || ''} />
+					</div>
+
+					<!-- Description -->
+					 <div class="col-span-2 space-y-2">
+						<Label for="description">Description</Label>
+						<Textarea
+							name="description"
+							id="description"
+							value={resort.description || ''}
+							rows={6}
+						/>
 					</div>
 				</div>
 

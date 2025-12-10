@@ -48,7 +48,8 @@ export const actions: Actions = {
 		const maxElevation = formData.get('maxElevation') as string;
 		const lat = formData.get('lat') as string;
 		const lon = formData.get('lon') as string;
-		const website = formData.get('website') as string;
+		const website = formData.get('website') as string; 
+		const description = formData.get('description') as string
 
 		// Validation
 		if (!name || !slug || !countryId) {
@@ -81,6 +82,7 @@ export const actions: Actions = {
 					lat: lat || null,
 					lon: lon || null,
 					website: website || null,
+					description: description || null,
 					updatedAt: new Date()
 				})
 				.where(eq(resorts.id, parseInt(params.id)));

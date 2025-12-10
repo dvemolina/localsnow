@@ -53,9 +53,9 @@
 		<div class="relative h-[300px] md:h-[400px]">
 			<!-- Background Image -->
 			<img
-				src={resort.image || '/ski-instructor-powder.webp'}
+				src={resort.image || 'https://assets.localsnow.org/resorts/default-resort-landscape.webp'}
 				alt="{resort.name} ski resort"
-				class="h-full w-full object-cover"
+				class="h-full w-full object-cover {resort.image ? 'object-center' : 'object-bottom'}"
 				loading="eager"
 			/>
 			<!-- Gradient Overlay -->
@@ -131,12 +131,16 @@
 			</CardHeader>
 			<CardContent>
 				<p class="text-muted-foreground">
-					{resort.name} is located in {location.region?.region || location.country.country}, {location.country.country}.
-					{#if resort.minElevation && resort.maxElevation}
-						The resort features slopes ranging from {resort.minElevation} to {resort.maxElevation} meters in elevation,
-						offering terrain suitable for all skill levels.
+					{#if resort.description}
+						{resort.description}
+					{:else}
+						{resort.name} is located in {location.region?.region || location.country.country}, {location.country.country}.
+						{#if resort.minElevation && resort.maxElevation}
+							The resort features slopes ranging from {resort.minElevation} to {resort.maxElevation} meters in elevation,
+							offering terrain suitable for all skill levels.
+						{/if}
+						Book professional ski and snowboard lessons with verified instructors.
 					{/if}
-					Book professional ski and snowboard lessons with verified instructors.
 				</p>
 			</CardContent>
 		</Card>

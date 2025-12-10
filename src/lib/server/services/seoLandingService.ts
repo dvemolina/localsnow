@@ -43,6 +43,8 @@ export interface LandingPageData {
       lat: string | null;
       lon: string | null;
       website: string | null;
+      image: string | null;
+      description: string | null
     };
   };
   sport: {
@@ -82,6 +84,7 @@ export async function getResortSportInstructors(
       lat: resorts.lat,
       lon: resorts.lon,
       website: resorts.website,
+      description: resorts.description,
       regionId: regions.id,
       regionName: regions.region,
       regionSlug: regions.regionSlug,
@@ -154,7 +157,8 @@ export async function getResortSportInstructors(
           maxElevation: resortData.maxElevation,
           lat: resortData.lat,
           lon: resortData.lon,
-          website: resortData.website
+          website: resortData.website,
+          description: resortData.description
         }
       },
       sport: {
@@ -262,7 +266,8 @@ export async function getResortSportInstructors(
         maxElevation: resortData.maxElevation,
         lat: resortData.lat,
         lon: resortData.lon,
-        website: resortData.website
+        website: resortData.website,
+        description: resortData.description
       }
     },
     sport: {
@@ -301,7 +306,9 @@ export async function getResortDetails(
       countryId: countries.id,
       countryName: countries.country,
       countrySlug: countries.countrySlug,
-      countryCode: countries.countryCode
+      countryCode: countries.countryCode,
+      image: resorts.image,
+      description: resorts.description
     })
     .from(resorts)
     .innerJoin(countries, eq(resorts.countryId, countries.id))
@@ -398,7 +405,8 @@ export async function getResortDetails(
       maxElevation: resort.maxElevation,
       lat: resort.lat,
       lon: resort.lon,
-      website: resort.website
+      website: resort.website,
+      description: resort.description
     },
     location: {
       country: {
