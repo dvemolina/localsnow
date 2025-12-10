@@ -70,6 +70,7 @@ export const resorts = pgTable('resorts', {
 	name: varchar('name', { length: 100 }).notNull(),
 	slug: varchar('slug', { length: 100 }).notNull().unique(),
 	label: varchar('label'),
+	description: varchar('description'),
 	minElevation: integer('min_elevation'),
 	maxElevation: integer('max_elevation'),
 	lat: numeric('lat', { precision: 10, scale: 6 }),

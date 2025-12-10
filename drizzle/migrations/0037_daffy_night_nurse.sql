@@ -1,0 +1,1 @@
+ALTER TABLE "resorts" ADD COLUMN "description" varchar;

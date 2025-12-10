@@ -6,6 +6,7 @@
 	import { page } from '$app/stores';
 	import Breadcrumb from '$lib/components/shared/Breadcrumb.svelte';
 	import * as m from '$src/lib/paraglide/messages.js';
+	import InstructorCard from '$src/features/Instructors/components/InstructorCard.svelte'
 
 	let { data } = $props();
 	const { landingData, seo } = data;
@@ -74,7 +75,7 @@
 					class="flex items-center gap-1.5 hover:text-foreground"
 				>
 					<ExternalLink class="h-4 w-4" />
-					<span>{m.resort_visit_website}</span>
+					<span>Website</span>
 				</a>
 			{/if}
 		</div>
@@ -93,56 +94,9 @@
 
 	<!-- Instructors Grid -->
 	{#if instructors.length > 0}
-		<div class="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+		<div class="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
 			{#each instructors as instructor}
-				<Card class="overflow-hidden transition-shadow hover:shadow-md">
-					<div class="aspect-square overflow-hidden bg-muted">
-						{#if instructor.profileImageUrl}
-							<img
-								src={instructor.profileImageUrl}
-								alt="{instructor.name} {instructor.lastName}"
-								class="h-full w-full object-cover"
-								loading="lazy"
-							/>
-						{:else}
-							<div class="flex h-full w-full items-center justify-center bg-muted text-4xl font-bold text-muted-foreground">
-								{instructor.name[0]}{instructor.lastName[0]}
-							</div>
-						{/if}
-					</div>
-					<CardContent class="p-4">
-						<div class="mb-3">
-							<h3 class="font-semibold">
-								{instructor.name} {instructor.lastName}
-							</h3>
-							{#if instructor.isVerified}
-								<Badge class="mt-1">Verified</Badge>
-							{/if}
-						</div>
-
-						<!-- Sports -->
-						<div class="mb-3">
-							<p class="mb-1 text-xs font-medium text-muted-foreground">Teaches:</p>
-							<div class="flex flex-wrap gap-1">
-								{#each instructor.sports as instructorSport}
-									<Badge variant="outline" class="text-xs">{instructorSport.sport}</Badge>
-								{/each}
-							</div>
-						</div>
-
-						<!-- Bio -->
-						{#if instructor.bio}
-							<p class="mb-3 line-clamp-2 text-sm text-muted-foreground">
-								{instructor.bio}
-							</p>
-						{/if}
-
-						<!-- CTA -->
-						<Button href="/instructor/{instructor.uuid}" class="w-full" size="sm">
-							View Profile & Book
-						</Button>
-					</CardContent>
-				</Card>
+				<InstructorCard instructorData={instructor}/>
 			{/each}
 		</div>
 	{:else}

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	import { Card, CardContent } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
@@ -6,14 +8,13 @@
 	import * as Select from '$lib/components/ui/select';
 	import * as Table from '$lib/components/ui/table';
 	import * as m from '$lib/paraglide/messages';
-	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
 
 	let { data } = $props();
 
-	let searchValue = $state(data.filters.search || '');
-	let countryValue = $state(data.filters.country || '');
-	let regionValue = $state(data.filters.region || '');
+	// 🔹 Svelte 5 state
+	let searchValue = $state(data.filters.search ?? '');
+	let countryValue = $state(data.filters.country ?? '');
+	let regionValue = $state(data.filters.region ?? '');
 
 	function applyFilters() {
 		const params = new URLSearchParams();
@@ -32,20 +33,26 @@
 		goto('/admin/resorts');
 	}
 
-	function handleCountryChange(value: string | undefined) {
+	// 🔹 onValueChange gets a plain string
+	function handleCountryChange(value: string) {
 		countryValue = value || '';
-		regionValue = ''; // Reset region when country changes
+		regionValue = ''; // reset region when country changes
 		applyFilters();
 	}
 
-	function handleRegionChange(value: string | undefined) {
+	function handleRegionChange(value: string) {
 		regionValue = value || '';
 		applyFilters();
 	}
 
 	function goToPage(pageNum: number) {
-		const params = new URLSearchParams($page.url.searchParams);
+		const params = new URLSearchParams();
+
+		if (searchValue) params.set('search', searchValue);
+		if (countryValue) params.set('country', countryValue);
+		if (regionValue) params.set('region', regionValue);
 		params.set('page', pageNum.toString());
+
 		goto(`/admin/resorts?${params.toString()}`);
 	}
 </script>
@@ -85,13 +92,14 @@
 				<!-- Country Filter -->
 				<div class="w-full md:w-48">
 					<Select.Root
-						selected={countryValue
-							? { value: countryValue, label: data.countries.find((c) => c.id.toString() === countryValue)?.country || '' }
-							: undefined}
-						onSelectedChange={(v) => handleCountryChange(v?.value)}
+						type="single"
+						value={countryValue}
+						onValueChange={handleCountryChange}
 					>
 						<Select.Trigger>
-							<Select.Value placeholder={m.admin_filter_country()} />
+							{countryValue
+								? data.countries.find((c) => c.id.toString() === countryValue)?.country
+								: m.admin_filter_country()}
 						</Select.Trigger>
 						<Select.Content>
 							<Select.Item value="">
@@ -109,14 +117,15 @@
 				<!-- Region Filter -->
 				<div class="w-full md:w-48">
 					<Select.Root
-						selected={regionValue
-							? { value: regionValue, label: data.regions.find((r) => r.id.toString() === regionValue)?.region || '' }
-							: undefined}
-						onSelectedChange={(v) => handleRegionChange(v?.value)}
+						type="single"
+						value={regionValue}
+						onValueChange={handleRegionChange}
 						disabled={!countryValue}
 					>
 						<Select.Trigger>
-							<Select.Value placeholder={m.admin_filter_region()} />
+							{regionValue
+								? data.regions.find((r) => r.id.toString() === regionValue)?.region
+								: m.admin_filter_region()}
 						</Select.Trigger>
 						<Select.Content>
 							<Select.Item value="">
