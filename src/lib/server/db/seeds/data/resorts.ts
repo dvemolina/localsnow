@@ -27668,5 +27668,17 @@ export const resorts = [
     "lat": "44.163489",
     "lon": "-107.217293",
     "website": "https://meadowlarklakeresort.com/ski-area"
+  },
+  {
+    "name": "Verbier",
+    "slug": "verbier",
+    "countryId": 57,
+    "label": "Verbier, Valais, Switzerland",
+    "regionId": 397,
+    "minElevation": 1500,
+    "maxElevation": 3330,
+    "lat": "46.0964",
+    "lon": "7.2280",
+    "website": "https://www.verbier.ch"
   }
 ];

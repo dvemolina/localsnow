@@ -49,9 +49,10 @@ function getSecret(name: string, defaultValue: string = ''): string {
 // Database
 export const DATABASE_URL = getSecret('DATABASE_URL');
 
-// Stripe Payment
-export const STRIPE_SECRET_KEY = getSecret('STRIPE_SECRET_KEY');
-export const STRIPE_WEBHOOK_SECRET = getSecret('STRIPE_WEBHOOK_SECRET');
+// Stripe Payment (Optional - kept for potential future monetization features)
+// Platform is currently 100% free, but infrastructure remains for future use
+export const STRIPE_SECRET_KEY = getSecret('STRIPE_SECRET_KEY', '');
+export const STRIPE_WEBHOOK_SECRET = getSecret('STRIPE_WEBHOOK_SECRET', '');
 
 // Google OAuth
 export const GOOGLE_CLIENT_ID = getSecret('GOOGLE_CLIENT_ID');
@@ -98,8 +99,7 @@ export const PROJECT_URL = process.env.PROJECT_URL || 'http://localhost:5173';
 export function validateConfig(): { valid: boolean; missing: string[] } {
 	const required = [
 		{ name: 'DATABASE_URL', value: DATABASE_URL },
-		{ name: 'STRIPE_SECRET_KEY', value: STRIPE_SECRET_KEY },
-		{ name: 'STRIPE_WEBHOOK_SECRET', value: STRIPE_WEBHOOK_SECRET },
+		// STRIPE keys removed from validation - optional for future use
 		{ name: 'GOOGLE_CLIENT_ID', value: GOOGLE_CLIENT_ID },
 		{ name: 'GOOGLE_CLIENT_SECRET', value: GOOGLE_CLIENT_SECRET },
 		{ name: 'R2_ACCOUNT_ID', value: R2_ACCOUNT_ID },

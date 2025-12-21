@@ -2,9 +2,6 @@
 import type { PageServerLoad } from './$types';
 import { InstructorService } from '$src/features/Instructors/lib/instructorService';
 import { LessonService } from '$src/features/Lessons/lib/lessonService';
-import { db } from '$lib/server/db';
-import { countries } from '$lib/server/db/schema';
-import { eq, sql } from 'drizzle-orm';
 
 const lessonService = new LessonService();
 const instructorService = new InstructorService();
@@ -21,14 +18,7 @@ export const load: PageServerLoad = async ({ url }) => {
     const sortBy = url.searchParams.get('sortBy');
 
     try {
-        // Get Spain's country ID for resort filtering (case-insensitive)
-        const spainCountry = await db
-            .select({ id: countries.id })
-            .from(countries)
-            .where(sql`UPPER(${countries.countryCode}) = 'ES'`)
-            .limit(1);
-        const spainCountryId = spainCountry[0]?.id;
-
+        // Search instructors worldwide (no country restrictions)
         const instructors = await instructorService.searchInstructors({
             resortId: resortId ? Number(resortId) : undefined,
             sportId: sportId ? Number(sportId) : undefined,
@@ -90,7 +80,6 @@ export const load: PageServerLoad = async ({ url }) => {
 
         return {
             instructors: instructorsWithLessons,
-            spainCountryId,
             filters: {
                 resort: resortId,
                 sport: sportId,
@@ -107,7 +96,6 @@ export const load: PageServerLoad = async ({ url }) => {
         console.error('Error loading instructors:', error);
         return {
             instructors: [],
-            spainCountryId: undefined,
             filters: {
                 resort: resortId,
                 sport: sportId,

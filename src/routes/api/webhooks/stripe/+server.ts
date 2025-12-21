@@ -1,70 +1,29 @@
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import Stripe from 'stripe';
-import { STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET } from '$lib/server/config';
-import { LeadPaymentService } from '$src/features/Bookings/lib/leadPaymentService';
-import { ClientDepositService } from '$src/features/Bookings/lib/clientDepositService';
+import { json, type RequestHandler } from '@sveltejs/kit';
+// TODO: Stripe imports kept for potential future monetization features
+// import Stripe from 'stripe';
+// import { STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET } from '$lib/server/config';
 
-const stripe = new Stripe(STRIPE_SECRET_KEY, {
-    apiVersion: '2025-10-29.clover'
-});
-
-const depositService = new ClientDepositService();
-const paymentService = new LeadPaymentService();
-
+/**
+ * Stripe Webhook Endpoint
+ *
+ * PAYMENT PROCESSING REMOVED - Platform is 100% free
+ *
+ * This endpoint is kept to:
+ * 1. Acknowledge Stripe webhooks (prevent webhook failures in Stripe dashboard)
+ * 2. Maintain infrastructure for potential future features
+ * 3. Avoid breaking existing Stripe webhook configurations
+ *
+ * All booking requests have contactInfoUnlocked = true by default (set in booking creation)
+ * No payment processing occurs - instructors receive full client contact info immediately
+ */
 export const POST: RequestHandler = async ({ request }) => {
-    const signature = request.headers.get('stripe-signature');
-    
-    if (!signature) {
-        throw error(400, 'Missing stripe-signature header');
-    }
+    // Acknowledge webhook receipt
+    // No payment processing - platform is 100% free
+    console.log('Stripe webhook received (payment processing disabled - free platform)');
 
-    let event: Stripe.Event;
-
-    try {
-        const body = await request.text();
-        event = stripe.webhooks.constructEvent(
-            body,
-            signature,
-            STRIPE_WEBHOOK_SECRET
-        );
-    } catch (err) {
-        console.error('Webhook signature verification failed:', err);
-        throw error(400, 'Invalid signature');
-    }
-
-    // Handle the event
-    switch (event.type) {
-        case 'checkout.session.completed': {
-            const session = event.data.object as Stripe.Checkout.Session;
-            
-            if (session.metadata?.type === 'lead_payment' && session.payment_status === 'paid') {
-                try {
-                    await paymentService.handleSuccessfulPayment(session.id);
-                    console.log('Lead payment processed successfully:', session.id);
-                } catch (err) {
-                    console.error('Error processing lead payment:', err);
-                }
-            }
-
-            // In checkout.session.completed:
-            if (session.metadata?.type === 'client_deposit' && session.payment_status === 'paid') {
-                await depositService.handleSuccessfulDeposit(session.id);
-                console.log('Client deposit processed:', session.id);
-            }
-            break;
-        }
-
-        case 'payment_intent.payment_failed': {
-            const paymentIntent = event.data.object as Stripe.PaymentIntent;
-            console.log('Payment failed:', paymentIntent.id);
-            // You could update the payment status to 'failed' here if needed
-            break;
-        }
-
-        default:
-            console.log(`Unhandled event type: ${event.type}`);
-    }
-
-    return json({ received: true });
+    // Return 200 OK to prevent webhook retry storms
+    return json({
+        received: true,
+        message: 'Payment processing disabled - platform is 100% free'
+    });
 };
-

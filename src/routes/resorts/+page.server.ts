@@ -1,31 +1,11 @@
 import type { PageServerLoad } from './$types';
 import { db } from '$src/lib/server/db/index';
-import { resorts, countries, regions } from '$src/lib/server/db/schema';
-import { eq, sql } from 'drizzle-orm';
+import { resorts, countries, regions, users, instructorResorts } from '$src/lib/server/db/schema';
+import { eq, sql, isNull, or, and, desc } from 'drizzle-orm';
 
 export const load: PageServerLoad = async () => {
-	// Get Spain's country ID
-	const spainCountry = await db
-		.select({ id: countries.id })
-		.from(countries)
-		.where(sql`UPPER(${countries.countryCode}) = 'ES'`)
-		.limit(1);
-
-	if (!spainCountry[0]) {
-		// No Spain data yet, return empty
-		return {
-			resortsByCountry: [],
-			totalResorts: 0,
-			seo: {
-				title: 'Ski Resorts in Spain | Find Instructors',
-				description: 'Browse ski resorts in Spain and find professional ski and snowboard instructors.',
-				canonicalUrl: 'https://localsnow.com/resorts'
-			}
-		};
-	}
-
-	// Get only Spanish resorts
-	const allResorts = await db
+	// Show ALL resorts worldwide that have at least 1 active instructor
+	const resortsWithInstructors = await db
 		.select({
 			resortId: resorts.id,
 			resortName: resorts.name,
@@ -37,45 +17,93 @@ export const load: PageServerLoad = async () => {
 			countrySlug: countries.countrySlug,
 			regionId: regions.id,
 			regionName: regions.region,
-			regionSlug: regions.regionSlug
+			regionSlug: regions.regionSlug,
+			// Count active instructors for this resort
+			instructorCount: sql<number>`cast(count(distinct ${users.id}) as integer)`
 		})
 		.from(resorts)
 		.innerJoin(countries, eq(resorts.countryId, countries.id))
 		.leftJoin(regions, eq(resorts.regionId, regions.id))
-		.where(eq(countries.id, spainCountry[0].id))
-		.orderBy(regions.region, resorts.name);
+		.leftJoin(instructorResorts, eq(resorts.id, instructorResorts.resortId))
+		.leftJoin(
+			users,
+			and(
+				eq(instructorResorts.instructorId, users.id),
+				isNull(users.deletedAt),
+				or(eq(users.role, 'instructor-independent'), eq(users.role, 'instructor-school'))
+			)
+		)
+		.groupBy(
+			resorts.id,
+			resorts.name,
+			resorts.slug,
+			resorts.minElevation,
+			resorts.maxElevation,
+			countries.id,
+			countries.country,
+			countries.countrySlug,
+			regions.id,
+			regions.region,
+			regions.regionSlug
+		)
+		.having(sql`count(distinct ${users.id}) > 0`)
+		.orderBy(desc(sql`count(distinct ${users.id})`), resorts.name);
 
-	// Group by region (since all are in Spain)
-	const groupedResorts = allResorts.reduce((acc, resort) => {
-		const regionKey = resort.regionSlug || 'other';
-		if (!acc[regionKey]) {
-			acc[regionKey] = {
-				region: resort.regionName || 'Other',
-				regionSlug: resort.regionSlug || 'other',
-				resorts: []
-			};
-		}
-		acc[regionKey].resorts.push({
-			id: resort.resortId,
-			name: resort.resortName,
-			slug: resort.resortSlug,
-			minElevation: resort.minElevation,
-			maxElevation: resort.maxElevation,
-			regionSlug: resort.regionSlug || resort.countrySlug,
-			regionName: resort.regionName
-		});
-		return acc;
-	}, {} as Record<string, any>);
+	// Group resorts by country
+	const resortsByCountry = resortsWithInstructors.reduce(
+		(acc, resort) => {
+			const countryKey = resort.countrySlug || 'other';
+			if (!acc[countryKey]) {
+				acc[countryKey] = {
+					country: resort.countryName || 'Other',
+					countrySlug: resort.countrySlug || 'other',
+					regions: {} as Record<string, any>
+				};
+			}
 
-	const resortsByRegion = Object.values(groupedResorts);
+			const regionKey = resort.regionSlug || 'other';
+			if (!acc[countryKey].regions[regionKey]) {
+				acc[countryKey].regions[regionKey] = {
+					region: resort.regionName || 'Other',
+					regionSlug: resort.regionSlug || 'other',
+					resorts: []
+				};
+			}
+
+			acc[countryKey].regions[regionKey].resorts.push({
+				id: resort.resortId,
+				name: resort.resortName,
+				slug: resort.resortSlug,
+				minElevation: resort.minElevation,
+				maxElevation: resort.maxElevation,
+				instructorCount: resort.instructorCount
+			});
+
+			return acc;
+		},
+		{} as Record<string, any>
+	);
+
+	// Convert to array and sort by instructor count
+	const countriesArray = Object.values(resortsByCountry).map((country: any) => ({
+		...country,
+		regions: Object.values(country.regions),
+		totalInstructors: Object.values(country.regions).reduce(
+			(sum: number, region: any) =>
+				sum + region.resorts.reduce((s: number, r: any) => s + r.instructorCount, 0),
+			0
+		)
+	}));
+
+	// Sort countries by total instructor count
+	countriesArray.sort((a, b) => b.totalInstructors - a.totalInstructors);
 
 	return {
-		resortsByCountry: resortsByRegion, // Keep same variable name for compatibility
-		totalResorts: allResorts.length,
-		countryName: 'Spain',
+		resortsByCountry: countriesArray,
+		totalResorts: resortsWithInstructors.length,
 		seo: {
-			title: 'Ski Resorts in Spain | Find Instructors',
-			description: `Browse ${allResorts.length} ski resorts in Spain. Find professional ski and snowboard instructors at your favorite Spanish resort.`,
+			title: 'Ski Resorts Worldwide | Find Instructors at Top Ski Resorts',
+			description: `Browse ${resortsWithInstructors.length} ski resorts worldwide. Find professional ski and snowboard instructors at top resorts around the world.`,
 			canonicalUrl: 'https://localsnow.com/resorts'
 		}
 	};
