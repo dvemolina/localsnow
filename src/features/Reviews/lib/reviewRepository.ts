@@ -1,10 +1,11 @@
 import { db } from '$lib/server/db';
 import { reviews, bookingRequests, users } from '$lib/server/db/schema';
-import { eq, and, desc, sql } from 'drizzle-orm';
+import { eq, and, desc, sql, or } from 'drizzle-orm';
 import type { InsertReview } from '$lib/server/db/schema';
 
 export interface CreateReviewData {
-	bookingRequestId: number;
+	bookingRequestId?: number;
+	instructorLessonId?: number;
 	instructorId: number;
 	clientEmail: string;
 	rating: number;
@@ -14,12 +15,23 @@ export interface CreateReviewData {
 export class ReviewRepository {
 	/**
 	 * Create a new review
+	 * Supports both marketplace bookings and manual lessons
 	 */
 	async createReview(data: CreateReviewData) {
+		// Validate: must have either bookingRequestId OR instructorLessonId, not both
+		if (data.bookingRequestId && data.instructorLessonId) {
+			throw new Error('Review cannot have both bookingRequestId and instructorLessonId');
+		}
+
+		if (!data.bookingRequestId && !data.instructorLessonId) {
+			throw new Error('Review must have either bookingRequestId or instructorLessonId');
+		}
+
 		const [review] = await db
 			.insert(reviews)
 			.values({
-				bookingRequestId: data.bookingRequestId,
+				bookingRequestId: data.bookingRequestId || null,
+				instructorLessonId: data.instructorLessonId || null,
 				instructorId: data.instructorId,
 				clientEmail: data.clientEmail,
 				rating: data.rating,
@@ -81,6 +93,18 @@ export class ReviewRepository {
 	async reviewExists(bookingRequestId: number): Promise<boolean> {
 		const review = await this.getReviewByBookingId(bookingRequestId);
 		return !!review;
+	}
+
+	/**
+	 * Get review by instructor lesson ID
+	 */
+	async getReviewByInstructorLessonId(instructorLessonId: number) {
+		const [review] = await db
+			.select()
+			.from(reviews)
+			.where(eq(reviews.instructorLessonId, instructorLessonId));
+
+		return review;
 	}
 
 	/**

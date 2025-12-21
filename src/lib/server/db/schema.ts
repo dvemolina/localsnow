@@ -7,6 +7,7 @@ export const sportSlugEnum = pgEnum('sport_slug', ['ski', 'snowboard', 'telemark
 export const modalitySlugEnum = pgEnum('modality_slug', ['piste', 'off-piste', 'freeride', 'freestyle', 'touring', 'adaptive']);
 export const pricingModeEnum = pgEnum('pricing_mode', ['per_hour', 'per_session', 'per_day']);
 export const bookingStatusEnum = pgEnum('status', ['pending', 'viewed', 'accepted', 'rejected', 'cancelled', 'expired', 'completed', 'no_show']);
+export const lessonSourceEnum = pgEnum('lesson_source', ['manual', 'marketplace']);
 
 export const timestamps = {
     createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -340,11 +341,37 @@ export const launchCodes = pgTable('launch_codes', {
 export type LaunchCode = typeof launchCodes.$inferSelect;
 export type InsertLaunchCode = typeof launchCodes.$inferInsert;
 
+// Instructor Lessons (manual + marketplace tracking)
+export const instructorLessons = pgTable('instructor_lessons', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	uuid: uuid('uuid').defaultRandom().unique().notNull(),
+	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	clientName: varchar('client_name', { length: 100 }).notNull(),
+	clientEmail: varchar('client_email', { length: 255 }).notNull(),
+	clientCountryCode: varchar('client_country_code', { length: 4 }),
+	clientPhone: varchar('client_phone', { length: 50 }),
+	lessonDate: timestamp('lesson_date', { withTimezone: true }).notNull(),
+	duration: numeric('duration', { precision: 4, scale: 1 }).notNull(),
+	numberOfStudents: integer('number_of_students').notNull().default(1),
+	sport: varchar('sport', { length: 50 }),
+	skillLevel: varchar('skill_level', { length: 50 }),
+	resortId: integer('resort_id').references(() => resorts.id, { onDelete: 'set null' }),
+	resortName: varchar('resort_name', { length: 100 }),
+	instructorNotes: text('instructor_notes'),
+	source: lessonSourceEnum('source').notNull().default('manual'),
+	bookingRequestId: integer('booking_request_id').unique().references(() => bookingRequests.id, { onDelete: 'set null' }),
+	reviewRequestSent: boolean('review_request_sent').notNull().default(false),
+	reviewRequestSentAt: timestamp('review_request_sent_at', { withTimezone: true }),
+	reviewToken: varchar('review_token', { length: 64 }).unique(),
+	...timestamps
+});
+
 // Reviews
 export const reviews = pgTable('reviews', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
 	uuid: uuid('uuid').defaultRandom().unique().notNull(),
-	bookingRequestId: integer('booking_request_id').notNull().unique().references(() => bookingRequests.id, { onDelete: 'cascade' }), // One review per booking
+	bookingRequestId: integer('booking_request_id').unique().references(() => bookingRequests.id, { onDelete: 'cascade' }), // One review per booking (nullable for manual reviews)
+	instructorLessonId: integer('instructor_lesson_id').references(() => instructorLessons.id, { onDelete: 'set null' }), // Link to manual lesson
 	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
 	clientEmail: varchar('client_email', { length: 255 }).notNull(),
 	rating: integer('rating').notNull(), // 1-5 stars
@@ -353,16 +380,42 @@ export const reviews = pgTable('reviews', {
 	...timestamps
 });
 
+export const instructorLessonsRelations = relations(instructorLessons, ({ one }) => ({
+	instructor: one(users, {
+		fields: [instructorLessons.instructorId],
+		references: [users.id]
+	}),
+	resort: one(resorts, {
+		fields: [instructorLessons.resortId],
+		references: [resorts.id]
+	}),
+	bookingRequest: one(bookingRequests, {
+		fields: [instructorLessons.bookingRequestId],
+		references: [bookingRequests.id]
+	}),
+	review: one(reviews, {
+		fields: [instructorLessons.id],
+		references: [reviews.instructorLessonId]
+	})
+}));
+
 export const reviewsRelations = relations(reviews, ({ one }) => ({
 	bookingRequest: one(bookingRequests, {
 		fields: [reviews.bookingRequestId],
 		references: [bookingRequests.id]
+	}),
+	instructorLesson: one(instructorLessons, {
+		fields: [reviews.instructorLessonId],
+		references: [instructorLessons.id]
 	}),
 	instructor: one(users, {
 		fields: [reviews.instructorId],
 		references: [users.id]
 	})
 }));
+
+export type InstructorLesson = typeof instructorLessons.$inferSelect;
+export type InsertInstructorLesson = typeof instructorLessons.$inferInsert;
 
 export type Review = typeof reviews.$inferSelect;
 export type InsertReview = typeof reviews.$inferInsert;
@@ -501,7 +554,8 @@ export const usersRelations = relations(users, ({ many }) => ({
 	sports: many(instructorSports),
 	lessons: many(lessons),
 	bookings: many(bookingRequests),
-	reviews: many(reviews)
+	reviews: many(reviews),
+	instructorLessons: many(instructorLessons)
 }));
 
 // Resorts relations

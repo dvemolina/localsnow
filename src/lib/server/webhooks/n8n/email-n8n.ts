@@ -194,3 +194,34 @@ export async function sendCancellationConfirmationToClient(data: {
 		console.error('Error sending cancellation confirmation:', err);
 	}
 }
+
+export async function sendReviewRequestEmail(data: {
+	clientEmail: string;
+	clientName: string;
+	instructorName: string;
+	lessonDate: string;
+	reviewUrl: string;
+}) {
+	try {
+		const response = await fetch(`${N8N_BASE_URL}/review-request-manual`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'x-n8n-secret': EMAIL_SECRET
+			},
+			body: JSON.stringify({
+				type: 'manual_review_request',
+				...data
+			})
+		});
+
+		if (!response.ok) {
+			const errorText = await response.text();
+			console.error('Failed to send review request email', errorText);
+			throw new Error(`Failed to send review request email: ${errorText}`);
+		}
+	} catch (err) {
+		console.error('Error sending review request email:', err);
+		throw err;
+	}
+}

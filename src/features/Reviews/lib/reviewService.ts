@@ -1,14 +1,17 @@
 import { ReviewRepository } from './reviewRepository';
 import { BookingRequestRepository } from '$src/features/Bookings/lib/bookingRequestRepository';
-import type { SubmitReviewInput } from './reviewSchema';
+import { InstructorLessonRepository } from '$src/features/InstructorLessons/lib/instructorLessonRepository';
+import type { SubmitReviewInput, SubmitManualReviewInput } from './reviewSchema';
 
 export class ReviewService {
 	private reviewRepo: ReviewRepository;
 	private bookingRepo: BookingRequestRepository;
+	private lessonRepo: InstructorLessonRepository;
 
 	constructor() {
 		this.reviewRepo = new ReviewRepository();
 		this.bookingRepo = new BookingRequestRepository();
+		this.lessonRepo = new InstructorLessonRepository();
 	}
 
 	/**
@@ -118,5 +121,48 @@ export class ReviewService {
 	 */
 	async hasReview(bookingRequestId: number): Promise<boolean> {
 		return await this.reviewRepo.reviewExists(bookingRequestId);
+	}
+
+	/**
+	 * Submit a review for a manual lesson via review token
+	 * Validates that:
+	 * 1. Token is valid and lesson exists
+	 * 2. Lesson date has passed (at least 1 hour ago)
+	 * 3. No review already exists for this lesson
+	 */
+	async submitManualLessonReview(input: SubmitManualReviewInput) {
+		// Get the lesson by token
+		const lesson = await this.lessonRepo.getLessonByReviewToken(input.token);
+
+		if (!lesson) {
+			throw new Error('Invalid review link or lesson not found');
+		}
+
+		// Check if lesson date has passed (at least 1 hour after lesson)
+		const lessonDate = new Date(lesson.lessonDate);
+		// Add duration to get end time
+		const lessonEndTime = new Date(lessonDate.getTime() + parseFloat(lesson.duration) * 60 * 60 * 1000);
+		const oneHourAfterLesson = new Date(lessonEndTime.getTime() + 60 * 60 * 1000);
+
+		if (new Date() < oneHourAfterLesson) {
+			throw new Error('You can leave a review 1 hour after the lesson ends');
+		}
+
+		// Check if review already exists
+		const existingReview = await this.reviewRepo.getReviewByInstructorLessonId(lesson.id);
+		if (existingReview) {
+			throw new Error('Review already exists for this lesson');
+		}
+
+		// Create the review
+		const review = await this.reviewRepo.createReview({
+			instructorLessonId: lesson.id,
+			instructorId: lesson.instructorId,
+			clientEmail: lesson.clientEmail.toLowerCase().trim(),
+			rating: input.rating,
+			comment: input.comment
+		});
+
+		return review;
 	}
 }
