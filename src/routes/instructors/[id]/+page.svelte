@@ -260,9 +260,9 @@
 				<!-- Instructor Type Badge -->
 				<div class="mt-4">
 					{#if isIndependent}
-						<Badge variant="secondary" class="text-sm">{m.badge_independent_instructor}</Badge>
+						<Badge variant="secondary" class="text-sm">{m.badge_independent_instructor()}</Badge>
 					{:else}
-						<Badge variant="secondary" class="text-sm">{m.badge_school_instructor}</Badge>
+						<Badge variant="secondary" class="text-sm">{m.badge_school_instructor()}</Badge>
 					{/if}
 				</div>
 			</div>
@@ -311,7 +311,7 @@
 							d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
 						/>
 					</svg>
-					<span class="text-sm">{m.instructor_response_time}</span>
+					<span class="text-sm">{m.instructor_response_time()}</span>
 				</div>
 			</div>
 		</div>
@@ -323,15 +323,15 @@
 			{#if data.baseLesson && !data.groupTiers?.length && !data.durationPackages?.length }
 				<div class="w-full rounded-lg border border-primary/20 bg-card p-4">
 					<div class="mb-2 flex items-center justify-between">
-						<span class="text-sm font-medium">{m.lessons_hourly_rate_label}</span>
-						<Badge variant="secondary" class="text-xs">{m.badge_from}</Badge>
+						<span class="text-sm font-medium">{m.lessons_hourly_rate_label()}</span>
+						<Badge variant="secondary" class="text-xs">{m.badge_from()}</Badge>
 					</div>
 					<div class="flex items-baseline gap-2">
 						<span class="text-2xl font-bold text-primary">{data.baseLesson.basePrice}</span>
 						<span class="text-sm text-muted-foreground">{data.baseLesson.currency}/h</span>
 					</div>
 					<p class="mt-2 text-xs text-muted-foreground">
-						{m.instructor_base_rate_help}
+						{m.instructor_base_rate_help()}
 					</p>
 				</div>
 			{/if}
@@ -361,7 +361,7 @@
 								d="M13 10V3L4 14h7v7l9-11h-7z"
 							/>
 						</svg>
-						{m.instructor_sports_offered}
+						{m.instructor_sports_offered()}
 					</h2>
 					<div class="flex flex-wrap gap-2">
 						{#each sports as sport}

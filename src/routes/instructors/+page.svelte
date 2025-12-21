@@ -289,9 +289,9 @@
 				</Dialog.Trigger>
 				<Dialog.Content class="max-w-lg">
 					<Dialog.Header>
-						<Dialog.Title>{m.instructors_page_advanced_filters}</Dialog.Title>
+						<Dialog.Title>{m.instructors_page_advanced_filters()}</Dialog.Title>
 						<Dialog.Description>
-							{m.instructors_page_refine_search}
+							{m.instructors_page_refine_search()}
 						</Dialog.Description>
 					</Dialog.Header>
 
@@ -330,14 +330,14 @@
 						<div class="flex items-center space-x-2">
 							<Checkbox id="verified" bind:checked={verifiedOnly} />
 							<Label for="verified" class="text-sm font-medium leading-none cursor-pointer">
-								{m.instructors_page_verified_only}
+								{m.instructors_page_verified_only()}
 							</Label>
 						</div>
 					</div>
 
 					<Dialog.Footer>
-						<Button type="button" variant="outline" onclick={clearFilters}>{m.instructors_page_clear_all}</Button>
-						<Button type="button" onclick={applyFilters}>{m.instructors_page_apply_filters}</Button>
+						<Button type="button" variant="outline" onclick={clearFilters}>{m.instructors_page_clear_all()}</Button>
+						<Button type="button" onclick={applyFilters}>{m.instructors_page_apply_filters()}</Button>
 					</Dialog.Footer>
 				</Dialog.Content>
 			</Dialog.Root>
@@ -441,7 +441,7 @@
 			{/if}
 			{#if verifiedOnly}
 				<Badge variant="secondary" class="gap-1">
-					{m.instructors_page_verified_only}
+					{m.instructors_page_verified_only()}
 					<button
 						type="button"
 						onclick={() => removeFilter('verifiedOnly')}
@@ -452,7 +452,7 @@
 				</Badge>
 			{/if}
 			<Button variant="ghost" size="sm" onclick={clearFilters} class="h-6 px-2 text-xs">
-				{m.instructors_page_clear_all}
+				{m.instructors_page_clear_all()}
 			</Button>
 		</div>
 	{/if}
@@ -461,11 +461,11 @@
 	<div class="mb-4 flex items-center justify-between">
 		<p class="text-muted-foreground text-sm">
 			{#if data.instructors.length === 0}
-				{m.instructors_page_results_none}
+				{m.instructors_page_results_none()}
 			{:else if data.instructors.length === 1}
-				{m.instructors_page_results_one}
+				{m.instructors_page_results_one()}
 			{:else}
-				{data.instructors.length} {m.instructors_page_results_many}
+				{data.instructors.length} {m.instructors_page_results_many()}
 			{/if}
 		</p>
 	</div>
@@ -487,9 +487,9 @@
 					d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
 				/>
 			</svg>
-			<h3 class="mb-2 text-lg font-semibold">{m.instructors_page_empty_title}</h3>
-			<p class="text-muted-foreground mb-4">{m.instructors_page_empty_subtitle}</p>
-			<Button onclick={clearFilters} variant="outline">{m.instructors_page_empty_clear_filters}</Button>
+			<h3 class="mb-2 text-lg font-semibold">{m.instructors_page_empty_title()}</h3>
+			<p class="text-muted-foreground mb-4">{m.instructors_page_empty_subtitle()}</p>
+			<Button onclick={clearFilters} variant="outline">{m.instructors_page_empty_clear_filters()}</Button>
 		</div>
 	{:else}
 		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
