@@ -158,6 +158,9 @@ export function shouldTranslatePath(pathname: string): boolean {
 	// Don't translate API routes
 	if (pathname.startsWith('/api')) return false;
 
+	// Don't translate OAuth routes (must match Google Console callback URLs exactly)
+	if (pathname.startsWith('/oauth')) return false;
+
 	// Don't translate static files
 	if (pathname.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|webp|webm|mp4)$/)) {
 		return false;
