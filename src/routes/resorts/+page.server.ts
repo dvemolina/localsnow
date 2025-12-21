@@ -49,33 +49,33 @@ export const load: PageServerLoad = async () => {
 		.having(sql`count(distinct ${users.id}) > 0`)
 		.orderBy(desc(sql`count(distinct ${users.id})`), resorts.name);
 
-	// Group resorts by country
-	const resortsByCountry = resortsWithInstructors.reduce(
+	// Group resorts by region (flattened structure for compatibility with existing UI)
+	// Format: Array of regions, each containing resorts from that region
+	const resortsByRegion = resortsWithInstructors.reduce(
 		(acc, resort) => {
-			const countryKey = resort.countrySlug || 'other';
-			if (!acc[countryKey]) {
-				acc[countryKey] = {
-					country: resort.countryName || 'Other',
-					countrySlug: resort.countrySlug || 'other',
-					regions: {} as Record<string, any>
-				};
-			}
+			// Create a unique key combining country and region for worldwide support
+			const regionKey = `${resort.countrySlug || 'other'}-${resort.regionSlug || 'other'}`;
 
-			const regionKey = resort.regionSlug || 'other';
-			if (!acc[countryKey].regions[regionKey]) {
-				acc[countryKey].regions[regionKey] = {
-					region: resort.regionName || 'Other',
+			if (!acc[regionKey]) {
+				acc[regionKey] = {
+					region: resort.regionName
+						? `${resort.regionName}, ${resort.countryName}`
+						: resort.countryName || 'Other',
 					regionSlug: resort.regionSlug || 'other',
+					countrySlug: resort.countrySlug || 'other',
+					countryName: resort.countryName || 'Other',
 					resorts: []
 				};
 			}
 
-			acc[countryKey].regions[regionKey].resorts.push({
+			acc[regionKey].resorts.push({
 				id: resort.resortId,
 				name: resort.resortName,
 				slug: resort.resortSlug,
 				minElevation: resort.minElevation,
 				maxElevation: resort.maxElevation,
+				regionName: resort.regionName,
+				regionSlug: resort.regionSlug,
 				instructorCount: resort.instructorCount
 			});
 
@@ -84,22 +84,17 @@ export const load: PageServerLoad = async () => {
 		{} as Record<string, any>
 	);
 
-	// Convert to array and sort by instructor count
-	const countriesArray = Object.values(resortsByCountry).map((country: any) => ({
-		...country,
-		regions: Object.values(country.regions),
-		totalInstructors: Object.values(country.regions).reduce(
-			(sum: number, region: any) =>
-				sum + region.resorts.reduce((s: number, r: any) => s + r.instructorCount, 0),
-			0
-		)
+	// Convert to array and sort by total instructors in each region
+	const regionsArray = Object.values(resortsByRegion).map((region: any) => ({
+		...region,
+		totalInstructors: region.resorts.reduce((sum: number, r: any) => sum + r.instructorCount, 0)
 	}));
 
-	// Sort countries by total instructor count
-	countriesArray.sort((a, b) => b.totalInstructors - a.totalInstructors);
+	// Sort regions by total instructor count (highest first)
+	regionsArray.sort((a, b) => b.totalInstructors - a.totalInstructors);
 
 	return {
-		resortsByCountry: countriesArray,
+		resortsByCountry: regionsArray, // Keep variable name for compatibility
 		totalResorts: resortsWithInstructors.length,
 		seo: {
 			title: 'Ski Resorts Worldwide | Find Instructors at Top Ski Resorts',

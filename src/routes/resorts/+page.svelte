@@ -33,9 +33,9 @@
 <section class="w-full">
 	<!-- Header -->
 	<div class="mb-6 mt-4 text-center">
-		<h1 class="title2 mb-2">Ski Resorts in Spain</h1>
+		<h1 class="title2 mb-2">Ski Resorts Worldwide</h1>
 		<p class="text-muted-foreground">
-			Browse {totalResorts} Spanish ski resorts and find professional instructors
+			Browse {totalResorts} ski resorts worldwide and find professional instructors
 		</p>
 	</div>
 
@@ -69,7 +69,7 @@
 					<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 						{#each region.resorts as resort}
 							<a
-								href="/resorts/spain/{resort.regionSlug}/{resort.slug}"
+								href="/resorts/{region.countrySlug}/{resort.regionSlug}/{resort.slug}"
 								class="group"
 							>
 								<Card class="h-full transition-shadow hover:shadow-lg">
