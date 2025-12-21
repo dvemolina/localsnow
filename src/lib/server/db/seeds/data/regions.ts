@@ -1978,5 +1978,10 @@ export const regions = [
     "countryId": 62,
     "region": "Wyoming",
     "regionSlug": "wyoming"
+  },
+  {
+    "countryId": 57,
+    "region": "Valais",
+    "regionSlug": "valais"
   }
 ];

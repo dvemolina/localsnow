@@ -1,6 +1,6 @@
 import { EMAIL_HEADER_SECRET } from '$lib/server/config';
 
-const N8N_BASE_URL = 'https://automation.personalflow.net/webhook'; //Delete the "-test" for production
+const N8N_BASE_URL = 'https://automation.personalflow.net/webhook';
 const EMAIL_SECRET = EMAIL_HEADER_SECRET;
 
 export async function sendSignupEmail(name: string, email: string, betaCode: string = 'BETA2025') {
@@ -39,8 +39,6 @@ export async function sendBookingNotificationToInstructor(data: {
 	hoursPerDay: number;
 	estimatedPrice?: number;
 	currency?: string;
-	leadPrice?: number;
-	paymentUrl?: string;
 	dashboardUrl?: string;
 }) {
 	try {
@@ -175,9 +173,6 @@ export async function sendCancellationConfirmationToClient(data: {
 	bookingRequestId: number;
 	startDate: string;
 	endDate?: string;
-	depositRefunded: boolean;
-	refundAmount?: number;
-	currency?: string;
 }) {
 	try {
 		const response = await fetch(`${N8N_BASE_URL}/booking-cancellation-client`, {

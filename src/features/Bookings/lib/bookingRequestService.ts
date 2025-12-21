@@ -1,6 +1,5 @@
 import { TentativeBookingService } from "$src/features/Availability/lib/tentativeBookingService";
 import { BookingRequestRepository, type BookingRequestData } from "./bookingRequestRepository";
-import { ClientDepositService } from "./clientDepositService";
 import {
     sendCancellationNotificationToInstructor,
     sendCancellationConfirmationToClient
@@ -144,28 +143,7 @@ export class BookingRequestService {
         // Update status to cancelled (this will automatically clean up tentative blocks)
         await this.updateBookingStatus(bookingRequestId, 'cancelled');
 
-        // Handle deposit refund if applicable
-        let depositRefunded = false;
-        let refundAmount = 0;
-        const currency = booking.currency || 'EUR';
-
-        // Only process refund if booking didn't use a launch code (launch codes = free access, no deposit)
-        if (!booking.usedLaunchCode) {
-            const depositService = new ClientDepositService();
-            const deposit = await depositService.getDepositByBookingRequest(bookingRequestId);
-
-            if (deposit && deposit.status === 'held') {
-                try {
-                    // Refund with 'client_cancellation' reason (automatic, no review required)
-                    await depositService.refundDeposit(deposit.id, 'client_cancellation');
-                    depositRefunded = true;
-                    refundAmount = parseFloat(deposit.amount);
-                } catch (error) {
-                    console.error('Failed to refund deposit:', error);
-                    // Don't throw - cancellation succeeded, refund can be handled manually
-                }
-            }
-        }
+        // No deposit refunds - platform is 100% free
 
         // Send notification to instructor
         try {
@@ -192,10 +170,7 @@ export class BookingRequestService {
                 instructorName: `${instructor.name} ${instructor.lastName}`,
                 bookingRequestId: booking.id,
                 startDate: new Date(booking.startDate).toLocaleDateString(),
-                endDate: booking.endDate ? new Date(booking.endDate).toLocaleDateString() : undefined,
-                depositRefunded,
-                refundAmount: depositRefunded ? refundAmount : undefined,
-                currency: depositRefunded ? currency : undefined
+                endDate: booking.endDate ? new Date(booking.endDate).toLocaleDateString() : undefined
             });
         } catch (error) {
             console.error('Failed to send client confirmation:', error);

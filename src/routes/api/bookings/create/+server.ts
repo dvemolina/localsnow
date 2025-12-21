@@ -163,8 +163,6 @@ export const POST: RequestHandler = async ({ request, url, locals }) => {
             hoursPerDay: Number(data.hoursPerDay),
             estimatedPrice: data.estimatedPrice || 0,
             currency: data.currency || 'EUR',
-            leadPrice: 0, // No longer charging for leads
-            paymentUrl: '', // No payment URL needed
             dashboardUrl: '/dashboard/bookings'
         }).catch(err => console.error('Email error:', err));
 
