@@ -51,7 +51,7 @@
 		'@type': 'WebSite',
 		name: 'Local Snow',
 		description:
-			'100% free ski and snowboard instructor directory. No booking fees, no commissions, no hidden costs. Direct contact with certified instructors.',
+			'Curated directory of ski and snowboard instructors. Browse profiles with real details, check specialties and languages, send lesson requests directly. Free to use, no platform fees.',
 		url: 'https://localsnow.org',
 		potentialAction: {
 			'@type': 'SearchAction',
@@ -67,13 +67,13 @@
 		url: 'https://localsnow.org',
 		logo: 'https://localsnow.org/local-snow-head.png',
 		description:
-			'Community-driven platform connecting ski and snowboard instructors with students. Zero fees, zero commissions, 100% free while we grow. Built for instructors, not investors.',
+			'Curated directory of ski and snowboard instructors across Spain. Browse profiles by resort, specialty, and language. Send lesson requests and connect directly. Zero platform fees, community-driven, built for local discovery.',
 		email: 'support@localsnow.org',
 		areaServed: {
 			'@type': 'Country',
 			name: 'Spain'
 		},
-		serviceType: 'Free Ski Instructor Directory',
+		serviceType: 'Ski Instructor Directory',
 		foundingDate: '2024',
 		sameAs: []
 	};
