@@ -116,6 +116,33 @@ export class SchoolInstructorRepository {
 	}
 
 	/**
+	 * Get pending applications for an instructor (applications to schools)
+	 */
+	async getPendingApplications(instructorId: number): Promise<Array<SchoolInstructor & { school: School }>> {
+		const result = await db
+			.select({
+				schoolInstructor: schoolInstructors,
+				school: schools
+			})
+			.from(schoolInstructors)
+			.innerJoin(schools, eq(schoolInstructors.schoolId, schools.id))
+			.where(
+				and(
+					eq(schoolInstructors.instructorId, instructorId),
+					eq(schoolInstructors.requestedBy, 'instructor'),
+					eq(schoolInstructors.isAcceptedBySchool, false),
+					isNull(schoolInstructors.rejectedAt)
+				)
+			)
+			.orderBy(schoolInstructors.requestedAt);
+
+		return result.map(r => ({
+			...r.schoolInstructor,
+			school: r.school
+		}));
+	}
+
+	/**
 	 * School accepts an instructor (either from application or after invite acceptance)
 	 */
 	async acceptInstructor(schoolId: number, instructorId: number): Promise<SchoolInstructor | null> {

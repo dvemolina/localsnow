@@ -5,9 +5,11 @@ import { TentativeBookingService } from '$src/features/Availability/lib/tentativ
 import { BookingRequestService } from '$src/features/Bookings/lib/bookingRequestService';
 import { LaunchCodeService } from '$src/features/LaunchCodes/lib/launchCodeService';
 import { sendBookingNotificationToInstructor, sendBookingConfirmationToClient } from '$lib/server/webhooks/n8n/email-n8n';
+import { SchoolInstructorRepository } from '$src/features/Schools/lib/schoolInstructorRepository';
 
 const launchCodeService = new LaunchCodeService();
 const tentativeService = new TentativeBookingService();
+const schoolInstructorRepository = new SchoolInstructorRepository();
 
 export const POST: RequestHandler = async ({ request, url, locals }) => {
     try {
@@ -93,6 +95,9 @@ export const POST: RequestHandler = async ({ request, url, locals }) => {
             throw error(409, validation.reason || 'Cannot create booking request');
         }
 
+        // ✅ CHECK IF INSTRUCTOR BELONGS TO A SCHOOL
+        const instructorSchool = await schoolInstructorRepository.getInstructorSchool(instructorId);
+
         // ✅ CREATE BOOKING FIRST (get booking ID)
         const bookingRequest = await bookingService.createBookingRequest({
             instructorId,
@@ -111,7 +116,8 @@ export const POST: RequestHandler = async ({ request, url, locals }) => {
             promoCode: data.promoCode || null,
             estimatedPrice: data.estimatedPrice || null,
             currency: data.currency || null,
-            sports: data.sports || []
+            sports: data.sports || [],
+            schoolId: instructorSchool?.id || null // Add schoolId if instructor belongs to a school
         });
 
         // ✅ FREE DIRECTORY MODEL: All bookings are free
@@ -152,19 +158,50 @@ export const POST: RequestHandler = async ({ request, url, locals }) => {
         const instructorService = (await import('$src/features/Instructors/lib/instructorService')).InstructorService;
         const instructor = await new instructorService().getInstructorById(instructorId);
 
-        sendBookingNotificationToInstructor({
-            instructorEmail: instructor?.email || '',
-            instructorName: instructor?.name || '',
-            bookingRequestId: bookingRequest.id,
-            clientName: data.clientName,
-            numberOfStudents: Number(data.numberOfStudents),
-            startDate: startDate.toISOString(),
-            endDate: endDate?.toISOString() || null,
-            hoursPerDay: Number(data.hoursPerDay),
-            estimatedPrice: data.estimatedPrice || 0,
-            currency: data.currency || 'EUR',
-            dashboardUrl: '/dashboard/bookings'
-        }).catch(err => console.error('Email error:', err));
+        // If instructor belongs to a school, send notification to school admin instead
+        if (instructorSchool) {
+            const { db } = await import('$lib/server/db');
+            const { users } = await import('$lib/server/db/schema');
+            const { eq } = await import('drizzle-orm');
+
+            // Get school owner/admin email
+            const schoolAdmin = await db
+                .select({ email: users.email, name: users.name })
+                .from(users)
+                .where(eq(users.id, instructorSchool.ownerUserId))
+                .limit(1);
+
+            if (schoolAdmin[0]) {
+                sendBookingNotificationToInstructor({
+                    instructorEmail: schoolAdmin[0].email,
+                    instructorName: schoolAdmin[0].name,
+                    bookingRequestId: bookingRequest.id,
+                    clientName: data.clientName,
+                    numberOfStudents: Number(data.numberOfStudents),
+                    startDate: startDate.toISOString(),
+                    endDate: endDate?.toISOString() || null,
+                    hoursPerDay: Number(data.hoursPerDay),
+                    estimatedPrice: data.estimatedPrice || 0,
+                    currency: data.currency || 'EUR',
+                    dashboardUrl: '/dashboard/school/bookings'
+                }).catch(err => console.error('Email error:', err));
+            }
+        } else {
+            // Independent instructor - send notification to instructor
+            sendBookingNotificationToInstructor({
+                instructorEmail: instructor?.email || '',
+                instructorName: instructor?.name || '',
+                bookingRequestId: bookingRequest.id,
+                clientName: data.clientName,
+                numberOfStudents: Number(data.numberOfStudents),
+                startDate: startDate.toISOString(),
+                endDate: endDate?.toISOString() || null,
+                hoursPerDay: Number(data.hoursPerDay),
+                estimatedPrice: data.estimatedPrice || 0,
+                currency: data.currency || 'EUR',
+                dashboardUrl: '/dashboard/bookings'
+            }).catch(err => console.error('Email error:', err));
+        }
 
         sendBookingConfirmationToClient({
             clientEmail: data.clientEmail,

@@ -255,6 +255,18 @@ export class SchoolInstructorService {
 	}
 
 	/**
+	 * Get pending applications for an instructor
+	 */
+	async getPendingApplications(instructorId: number) {
+		try {
+			return await this.repository.getPendingApplications(instructorId);
+		} catch (error) {
+			console.error('Error getting pending applications:', error);
+			throw new Error('Failed to fetch pending applications');
+		}
+	}
+
+	/**
 	 * Get active instructors for a school
 	 */
 	async getActiveInstructors(schoolId: number) {
