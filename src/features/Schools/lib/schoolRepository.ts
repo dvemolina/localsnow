@@ -1,5 +1,5 @@
 import { db } from "$lib/server/db/index";
-import { schools, schoolResorts, users, type InsertSchool, type School } from "$src/lib/server/db/schema";
+import { schools, schoolResorts, schoolAdmins, users, type InsertSchool, type School } from "$src/lib/server/db/schema";
 import { eq, and } from "drizzle-orm";
 import type { SchoolSignupData } from "./validations/schoolSchemas";
 
@@ -34,6 +34,14 @@ export class SchoolRepository {
                     updatedAt: new Date()
                 })
                 .where(eq(users.id, schoolData.ownerUserId));
+
+            // Add owner as school admin with isOwner flag
+            await tx.insert(schoolAdmins).values({
+                schoolId: newSchool[0].id,
+                userId: schoolData.ownerUserId,
+                isAccepted: true,
+                isOwner: true
+            });
 
             // Insert school-resort relationship
             await tx.insert(schoolResorts).values({
