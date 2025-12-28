@@ -11,13 +11,22 @@ import { sendSignupEmail } from "$src/lib/server/webhooks/n8n/email-n8n.js";
 
 const userService = new UserService()
 const ipBucket = new RefillingTokenBucket<string>(3, 10);
- 
+
+// Helper to get locale from URL path
+function getLocaleFromPath(pathname: string): string {
+    const match = pathname.match(/^\/(en|es)\//);
+    return match ? match[1] : 'en';
+}
+
 export const load: PageServerLoad = async (event) => {
     const user = event.locals.user;
-    if(user) redirect(302, '/dashboard')
-    
-        const form = await superValidate(zod(userSignupSchema));
-    
+    if(user) {
+        const locale = getLocaleFromPath(event.url.pathname);
+        redirect(302, `/${locale}/dashboard`);
+    }
+
+    const form = await superValidate(zod(userSignupSchema));
+
     return { form }
 };
 
@@ -59,9 +68,10 @@ export const actions: Actions = {
         const sessionToken = await generateSessionToken();
         const session = await createSession(sessionToken, user.id);
         await setSessionTokenCookie(event, sessionToken, session.expiresAt);
-        
-        const returnTo = event.url.searchParams.get('returnTo') || '/dashboard';
+
+        const locale = getLocaleFromPath(event.url.pathname);
+        const returnTo = event.url.searchParams.get('returnTo') || `/${locale}/dashboard`;
         return redirect(302, returnTo);
-        
+
     }
 };  

@@ -13,13 +13,21 @@ const userService = new UserService();
 const throttler = new Throttler<number>([0, 1, 2, 4, 8, 16, 30, 60, 180, 300]);
 const ipBucket = new RefillingTokenBucket<string>(20, 1);
 
- 
+// Helper to get locale from URL path
+function getLocaleFromPath(pathname: string): string {
+    const match = pathname.match(/^\/(en|es)\//);
+    return match ? match[1] : 'en';
+}
+
 export const load: PageServerLoad = async (event) => {
     const user = event.locals.user;
-    if(user) redirect(302, '/dashboard')
+    if(user) {
+        const locale = getLocaleFromPath(event.url.pathname);
+        redirect(302, `/${locale}/dashboard`);
+    }
     const form = await superValidate(zod(userLoginSchema))
     const redirectMessage = event.url.searchParams.get('redirectMessage') ?? null;
-  
+
     return { form, redirectMessage };
 };
 
@@ -70,13 +78,14 @@ export const actions: Actions = {
         }
 
         throttler.reset(user.id);
-        
+
         const sessionToken = await generateSessionToken();
         const session = await createSession(sessionToken, user.id);
         await setSessionTokenCookie(event, sessionToken, session.expiresAt);
 
-        const returnTo = event.url.searchParams.get('returnTo') || '/dashboard';
+        const locale = getLocaleFromPath(event.url.pathname);
+        const returnTo = event.url.searchParams.get('returnTo') || `/${locale}/dashboard`;
         return redirect(302, returnTo);
-            
+
     }
 };  
