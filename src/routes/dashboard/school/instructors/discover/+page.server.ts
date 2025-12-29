@@ -59,7 +59,7 @@ export const load: PageServerLoad = async ({ parent, url }) => {
 	const availableInstructors = [];
 
 	for (const instructor of Array.from(instructorMap.values())) {
-		// Check if there's already a pending request
+		// Check if there's already a pending request or active relationship
 		const hasPending = await db
 			.select()
 			.from(schoolInstructors)
@@ -68,8 +68,11 @@ export const load: PageServerLoad = async ({ parent, url }) => {
 					eq(schoolInstructors.schoolId, school.id),
 					eq(schoolInstructors.instructorId, instructor.id),
 					or(
-						eq(schoolInstructors.isAcceptedBySchool, false),
-						isNull(schoolInstructors.rejectedAt)
+						eq(schoolInstructors.isActive, true), // Already active
+						and(
+							eq(schoolInstructors.isAcceptedBySchool, false),
+							isNull(schoolInstructors.rejectedAt) // Pending, not rejected
+						)
 					)
 				)
 			);
