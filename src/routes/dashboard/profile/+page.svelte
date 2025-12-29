@@ -2,6 +2,7 @@
 <script lang="ts">
 	import UserProfileForm from '$src/features/Users/components/UserProfileForm.svelte';
 	import InstructorProfileForm from '$src/features/Instructors/components/InstructorProfileForm.svelte';
+	import SchoolProfileForm from '$src/features/Schools/components/SchoolProfileForm.svelte';
 	import { Badge } from '$src/lib/components/ui/badge';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import * as m from '$lib/paraglide/messages';
@@ -109,8 +110,14 @@
 							</div>
 						{/if}
 					</div>
-					<!-- School form would go here -->
-					<p class="text-muted-foreground">{m.profile_school_coming_soon()}</p>
+					{#if data.schoolForm}
+						<SchoolProfileForm
+							schoolForm={data.schoolForm}
+							currentLogoUrl={null}
+						/>
+					{:else}
+						<p class="text-muted-foreground">{m.profile_school_coming_soon()}</p>
+					{/if}
 				</div>
 			</Tabs.Content>
 		{/if}

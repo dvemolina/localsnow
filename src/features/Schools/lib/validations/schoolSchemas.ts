@@ -32,3 +32,16 @@ export interface SchoolSignupData {
     logoUrl?: string | null;
     resort: number;
 }
+
+// School Profile Schema (for editing existing school)
+export const schoolProfileSchema = z.object({
+    name: z.string().min(1, "School name is required"),
+    logo: z.instanceof(File).optional().nullable(),
+    bio: z.string().optional().nullable(),
+    countryCode: z.number().min(1, 'Choose Country Phone Prefix'),
+    schoolPhone: z.string().min(1, "School phone is required"),
+    schoolEmail: z.string().email("Valid email required").min(1, "School email is required"),
+    resort: z.coerce.number().min(1, "Choose the Resort where your School is")
+});
+
+export type SchoolProfileSchema = typeof schoolProfileSchema

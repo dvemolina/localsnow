@@ -75,6 +75,7 @@ export class SchoolService {
         try {
             const updateData: Partial<InsertSchool> = {
                 ...formData,
+                countryCode: formData.countryCode?.toString(),
                 logo: logoUrl
             };
 
