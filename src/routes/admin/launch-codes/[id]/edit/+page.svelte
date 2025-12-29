@@ -20,8 +20,8 @@
 		<a href="/admin/launch-codes" class="text-sm text-muted-foreground hover:text-foreground">
 			← {m.admin_back_to_launch_codes()}
 		</a>
-		<h1 class="title2 mb-2 mt-4">{m.admin_edit_launch_code()}</h1>
-		<p class="text-muted-foreground">{m.admin_edit_launch_code_desc()}</p>
+		<h1 class="title2 mb-2 mt-4">{m["admin.launch-codes.edit.admin_edit_launch_code"]()}</h1>
+		<p class="text-muted-foreground">{m["admin.launch-codes.edit.admin_edit_launch_code_desc"]()}</p>
 	</div>
 
 	<!-- Error Message -->
@@ -97,7 +97,7 @@
 						{m.admin_max_uses_help()}
 					</p>
 					<p class="text-xs text-muted-foreground">
-						{m.admin_current_uses()}: {data.code.currentUses}
+						{m["admin.launch-codes.edit.admin_current_uses"]()}: {data.code.currentUses}
 					</p>
 				</div>
 
@@ -105,7 +105,7 @@
 				<div class="flex items-center space-x-2">
 					<Checkbox id="isActive" name="isActive" checked={data.code.isActive} />
 					<Label for="isActive" class="font-normal">
-						{m.admin_code_active()}
+						{m["admin.launch-codes.edit.admin_code_active"]()}
 					</Label>
 				</div>
 			</CardContent>
@@ -114,7 +114,7 @@
 		<!-- Actions -->
 		<div class="mt-6 flex items-center gap-4">
 			<Button type="submit" class="bg-primary text-white">
-				{m.button_save_changes()}
+				{m["admin.launch-codes.edit.button_save_changes"]()}
 			</Button>
 			<Button type="button" variant="outline" href="/admin/launch-codes">
 				{m.button_cancel()}

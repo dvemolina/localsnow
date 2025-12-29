@@ -21,44 +21,44 @@
 
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8">
-		<h1 class="title2 mb-2">{m.admin_payment_overview()}</h1>
-		<p class="text-muted-foreground">{m.admin_payment_overview_desc()}</p>
+		<h1 class="title2 mb-2">{m["admin.payments.admin_payment_overview"]()}</h1>
+		<p class="text-muted-foreground">{m["admin.payments.admin_payment_overview_desc"]()}</p>
 	</div>
 
 	<!-- Revenue Summary -->
 	<div class="grid gap-4 md:grid-cols-3">
 		<Card>
 			<CardHeader>
-				<CardTitle>{m.admin_total_revenue()}</CardTitle>
+				<CardTitle>{m["admin.payments.admin_total_revenue"]()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">€{totalRevenue.toFixed(2)}</div>
 				<p class="text-xs text-muted-foreground">
-					{data.stats.deposits.count + data.stats.leads.count} {m.admin_transactions()}
+					{data.stats.deposits.count + data.stats.leads.count} {m["admin.payments.admin_transactions"]()}
 				</p>
 			</CardContent>
 		</Card>
 
 		<Card>
 			<CardHeader>
-				<CardTitle>{m.admin_client_deposits()}</CardTitle>
+				<CardTitle>{m["admin.payments.admin_client_deposits"]()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">€{totalDepositRevenue.toFixed(2)}</div>
 				<p class="text-xs text-muted-foreground">
-					{data.stats.deposits.count} {m.admin_deposits()}
+					{data.stats.deposits.count} {m["admin.payments.admin_deposits"]()}
 				</p>
 			</CardContent>
 		</Card>
 
 		<Card>
 			<CardHeader>
-				<CardTitle>{m.admin_lead_payments()}</CardTitle>
+				<CardTitle>{m["admin.payments.admin_lead_payments"]()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">€{totalLeadRevenue.toFixed(2)}</div>
 				<p class="text-xs text-muted-foreground">
-					{data.stats.leads.count} {m.admin_instructor_payments()}
+					{data.stats.leads.count} {m["admin.payments.admin_instructor_payments"]()}
 				</p>
 			</CardContent>
 		</Card>
@@ -67,7 +67,7 @@
 	<!-- Recent Deposits -->
 	<Card>
 		<CardHeader>
-			<CardTitle>{m.admin_recent_client_deposits()}</CardTitle>
+			<CardTitle>{m["admin.payments.admin_recent_client_deposits"]()}</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<Table.Root>
@@ -75,9 +75,9 @@
 					<Table.Row>
 						<Table.Head>{m.table_id()}</Table.Head>
 						<Table.Head>{m.table_client()}</Table.Head>
-						<Table.Head>{m.table_amount()}</Table.Head>
+						<Table.Head>{m["admin.payments.table_amount"]()}</Table.Head>
 						<Table.Head>{m.table_status()}</Table.Head>
-						<Table.Head>{m.admin_stripe_id()}</Table.Head>
+						<Table.Head>{m["admin.payments.admin_stripe_id"]()}</Table.Head>
 						<Table.Head>{m.table_date()}</Table.Head>
 					</Table.Row>
 				</Table.Header>
@@ -120,7 +120,7 @@
 	<!-- Recent Lead Payments -->
 	<Card>
 		<CardHeader>
-			<CardTitle>{m.admin_recent_lead_payments()}</CardTitle>
+			<CardTitle>{m["admin.payments.admin_recent_lead_payments"]()}</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<Table.Root>
@@ -129,7 +129,7 @@
 						<Table.Head>{m.table_id()}</Table.Head>
 						<Table.Head>{m.table_instructor()}</Table.Head>
 						<Table.Head>{m.table_client()}</Table.Head>
-						<Table.Head>{m.table_amount()}</Table.Head>
+						<Table.Head>{m["admin.payments.table_amount"]()}</Table.Head>
 						<Table.Head>{m.table_status()}</Table.Head>
 						<Table.Head>{m.table_date()}</Table.Head>
 					</Table.Row>

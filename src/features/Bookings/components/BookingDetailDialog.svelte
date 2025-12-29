@@ -22,10 +22,10 @@
 	const statusConfig = $derived({
 		pending: { label: m.status_pending_payment(), color: 'bg-yellow-100 text-yellow-800' },
 		unlocked: { label: m.status_unlocked(), color: 'bg-blue-100 text-blue-800' },
-		accepted: { label: m.status_accepted(), color: 'bg-green-100 text-green-800' },
-		rejected: { label: m.status_rejected(), color: 'bg-red-100 text-red-800' },
+		accepted: { label: m["dashboard.my-bookings.status_accepted"](), color: 'bg-green-100 text-green-800' },
+		rejected: { label: m["dashboard.my-bookings.status_rejected"](), color: 'bg-red-100 text-red-800' },
 		cancelled: { label: m.status_cancelled ? m.status_cancelled() : 'Cancelled by Client', color: 'bg-gray-100 text-gray-800' },
-		expired: { label: m.status_expired ? m.status_expired() : 'Expired', color: 'bg-gray-100 text-gray-800' }
+		expired: { label: m.status_expired ? m["dashboard.my-bookings.status_expired"]() : 'Expired', color: 'bg-gray-100 text-gray-800' }
 	});
 
 	const getStatus = () => {
@@ -212,7 +212,7 @@
 
 				{#if timeSlots.length > 0}
 					<div class="mt-4">
-						<span class="text-muted-foreground text-sm">{m.client_requested_times()}</span>
+						<span class="text-muted-foreground text-sm">{m["dashboard.my-bookings.client_requested_times"]()}</span>
 						<div class="mt-2 flex flex-wrap gap-2">
 							{#each timeSlots as slot}
 								<Badge variant="secondary" class="text-sm">

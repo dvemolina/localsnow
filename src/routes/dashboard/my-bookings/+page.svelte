@@ -25,11 +25,11 @@
 	function getStatusBadge(status: string) {
 		const variants: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline', class: string, label: string }> = {
 			'pending': { variant: 'outline', class: 'border-yellow-500 text-yellow-700', label: m.status_pending() },
-			'viewed': { variant: 'outline', class: 'border-blue-500 text-blue-700', label: m.client_status_viewed() },
-			'accepted': { variant: 'default', class: 'bg-green-600', label: m.status_accepted() },
-			'rejected': { variant: 'destructive', class: '', label: m.status_rejected() },
-			'cancelled': { variant: 'secondary', class: '', label: m.client_status_cancelled() },
-			'expired': { variant: 'secondary', class: '', label: m.status_expired() }
+			'viewed': { variant: 'outline', class: 'border-blue-500 text-blue-700', label: m["dashboard.my-bookings.client_status_viewed"]() },
+			'accepted': { variant: 'default', class: 'bg-green-600', label: m["dashboard.my-bookings.status_accepted"]() },
+			'rejected': { variant: 'destructive', class: '', label: m["dashboard.my-bookings.status_rejected"]() },
+			'cancelled': { variant: 'secondary', class: '', label: m["dashboard.my-bookings.client_status_cancelled"]() },
+			'expired': { variant: 'secondary', class: '', label: m["dashboard.my-bookings.status_expired"]() }
 		};
 
 		const config = variants[status] || { variant: 'outline' as const, class: '', label: status };
@@ -61,8 +61,8 @@
 
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8">
-		<h1 class="title2 mb-2">{m.client_my_bookings()}</h1>
-		<p class="text-muted-foreground">{m.client_my_bookings_desc()}</p>
+		<h1 class="title2 mb-2">{m["dashboard.my-bookings.client_my_bookings"]()}</h1>
+		<p class="text-muted-foreground">{m["dashboard.my-bookings.client_my_bookings_desc"]()}</p>
 	</div>
 
 	<!-- Filter Tabs -->
@@ -74,28 +74,28 @@
 					size="sm"
 					onclick={() => (filter = 'all')}
 				>
-					{m.client_filter_all()} ({data.counts.all})
+					{m["dashboard.my-bookings.client_filter_all"]()} ({data.counts.all})
 				</Button>
 				<Button
 					variant={filter === 'active' ? 'default' : 'outline'}
 					size="sm"
 					onclick={() => (filter = 'active')}
 				>
-					{m.client_filter_active()} ({data.counts.active})
+					{m["dashboard.my-bookings.client_filter_active"]()} ({data.counts.active})
 				</Button>
 				<Button
 					variant={filter === 'completed' ? 'default' : 'outline'}
 					size="sm"
 					onclick={() => (filter = 'completed')}
 				>
-					{m.client_filter_completed()} ({data.counts.completed})
+					{m["dashboard.my-bookings.client_filter_completed"]()} ({data.counts.completed})
 				</Button>
 				<Button
 					variant={filter === 'cancelled' ? 'default' : 'outline'}
 					size="sm"
 					onclick={() => (filter = 'cancelled')}
 				>
-					{m.client_filter_cancelled()} ({data.counts.cancelled})
+					{m["dashboard.my-bookings.client_filter_cancelled"]()} ({data.counts.cancelled})
 				</Button>
 			</div>
 		</CardContent>
@@ -120,10 +120,10 @@
 				<Table.Header>
 					<Table.Row>
 						<Table.Head>{m.table_id()}</Table.Head>
-						<Table.Head>{m.client_table_instructor()}</Table.Head>
-						<Table.Head>{m.table_dates()}</Table.Head>
-						<Table.Head>{m.client_table_students()}</Table.Head>
-						<Table.Head>{m.client_table_sports()}</Table.Head>
+						<Table.Head>{m["dashboard.my-bookings.client_table_instructor"]()}</Table.Head>
+						<Table.Head>{m["dashboard.my-bookings.table_dates"]()}</Table.Head>
+						<Table.Head>{m["dashboard.my-bookings.client_table_students"]()}</Table.Head>
+						<Table.Head>{m["dashboard.my-bookings.client_table_sports"]()}</Table.Head>
 						<Table.Head>{m.table_status()}</Table.Head>
 						<Table.Head>{m.table_actions()}</Table.Head>
 					</Table.Row>
@@ -132,7 +132,7 @@
 					{#if filteredBookings().length === 0}
 						<Table.Row>
 							<Table.Cell colspan={7} class="text-center text-muted-foreground">
-								{m.client_no_bookings_found()}
+								{m["dashboard.my-bookings.client_no_bookings_found"]()}
 							</Table.Cell>
 						</Table.Row>
 					{:else}
@@ -216,12 +216,12 @@
 				<svg class="mb-4 h-12 w-12 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
 				</svg>
-				<h3 class="mb-2 text-lg font-semibold">{m.client_no_bookings_title()}</h3>
+				<h3 class="mb-2 text-lg font-semibold">{m["dashboard.my-bookings.client_no_bookings_title"]()}</h3>
 				<p class="mb-4 text-center text-sm text-muted-foreground">
-					{m.client_no_bookings_subtitle()}
+					{m["dashboard.my-bookings.client_no_bookings_subtitle"]()}
 				</p>
 				<Button href="/instructors">
-					{m.client_find_instructors()}
+					{m["dashboard.my-bookings.client_find_instructors"]()}
 				</Button>
 			</CardContent>
 		</Card>
@@ -232,13 +232,13 @@
 <AlertDialog.Root bind:open={showCancelDialog}>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
-			<AlertDialog.Title>{m.client_cancel_booking_title()}</AlertDialog.Title>
+			<AlertDialog.Title>{m["dashboard.my-bookings.client_cancel_booking_title"]()}</AlertDialog.Title>
 			<AlertDialog.Description>
-				{m.client_cancel_booking_desc()}
+				{m["dashboard.my-bookings.client_cancel_booking_desc"]()}
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
-			<AlertDialog.Cancel onclick={closeCancelDialog}>{m.button_cancel_action()}</AlertDialog.Cancel>
+			<AlertDialog.Cancel onclick={closeCancelDialog}>{m["dashboard.my-bookings.button_cancel_action"]()}</AlertDialog.Cancel>
 			<form
 				method="POST"
 				action="?/cancel"
@@ -252,7 +252,7 @@
 				<input type="hidden" name="bookingRequestId" value={cancellingId || ''} />
 				<AlertDialog.Action asChild let:builder>
 					<Button {...builder} type="submit" variant="destructive">
-						{m.button_confirm_cancel()}
+						{m["dashboard.my-bookings.button_confirm_cancel"]()}
 					</Button>
 				</AlertDialog.Action>
 			</form>

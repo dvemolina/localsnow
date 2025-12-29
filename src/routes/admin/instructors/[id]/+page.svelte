@@ -52,9 +52,9 @@
 			<p class="text-muted-foreground">{data.instructor.email}</p>
 			<div class="mt-2 flex gap-2">
 				{#if data.instructor.isSuspended}
-					<Badge variant="destructive">{m.status_suspended()}</Badge>
+					<Badge variant="destructive">{m["admin.instructors.status_suspended"]()}</Badge>
 				{:else if data.instructor.isVerified}
-					<Badge class="bg-green-100 text-green-800">{m.status_verified()}</Badge>
+					<Badge class="bg-green-100 text-green-800">{m["admin.instructors.status_verified"]()}</Badge>
 				{:else}
 					<Badge class="bg-yellow-100 text-yellow-800">{m.status_pending_verification()}</Badge>
 				{/if}
@@ -67,23 +67,23 @@
 			{#if !data.instructor.isVerified && data.instructor.qualificationUrl}
 				<form method="POST" action="?/verify" use:enhance>
 					<Button type="submit" class="bg-green-600 hover:bg-green-700">
-						{m.button_verify_instructor()}
+						{m["admin.instructors.button_verify_instructor"]()}
 					</Button>
 				</form>
 				<Button variant="destructive" onclick={() => (showRejectDialog = true)}>
-					{m.button_reject()}
+					{m["admin.instructors.button_reject"]()}
 				</Button>
 			{/if}
 
 			{#if data.instructor.isSuspended}
 				<form method="POST" action="?/unsuspend" use:enhance>
 					<Button type="submit" variant="outline">
-						{m.button_unsuspend()}
+						{m["admin.instructors.button_unsuspend"]()}
 					</Button>
 				</form>
 			{:else}
 				<Button variant="destructive" onclick={() => (showSuspendDialog = true)}>
-					{m.button_suspend()}
+					{m["admin.instructors.button_suspend"]()}
 				</Button>
 			{/if}
 		</div>
@@ -94,23 +94,23 @@
 		<!-- Basic Information -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{m.admin_basic_information()}</CardTitle>
+				<CardTitle>{m["admin.instructors.admin_basic_information"]()}</CardTitle>
 			</CardHeader>
 			<CardContent class="space-y-2">
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{m.form_label_phone()}</p>
-					<p>{data.instructor.phone || m.admin_not_provided()}</p>
+					<p class="text-sm font-medium text-muted-foreground">{m["admin.instructors.form_label_phone"]()}</p>
+					<p>{data.instructor.phone || m["admin.instructors.admin_not_provided"]()}</p>
 				</div>
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{m.form_label_professional_phone()}</p>
-					<p>{data.instructor.professionalPhone || m.admin_not_provided()}</p>
+					<p class="text-sm font-medium text-muted-foreground">{m["admin.instructors.form_label_professional_phone"]()}</p>
+					<p>{data.instructor.professionalPhone || m["admin.instructors.admin_not_provided"]()}</p>
 				</div>
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{m.form_label_bio()}</p>
-					<p class="text-sm">{data.instructor.bio || m.admin_no_bio()}</p>
+					<p class="text-sm font-medium text-muted-foreground">{m["admin.instructors.form_label_bio"]()}</p>
+					<p class="text-sm">{data.instructor.bio || m["admin.instructors.admin_no_bio"]()}</p>
 				</div>
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{m.table_joined()}</p>
+					<p class="text-sm font-medium text-muted-foreground">{m["admin.instructors.table_joined"]()}</p>
 					<p>{formatDate(data.instructor.createdAt)}</p>
 				</div>
 			</CardContent>
@@ -119,13 +119,13 @@
 		<!-- Certification -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{m.admin_certification()}</CardTitle>
+				<CardTitle>{m["admin.instructors.admin_certification"]()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				{#if data.instructor.qualificationUrl}
 					<div class="space-y-2">
 						<p class="text-sm text-muted-foreground">
-							{m.admin_certification_uploaded()}
+							{m["admin.instructors.admin_certification_uploaded"]()}
 						</p>
 						<a
 							href={data.instructor.qualificationUrl}
@@ -133,13 +133,13 @@
 							class="inline-block"
 						>
 							<Button variant="outline" size="sm">
-								{m.button_view_certificate()} →
+								{m["admin.instructors.button_view_certificate"]()} →
 							</Button>
 						</a>
 					</div>
 				{:else}
 					<p class="text-sm text-muted-foreground">
-						{m.admin_no_certification()}
+						{m["admin.instructors.admin_no_certification"]()}
 					</p>
 				{/if}
 			</CardContent>
@@ -148,7 +148,7 @@
 		<!-- Resorts -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{m.table_resorts()}</CardTitle>
+				<CardTitle>{m["admin.instructors.table_resorts"]()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="flex flex-wrap gap-2">
@@ -160,7 +160,7 @@
 							</span>
 						</Badge>
 					{:else}
-						<p class="text-sm text-muted-foreground">{m.admin_no_resorts()}</p>
+						<p class="text-sm text-muted-foreground">{m["admin.instructors.admin_no_resorts"]()}</p>
 					{/each}
 				</div>
 			</CardContent>
@@ -169,14 +169,14 @@
 		<!-- Sports -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{m.table_sports()}</CardTitle>
+				<CardTitle>{m["admin.instructors.table_sports"]()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="flex flex-wrap gap-2">
 					{#each data.instructor.sports as { sport }}
 						<Badge>{sport.sport}</Badge>
 					{:else}
-						<p class="text-sm text-muted-foreground">{m.admin_no_sports()}</p>
+						<p class="text-sm text-muted-foreground">{m["admin.instructors.admin_no_sports"]()}</p>
 					{/each}
 				</div>
 			</CardContent>
@@ -187,7 +187,7 @@
 	{#if data.instructor.isSuspended}
 		<Card class="border-red-200 bg-red-50">
 			<CardHeader>
-				<CardTitle class="text-red-900">{m.admin_suspension_details()}</CardTitle>
+				<CardTitle class="text-red-900">{m["admin.instructors.admin_suspension_details"]()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="space-y-2">
@@ -196,7 +196,7 @@
 						<p class="text-sm">{data.instructor.suspensionReason}</p>
 					</div>
 					<div>
-						<p class="text-sm font-medium">{m.admin_suspended_at()}:</p>
+						<p class="text-sm font-medium">{m["admin.instructors.admin_suspended_at"]()}:</p>
 						<p class="text-sm">{formatDate(data.instructor.suspendedAt)}</p>
 					</div>
 				</div>
@@ -207,7 +207,7 @@
 	<!-- Bookings -->
 	<Card>
 		<CardHeader>
-			<CardTitle>{m.admin_booking_history()} ({data.bookings.length})</CardTitle>
+			<CardTitle>{m["admin.instructors.admin_booking_history"]()} ({data.bookings.length})</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<Table.Root>
@@ -236,7 +236,7 @@
 					{:else}
 						<Table.Row>
 							<Table.Cell colspan={5} class="text-center text-muted-foreground">
-								{m.admin_no_bookings()}
+								{m["admin.instructors.admin_no_bookings"]()}
 							</Table.Cell>
 						</Table.Row>
 					{/each}
@@ -266,13 +266,13 @@
 								</div>
 								<p class="mt-1 text-sm">{review.comment || m.admin_no_comment()}</p>
 								<p class="mt-1 text-xs text-muted-foreground">
-									{m.admin_by()} {review.clientEmail}
+									{m["admin.instructors.admin_by"]()} {review.clientEmail}
 								</p>
 							</div>
 						</div>
 					</div>
 				{:else}
-					<p class="text-sm text-muted-foreground">{m.admin_no_reviews()}</p>
+					<p class="text-sm text-muted-foreground">{m["admin.instructors.admin_no_reviews"]()}</p>
 				{/each}
 			</div>
 		</CardContent>
@@ -281,15 +281,15 @@
 	<!-- Audit Log -->
 	<Card>
 		<CardHeader>
-			<CardTitle>{m.admin_actions_history()}</CardTitle>
+			<CardTitle>{m["admin.instructors.admin_actions_history"]()}</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>{m.table_action()}</Table.Head>
+						<Table.Head>{m["admin.instructors.table_action"]()}</Table.Head>
 						<Table.Head>{m.role_admin()}</Table.Head>
-						<Table.Head>{m.table_details()}</Table.Head>
+						<Table.Head>{m["admin.instructors.table_details"]()}</Table.Head>
 						<Table.Head>{m.table_date()}</Table.Head>
 					</Table.Row>
 				</Table.Header>
@@ -297,7 +297,7 @@
 					{#each data.auditLogs as log}
 						<Table.Row>
 							<Table.Cell class="font-medium">{log.action}</Table.Cell>
-							<Table.Cell>{log.admin?.name || m.admin_system()}</Table.Cell>
+							<Table.Cell>{log.admin?.name || m["admin.instructors.admin_system"]()}</Table.Cell>
 							<Table.Cell>
 								<code class="text-xs">
 									{log.details ? JSON.parse(log.details).reason || '-' : '-'}
@@ -308,7 +308,7 @@
 					{:else}
 						<Table.Row>
 							<Table.Cell colspan={4} class="text-center text-muted-foreground">
-								{m.admin_no_actions()}
+								{m["admin.instructors.admin_no_actions"]()}
 							</Table.Cell>
 						</Table.Row>
 					{/each}
@@ -322,9 +322,9 @@
 <Dialog.Root bind:open={showSuspendDialog}>
 	<Dialog.Content>
 		<Dialog.Header>
-			<Dialog.Title>{m.admin_suspend_instructor()}</Dialog.Title>
+			<Dialog.Title>{m["admin.instructors.admin_suspend_instructor"]()}</Dialog.Title>
 			<Dialog.Description>
-				{m.admin_suspend_description()}
+				{m["admin.instructors.admin_suspend_description"]()}
 			</Dialog.Description>
 		</Dialog.Header>
 		<form method="POST" action="?/suspend" use:enhance>
@@ -332,7 +332,7 @@
 				<Textarea
 					name="reason"
 					bind:value={suspendReason}
-					placeholder={m.admin_reason_placeholder()}
+					placeholder={m["admin.instructors.admin_reason_placeholder"]()}
 					required
 				/>
 				<div class="flex justify-end gap-2">
@@ -340,7 +340,7 @@
 						{m.button_cancel()}
 					</Button>
 					<Button type="submit" variant="destructive">
-						{m.button_suspend()}
+						{m["admin.instructors.button_suspend"]()}
 					</Button>
 				</div>
 			</div>
@@ -352,9 +352,9 @@
 <Dialog.Root bind:open={showRejectDialog}>
 	<Dialog.Content>
 		<Dialog.Header>
-			<Dialog.Title>{m.admin_reject_verification()}</Dialog.Title>
+			<Dialog.Title>{m["admin.instructors.admin_reject_verification"]()}</Dialog.Title>
 			<Dialog.Description>
-				{m.admin_reject_description()}
+				{m["admin.instructors.admin_reject_description"]()}
 			</Dialog.Description>
 		</Dialog.Header>
 		<form method="POST" action="?/reject" use:enhance>
@@ -362,7 +362,7 @@
 				<Textarea
 					name="reason"
 					bind:value={rejectReason}
-					placeholder={m.admin_rejection_reason_placeholder()}
+					placeholder={m["admin.instructors.admin_rejection_reason_placeholder"]()}
 					required
 				/>
 				<div class="flex justify-end gap-2">
@@ -370,7 +370,7 @@
 						{m.button_cancel()}
 					</Button>
 					<Button type="submit" variant="destructive">
-						{m.button_reject()}
+						{m["admin.instructors.button_reject"]()}
 					</Button>
 				</div>
 			</div>

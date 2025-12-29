@@ -68,8 +68,8 @@
 				← {m.admin_back_to_resorts()}
 			</Button>
 		</div>
-		<h1 class="title2 mb-2">{m.admin_edit_resort()}: {resort.name}</h1>
-		<p class="text-muted-foreground">{m.admin_edit_resort_desc()}</p>
+		<h1 class="title2 mb-2">{m["admin.resorts.edit.admin_edit_resort"]()}: {resort.name}</h1>
+		<p class="text-muted-foreground">{m["admin.resorts.edit.admin_edit_resort_desc"]()}</p>
 	</div>
 
 	<!-- Resort Details Form -->
@@ -110,7 +110,7 @@
 
 					<!-- UUID -->
 					<div class="space-y-2">
-						<Label>{m.label_uuid()}</Label>
+						<Label>{m["admin.resorts.edit.label_uuid"]()}</Label>
 						<p class="font-mono text-sm text-muted-foreground">{resort.uuid}</p>
 					</div>
 
@@ -259,19 +259,19 @@
 	<!-- Image Upload Card -->
 	<Card>
 		<CardHeader>
-			<CardTitle>{m.admin_resort_image()}</CardTitle>
+			<CardTitle>{m["admin.resorts.edit.admin_resort_image"]()}</CardTitle>
 		</CardHeader>
 		<CardContent class="space-y-6">
 			<!-- Current/Preview Image -->
 			<div>
-				<p class="mb-3 text-sm font-medium">{m.admin_current_image()}</p>
+				<p class="mb-3 text-sm font-medium">{m["admin.resorts.edit.admin_current_image"]()}</p>
 				{#if previewUrl}
 					<div class="relative overflow-hidden rounded-lg border border-border">
 						<img src={previewUrl} alt={resort.name} class="h-64 w-full object-cover" />
 						<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
 						<div class="absolute bottom-4 left-4 text-white">
 							<p class="font-semibold">{resort.name}</p>
-							<p class="text-sm text-white/80">{m.admin_preview()}</p>
+							<p class="text-sm text-white/80">{m["admin.resorts.edit.admin_preview"]()}</p>
 						</div>
 					</div>
 				{:else}
@@ -303,7 +303,7 @@
 			>
 				<div>
 					<label for="image" class="mb-2 block text-sm font-medium">
-						{m.admin_upload_new_image()}
+						{m["admin.resorts.edit.admin_upload_new_image"]()}
 					</label>
 					<Input
 						id="image"
@@ -316,16 +316,16 @@
 						class="cursor-pointer"
 					/>
 					<p class="mt-1 text-xs text-muted-foreground">
-						{m.admin_image_guidelines()}
+						{m["admin.resorts.edit.admin_image_guidelines"]()}
 					</p>
 				</div>
 
 				<div class="flex gap-2">
 					<Button type="submit" disabled={uploading || !selectedFile}>
 						{#if uploading}
-							{m.button_uploading()}
+							{m["admin.resorts.edit.button_uploading"]()}
 						{:else}
-							{m.button_upload_image()}
+							{m["admin.resorts.edit.button_upload_image"]()}
 						{/if}
 					</Button>
 					{#if selectedFile}
@@ -345,10 +345,10 @@
 		</CardHeader>
 		<CardContent>
 			<p class="mb-4 text-sm text-muted-foreground">
-				{m.admin_delete_resort_warning()}
+				{m["admin.resorts.edit.admin_delete_resort_warning"]()}
 			</p>
 			<Button variant="destructive" onclick={() => (showDeleteDialog = true)}>
-				{m.button_delete_resort()}
+				{m["admin.resorts.edit.button_delete_resort"]()}
 			</Button>
 		</CardContent>
 	</Card>
@@ -358,9 +358,9 @@
 <AlertDialog.Root bind:open={showDeleteDialog}>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
-			<AlertDialog.Title>{m.admin_confirm_delete_resort()}</AlertDialog.Title>
+			<AlertDialog.Title>{m["admin.resorts.edit.admin_confirm_delete_resort"]()}</AlertDialog.Title>
 			<AlertDialog.Description>
-				{m.admin_delete_resort_confirmation({ name: resort.name })}
+				{m["admin.resorts.edit.admin_delete_resort_confirmation"]({ name: resort.name })}
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>

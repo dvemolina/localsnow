@@ -117,7 +117,7 @@
 					{m.button_saving()}
 				</span>
 			{:else}
-				{m.button_save_changes()}
+				{m["admin.launch-codes.edit.button_save_changes"]()}
 			{/if}
 		</Button>
 	</div>

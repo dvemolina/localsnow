@@ -19,7 +19,7 @@
 			</Button>
 		</div>
 		<h1 class="title2 mb-2">{m.admin_create_sport()}</h1>
-		<p class="text-muted-foreground">{m.admin_create_sport_desc()}</p>
+		<p class="text-muted-foreground">{m["admin.sports.create.admin_create_sport_desc"]()}</p>
 	</div>
 
 	<form
