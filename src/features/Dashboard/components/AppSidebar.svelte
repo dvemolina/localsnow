@@ -54,6 +54,19 @@
 		}
 	]);
 
+	const schoolAdminItems = $derived([
+		{
+			title: m.sidebar_home(),
+			url: '/dashboard',
+			icon: '/icons/home.svg'
+		},
+		{
+			title: m.sidebar_profile(),
+			url: '/dashboard/profile',
+			icon: '/icons/ski-resort.svg'
+		}
+	]);
+
 	const sidebar = Sidebar.useSidebar();
 
 	function handleClick() {
@@ -99,7 +112,7 @@
 							</Sidebar.MenuButton>
 						</Sidebar.MenuItem>
 					{/each}
-				{:else if user.role === "instructor-independent"}
+				{:else if user.role === "instructor-independent" || user.role === "instructor-school"}
 					{#each instructorItems as item (item.url)}
 						<Sidebar.MenuItem>
 							<Sidebar.MenuButton>
@@ -111,7 +124,20 @@
 								{/snippet}
 							</Sidebar.MenuButton>
 						</Sidebar.MenuItem>
-					{/each}	
+					{/each}
+				{:else if user.role === "school-admin"}
+					{#each schoolAdminItems as item (item.url)}
+						<Sidebar.MenuItem>
+							<Sidebar.MenuButton>
+								{#snippet child({ props })}
+									<a href={route(item.url)} {...props} onclick={handleClick}>
+										<img src={item.icon} alt={item.title} class="size-5" />
+										<span>{item.title}</span>
+									</a>
+								{/snippet}
+							</Sidebar.MenuButton>
+						</Sidebar.MenuItem>
+					{/each}
 				{/if}
 			</Sidebar.Menu>
 		</Sidebar.GroupContent>
