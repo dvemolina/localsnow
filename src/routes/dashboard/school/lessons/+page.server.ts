@@ -8,6 +8,7 @@ import { db } from '$lib/server/db';
 import { groupPricingTiers, durationPackages, promoCodes } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { LessonRepository } from '$src/features/Lessons/lib/lessonRepository';
+import { requireSchoolAdmin } from '$lib/utils/schoolAuth';
 
 const lessonService = new LessonService();
 const lessonRepository = new LessonRepository();
@@ -49,10 +50,10 @@ export const load: PageServerLoad = async ({ parent }) => {
 };
 
 export const actions: Actions = {
-    saveBaseLesson: async ({ request, parent }) => {
-        const { school } = await parent();
+    saveBaseLesson: async (event) => {
+        const { school } = await requireSchoolAdmin(event);
 
-        const form = await superValidate(request, zod(lessonSchema));
+        const form = await superValidate(event.request, zod(lessonSchema));
 
         if (!form.valid) {
             return fail(400, { form });
@@ -95,10 +96,10 @@ export const actions: Actions = {
         }
     },
 
-    createGroupTier: async ({ request, parent }) => {
-        const { school } = await parent();
+    createGroupTier: async (event) => {
+        const { school } = await requireSchoolAdmin(event);
 
-        const formData = await request.formData();
+        const formData = await event.request.formData();
         const lessonId = parseInt(formData.get('lessonId') as string);
         const minStudents = parseInt(formData.get('minStudents') as string);
         const maxStudents = parseInt(formData.get('maxStudents') as string);
@@ -118,10 +119,10 @@ export const actions: Actions = {
         }
     },
 
-    updateGroupTier: async ({ request, parent }) => {
-        const { school } = await parent();
+    updateGroupTier: async (event) => {
+        const { school } = await requireSchoolAdmin(event);
 
-        const formData = await request.formData();
+        const formData = await event.request.formData();
         const tierId = parseInt(formData.get('tierId') as string);
         const minStudents = parseInt(formData.get('minStudents') as string);
         const maxStudents = parseInt(formData.get('maxStudents') as string);
@@ -138,10 +139,10 @@ export const actions: Actions = {
         }
     },
 
-    deleteGroupTier: async ({ request, parent }) => {
-        const { school } = await parent();
+    deleteGroupTier: async (event) => {
+        const { school } = await requireSchoolAdmin(event);
 
-        const formData = await request.formData();
+        const formData = await event.request.formData();
         const tierId = parseInt(formData.get('tierId') as string);
 
         try {
@@ -153,10 +154,10 @@ export const actions: Actions = {
         }
     },
 
-    createDurationPackage: async ({ request, parent }) => {
-        const { school } = await parent();
+    createDurationPackage: async (event) => {
+        const { school } = await requireSchoolAdmin(event);
 
-        const formData = await request.formData();
+        const formData = await event.request.formData();
         const lessonId = parseInt(formData.get('lessonId') as string);
         const name = formData.get('name') as string;
         const hours = parseFloat(formData.get('hours') as string);
@@ -177,10 +178,10 @@ export const actions: Actions = {
         }
     },
 
-    updateDurationPackage: async ({ request, parent }) => {
-        const { school } = await parent();
+    updateDurationPackage: async (event) => {
+        const { school } = await requireSchoolAdmin(event);
 
-        const formData = await request.formData();
+        const formData = await event.request.formData();
         const packageId = parseInt(formData.get('packageId') as string);
         const name = formData.get('name') as string;
         const hours = parseFloat(formData.get('hours') as string);
@@ -200,10 +201,10 @@ export const actions: Actions = {
         }
     },
 
-    deleteDurationPackage: async ({ request, parent }) => {
-        const { school } = await parent();
+    deleteDurationPackage: async (event) => {
+        const { school } = await requireSchoolAdmin(event);
 
-        const formData = await request.formData();
+        const formData = await event.request.formData();
         const packageId = parseInt(formData.get('packageId') as string);
 
         try {
@@ -215,10 +216,10 @@ export const actions: Actions = {
         }
     },
 
-    createPromoCode: async ({ request, parent }) => {
-        const { school } = await parent();
+    createPromoCode: async (event) => {
+        const { school } = await requireSchoolAdmin(event);
 
-        const formData = await request.formData();
+        const formData = await event.request.formData();
         const lessonId = parseInt(formData.get('lessonId') as string);
         const code = formData.get('code') as string;
         const discountPercent = parseInt(formData.get('discountPercent') as string);
@@ -242,10 +243,10 @@ export const actions: Actions = {
         }
     },
 
-    updatePromoCode: async ({ request, parent }) => {
-        const { school } = await parent();
+    updatePromoCode: async (event) => {
+        const { school } = await requireSchoolAdmin(event);
 
-        const formData = await request.formData();
+        const formData = await event.request.formData();
         const promoId = parseInt(formData.get('promoId') as string);
         const code = formData.get('code') as string;
         const discountPercent = parseInt(formData.get('discountPercent') as string);
@@ -269,10 +270,10 @@ export const actions: Actions = {
         }
     },
 
-    deletePromoCode: async ({ request, parent }) => {
-        const { school } = await parent();
+    deletePromoCode: async (event) => {
+        const { school } = await requireSchoolAdmin(event);
 
-        const formData = await request.formData();
+        const formData = await event.request.formData();
         const promoId = parseInt(formData.get('promoId') as string);
 
         try {

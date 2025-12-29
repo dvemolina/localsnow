@@ -30,7 +30,7 @@
 
 	const { form: formData, enhance, delayed } = form;
 
-	const hasBaseLesson = baseLesson !== null && baseLesson !== undefined;
+	const hasBaseLesson = $derived(baseLesson !== null && baseLesson !== undefined);
 	let isEditing = $state(false);
 
 	// Pre-populate form if editing
@@ -171,10 +171,10 @@
 			<Card.Content>
 				<form method="POST" action="?/saveBaseLesson" use:enhance class="space-y-6">
 					<!-- Sports Selection -->
-					<div>
-						<label class="text-sm font-medium mb-2 block">
+					<div role="group" aria-labelledby="sports-label">
+						<div id="sports-label" class="text-sm font-medium mb-2 block">
 							{m.lessons_sports_label()} <span class="text-red-500">*</span>
-						</label>
+						</div>
 						<SportsCheckboxes {form} name="sports" />
 						<p class="text-xs text-muted-foreground mt-2">
 							{m.lessons_sports_help()}
