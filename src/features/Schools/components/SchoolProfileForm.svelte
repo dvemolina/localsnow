@@ -26,7 +26,6 @@
 
 	const form = superForm(schoolForm, {
 		validators: zodClient(schoolProfileSchema),
-		dataType: 'json',
 		onUpdate({ form }) {
 			if (form.valid) {
 				toast.success('School profile updated successfully');
