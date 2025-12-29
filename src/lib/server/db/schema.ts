@@ -457,7 +457,10 @@ export const schoolInstructors = pgTable('school_instructors', {
 	requestedBy: varchar('requested_by', { length: 20 }), // 'school' or 'instructor'
 	isAcceptedBySchool: boolean('is_accepted_by_school').default(false),
 	isActive: boolean('is_active').default(true),
-	rejectedAt: timestamp('rejected_at')
+	requestedAt: timestamp('requested_at').defaultNow().notNull(),
+	acceptedAt: timestamp('accepted_at'),
+	rejectedAt: timestamp('rejected_at'),
+	updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 
 export const schoolInstructorHistory = pgTable('school_instructor_history', {
