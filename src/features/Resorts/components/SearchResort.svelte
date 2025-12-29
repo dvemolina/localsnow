@@ -59,8 +59,9 @@
 
   onMount(() => {
     // Load existing resort if form has a value
-    if (mode === 'form' && $formData[name] && $formData[name] > 0) {
-      fetchResortById($formData[name]);
+    const resortId = formData ? $formData[name] : null;
+    if (mode === 'form' && resortId && resortId > 0) {
+      fetchResortById(resortId);
     }
   });
 
