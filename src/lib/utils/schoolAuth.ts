@@ -1,7 +1,6 @@
 import { redirect, type RequestEvent } from "@sveltejs/kit";
 import { requireAuth } from "./auth";
 import { SchoolService } from "$src/features/Schools/lib/schoolService";
-import type { User } from "$src/lib/server/db/schema";
 
 const schoolService = new SchoolService();
 
