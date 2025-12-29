@@ -166,7 +166,6 @@ export const actions: Actions = {
             const imageArrayBuffer = await form.data.profileImage.arrayBuffer();
             const imageBuffer = Buffer.from(imageArrayBuffer);
             profileImageUrl = await storageService.uploadProfileImage(imageBuffer, user.id);
-            console.log('NEW PROFILE IMAGE URL:', profileImageUrl)
         }
 
         // Process qualification PDF if uploaded

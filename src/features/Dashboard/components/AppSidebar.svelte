@@ -64,6 +64,21 @@
 			title: m.sidebar_profile(),
 			url: '/dashboard/profile',
 			icon: '/icons/ski-resort.svg'
+		},
+		{
+			title: 'Instructors',
+			url: '/dashboard/school-instructors',
+			icon: '/icons/service.svg'
+		},
+		{
+			title: 'Lessons',
+			url: '/dashboard/school-lessons',
+			icon: '/icons/service.svg'
+		},
+		{
+			title: m.sidebar_bookings(),
+			url: '/dashboard/school-bookings',
+			icon: '/icons/notebook.svg'
 		}
 	]);
 
