@@ -54,7 +54,7 @@
 		}
 	]);
 
-	const schoolAdminItems = $derived([
+	const instructorSchoolItems = $derived([
 		{
 			title: m.sidebar_home(),
 			url: '/dashboard',
@@ -66,18 +66,46 @@
 			icon: '/icons/ski-resort.svg'
 		},
 		{
-			title: 'Instructors',
-			url: '/dashboard/school-instructors',
-			icon: '/icons/service.svg'
-		},
-		{
-			title: 'Lessons',
-			url: '/dashboard/school-lessons',
-			icon: '/icons/service.svg'
-		},
-		{
 			title: m.sidebar_bookings(),
-			url: '/dashboard/school-bookings',
+			url: '/dashboard/bookings',
+			icon: '/icons/notebook.svg'
+		},
+		{
+			title: m.sidebar_schools(),
+			url: '/dashboard/schools',
+			icon: '/icons/service.svg'
+		},
+		{
+			title: 'Invitations',
+			url: '/dashboard/invitations',
+			icon: '/icons/notebook.svg'
+		}
+	]);
+
+	const schoolAdminItems = $derived([
+		{
+			title: m.sidebar_school_home(),
+			url: '/dashboard/school',
+			icon: '/icons/home.svg'
+		},
+		{
+			title: m.sidebar_school_profile(),
+			url: '/dashboard/school/profile',
+			icon: '/icons/ski-resort.svg'
+		},
+		{
+			title: m.sidebar_school_instructors(),
+			url: '/dashboard/school/instructors',
+			icon: '/icons/service.svg'
+		},
+		{
+			title: m.sidebar_school_lessons(),
+			url: '/dashboard/school/lessons',
+			icon: '/icons/service.svg'
+		},
+		{
+			title: m.sidebar_school_bookings(),
+			url: '/dashboard/school/bookings',
 			icon: '/icons/notebook.svg'
 		}
 	]);
@@ -127,8 +155,21 @@
 							</Sidebar.MenuButton>
 						</Sidebar.MenuItem>
 					{/each}
-				{:else if user.role === "instructor-independent" || user.role === "instructor-school"}
+				{:else if user.role === "instructor-independent"}
 					{#each instructorItems as item (item.url)}
+						<Sidebar.MenuItem>
+							<Sidebar.MenuButton>
+								{#snippet child({ props })}
+									<a href={route(item.url)} {...props} onclick={handleClick}>
+										<img src={item.icon} alt={item.title} class="size-5" />
+										<span>{item.title}</span>
+									</a>
+								{/snippet}
+							</Sidebar.MenuButton>
+						</Sidebar.MenuItem>
+					{/each}
+				{:else if user.role === "instructor-school"}
+					{#each instructorSchoolItems as item (item.url)}
 						<Sidebar.MenuItem>
 							<Sidebar.MenuButton>
 								{#snippet child({ props })}
