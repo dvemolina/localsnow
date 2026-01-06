@@ -45,20 +45,20 @@
 <div class="container mx-auto max-w-7xl space-y-6">
 	<!-- Page Header -->
 	<div class="mb-8">
-		<h1 class="title2 mb-2">{m.admin_platform_overview()}</h1>
-		<p class="text-muted-foreground">{m.admin_platform_overview_desc()}</p>
+		<h1 class="title2 mb-2">{m["admin.dashboard.admin_platform_overview"]()}</h1>
+		<p class="text-muted-foreground">{m["admin.dashboard.admin_platform_overview_desc"]()}</p>
 	</div>
 
 	<!-- Key Metrics Cards -->
 	<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
 		<Card>
 			<CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-				<CardTitle class="text-sm font-medium">{m.admin_total_users()}</CardTitle>
+				<CardTitle class="text-sm font-medium">{m["admin.dashboard.admin_total_users"]()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">{totalUsers}</div>
 				<p class="text-xs text-muted-foreground">
-					+{data.stats.recentActivity.users} {m.admin_in_last_30_days()}
+					+{data.stats.recentActivity.users} {m["admin.dashboard.admin_in_last_30_days"]()}
 				</p>
 			</CardContent>
 		</Card>
@@ -70,7 +70,7 @@
 			<CardContent>
 				<div class="text-2xl font-bold">{verifiedInstructors}/{totalInstructors}</div>
 				<p class="text-xs text-muted-foreground">
-					{pendingInstructors} {m.admin_pending_verification()}
+					{pendingInstructors} {m["admin.dashboard.admin_pending_verification"]()}
 				</p>
 			</CardContent>
 		</Card>
@@ -89,12 +89,12 @@
 
 		<Card>
 			<CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-				<CardTitle class="text-sm font-medium">{m.admin_revenue()}</CardTitle>
+				<CardTitle class="text-sm font-medium">{m["admin.dashboard.admin_revenue"]()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">€{totalRevenue.toFixed(2)}</div>
 				<p class="text-xs text-muted-foreground">
-					{data.stats.reviewStats.total} {m.admin_reviews_submitted()}
+					{data.stats.reviewStats.total} {m["admin.dashboard.admin_reviews_submitted"]()}
 				</p>
 			</CardContent>
 		</Card>
@@ -106,7 +106,7 @@
 			<CardHeader>
 				<CardTitle class="flex items-center gap-2 text-yellow-900">
 					<span class="text-xl">⚠️</span>
-					{data.pendingVerifications.length} {m.admin_instructors_pending_verification()}
+					{data.pendingVerifications.length} {m["admin.dashboard.admin_instructors_pending_verification"]()}
 				</CardTitle>
 			</CardHeader>
 			<CardContent>
@@ -117,11 +117,11 @@
 								<p class="font-medium">{instructor.name} {instructor.lastName}</p>
 								<p class="text-sm text-muted-foreground">{instructor.email}</p>
 								<p class="text-xs text-muted-foreground">
-									{m.admin_registered()}: {formatDate(instructor.createdAt)}
+									{m["admin.dashboard.admin_registered"]()}: {formatDate(instructor.createdAt)}
 								</p>
 							</div>
 							<Button href="/admin/instructors/{instructor.id}" size="sm">
-								{m.button_review()}
+								{m["admin.dashboard.button_review"]()}
 							</Button>
 						</div>
 					{/each}
@@ -136,7 +136,7 @@
 			<CardHeader>
 				<CardTitle class="flex items-center gap-2 text-red-900">
 					<span class="text-xl">🚫</span>
-					{data.suspendedUsers.length} {m.admin_suspended_users()}
+					{data.suspendedUsers.length} {m["admin.dashboard.admin_suspended_users"]()}
 				</CardTitle>
 			</CardHeader>
 			<CardContent>
@@ -161,7 +161,7 @@
 		<!-- Recent Bookings -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{m.admin_recent_bookings()}</CardTitle>
+				<CardTitle>{m["admin.dashboard.admin_recent_bookings"]()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<Table.Root>
@@ -192,7 +192,7 @@
 				</Table.Root>
 				<div class="mt-4 text-center">
 					<Button href="/admin/bookings" variant="outline" size="sm">
-						{m.button_view_all_bookings()}
+						{m["admin.dashboard.button_view_all_bookings"]()}
 					</Button>
 				</div>
 			</CardContent>
@@ -201,7 +201,7 @@
 		<!-- Recent Reviews -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{m.admin_recent_reviews()}</CardTitle>
+				<CardTitle>{m["admin.dashboard.admin_recent_reviews"]()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="space-y-3">
@@ -230,7 +230,7 @@
 				</div>
 				<div class="mt-4 text-center">
 					<Button href="/admin/reviews" variant="outline" size="sm">
-						{m.button_view_all_reviews()}
+						{m["admin.dashboard.button_view_all_reviews"]()}
 					</Button>
 				</div>
 			</CardContent>
@@ -242,7 +242,7 @@
 		<!-- User Distribution -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{m.admin_users_by_role()}</CardTitle>
+				<CardTitle>{m["admin.dashboard.admin_users_by_role"]()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="space-y-2">
@@ -259,7 +259,7 @@
 		<!-- Booking Status Distribution -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{m.admin_bookings_by_status()}</CardTitle>
+				<CardTitle>{m["admin.dashboard.admin_bookings_by_status"]()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="space-y-2">
@@ -276,16 +276,16 @@
 		<!-- Review Statistics -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{m.admin_review_metrics()}</CardTitle>
+				<CardTitle>{m["admin.dashboard.admin_review_metrics"]()}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="space-y-3">
 					<div>
-						<p class="text-sm text-muted-foreground">{m.admin_total_reviews()}</p>
+						<p class="text-sm text-muted-foreground">{m["admin.dashboard.admin_total_reviews"]()}</p>
 						<p class="text-2xl font-bold">{data.stats.reviewStats.total}</p>
 					</div>
 					<div>
-						<p class="text-sm text-muted-foreground">{m.admin_average_rating()}</p>
+						<p class="text-sm text-muted-foreground">{m["admin.dashboard.admin_average_rating"]()}</p>
 						<div class="flex items-center gap-2">
 							<p class="text-2xl font-bold">
 								{Number(data.stats.reviewStats.avgRating || 0).toFixed(1)}

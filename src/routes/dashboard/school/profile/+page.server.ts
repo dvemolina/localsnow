@@ -1,12 +1,12 @@
-import { requireSchoolAdmin } from "$src/lib/utils/schoolAuth.js";
-import type { PageServerLoad, Actions } from "./$types.js";
+import { requireSchoolAdmin } from "$src/lib/utils/schoolAuth";
+import type { PageServerLoad, Actions } from "./$types";
 import { fail, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
-import { schoolProfileSchema } from "$src/features/Schools/lib/validations/schoolSchemas.js";
-import { SchoolRepository } from "$src/features/Schools/lib/schoolRepository.js";
-import { StorageService } from "$src/lib/server/R2Storage.js";
-import { RefillingTokenBucket } from "$src/lib/server/rate-limit.js";
-import { getClientIP } from "$src/lib/utils/auth.js";
+import { schoolProfileSchema } from "$src/features/Schools/lib/validations/schoolSchemas";
+import { SchoolRepository } from "$src/features/Schools/lib/schoolRepository";
+import { StorageService } from "$src/lib/server/R2Storage";
+import { RefillingTokenBucket } from "$src/lib/server/rate-limit";
+import { getClientIP } from "$src/lib/utils/auth";
 
 const schoolRepository = new SchoolRepository();
 const storageService = new StorageService();

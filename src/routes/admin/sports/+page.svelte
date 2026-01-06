@@ -11,8 +11,8 @@
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8 flex items-center justify-between">
 		<div>
-			<h1 class="title2 mb-2">{m.admin_sport_management()}</h1>
-			<p class="text-muted-foreground">{m.admin_sport_management_desc()}</p>
+			<h1 class="title2 mb-2">{m["admin.sports.admin_sport_management"]()}</h1>
+			<p class="text-muted-foreground">{m["admin.sports.admin_sport_management_desc"]()}</p>
 		</div>
 		<Button href="/admin/sports/create">
 			{m.admin_create_sport()}
@@ -25,9 +25,9 @@
 				<Table.Header>
 					<Table.Row>
 						<Table.Head>{m.table_id()}</Table.Head>
-						<Table.Head>{m.table_sport()}</Table.Head>
-						<Table.Head>{m.table_slug()}</Table.Head>
-						<Table.Head>{m.admin_instructors_teaching()}</Table.Head>
+						<Table.Head>{m["admin.sports.table_sport"]()}</Table.Head>
+						<Table.Head>{m["admin.sports.table_slug"]()}</Table.Head>
+						<Table.Head>{m["admin.sports.admin_instructors_teaching"]()}</Table.Head>
 						<Table.Head>{m.table_actions()}</Table.Head>
 					</Table.Row>
 				</Table.Header>
@@ -35,7 +35,7 @@
 					{#if data.sports.length === 0}
 						<Table.Row>
 							<Table.Cell colspan={5} class="text-center text-muted-foreground">
-								{m.admin_no_sports_found()}
+								{m["admin.sports.admin_no_sports_found"]()}
 							</Table.Cell>
 						</Table.Row>
 					{:else}

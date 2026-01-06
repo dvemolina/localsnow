@@ -19,28 +19,28 @@
 			name: 'Baqueira Beret',
 			slug: 'baqueira-beret',
 			region: 'Pyrenees, Catalonia',
-			description: m.home_resort_descriptions_baqueira(),
+			description: m["home.home_resort_descriptions_baqueira"](),
 			image: '/ski-instructor-powder.webp'
 		},
 		{
 			name: 'Formigal-Panticosa',
 			slug: 'formigal-panticosa',
 			region: 'Pyrenees, Aragón',
-			description: m.home_resort_descriptions_formigal(),
+			description: m["home.home_resort_descriptions_formigal"](),
 			image: '/ski-instructor-turn.webp'
 		},
 		{
 			name: 'Cerler',
 			slug: 'cerler',
 			region: 'Pyrenees, Huesca',
-			description: m.home_resort_descriptions_cerler(),
+			description: m["home.home_resort_descriptions_cerler"](),
 			image: '/zermatt.webp'
 		},
 		{
 			name: 'Sierra Nevada',
 			slug: 'sierra-nevada',
 			region: 'Granada, Andalusia',
-			description: m.home_resort_descriptions_sierra_nevada(),
+			description: m["home.home_resort_descriptions_sierra_nevada"](),
 			image: '/catedral.webp'
 		}
 	]);
@@ -87,15 +87,15 @@
 </script>
 
 <svelte:head>
-	<title>{m.seo_meta_home_title()}</title>
+	<title>{m["home.seo_meta_home_title"]()}</title>
 	<meta
 		name="description"
-		content={m.seo_meta_home_description()}
+		content={m["home.seo_meta_home_description"]()}
 	/>
 
 	<!-- Open Graph -->
-	<meta property="og:title" content={m.seo_meta_home_title()} />
-	<meta property="og:description" content={m.seo_meta_home_description()} />
+	<meta property="og:title" content={m["home.seo_meta_home_title"]()} />
+	<meta property="og:description" content={m["home.seo_meta_home_description"]()} />
 	<meta property="og:url" content="https://localsnow.org/" />
 	<meta property="og:image" content="https://localsnow.org/ski-instructor-powder.webp" />
 	<meta property="og:image:alt" content="Ski instructor teaching in powder snow" />
@@ -103,8 +103,8 @@
 	<meta property="og:image:height" content="630" />
 
 	<!-- Twitter Card -->
-	<meta name="twitter:title" content={m.seo_meta_home_title()} />
-	<meta name="twitter:description" content={m.seo_meta_home_description()} />
+	<meta name="twitter:title" content={m["home.seo_meta_home_title"]()} />
+	<meta name="twitter:description" content={m["home.seo_meta_home_description"]()} />
 	<meta name="twitter:image" content="https://localsnow.org/ski-instructor-powder.webp" />
 
 	<script type="application/ld+json">
@@ -144,11 +144,11 @@
 				itemprop="headline"
 				class="text-shadow mb-4 text-3xl font-bold sm:text-5xl md:text-6xl lg:text-6xl"
 			>
-				{m.home_hero_title()}
+				{m["home.home_hero_title"]()}
 			</h1>
 			<div class="flex align-bottom h-full flex-col justify-center">
 				<p class="text-shadow mb-6 max-w-[600px] text-lg text-white sm:text-xl md:text-2xl">
-					{m.home_hero_subtitle()}
+					{m["home.home_hero_subtitle"]()}
 				</p>
 
 				<!-- Search form -->
@@ -166,7 +166,7 @@
 								type="submit"
 								class="bg-primary h-12 w-full rounded-md p-3 font-medium whitespace-nowrap text-white md:w-auto"
 							>
-								{m.home_hero_cta()}
+								{m["home.home_hero_cta"]()}
 							</button>
 						</div>
 					</div>
@@ -182,42 +182,42 @@
 		<div class="mx-auto max-w-4xl text-center">
 			<div class="mb-4 inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-bold text-green-900">
 				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-green-600"><polyline points="20 6 9 17 4 12"></polyline></svg>
-				{m.home_free_banner_badge()}
+				{m["home.home_free_banner_badge"]()}
 			</div>
 
 			<h2 class="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">
-				{m.home_free_banner_title()}
+				{m["home.home_free_banner_title"]()}
 			</h2>
 
 			<p class="mb-6 text-lg text-gray-700 leading-relaxed max-w-2xl mx-auto">
-				{m.home_free_banner_description()}
+				{m["home.home_free_banner_description"]()}
 			</p>
 
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 p-4">
 				<div class="flex flex-col items-center gap-2 rounded-lg bg-white border-2 border-green-200 px-4 py-4 shadow-sm">
 					<div class="text-center">
-						<div class="text-2xl font-bold text-green-900">{m.home_free_banner_booking_fees()}</div>
-						<div class="text-sm text-gray-600">{m.home_free_banner_booking_fees_label()}</div>
+						<div class="text-2xl font-bold text-green-900">{m["home.home_free_banner_booking_fees"]()}</div>
+						<div class="text-sm text-gray-600">{m["home.home_free_banner_booking_fees_label"]()}</div>
 					</div>
 				</div>
 
 				<div class="flex flex-col items-center gap-2 rounded-lg bg-white border-2 border-green-200 px-4 py-4 shadow-sm">
 					<div class="text-center">
-						<div class="text-2xl font-bold text-green-900">{m.home_free_banner_commission()}</div>
-						<div class="text-sm text-gray-600">{m.home_free_banner_commission_label()}</div>
+						<div class="text-2xl font-bold text-green-900">{m["home.home_free_banner_commission"]()}</div>
+						<div class="text-sm text-gray-600">{m["home.home_free_banner_commission_label"]()}</div>
 					</div>
 				</div>
 
 				<div class="flex flex-col items-center gap-2 rounded-lg bg-white border-2 border-green-200 px-4 py-4 shadow-sm">
 					<div class="text-center">
-						<div class="text-2xl font-bold text-green-900">{m.home_free_banner_unlimited()}</div>
-						<div class="text-sm text-gray-600">{m.home_free_banner_unlimited_label()}</div>
+						<div class="text-2xl font-bold text-green-900">{m["home.home_free_banner_unlimited"]()}</div>
+						<div class="text-sm text-gray-600">{m["home.home_free_banner_unlimited_label"]()}</div>
 					</div>
 				</div>
 			</div>
 
 			<p class="mt-6 text-sm text-gray-600 italic">
-				{m.home_free_banner_tagline()}
+				{m["home.home_free_banner_tagline"]()}
 			</p>
 		</div>
 	</div>
@@ -225,8 +225,8 @@
 
 <!-- Top Resorts Section -->
 <section class="section">
-	<h2 class="mb-2 text-center text-3xl font-bold">{m.home_resorts_title()}</h2>
-	<p class="mb-8 text-center text-gray-600">{m.home_resorts_subtitle()}</p>
+	<h2 class="mb-2 text-center text-3xl font-bold">{m["home.home_resorts_title"]()}</h2>
+	<p class="mb-8 text-center text-gray-600">{m["home.home_resorts_subtitle"]()}</p>
 
 	<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
 		{#each topResorts as resort}
@@ -252,7 +252,7 @@
 					<p class="mb-1 text-sm text-white/95 drop-shadow-md">{resort.region}</p>
 					<p class="mb-4 text-sm text-white/85 drop-shadow-md">{resort.description}</p>
 					<span class="inline-flex items-center font-semibold text-white transition-transform group-hover:translate-x-1">
-						{m.home_resorts_view_instructors()} →
+						{m["home.home_resorts_view_instructors"]()} →
 					</span>
 				</div>
 			</a>
@@ -261,14 +261,14 @@
 
 	<div class="mt-8 text-center">
 		<a href={route('/resorts')} class="bg-primary inline-block rounded-md px-6 py-3 font-medium text-white">
-			{m.home_resorts_view_all()}
+			{m["home.home_resorts_view_all"]()}
 		</a>
 	</div>
 </section>
 
 <!-- How It Works Section -->
 <section class="grey-section">
-	<h2 class="mb-8 text-center text-3xl font-bold">{m.home_how_it_works_title()}</h2>
+	<h2 class="mb-8 text-center text-3xl font-bold">{m["home.home_how_it_works_title"]()}</h2>
 
 	<div class="grid grid-cols-1 gap-8 md:grid-cols-3">
 		<div class="text-center">
@@ -277,9 +277,9 @@
 			>
 				1
 			</div>
-			<h3 class="mb-2 text-xl font-semibold">{m.home_how_it_works_step1_title()}</h3>
+			<h3 class="mb-2 text-xl font-semibold">{m["home.home_how_it_works_step1_title"]()}</h3>
 			<p class="text-gray-600">
-				{m.home_how_it_works_step1_desc()}
+				{m["home.home_how_it_works_step1_desc"]()}
 			</p>
 		</div>
 
@@ -289,9 +289,9 @@
 			>
 				2
 			</div>
-			<h3 class="mb-2 text-xl font-semibold">{m.home_how_it_works_step2_title()}</h3>
+			<h3 class="mb-2 text-xl font-semibold">{m["home.home_how_it_works_step2_title"]()}</h3>
 			<p class="text-gray-600">
-				{m.home_how_it_works_step2_desc()}
+				{m["home.home_how_it_works_step2_desc"]()}
 			</p>
 		</div>
 
@@ -301,9 +301,9 @@
 			>
 				3
 			</div>
-			<h3 class="mb-2 text-xl font-semibold">{m.home_how_it_works_step3_title()}</h3>
+			<h3 class="mb-2 text-xl font-semibold">{m["home.home_how_it_works_step3_title"]()}</h3>
 			<p class="text-gray-600">
-				{m.home_how_it_works_step3_desc()}
+				{m["home.home_how_it_works_step3_desc"]()}
 			</p>
 		</div>
 	</div>
@@ -313,7 +313,7 @@
 			href={route('/how-it-works')}
 			class="inline-block rounded-md border border-primary px-6 py-3 font-medium text-primary transition-all hover:bg-primary hover:text-white"
 		>
-			{m.home_how_it_works_cta()} →
+			{m["home.home_how_it_works_cta"]()} →
 		</a>
 	</div>
 </section>
@@ -322,9 +322,9 @@
 <section class="section  py-16 rounded-lg">
 	<div class="container max-w-4xl">
 		<div class="text-center mb-10">
-			<h2 class="mb-4 text-3xl font-bold text-gray-900">{m.home_why_free_title()}</h2>
+			<h2 class="mb-4 text-3xl font-bold text-gray-900">{m["home.home_why_free_title"]()}</h2>
 			<p class="text-xl text-gray-600">
-				{m.home_why_free_subtitle()}
+				{m["home.home_why_free_subtitle"]()}
 			</p>
 		</div>
 
@@ -335,9 +335,9 @@
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-600"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
 					</div>
 					<div>
-						<h3 class="font-bold text-lg mb-2 text-gray-900">{m.home_why_free_problem_title()}</h3>
+						<h3 class="font-bold text-lg mb-2 text-gray-900">{m["home.home_why_free_problem_title"]()}</h3>
 						<p class="text-gray-600 text-sm leading-relaxed">
-							{m.home_why_free_problem_desc()}
+							{m["home.home_why_free_problem_desc"]()}
 						</p>
 					</div>
 				</div>
@@ -349,9 +349,9 @@
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600"><polyline points="20 6 9 17 4 12"></polyline></svg>
 					</div>
 					<div>
-						<h3 class="font-bold text-lg mb-2 text-gray-900">{m.home_why_free_solution_title()}</h3>
+						<h3 class="font-bold text-lg mb-2 text-gray-900">{m["home.home_why_free_solution_title"]()}</h3>
 						<p class="text-gray-600 text-sm leading-relaxed">
-							{m.home_why_free_solution_desc()}
+							{m["home.home_why_free_solution_desc"]()}
 						</p>
 					</div>
 				</div>
@@ -363,9 +363,9 @@
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-600"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
 					</div>
 					<div>
-						<h3 class="font-bold text-lg mb-2 text-gray-900">{m.home_why_free_community_title()}</h3>
+						<h3 class="font-bold text-lg mb-2 text-gray-900">{m["home.home_why_free_community_title"]()}</h3>
 						<p class="text-gray-600 text-sm leading-relaxed">
-							{m.home_why_free_community_desc()}
+							{m["home.home_why_free_community_desc"]()}
 						</p>
 					</div>
 				</div>
@@ -377,9 +377,9 @@
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-600"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
 					</div>
 					<div>
-						<h3 class="font-bold text-lg mb-2 text-gray-900">{m.home_why_free_forever_title()}</h3>
+						<h3 class="font-bold text-lg mb-2 text-gray-900">{m["home.home_why_free_forever_title"]()}</h3>
 						<p class="text-gray-600 text-sm leading-relaxed">
-							{m.home_why_free_forever_desc()}
+							{m["home.home_why_free_forever_desc"]()}
 						</p>
 					</div>
 				</div>
@@ -388,10 +388,10 @@
 
 		<div class="mt-10 text-center bg-white rounded-lg p-6 border-2 border-green-500 shadow-sm">
 			<p class="text-gray-700 text-lg mb-2">
-				<strong>{m.home_why_free_sound_good_title()}</strong>
+				<strong>{m["home.home_why_free_sound_good_title"]()}</strong>
 			</p>
 			<p class="text-gray-600">
-				{m.home_why_free_sound_good_desc()}
+				{m["home.home_why_free_sound_good_desc"]()}
 			</p>
 		</div>
 	</div>
@@ -400,9 +400,9 @@
 <!-- Instructor Benefits Section -->
 <section class="grey-section">
 	<div class="mb-10 text-center">
-		<h2 class="mb-4 text-center text-3xl font-bold">{m.home_instructors_title()}</h2>
+		<h2 class="mb-4 text-center text-3xl font-bold">{m["home.home_instructors_title"]()}</h2>
 		<p class="text-center text-gray-600">
-			{m.home_instructors_subtitle()}
+			{m["home.home_instructors_subtitle"]()}
 		</p>
 	</div>
 
@@ -426,9 +426,9 @@
 					/>
 				</svg>
 			</div>
-			<h3 class="mb-2 text-xl font-semibold">{m.home_instructors_keep_fees_title()}</h3>
+			<h3 class="mb-2 text-xl font-semibold">{m["home.home_instructors_keep_fees_title"]()}</h3>
 			<p class="text-gray-600">
-				{m.home_instructors_keep_fees_desc()}
+				{m["home.home_instructors_keep_fees_desc"]()}
 			</p>
 		</div>
 
@@ -451,9 +451,9 @@
 					/>
 				</svg>
 			</div>
-			<h3 class="mb-2 text-xl font-semibold">{m.home_instructors_pay_leads_title()}</h3>
+			<h3 class="mb-2 text-xl font-semibold">{m["home.home_instructors_pay_leads_title"]()}</h3>
 			<p class="text-gray-600">
-				{m.home_instructors_pay_leads_desc()}
+				{m["home.home_instructors_pay_leads_desc"]()}
 			</p>
 		</div>
 
@@ -476,9 +476,9 @@
 					/>
 				</svg>
 			</div>
-			<h3 class="mb-2 text-xl font-semibold">{m.home_instructors_online_title()}</h3>
+			<h3 class="mb-2 text-xl font-semibold">{m["home.home_instructors_online_title"]()}</h3>
 			<p class="text-gray-600">
-				{m.home_instructors_online_desc()}
+				{m["home.home_instructors_online_desc"]()}
 			</p>
 		</div>
 	</div>
@@ -488,32 +488,32 @@
 			href={route('/signup')}
 			class="bg-primary inline-block rounded-md px-8 py-3 font-semibold text-white shadow-sm transition-all hover:shadow-md"
 		>
-			{m.home_instructors_cta()}
+			{m["home.home_instructors_cta"]()}
 		</a>
 		<p class="mt-4 text-sm text-gray-600">
-			{m.home_instructors_cta_note()}
+			{m["home.home_instructors_cta_note"]()}
 		</p>
 	</div>
 </section>
 
 <!-- Bottom CTA Section -->
 <section class="grey-section text-center">
-	<h2 class="mb-6 text-3xl font-bold">{m.home_cta_title()}</h2>
+	<h2 class="mb-6 text-3xl font-bold">{m["home.home_cta_title"]()}</h2>
 	<p class="mb-8 text-gray-600">
-		{m.home_cta_subtitle()}
+		{m["home.home_cta_subtitle"]()}
 	</p>
 	<div class="flex flex-col gap-4 sm:flex-row sm:justify-center">
 		<a
 			href={route('/instructors')}
 			class="bg-primary inline-block rounded-md px-8 py-3 font-semibold text-white shadow-sm transition-all hover:shadow-md"
 		>
-			{m.home_cta_find_instructor()}
+			{m["home.home_cta_find_instructor"]()}
 		</a>
 		<a
 			href={route('/signup')}
 			class="inline-block rounded-md border border-border bg-card px-8 py-3 font-semibold shadow-sm transition-all hover:shadow-md"
 		>
-			{m.home_cta_list_instructor()}
+			{m["home.home_cta_list_instructor"]()}
 		</a>
 	</div>
 </section>

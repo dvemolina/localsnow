@@ -9,13 +9,15 @@ import { RefillingTokenBucket } from "$src/lib/server/rate-limit.js";
 import { getClientIP } from "$src/lib/utils/auth.js";
 import { instructorProfileSchema } from "$src/features/Instructors/lib/instructorSchemas.js";
 import { InstructorService } from "$src/features/Instructors/lib/instructorService.js";
+import { schoolProfileSchema } from "$src/features/Schools/lib/validations/schoolSchemas.js";
+import { SchoolService } from "$src/features/Schools/lib/schoolService.js";
 import { StorageService } from "$src/lib/server/R2Storage.js";
 import { schoolProfileSchema } from "$src/features/Schools/lib/validations/schoolSchemas.js";
 import { SchoolRepository } from "$src/features/Schools/lib/schoolRepository.js";
 
 const userService = new UserService();
 const instructorService = new InstructorService();
-const schoolRepository = new SchoolRepository();
+const schoolService = new SchoolService();
 const storageService = new StorageService();
 const ipBucket = new RefillingTokenBucket<string>(5, 60); // 5 requests per minute
  
@@ -59,19 +61,18 @@ export const load: PageServerLoad = async (event) => {
 
     // For school admins, pre-populate school form
     let schoolForm = null;
-    let school = null;
     if (user.role === 'school-admin') {
-        school = await schoolRepository.getSchoolByOwner(user.id);
-        if (school) {
-            const resorts = await schoolRepository.getSchoolResorts(school.id);
+        const school = await schoolService.getSchoolByOwner(user.id);
 
+        if (school) {
+            const resorts = await schoolService.getSchoolResorts(school.id);
             schoolForm = await superValidate(
                 {
-                    name: school.name,
+                    name: school.name || '',
                     bio: school.bio || '',
-                    schoolEmail: school.schoolEmail,
                     countryCode: school.countryCode ? parseInt(school.countryCode) : 1,
-                    schoolPhone: school.schoolPhone,
+                    schoolPhone: school.schoolPhone || '',
+                    schoolEmail: school.schoolEmail || '',
                     resort: resorts[0] || 0
                 },
                 zod(schoolProfileSchema)
@@ -83,7 +84,6 @@ export const load: PageServerLoad = async (event) => {
         userForm,
         instructorForm,
         schoolForm,
-        school,
         user: fullUser
     };
 };
@@ -168,7 +168,6 @@ export const actions: Actions = {
             const imageArrayBuffer = await form.data.profileImage.arrayBuffer();
             const imageBuffer = Buffer.from(imageArrayBuffer);
             profileImageUrl = await storageService.uploadProfileImage(imageBuffer, user.id);
-            console.log('NEW PROFILE IMAGE URL:', profileImageUrl)
         }
 
         // Process qualification PDF if uploaded
@@ -226,10 +225,13 @@ export const actions: Actions = {
         }
 
         try {
-            // Get current school
-            const school = await schoolRepository.getSchoolByOwner(user.id);
+            // Get the school owned by this user
+            const school = await schoolService.getSchoolByOwner(user.id);
             if (!school) {
-                return fail(404, { form, error: 'School not found' });
+                return fail(404, {
+                    form,
+                    error: 'School not found. Please contact support.'
+                });
             }
 
             let logoUrl: string | null | undefined = undefined;
@@ -238,19 +240,18 @@ export const actions: Actions = {
             if (form.data.logo && form.data.logo.size > 0) {
                 const logoArrayBuffer = await form.data.logo.arrayBuffer();
                 const logoBuffer = Buffer.from(logoArrayBuffer);
-                logoUrl = await storageService.uploadSchoolLogo(logoBuffer, school.id);
+                logoUrl = await storageService.uploadSchoolLogo(logoBuffer, school.name, user.id);
             }
 
             // Update school profile
-            await schoolRepository.updateSchool(school.id, {
+            await schoolService.updateSchool(school.id, {
                 name: form.data.name,
-                bio: form.data.bio,
-                schoolEmail: form.data.schoolEmail,
-                countryCode: form.data.countryCode.toString(),
+                bio: form.data.bio || undefined,
+                countryCode: form.data.countryCode,
                 schoolPhone: form.data.schoolPhone,
-                resort: form.data.resort,
-                logo: logoUrl !== undefined ? logoUrl : school.logo
-            });
+                schoolEmail: form.data.schoolEmail,
+                resort: form.data.resort
+            }, logoUrl !== undefined ? logoUrl : school.logo);
 
             form.data.logo = undefined;
 

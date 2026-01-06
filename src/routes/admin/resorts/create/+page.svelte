@@ -34,7 +34,7 @@
 			</Button>
 		</div>
 		<h1 class="title2 mb-2">{m.admin_create_resort()}</h1>
-		<p class="text-muted-foreground">{m.admin_create_resort_desc()}</p>
+		<p class="text-muted-foreground">{m["admin.resorts.create.admin_create_resort_desc"]()}</p>
 	</div>
 
 	<form
@@ -98,7 +98,7 @@
 							onSelectedChange={(v) => handleCountryChange(v?.value)}
 						>
 							<Select.Trigger>
-								<Select.Value placeholder={m.admin_select_country()} />
+								<Select.Value placeholder={m["admin.resorts.create.admin_select_country"]()} />
 							</Select.Trigger>
 							<Select.Content>
 								{#each data.countries as country}
@@ -123,7 +123,7 @@
 							disabled={!selectedCountryId}
 						>
 							<Select.Trigger>
-								<Select.Value placeholder={m.admin_select_region()} />
+								<Select.Value placeholder={m["admin.resorts.create.admin_select_region"]()} />
 							</Select.Trigger>
 							<Select.Content>
 								<Select.Item value="">

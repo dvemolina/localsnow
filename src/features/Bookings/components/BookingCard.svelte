@@ -20,7 +20,7 @@
 			color: 'bg-yellow-100 text-yellow-800 border-yellow-200'
 		},
 		accepted: {  // Combined unlocked + accepted
-			label: m.status_accepted(),
+			label: m["dashboard.my-bookings.status_accepted"](),
 			variant: 'default' as const,
 			color: 'bg-green-100 text-green-800 border-green-200'
 		},
@@ -30,7 +30,7 @@
 			color: 'bg-blue-100 text-blue-800 border-blue-200'
 		},
 		rejected: {
-			label: m.status_rejected(),
+			label: m["dashboard.my-bookings.status_rejected"](),
 			variant: 'outline' as const,
 			color: 'bg-red-100 text-red-800 border-red-200'
 		},
@@ -40,7 +40,7 @@
 			color: 'bg-gray-100 text-gray-800 border-gray-200'
 		},
 		expired: {
-			label: m.status_expired ? m.status_expired() : 'Expired',
+			label: m.status_expired ? m["dashboard.my-bookings.status_expired"]() : 'Expired',
 			variant: 'outline' as const,
 			color: 'bg-gray-100 text-gray-800 border-gray-200'
 		}

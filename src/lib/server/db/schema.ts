@@ -457,13 +457,13 @@ export const schoolAdmins = pgTable('school_admins', {
 export const schoolInstructors = pgTable('school_instructors', {
 	schoolId: integer('school_id').notNull().references(() => schools.id, { onDelete: 'cascade' }),
 	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	requestedBy: varchar('requested_by', { length: 20 }), // 'school' or 'instructor'
 	isAcceptedBySchool: boolean('is_accepted_by_school').default(false),
 	isActive: boolean('is_active').default(true),
-	requestedBy: varchar('requested_by', { length: 20 }), // 'instructor' | 'school'
-	requestedAt: timestamp('requested_at').defaultNow(),
+	requestedAt: timestamp('requested_at').defaultNow().notNull(),
 	acceptedAt: timestamp('accepted_at'),
 	rejectedAt: timestamp('rejected_at'),
-	...timestamps
+	updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 
 export const schoolInstructorHistory = pgTable('school_instructor_history', {

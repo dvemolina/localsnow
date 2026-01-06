@@ -43,8 +43,8 @@
 
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8">
-		<h1 class="title2 mb-2">{m.admin_booking_management()}</h1>
-		<p class="text-muted-foreground">{m.admin_booking_management_desc()}</p>
+		<h1 class="title2 mb-2">{m["admin.bookings.admin_booking_management"]()}</h1>
+		<p class="text-muted-foreground">{m["admin.bookings.admin_booking_management_desc"]()}</p>
 	</div>
 
 	<!-- Filters -->
@@ -54,7 +54,7 @@
 				<div class="col-span-2">
 					<Input
 						bind:value={searchValue}
-						placeholder={m.admin_search_client_placeholder()}
+						placeholder={m["admin.bookings.admin_search_client_placeholder"]()}
 						onkeydown={(e) => e.key === 'Enter' && applyFilters()}
 					/>
 				</div>
@@ -66,12 +66,12 @@
 						<Select.Value placeholder={m.table_status()} />
 					</Select.Trigger>
 					<Select.Content>
-						<Select.Item value="all">{m.admin_all_statuses()}</Select.Item>
+						<Select.Item value="all">{m["admin.bookings.admin_all_statuses"]()}</Select.Item>
 						<Select.Item value="pending">{m.status_pending()}</Select.Item>
-						<Select.Item value="viewed">{m.status_viewed()}</Select.Item>
-						<Select.Item value="accepted">{m.status_accepted()}</Select.Item>
+						<Select.Item value="viewed">{m["admin.bookings.status_viewed"]()}</Select.Item>
+						<Select.Item value="accepted">{m["dashboard.my-bookings.status_accepted"]()}</Select.Item>
 						<Select.Item value="completed">{m.status_completed()}</Select.Item>
-						<Select.Item value="rejected">{m.status_rejected()}</Select.Item>
+						<Select.Item value="rejected">{m["dashboard.my-bookings.status_rejected"]()}</Select.Item>
 					</Select.Content>
 				</Select.Root>
 			</div>
@@ -92,12 +92,12 @@
 						<Table.Head>{m.table_id()}</Table.Head>
 						<Table.Head>{m.table_client()}</Table.Head>
 						<Table.Head>{m.table_instructor()}</Table.Head>
-						<Table.Head>{m.table_resort_sport()}</Table.Head>
+						<Table.Head>{m["admin.bookings.table_resort_sport"]()}</Table.Head>
 						<Table.Head>{m.table_date()}</Table.Head>
 						<Table.Head>{m.table_students()}</Table.Head>
 						<Table.Head>{m.table_price()}</Table.Head>
 						<Table.Head>{m.table_status()}</Table.Head>
-						<Table.Head>{m.table_created()}</Table.Head>
+						<Table.Head>{m["admin.bookings.table_created"]()}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>

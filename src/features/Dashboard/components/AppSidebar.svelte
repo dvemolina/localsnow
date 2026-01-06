@@ -72,8 +72,13 @@
 		},
 		{
 			title: m.sidebar_schools(),
-			url: '/dashboard/instructors/schools',
+			url: '/dashboard/schools',
 			icon: '/icons/service.svg'
+		},
+		{
+			title: 'Invitations',
+			url: '/dashboard/invitations',
+			icon: '/icons/notebook.svg'
 		}
 	]);
 

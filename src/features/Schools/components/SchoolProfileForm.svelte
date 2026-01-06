@@ -9,39 +9,38 @@
 	import * as Accordion from '$src/lib/components/ui/accordion';
 	import { schoolProfileSchema, type SchoolProfileSchema } from '../lib/validations/schoolSchemas';
 	import SearchResort from '$src/features/Resorts/components/SearchResort.svelte';
-	import CountryCodeSelect from '$src/lib/components/shared/CountryCodeSelect.svelte';
 	import { onDestroy } from 'svelte';
+	import CountryCodeSelect from '$src/lib/components/shared/CountryCodeSelect.svelte';
 	import { toast } from 'svelte-sonner';
 	import * as m from '$lib/paraglide/messages';
 
 	let {
 		schoolForm,
-		currentLogoUrl,
-		action = undefined
+		currentLogoUrl
 	}: {
 		schoolForm: SuperValidated<Infer<SchoolProfileSchema>>;
 		currentLogoUrl?: string | null;
-		action?: string;
 	} = $props();
 
 	const form = superForm(schoolForm, {
 		validators: zodClient(schoolProfileSchema),
+		dataType: 'json',
 		onUpdate({ form }) {
 			if (form.valid) {
 				toast.success('School profile updated successfully');
 			}
 		},
 		onError({ result }) {
-			toast.error('Failed to update school profile');
+			toast.error('Error updating school profile');
 		}
 	});
 
 	const { form: formData, enhance, delayed } = form;
 
-	// File Proxy for logo
+	// File Proxy
 	const logoProxy = fileProxy(form, 'logo');
 
-	// Logo Preview Logic
+	// File Preview Logic
 	let logoPreviewUrl: string | null = $state(null);
 
 	// Computed value for displaying logo (preview or existing)
@@ -67,31 +66,31 @@
 
 <form
 	method="POST"
-	action={action}
+	action="?/schoolProfile"
 	use:enhance
 	enctype="multipart/form-data"
 	class="space-y-6"
 >
 	<!-- Organized Sections using Accordion -->
-	<Accordion.Root type="multiple" value={['basic', 'contact', 'location']}>
+	<Accordion.Root type="multiple" value={['basic', 'contact']}>
 		<!-- Basic Information -->
 		<Accordion.Item value="basic">
 			<Accordion.Trigger class="text-base font-semibold">
 				Basic Information
 			</Accordion.Trigger>
 			<Accordion.Content class="space-y-4 pt-4">
-				<!-- Logo -->
+				<!-- School Logo -->
 				<Form.Field {form} name="logo" class="w-full">
 					<Form.Control>
 						{#snippet children({ props })}
 							<Form.Label>School Logo</Form.Label>
 							<Form.Description class="text-xs">
-								Upload your school's logo (max 5MB, JPEG or PNG)
+								Upload your school's logo. Recommended: Square image, at least 200x200px
 							</Form.Description>
 
 							<!-- Current/Preview Logo Display -->
 							<div class="mb-3 flex items-center gap-3">
-								<div class="size-24 overflow-hidden rounded-lg border-2 border-border">
+								<div class="size-24 overflow-hidden rounded-full border-2 border-border">
 									<img
 										src={displayLogoUrl}
 										alt="School Logo"
@@ -100,10 +99,10 @@
 								</div>
 								<div class="flex flex-col gap-1">
 									<p class="text-sm font-medium">
-										{logoPreviewUrl ? 'New logo selected' : currentLogoUrl ? 'Current logo' : 'Default logo'}
+										{logoPreviewUrl ? 'New logo' : currentLogoUrl ? 'Current logo' : 'Default logo'}
 									</p>
 									<p class="text-xs text-muted-foreground">
-										Upload a new image to replace
+										Upload to replace
 									</p>
 								</div>
 							</div>
@@ -113,7 +112,7 @@
 								bind:files={$logoProxy}
 								onchange={handleLogoPreview}
 								type="file"
-								accept="image/jpeg,image/png"
+								accept="image/jpeg,image/png,image/webp"
 								disabled={$delayed}
 							/>
 						{/snippet}
@@ -129,7 +128,6 @@
 							<Input
 								{...props}
 								bind:value={$formData.name}
-								type="text"
 								disabled={$delayed}
 								placeholder="Enter school name"
 							/>
@@ -144,24 +142,27 @@
 						{#snippet children({ props })}
 							<Form.Label>About Your School</Form.Label>
 							<Form.Description class="text-xs">
-								Tell students and clients about your school's history, teaching philosophy, and values
+								Describe your school, facilities, teaching philosophy, and what makes you unique
 							</Form.Description>
 							<Textarea
 								bind:value={$formData.bio}
 								disabled={$delayed}
-								placeholder="Describe your school..."
+								placeholder="Tell potential students about your school..."
 								rows={4}
-								maxlength={500}
+								maxlength={1000}
 							/>
 							{#if $formData.bio}
 								<p class="text-xs text-muted-foreground text-right">
-									{$formData.bio.length}/500 characters
+									{$formData.bio.length}/1000 characters
 								</p>
 							{/if}
 						{/snippet}
 					</Form.Control>
 					<Form.FieldErrors />
 				</Form.Field>
+
+				<!-- Resort -->
+				<SearchResort {form} name="resort" label="Primary Resort Location" />
 			</Accordion.Content>
 		</Accordion.Item>
 
@@ -177,7 +178,7 @@
 						{#snippet children({ props })}
 							<Form.Label>School Email <span class="text-red-500">*</span></Form.Label>
 							<Form.Description class="text-xs">
-								Primary email for booking inquiries and communications
+								Primary email for student inquiries and bookings
 							</Form.Description>
 							<Input
 								{...props}
@@ -206,27 +207,13 @@
 									placeholder="123 456 7890"
 								/>
 								<Form.Description class="text-xs">
-									Clients will use this number to reach your school
+									Main contact number for the school
 								</Form.Description>
 							{/snippet}
 						</Form.Control>
 						<Form.FieldErrors />
 					</Form.Field>
 				</div>
-			</Accordion.Content>
-		</Accordion.Item>
-
-		<!-- Location -->
-		<Accordion.Item value="location">
-			<Accordion.Trigger class="text-base font-semibold">
-				Location
-			</Accordion.Trigger>
-			<Accordion.Content class="space-y-4 pt-4">
-				<!-- Resort -->
-				<SearchResort {form} name="resort" label="Primary Resort" />
-				<Form.Description class="text-xs">
-					Select the main resort where your school operates
-				</Form.Description>
 			</Accordion.Content>
 		</Accordion.Item>
 	</Accordion.Root>

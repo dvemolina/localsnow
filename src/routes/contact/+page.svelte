@@ -24,18 +24,18 @@
 </script>
 
 <svelte:head>
-	<title>{m.seo_meta_contact_title()}</title>
-	<meta name="description" content={m.seo_meta_contact_description()} />
+	<title>{m["contact.seo_meta_contact_title"]()}</title>
+	<meta name="description" content={m["contact.seo_meta_contact_description"]()} />
 
 	<!-- Open Graph -->
-	<meta property="og:title" content={m.seo_meta_contact_title()} />
-	<meta property="og:description" content={m.seo_meta_contact_description()} />
+	<meta property="og:title" content={m["contact.seo_meta_contact_title"]()} />
+	<meta property="og:description" content={m["contact.seo_meta_contact_description"]()} />
 	<meta property="og:url" content="https://localsnow.org/contact" />
 	<meta property="og:image" content="https://localsnow.org/og-image.jpg" />
 
 	<!-- Twitter Card -->
-	<meta name="twitter:title" content={m.seo_meta_contact_title()} />
-	<meta name="twitter:description" content={m.seo_meta_contact_description()} />
+	<meta name="twitter:title" content={m["contact.seo_meta_contact_title"]()} />
+	<meta name="twitter:description" content={m["contact.seo_meta_contact_description"]()} />
 	<meta name="twitter:image" content="https://localsnow.org/og-image.jpg" />
 
 	<!-- Structured Data -->
@@ -47,15 +47,15 @@
 </svelte:head>
 
 <article class="prose prose-sm mx-auto max-w-3xl">
-	<h1 class="title2">{m.contact_page_title()}</h1>
+	<h1 class="title2">{m["contact.contact_page_title"]()}</h1>
 	<p class="text-lg text-muted-foreground">
-		{m.contact_page_subtitle()}
+		{m["contact.contact_page_subtitle"]()}
 	</p>
 
 	<!-- General Inquiries Section -->
 	<section class="my-8 rounded-lg border border-border bg-card p-6 shadow-sm">
-		<h2 class="title3 mb-3">{m.contact_page_general_title()}</h2>
-		<p class="mb-4 text-muted-foreground">{m.contact_page_general_desc()}</p>
+		<h2 class="title3 mb-3">{m["contact.contact_page_general_title"]()}</h2>
+		<p class="mb-4 text-muted-foreground">{m["contact.contact_page_general_desc"]()}</p>
 		<div class="flex items-center gap-3">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
@@ -72,7 +72,7 @@
 				/>
 			</svg>
 			<div>
-				<p class="text-sm font-medium text-muted-foreground">{m.contact_page_email_label()}</p>
+				<p class="text-sm font-medium text-muted-foreground">{m["contact.contact_page_email_label"]()}</p>
 				<a href="mailto:{contactEmail}" class="text-primary hover:underline">
 					{contactEmail}
 				</a>
@@ -82,13 +82,13 @@
 
 	<!-- For Instructors Section -->
 	<section class="my-8 rounded-lg border border-border bg-card p-6 shadow-sm">
-		<h2 class="title3 mb-3">{m.contact_page_instructors_title()}</h2>
+		<h2 class="title3 mb-3">{m["contact.contact_page_instructors_title"]()}</h2>
 		<p class="mb-4 text-muted-foreground">
-			{m.contact_page_instructors_desc()}
+			{m["contact.contact_page_instructors_desc"]()}
 		</p>
 
 		<div class="mb-6">
-			<h3 class="title4 mb-3">{m.contact_page_instructors_benefits()}</h3>
+			<h3 class="title4 mb-3">{m["contact.contact_page_instructors_benefits"]()}</h3>
 			<ul class="space-y-2.5">
 				<li class="flex items-start gap-2">
 					<svg
@@ -105,7 +105,7 @@
 							d="M5 13l4 4L19 7"
 						/>
 					</svg>
-					<span class="text-sm text-muted-foreground">{m.contact_page_benefit_1()}</span>
+					<span class="text-sm text-muted-foreground">{m["contact.contact_page_benefit_1"]()}</span>
 				</li>
 				<li class="flex items-start gap-2">
 					<svg
@@ -122,7 +122,7 @@
 							d="M5 13l4 4L19 7"
 						/>
 					</svg>
-					<span class="text-sm text-muted-foreground">{m.contact_page_benefit_2()}</span>
+					<span class="text-sm text-muted-foreground">{m["contact.contact_page_benefit_2"]()}</span>
 				</li>
 				<li class="flex items-start gap-2">
 					<svg
@@ -139,7 +139,7 @@
 							d="M5 13l4 4L19 7"
 						/>
 					</svg>
-					<span class="text-sm text-muted-foreground">{m.contact_page_benefit_3()}</span>
+					<span class="text-sm text-muted-foreground">{m["contact.contact_page_benefit_3"]()}</span>
 				</li>
 				<li class="flex items-start gap-2">
 					<svg
@@ -156,7 +156,7 @@
 							d="M5 13l4 4L19 7"
 						/>
 					</svg>
-					<span class="text-sm text-muted-foreground">{m.contact_page_benefit_4()}</span>
+					<span class="text-sm text-muted-foreground">{m["contact.contact_page_benefit_4"]()}</span>
 				</li>
 			</ul>
 		</div>
@@ -165,43 +165,43 @@
 			href={route('/signup')}
 			class="bg-primary inline-block rounded-md px-6 py-3 font-medium text-white hover:bg-primary/90"
 		>
-			{m.contact_page_join_button()}
+			{m["contact.contact_page_join_button"]()}
 		</a>
 	</section>
 
 	<!-- For Clients Section -->
 	<section class="my-8 rounded-lg border border-border bg-card p-6 shadow-sm">
-		<h2 class="title3 mb-3">{m.contact_page_clients_title()}</h2>
+		<h2 class="title3 mb-3">{m["contact.contact_page_clients_title"]()}</h2>
 		<p class="mb-4 text-muted-foreground">
-			{m.contact_page_clients_desc()}
+			{m["contact.contact_page_clients_desc"]()}
 		</p>
 		<a
 			href={route('/instructors')}
 			class="inline-block rounded-md border border-border bg-card px-6 py-3 font-medium hover:bg-muted"
 		>
-			{m.contact_page_find_button()}
+			{m["contact.contact_page_find_button"]()}
 		</a>
 	</section>
 
 	<!-- Support Section -->
 	<section class="my-8 rounded-lg border border-border bg-card p-6 shadow-sm">
-		<h2 class="title3 mb-3">{m.contact_page_support_title()}</h2>
+		<h2 class="title3 mb-3">{m["contact.contact_page_support_title"]()}</h2>
 		<p class="text-muted-foreground">
-			{@html m.contact_page_support_desc({ email: `<a href="mailto:${contactEmail}" class="text-primary hover:underline">${contactEmail}</a>` })}
+			{@html m["contact.contact_page_support_desc"]({ email: `<a href="mailto:${contactEmail}" class="text-primary hover:underline">${contactEmail}</a>` })}
 		</p>
 	</section>
 
 	<!-- FAQ Section -->
 	<section class="my-8 rounded-lg border border-border bg-card p-6 shadow-sm">
-		<h2 class="title3 mb-3">{m.contact_page_faq_title()}</h2>
+		<h2 class="title3 mb-3">{m["contact.contact_page_faq_title"]()}</h2>
 		<p class="mb-4 text-muted-foreground">
-			{m.contact_page_faq_cta()}
+			{m["contact.contact_page_faq_cta"]()}
 		</p>
 		<a
 			href={route('/how-it-works')}
 			class="inline-block rounded-md border border-border bg-card px-6 py-3 font-medium hover:bg-muted"
 		>
-			{m.contact_page_how_it_works_button()}
+			{m["contact.contact_page_how_it_works_button"]()}
 		</a>
 	</section>
 </article>

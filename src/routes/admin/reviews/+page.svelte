@@ -18,8 +18,8 @@
 
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8">
-		<h1 class="title2 mb-2">{m.admin_review_management()}</h1>
-		<p class="text-muted-foreground">{m.admin_review_management_desc()}</p>
+		<h1 class="title2 mb-2">{m["admin.reviews.admin_review_management"]()}</h1>
+		<p class="text-muted-foreground">{m["admin.reviews.admin_review_management_desc"]()}</p>
 	</div>
 
 	<p class="text-sm text-muted-foreground">
@@ -34,7 +34,7 @@
 						<Table.Head>{m.table_id()}</Table.Head>
 						<Table.Head>{m.table_instructor()}</Table.Head>
 						<Table.Head>{m.table_rating()}</Table.Head>
-						<Table.Head>{m.table_comment()}</Table.Head>
+						<Table.Head>{m["admin.reviews.table_comment"]()}</Table.Head>
 						<Table.Head>{m.table_client()}</Table.Head>
 						<Table.Head>{m.table_date()}</Table.Head>
 					</Table.Row>

@@ -1,6 +1,6 @@
 {
-    "id": "daa15c7b-6c77-4f0b-bcc3-7bf3a4bfaf14",
-  "prevId": "f8d2db08-35d1-466f-b3bc-19ddfb5a0415",
+  "id": "35ef4d1a-ebd9-4137-839e-3877c351f604",
+  "prevId": "daa15c7b-6c77-4f0b-bcc3-7bf3a4bfaf14",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -2774,11 +2774,31 @@
           "notNull": false,
           "default": true
         },
+        "requested_at": {
+          "name": "requested_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "accepted_at": {
+          "name": "accepted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
         "rejected_at": {
           "name": "rejected_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},

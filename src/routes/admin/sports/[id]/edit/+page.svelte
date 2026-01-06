@@ -22,8 +22,8 @@
 				← {m.admin_back_to_sports()}
 			</Button>
 		</div>
-		<h1 class="title2 mb-2">{m.admin_edit_sport()}: {sport.sport}</h1>
-		<p class="text-muted-foreground">{m.admin_edit_sport_desc()}</p>
+		<h1 class="title2 mb-2">{m["admin.sports.edit.admin_edit_sport"]()}: {sport.sport}</h1>
+		<p class="text-muted-foreground">{m["admin.sports.edit.admin_edit_sport_desc"]()}</p>
 	</div>
 
 	<!-- Edit Form -->
@@ -104,10 +104,10 @@
 		</CardHeader>
 		<CardContent>
 			<p class="mb-4 text-sm text-muted-foreground">
-				{m.admin_delete_sport_warning()}
+				{m["admin.sports.edit.admin_delete_sport_warning"]()}
 			</p>
 			<Button variant="destructive" onclick={() => (showDeleteDialog = true)}>
-				{m.button_delete_sport()}
+				{m["admin.sports.edit.button_delete_sport"]()}
 			</Button>
 		</CardContent>
 	</Card>
@@ -117,9 +117,9 @@
 <AlertDialog.Root bind:open={showDeleteDialog}>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
-			<AlertDialog.Title>{m.admin_confirm_delete_sport()}</AlertDialog.Title>
+			<AlertDialog.Title>{m["admin.sports.edit.admin_confirm_delete_sport"]()}</AlertDialog.Title>
 			<AlertDialog.Description>
-				{m.admin_delete_sport_confirmation({ name: sport.sport })}
+				{m["admin.sports.edit.admin_delete_sport_confirmation"]({ name: sport.sport })}
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
