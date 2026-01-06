@@ -16,7 +16,7 @@
 	<UserLoginForm {data} />
 	<div class="flex flex-col">
 		<Separator class="mt-6 w-fit" decorative={true} orientation="horizontal" color="black" />
-		<p class="mb-6 text-xs text-muted-foreground">{m["login.auth_or"]()}</p>
+		<p class="mb-6 text-xs text-muted-foreground">{m.auth_or()}</p>
 	</div>
-	<GoogleBtn>{m["login.auth_access_google"]()}</GoogleBtn>
+	<GoogleBtn>{m.auth_access_google()}</GoogleBtn>
 </section>

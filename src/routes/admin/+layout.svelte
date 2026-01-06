@@ -15,7 +15,7 @@
 		<div class="sticky top-0 z-10 flex items-center gap-4 border-b border-border bg-white px-4 py-3">
 			<Sidebar.Trigger />
 			<div class="flex-1">
-				<h2 class="text-lg font-semibold">{m["admin.admin_dashboard_title"]()}</h2>
+				<h2 class="text-lg font-semibold">{m.admin_dashboard_title()}</h2>
 			</div>
 			<div class="flex items-center gap-2">
 				<span class="text-sm text-muted-foreground">

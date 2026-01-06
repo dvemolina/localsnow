@@ -195,21 +195,21 @@
 </script>
 
 <svelte:head>
-	<title>{m["instructors.seo_meta_instructors_title"]()}</title>
+	<title>{m.seo_meta_instructors_title()}</title>
 	<meta
 		name="description"
-		content={m["instructors.seo_meta_instructors_description"]()}
+		content={m.seo_meta_instructors_description()}
 	/>
 
 	<!-- Open Graph -->
-	<meta property="og:title" content={m["instructors.seo_meta_instructors_title"]()} />
-	<meta property="og:description" content={m["instructors.seo_meta_instructors_description"]()} />
+	<meta property="og:title" content={m.seo_meta_instructors_title()} />
+	<meta property="og:description" content={m.seo_meta_instructors_description()} />
 	<meta property="og:url" content="https://localsnow.org/instructors" />
 	<meta property="og:image" content="https://localsnow.org/ski-instructor-turn.webp" />
 
 	<!-- Twitter Card -->
-	<meta name="twitter:title" content={m["instructors.seo_meta_instructors_title"]()} />
-	<meta name="twitter:description" content={m["instructors.seo_meta_instructors_description"]()} />
+	<meta name="twitter:title" content={m.seo_meta_instructors_title()} />
+	<meta name="twitter:description" content={m.seo_meta_instructors_description()} />
 	<meta name="twitter:image" content="https://localsnow.org/ski-instructor-turn.webp" />
 
 	<!-- Structured Data -->
@@ -229,19 +229,19 @@
 <section class="w-full">
 	<!-- Header -->
 	<div class="mb-6 text-center">
-		<h1 class="title2 mb-2">{m["instructors.instructors_page_title"]()}</h1>
+		<h1 class="title2 mb-2">{m.instructors_page_title()}</h1>
 		<p class="text-muted-foreground text-sm">
-			{m["instructors.instructors_page_subtitle"]()}
+			{m.instructors_page_subtitle()}
 		</p>
 	</div>
 
 	<!-- Filters Section -->
 	<div class="mb-6 rounded-lg border border-border bg-card p-4 shadow-sm overflow-visible">
 		<div class="mb-4 flex items-center justify-between">
-			<h2 class="text-base font-semibold">{m["instructors.instructors_page_filter_sort"]()}</h2>
+			<h2 class="text-base font-semibold">{m.instructors_page_filter_sort()}</h2>
 			{#if hasActiveFilters}
 				<Button type="button" variant="ghost" size="sm" onclick={clearFilters}>
-					{m["instructors.instructors_page_clear_all"]()}
+					{m.instructors_page_clear_all()}
 				</Button>
 			{/if}
 		</div>
@@ -273,7 +273,7 @@
 							d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
 						/>
 					</svg>
-					{m["instructors.instructors_page_more_filters"]()}
+					{m.instructors_page_more_filters()}
 					{#if hasAdvancedFilters}
 						<span
 							class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white"
@@ -289,16 +289,16 @@
 				</Dialog.Trigger>
 				<Dialog.Content class="max-w-lg">
 					<Dialog.Header>
-						<Dialog.Title>{m["instructors.instructors_page_advanced_filters"]()}</Dialog.Title>
+						<Dialog.Title>{m.instructors_page_advanced_filters()}</Dialog.Title>
 						<Dialog.Description>
-							{m["instructors.instructors_page_refine_search"]()}
+							{m.instructors_page_refine_search()}
 						</Dialog.Description>
 					</Dialog.Header>
 
 					<div class="space-y-4 py-4">
 						<!-- Price Range -->
 						<div class="space-y-2">
-							<Label class="text-sm font-medium">{m["instructors.instructors_page_price_range"]()}</Label>
+							<Label class="text-sm font-medium">{m.instructors_page_price_range()}</Label>
 							<div class="grid grid-cols-2 gap-3">
 								<div>
 									<Input
@@ -330,14 +330,14 @@
 						<div class="flex items-center space-x-2">
 							<Checkbox id="verified" bind:checked={verifiedOnly} />
 							<Label for="verified" class="text-sm font-medium leading-none cursor-pointer">
-								{m["instructors.instructors_page_verified_only"]()}
+								{m.instructors_page_verified_only()}
 							</Label>
 						</div>
 					</div>
 
 					<Dialog.Footer>
-						<Button type="button" variant="outline" onclick={clearFilters}>{m["instructors.instructors_page_clear_all"]()}</Button>
-						<Button type="button" onclick={applyFilters}>{m["instructors.instructors_page_apply_filters"]()}</Button>
+						<Button type="button" variant="outline" onclick={clearFilters}>{m.instructors_page_clear_all()}</Button>
+						<Button type="button" onclick={applyFilters}>{m.instructors_page_apply_filters()}</Button>
 					</Dialog.Footer>
 				</Dialog.Content>
 			</Dialog.Root>
@@ -366,7 +366,7 @@
 	<!-- Active Filters Chips -->
 	{#if hasActiveFilters}
 		<div class="mb-4 flex flex-wrap items-center gap-2">
-			<span class="text-muted-foreground text-sm">{m["instructors.instructors_page_active_filters"]()}</span>
+			<span class="text-muted-foreground text-sm">{m.instructors_page_active_filters()}</span>
 			{#if $formData.resort}
 				<Badge variant="secondary" class="gap-1">
 					{getResortName($formData.resort)}
@@ -441,7 +441,7 @@
 			{/if}
 			{#if verifiedOnly}
 				<Badge variant="secondary" class="gap-1">
-					{m["instructors.instructors_page_verified_only"]()}
+					{m.instructors_page_verified_only()}
 					<button
 						type="button"
 						onclick={() => removeFilter('verifiedOnly')}
@@ -452,7 +452,7 @@
 				</Badge>
 			{/if}
 			<Button variant="ghost" size="sm" onclick={clearFilters} class="h-6 px-2 text-xs">
-				{m["instructors.instructors_page_clear_all"]()}
+				{m.instructors_page_clear_all()}
 			</Button>
 		</div>
 	{/if}
@@ -461,11 +461,11 @@
 	<div class="mb-4 flex items-center justify-between">
 		<p class="text-muted-foreground text-sm">
 			{#if data.instructors.length === 0}
-				{m["instructors.instructors_page_results_none"]()}
+				{m.instructors_page_results_none()}
 			{:else if data.instructors.length === 1}
-				{m["instructors.instructors_page_results_one"]()}
+				{m.instructors_page_results_one()}
 			{:else}
-				{data.instructors.length} {m["instructors.instructors_page_results_many"]()}
+				{data.instructors.length} {m.instructors_page_results_many()}
 			{/if}
 		</p>
 	</div>
@@ -487,9 +487,9 @@
 					d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
 				/>
 			</svg>
-			<h3 class="mb-2 text-lg font-semibold">{m["instructors.instructors_page_empty_title"]()}</h3>
-			<p class="text-muted-foreground mb-4">{m["instructors.instructors_page_empty_subtitle"]()}</p>
-			<Button onclick={clearFilters} variant="outline">{m["instructors.instructors_page_empty_clear_filters"]()}</Button>
+			<h3 class="mb-2 text-lg font-semibold">{m.instructors_page_empty_title()}</h3>
+			<p class="text-muted-foreground mb-4">{m.instructors_page_empty_subtitle()}</p>
+			<Button onclick={clearFilters} variant="outline">{m.instructors_page_empty_clear_filters()}</Button>
 		</div>
 	{:else}
 		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
