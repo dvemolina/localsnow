@@ -12,6 +12,8 @@ import { InstructorService } from "$src/features/Instructors/lib/instructorServi
 import { schoolProfileSchema } from "$src/features/Schools/lib/validations/schoolSchemas.js";
 import { SchoolService } from "$src/features/Schools/lib/schoolService.js";
 import { StorageService } from "$src/lib/server/R2Storage.js";
+import { schoolProfileSchema } from "$src/features/Schools/lib/validations/schoolSchemas.js";
+import { SchoolRepository } from "$src/features/Schools/lib/schoolRepository.js";
 
 const userService = new UserService();
 const instructorService = new InstructorService();

@@ -107,6 +107,7 @@ export const bookingRequests = pgTable('booking_requests', {
     id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
     uuid: uuid('uuid').defaultRandom().unique().notNull(),
     instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	schoolId: integer('school_id').references(() => schools.id, { onDelete: 'set null' }), // If booked through school
 
     // Client info
     clientUserId: integer('client_user_id').references(() => users.id, { onDelete: 'set null' }), // Authenticated user reference
@@ -448,7 +449,9 @@ export const schoolResorts = pgTable('school_resorts', {
 export const schoolAdmins = pgTable('school_admins', {
 	schoolId: integer('school_id').notNull().references(() => schools.id, { onDelete: 'cascade' }),
 	userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-	isAccepted: boolean('is_accepted').default(false)
+	isAccepted: boolean('is_accepted').default(false),
+	isOwner: boolean('is_owner').default(false),
+	...timestamps
 });
 
 export const schoolInstructors = pgTable('school_instructors', {
@@ -574,6 +577,10 @@ export const bookingRequestsRelations = relations(bookingRequests, ({ one, many 
 		fields: [bookingRequests.instructorId],
 		references: [users.id]
 	}),
+	school: one(schools, {
+		fields: [bookingRequests.schoolId],
+		references: [schools.id]
+	}),
 	sports: many(bookingRequestSports),
 	deposit: one(clientDeposits),
 	leadPayment: one(leadPayments),
@@ -621,6 +628,12 @@ export type Session = typeof session.$inferSelect;
 //School
 export type School = typeof schools.$inferSelect
 export type InsertSchool = typeof schools.$inferInsert;
+export type SchoolAdmin = typeof schoolAdmins.$inferSelect;
+export type InsertSchoolAdmin = typeof schoolAdmins.$inferInsert;
+export type SchoolInstructor = typeof schoolInstructors.$inferSelect;
+export type InsertSchoolInstructor = typeof schoolInstructors.$inferInsert;
+export type SchoolInstructorHistory = typeof schoolInstructorHistory.$inferSelect;
+export type InsertSchoolInstructorHistory = typeof schoolInstructorHistory.$inferInsert;
 //Countries
 export type Country = typeof countries.$inferSelect;
 export type InsertCountry = typeof countries.$inferInsert;

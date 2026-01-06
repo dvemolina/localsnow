@@ -243,4 +243,40 @@ export class LessonRepository {
 
         return lessonsWithSports;
     }
+
+    async listLessonsBySchool(schoolId: number): Promise<LessonWithSports[]> {
+        try {
+            const schoolLessons = await db
+                .select()
+                .from(lessons)
+                .where(eq(lessons.schoolId, schoolId));
+
+            // Get sports for each lesson
+            const lessonsWithSports = await Promise.all(
+                schoolLessons.map(async (lesson) => {
+                    try {
+                        const sports = await db
+                            .select({ sportId: lessonSports.sportId })
+                            .from(lessonSports)
+                            .where(eq(lessonSports.lessonId, lesson.id));
+
+                        return {
+                            ...lesson,
+                            sports: sports.map(s => s.sportId)
+                        };
+                    } catch (error) {
+                        return {
+                            ...lesson,
+                            sports: []
+                        };
+                    }
+                })
+            );
+
+            return lessonsWithSports;
+        } catch (error) {
+            console.error('Error listing lessons by school:', error);
+            throw error;
+        }
+    }
 }
