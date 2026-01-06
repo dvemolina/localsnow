@@ -8,11 +8,11 @@
 </script>
 
 <section class="grey-section px-2 border border-border flex flex-col items-center justify-center w-full bg-card">
-	<p class="title3 mb-8 text-center">{m["signup.auth_join_network"]()}</p>
-	<GoogleBtn>{m["signup.auth_signup_google"]()}</GoogleBtn>
+	<p class="title3 mb-8 text-center">{m.auth_join_network()}</p>
+	<GoogleBtn>{m.auth_signup_google()}</GoogleBtn>
 	<div class="flex flex-col">
 		<Separator class="mt-6 w-fit" decorative={true} orientation="horizontal"/>
-		<p class="text-xs mb-6 text-muted-foreground">{m["signup.auth_or_create_account"]()}</p>
+		<p class="text-xs mb-6 text-muted-foreground">{m.auth_or_create_account()}</p>
 	</div>
 	<UserSignupForm {data} />
 </section>
