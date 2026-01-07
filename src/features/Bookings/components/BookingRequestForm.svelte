@@ -137,7 +137,7 @@
 				/>
 			</div>
 			<div>
-				<label for="clientPhone" class="mb-1 block text-sm font-medium">{m["admin.instructors.form_label_phone"]()}</label>
+				<label for="clientPhone" class="mb-1 block text-sm font-medium">{$instructors.form_label_phone.value}</label>
 				<Input
 					id="clientPhone"
 					type="tel"

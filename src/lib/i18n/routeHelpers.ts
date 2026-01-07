@@ -5,8 +5,18 @@
  * throughout the application.
  */
 
-import { getLocale } from '$lib/paraglide/runtime';
 import { getLocalizedPath, shouldTranslatePath, extractLocale, getRouteKey, type Locale } from './routes';
+
+/**
+ * Get current locale from browser URL or default to 'en'
+ */
+function getCurrentLocale(): Locale {
+	if (typeof window !== 'undefined') {
+		const { locale } = extractLocale(window.location.pathname);
+		return (locale as Locale) || 'en';
+	}
+	return 'en';
+}
 
 /**
  * Generate a localized URL for a route
@@ -21,7 +31,7 @@ import { getLocalizedPath, shouldTranslatePath, extractLocale, getRouteKey, type
  * route('/instructors/123') // Returns: /es/instructores/123
  */
 export function route(path: string, locale?: Locale, params?: Record<string, string>): string {
-	const currentLocale = locale || (getLocale() as Locale);
+	const currentLocale = locale || getCurrentLocale();
 
 	// Don't translate certain paths
 	if (!shouldTranslatePath(path)) {

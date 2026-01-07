@@ -86,9 +86,9 @@
 <div class="container mx-auto max-w-4xl py-6">
 	<!-- Header -->
 	<div class="mb-6">
-		<h1 class="title2 mb-2">{m["dashboard.availability.availability_page_title"]()}</h1>
+		<h1 class="title2 mb-2">{$availability.availability_page_title.value}</h1>
 		<p class="text-muted-foreground">
-			{m["dashboard.availability.availability_page_subtitle"]()}
+			{$availability.availability_page_subtitle.value}
 		</p>
 	</div>
 
@@ -106,15 +106,15 @@
 								d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
 							/>
 						</svg>
-						{m["dashboard.availability.availability_google_calendar_title"]()}
+						{$availability.availability_google_calendar_title.value}
 						{#if data.connected}
-							<Badge variant="default" class="bg-green-600">{m["dashboard.availability.status_connected"]()}</Badge>
+							<Badge variant="default" class="bg-green-600">{$availability.status_connected.value}</Badge>
 						{:else}
-							<Badge variant="secondary">{m["dashboard.availability.status_not_connected"]()}</Badge>
+							<Badge variant="secondary">{$availability.status_not_connected.value}</Badge>
 						{/if}
 					</Card.Title>
 					<Card.Description class="mt-1">
-						{m["dashboard.availability.availability_google_calendar_desc"]()}
+						{$availability.availability_google_calendar_desc.value}
 					</Card.Description>
 				</div>
 			</div>
@@ -136,13 +136,13 @@
 							/>
 						</svg>
 						<div class="text-sm text-green-800">
-							<p class="font-medium">{m["dashboard.availability.availability_calendar_connected_title"]()}</p>
+							<p class="font-medium">{$availability.availability_calendar_connected_title.value}</p>
 							<p class="mt-1">
-								{m["dashboard.availability.availability_calendar_connected_message"]()}
+								{$availability.availability_calendar_connected_message.value}
 							</p>
 							{#if data.syncDetails.lastSyncAt}
 								<p class="mt-2 text-xs">
-									{m["dashboard.availability.availability_last_synced"]()} {new Date(data.syncDetails.lastSyncAt).toLocaleString()}
+									{$availability.availability_last_synced.value} {new Date(data.syncDetails.lastSyncAt).toLocaleString()}
 								</p>
 							{/if}
 						</div>
@@ -173,7 +173,7 @@
 									d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
 								></path>
 							</svg>
-							{m["dashboard.availability.button_syncing"]()}
+							{$availability.button_syncing.value}
 						{:else}
 							<svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path
@@ -183,7 +183,7 @@
 									d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
 								/>
 							</svg>
-							{m["dashboard.availability.button_sync_now"]()}
+							{$availability.button_sync_now.value}
 						{/if}
 					</Button>
 					<Button
@@ -195,7 +195,7 @@
 						{#if disconnecting}
 							Disconnecting...
 						{:else}
-							{m["dashboard.availability.button_disconnect_calendar"]()}
+							{$availability.button_disconnect_calendar.value}
 						{/if}
 					</Button>
 				</div>
@@ -214,9 +214,9 @@
 							/>
 						</svg>
 					</div>
-					<h3 class="mb-2 font-semibold text-lg">{m["dashboard.availability.availability_connect_calendar_heading"]()}</h3>
+					<h3 class="mb-2 font-semibold text-lg">{$availability.availability_connect_calendar_heading.value}</h3>
 					<p class="mb-4 text-muted-foreground">
-						{m["dashboard.availability.availability_connect_calendar_desc"]()}
+						{$availability.availability_connect_calendar_desc.value}
 					</p>
 					<Button onclick={connectCalendar} class="mx-auto">
 						<svg class="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -233,7 +233,7 @@
 								d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
 							/>
 						</svg>
-						{m["dashboard.availability.button_connect_google_calendar"]()}
+						{$availability.button_connect_google_calendar.value}
 					</Button>
 				</div>
 
@@ -252,15 +252,15 @@
 							/>
 						</svg>
 						<div class="text-sm text-blue-800">
-							<p class="font-medium">{m["dashboard.availability.availability_why_connect_title"]()}</p>
+							<p class="font-medium">{$availability.availability_why_connect_title.value}</p>
 							<ul class="mt-2 space-y-1 text-sm">
-								<li>• {m["dashboard.availability.availability_benefit1"]()}</li>
-								<li>• {m["dashboard.availability.availability_benefit2"]()}</li>
-								<li>• {m["dashboard.availability.availability_benefit3"]()}</li>
-								<li>• {m["dashboard.availability.availability_benefit4"]()}</li>
+								<li>• {$availability.availability_benefit1.value}</li>
+								<li>• {$availability.availability_benefit2.value}</li>
+								<li>• {$availability.availability_benefit3.value}</li>
+								<li>• {$availability.availability_benefit4.value}</li>
 							</ul>
 							<p class="mt-2 text-xs">
-								{m["dashboard.availability.availability_calendar_disclaimer"]()}
+								{$availability.availability_calendar_disclaimer.value}
 							</p>
 						</div>
 					</div>
@@ -281,15 +281,15 @@
 						d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
 					/>
 				</svg>
-				{m["dashboard.availability.availability_working_hours_title"]()}
+				{$availability.availability_working_hours_title.value}
 				{#if data.workingHoursConfigured}
-					<Badge variant="default" class="bg-green-600">{m["dashboard.availability.status_configured"]()}</Badge>
+					<Badge variant="default" class="bg-green-600">{$availability.status_configured.value}</Badge>
 				{:else}
-					<Badge variant="secondary">{m["dashboard.availability.status_not_set"]()}</Badge>
+					<Badge variant="secondary">{$availability.status_not_set.value}</Badge>
 				{/if}
 			</Card.Title>
 			<Card.Description>
-				{m["dashboard.availability.availability_working_hours_desc"]()}
+				{$availability.availability_working_hours_desc.value}
 			</Card.Description>
 		</Card.Header>
 		<Card.Content class="space-y-4">
@@ -308,9 +308,9 @@
 							/>
 						</svg>
 						<div class="text-sm text-green-800">
-							<p class="font-medium">{m["dashboard.availability.availability_working_hours_set"]()}</p>
+							<p class="font-medium">{$availability.availability_working_hours_set.value}</p>
 							<p class="mt-1">
-								{m["dashboard.availability.availability_working_hours_configured_message"]()}
+								{$availability.availability_working_hours_configured_message.value}
 							</p>
 						</div>
 					</div>
@@ -329,16 +329,16 @@
 							/>
 						</svg>
 					</div>
-					<h3 class="mb-2 font-semibold text-lg">{m["dashboard.availability.availability_set_working_hours_heading"]()}</h3>
+					<h3 class="mb-2 font-semibold text-lg">{$availability.availability_set_working_hours_heading.value}</h3>
 					<p class="mb-4 text-muted-foreground">
-						{m["dashboard.availability.availability_set_working_hours_desc"]()}
+						{$availability.availability_set_working_hours_desc.value}
 					</p>
 				</div>
 			{/if}
 		</Card.Content>
 		<Card.Footer>
 			<Button href={route('/dashboard/availability/working-hours')} class="w-full">
-				{data.workingHoursConfigured ? m["dashboard.availability.button_edit_working_hours"]() : m["dashboard.availability.button_set_working_hours"]()}
+				{data.workingHoursConfigured ? $availability.button_edit_working_hours.value : $availability.button_set_working_hours.value}
 			</Button>
 		</Card.Footer>
 	</Card.Root>

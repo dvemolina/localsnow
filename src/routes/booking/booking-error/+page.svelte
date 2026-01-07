@@ -7,16 +7,16 @@
 
 	const errorMessages = $derived({
 		no_session: {
-			title: m["booking.booking-error.error_no_session_title"](),
-			description: m["booking.booking-error.error_no_session_desc"]()
+			title: $booking_error.error_no_session_title.value,
+			description: $booking_error.error_no_session_desc.value
 		},
 		payment_failed: {
-			title: m["booking.booking-error.error_payment_failed_title"](),
-			description: m["booking.booking-error.error_payment_failed_desc"]()
+			title: $booking_error.error_payment_failed_title.value,
+			description: $booking_error.error_payment_failed_desc.value
 		},
 		processing_error: {
-			title: m["booking.booking-error.error_processing_title"](),
-			description: m["booking.booking-error.error_processing_desc"]()
+			title: $booking_error.error_processing_title.value,
+			description: $booking_error.error_processing_desc.value
 		}
 	});
 
@@ -24,7 +24,7 @@
 </script>
 
 <svelte:head>
-	<title>{m["booking.booking-error.booking_error_page_title"]()} - Local Snow</title>
+	<title>{$booking_error.booking_error_page_title.value} - Local Snow</title>
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
@@ -45,19 +45,19 @@
 
 		<!-- Support Info -->
 		<div class="mb-6 rounded-lg bg-muted/50 p-4 text-left text-sm">
-			<p class="font-semibold mb-2">{m["booking.booking-error.error_need_help"]()}</p>
+			<p class="font-semibold mb-2">{$booking_error.error_need_help.value}</p>
 			<p class="text-muted-foreground">
-				{m["booking.booking-error.error_support_message"]()}
+				{$booking_error.error_support_message.value}
 			</p>
 		</div>
 
 		<!-- Actions -->
 		<div class="flex flex-col gap-3 sm:flex-row sm:justify-center">
 			<Button onclick={() => window.history.back()} variant="default">
-				{m["booking.booking-error.button_try_again"]()}
+				{$booking_error.button_try_again.value}
 			</Button>
 			<Button onclick={() => window.location.href = '/instructors'} variant="outline">
-				{m["booking.booking-error.button_browse_instructors"]()}
+				{$booking_error.button_browse_instructors.value}
 			</Button>
 		</div>
 	</div>

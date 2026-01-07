@@ -120,7 +120,7 @@
 					{$button.saving.value}
 				</span>
 			{:else}
-				{m["admin.launch-codes.edit.button_save_changes"]()}
+				{$edit.button_save_changes.value}
 			{/if}
 		</Button>
 	</div>

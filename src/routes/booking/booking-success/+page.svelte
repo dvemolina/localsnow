@@ -7,7 +7,7 @@
 </script>
 
 <svelte:head>
-	<title>{m["booking.booking-success.booking_success_page_title"]()} - Local Snow</title>
+	<title>{$booking_success.booking_success_page_title.value} - Local Snow</title>
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
@@ -21,30 +21,30 @@
 		</div>
 
 		<!-- Success Message -->
-		<h1 class="title2 mb-4">{m["booking.booking-success.booking_success_heading"]()}</h1>
+		<h1 class="title2 mb-4">{$booking_success.booking_success_heading.value}</h1>
 		<p class="mb-6 text-muted-foreground">
-			{m["booking.booking-success.booking_success_message"]()}
+			{$booking_success.booking_success_message.value}
 		</p>
 
 		<!-- What Happens Next -->
 		<div class="mb-8 rounded-lg bg-muted/50 p-6 text-left">
-			<h2 class="mb-4 text-lg font-semibold">{m["booking.booking-success.booking_success_next_steps"]()}</h2>
+			<h2 class="mb-4 text-lg font-semibold">{$booking_success.booking_success_next_steps.value}</h2>
 			<ol class="space-y-3 text-sm text-muted-foreground">
 				<li class="flex items-start gap-3">
 					<span class="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">1</span>
-					<span>{m["booking.booking-success.booking_success_step1"]()}</span>
+					<span>{$booking_success.booking_success_step1.value}</span>
 				</li>
 				<li class="flex items-start gap-3">
 					<span class="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">2</span>
-					<span>{m["booking.booking-success.booking_success_step2"]()}</span>
+					<span>{$booking_success.booking_success_step2.value}</span>
 				</li>
 				<li class="flex items-start gap-3">
 					<span class="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">3</span>
-					<span>{m["booking.booking-success.booking_success_step3"]()}</span>
+					<span>{$booking_success.booking_success_step3.value}</span>
 				</li>
 				<li class="flex items-start gap-3">
 					<span class="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">4</span>
-					<span>{m["booking.booking-success.booking_success_step4"]()}</span>
+					<span>{$booking_success.booking_success_step4.value}</span>
 				</li>
 			</ol>
 		</div>
@@ -56,8 +56,8 @@
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
 				</svg>
 				<div class="text-sm text-blue-900">
-					<p class="font-semibold mb-1">{m["booking.booking-success.booking_success_deposit_title"]()}</p>
-					<p>{m["booking.booking-success.booking_success_deposit_info"]()}</p>
+					<p class="font-semibold mb-1">{$booking_success.booking_success_deposit_title.value}</p>
+					<p>{$booking_success.booking_success_deposit_info.value}</p>
 				</div>
 			</div>
 		</div>
@@ -65,16 +65,16 @@
 		<!-- Actions -->
 		<div class="flex flex-col gap-3 sm:flex-row sm:justify-center">
 			<Button onclick={() => window.location.href = '/'} variant="default">
-				{m["booking.booking-success.button_back_to_home"]()}
+				{$booking_success.button_back_to_home.value}
 			</Button>
 			<Button onclick={() => window.location.href = '/instructors'} variant="outline">
-				{m["booking.booking-success.button_browse_more_instructors"]()}
+				{$booking_success.button_browse_more_instructors.value}
 			</Button>
 		</div>
 
 		{#if bookingId}
 			<p class="mt-6 text-xs text-muted-foreground">
-				{m["booking.booking-success.booking_reference"]()}: #{bookingId}
+				{$booking_success.booking_reference.value}: #{bookingId}
 			</p>
 		{/if}
 	</div>

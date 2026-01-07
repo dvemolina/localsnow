@@ -22,27 +22,27 @@
 			color: 'bg-yellow-100 text-yellow-800 border-yellow-200'
 		},
 		accepted: {  // Combined unlocked + accepted
-			label: m["dashboard.my-bookings.status_accepted"](),
+			label: $my_bookings.status_accepted.value,
 			variant: 'default' as const,
 			color: 'bg-green-100 text-green-800 border-green-200'
 		},
 		viewed: {  // Instructor unlocked but not accepted yet
-			label: m.status_unlocked ? $status.unlocked.value : 'Unlocked',
+			label: $status.unlocked.value,
 			variant: 'default' as const,
 			color: 'bg-blue-100 text-blue-800 border-blue-200'
 		},
 		rejected: {
-			label: m["dashboard.my-bookings.status_rejected"](),
+			label: $my_bookings.status_rejected.value,
 			variant: 'outline' as const,
 			color: 'bg-red-100 text-red-800 border-red-200'
 		},
 		cancelled: {
-			label: m.status_cancelled ? $status.cancelled.value : 'Cancelled',
+			label: $status.cancelled.value,
 			variant: 'outline' as const,
 			color: 'bg-gray-100 text-gray-800 border-gray-200'
 		},
 		expired: {
-			label: m.status_expired ? m["dashboard.my-bookings.status_expired"]() : 'Expired',
+			label: m.status_expired ? $my_bookings.status_expired.value : 'Expired',
 			variant: 'outline' as const,
 			color: 'bg-gray-100 text-gray-800 border-gray-200'
 		}

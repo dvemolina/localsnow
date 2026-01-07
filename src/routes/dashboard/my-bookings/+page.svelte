@@ -77,7 +77,7 @@
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8">
 		<h1 class="title2 mb-2">{$client.my_bookings.value}</h1>
-		<p class="text-muted-foreground">{m["dashboard.my-bookings.client_my_bookings_desc"]()}</p>
+		<p class="text-muted-foreground">{$my_bookings.client_my_bookings_desc.value}</p>
 	</div>
 
 	<!-- Filter Tabs -->
@@ -89,28 +89,28 @@
 					size="sm"
 					onclick={() => (filter = 'all')}
 				>
-					{m["dashboard.my-bookings.client_filter_all"]()} ({data.counts.all})
+					{$my_bookings.client_filter_all.value} ({data.counts.all})
 				</Button>
 				<Button
 					variant={filter === 'active' ? 'default' : 'outline'}
 					size="sm"
 					onclick={() => (filter = 'active')}
 				>
-					{m["dashboard.my-bookings.client_filter_active"]()} ({data.counts.active})
+					{$my_bookings.client_filter_active.value} ({data.counts.active})
 				</Button>
 				<Button
 					variant={filter === 'completed' ? 'default' : 'outline'}
 					size="sm"
 					onclick={() => (filter = 'completed')}
 				>
-					{m["dashboard.my-bookings.client_filter_completed"]()} ({data.counts.completed})
+					{$my_bookings.client_filter_completed.value} ({data.counts.completed})
 				</Button>
 				<Button
 					variant={filter === 'cancelled' ? 'default' : 'outline'}
 					size="sm"
 					onclick={() => (filter = 'cancelled')}
 				>
-					{m["dashboard.my-bookings.client_filter_cancelled"]()} ({data.counts.cancelled})
+					{$my_bookings.client_filter_cancelled.value} ({data.counts.cancelled})
 				</Button>
 			</div>
 		</CardContent>
@@ -135,10 +135,10 @@
 				<Table.Header>
 					<Table.Row>
 						<Table.Head>{$table.id.value}</Table.Head>
-						<Table.Head>{m["dashboard.my-bookings.client_table_instructor"]()}</Table.Head>
-						<Table.Head>{m["dashboard.my-bookings.table_dates"]()}</Table.Head>
-						<Table.Head>{m["dashboard.my-bookings.client_table_students"]()}</Table.Head>
-						<Table.Head>{m["dashboard.my-bookings.client_table_sports"]()}</Table.Head>
+						<Table.Head>{$my_bookings.client_table_instructor.value}</Table.Head>
+						<Table.Head>{$my_bookings.table_dates.value}</Table.Head>
+						<Table.Head>{$my_bookings.client_table_students.value}</Table.Head>
+						<Table.Head>{$my_bookings.client_table_sports.value}</Table.Head>
 						<Table.Head>{$table.status.value}</Table.Head>
 						<Table.Head>{$table.actions.value}</Table.Head>
 					</Table.Row>
@@ -147,7 +147,7 @@
 					{#if filteredBookings().length === 0}
 						<Table.Row>
 							<Table.Cell colspan={7} class="text-center text-muted-foreground">
-								{m["dashboard.my-bookings.client_no_bookings_found"]()}
+								{$my_bookings.client_no_bookings_found.value}
 							</Table.Cell>
 						</Table.Row>
 					{:else}
@@ -231,12 +231,12 @@
 				<svg class="mb-4 h-12 w-12 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
 				</svg>
-				<h3 class="mb-2 text-lg font-semibold">{m["dashboard.my-bookings.client_no_bookings_title"]()}</h3>
+				<h3 class="mb-2 text-lg font-semibold">{$my_bookings.client_no_bookings_title.value}</h3>
 				<p class="mb-4 text-center text-sm text-muted-foreground">
-					{m["dashboard.my-bookings.client_no_bookings_subtitle"]()}
+					{$my_bookings.client_no_bookings_subtitle.value}
 				</p>
 				<Button href="/instructors">
-					{m["dashboard.my-bookings.client_find_instructors"]()}
+					{$my_bookings.client_find_instructors.value}
 				</Button>
 			</CardContent>
 		</Card>
@@ -247,13 +247,13 @@
 <AlertDialog.Root bind:open={showCancelDialog}>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
-			<AlertDialog.Title>{m["dashboard.my-bookings.client_cancel_booking_title"]()}</AlertDialog.Title>
+			<AlertDialog.Title>{$my_bookings.client_cancel_booking_title.value}</AlertDialog.Title>
 			<AlertDialog.Description>
-				{m["dashboard.my-bookings.client_cancel_booking_desc"]()}
+				{$my_bookings.client_cancel_booking_desc.value}
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
-			<AlertDialog.Cancel onclick={closeCancelDialog}>{m["dashboard.my-bookings.button_cancel_action"]()}</AlertDialog.Cancel>
+			<AlertDialog.Cancel onclick={closeCancelDialog}>{$my_bookings.button_cancel_action.value}</AlertDialog.Cancel>
 			<form
 				method="POST"
 				action="?/cancel"
@@ -267,7 +267,7 @@
 				<input type="hidden" name="bookingRequestId" value={cancellingId || ''} />
 				<AlertDialog.Action asChild let:builder>
 					<Button {...builder} type="submit" variant="destructive">
-						{m["dashboard.my-bookings.button_confirm_cancel"]()}
+						{$my_bookings.button_confirm_cancel.value}
 					</Button>
 				</AlertDialog.Action>
 			</form>

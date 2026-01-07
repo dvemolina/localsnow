@@ -27,7 +27,7 @@
 			← {$admin.back_to_launch_codes.value}
 		</a>
 		<h1 class="title2 mb-2 mt-4">{$admin.create_launch_code.value}</h1>
-		<p class="text-muted-foreground">{m["admin.launch-codes.create.admin_create_launch_code_desc"]()}</p>
+		<p class="text-muted-foreground">{$create.admin_create_launch_code_desc.value}</p>
 	</div>
 
 	<!-- Error Message -->
@@ -108,7 +108,7 @@
 				<div class="flex items-center space-x-2">
 					<Checkbox id="isActive" name="isActive" checked={true} />
 					<Label for="isActive" class="font-normal">
-						{m["admin.launch-codes.create.admin_activate_immediately"]()}
+						{$create.admin_activate_immediately.value}
 					</Label>
 				</div>
 			</CardContent>
@@ -117,7 +117,7 @@
 		<!-- Actions -->
 		<div class="mt-6 flex items-center gap-4">
 			<Button type="submit" class="bg-primary text-white">
-				{m["admin.launch-codes.create.admin_create_code"]()}
+				{$create.admin_create_code.value}
 			</Button>
 			<Button type="button" variant="outline" href="/admin/launch-codes">
 				{$button.cancel.value}

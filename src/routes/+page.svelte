@@ -5,7 +5,9 @@
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { useIntlayer } from 'svelte-intlayer';
-		import { route } from '$lib/i18n/routeHelpers';
+	import { route } from '$lib/i18n/routeHelpers';
+	import { page } from '$app/stores';
+	import { extractLocale } from '$lib/i18n/routes';
 
 	const home = useIntlayer('home');
 	const seo = useIntlayer('seo');
@@ -13,7 +15,7 @@
 	let { data } = $props();
 
 	// Get current locale for form submission
-	const currentLocale = $derived(getLocale());
+	const currentLocale = $derived(extractLocale($page.url.pathname).locale || 'en');
 
 	// Top Spanish resorts for homepage - use $derived for translation reactivity
 	const topResorts = $derived([
@@ -279,9 +281,9 @@
 			>
 				1
 			</div>
-			<h3 class="mb-2 text-xl font-semibold">{m["home.home_how_it_works_step1_title"]()}</h3>
+			<h3 class="mb-2 text-xl font-semibold">{$home.how_it_works_step1_title.value}</h3>
 			<p class="text-gray-600">
-				{m["home.home_how_it_works_step1_desc"]()}
+				{$home.how_it_works_step1_desc.value}
 			</p>
 		</div>
 
@@ -291,9 +293,9 @@
 			>
 				2
 			</div>
-			<h3 class="mb-2 text-xl font-semibold">{m["home.home_how_it_works_step2_title"]()}</h3>
+			<h3 class="mb-2 text-xl font-semibold">{$home.how_it_works_step2_title.value}</h3>
 			<p class="text-gray-600">
-				{m["home.home_how_it_works_step2_desc"]()}
+				{$home.how_it_works_step2_desc.value}
 			</p>
 		</div>
 
@@ -303,9 +305,9 @@
 			>
 				3
 			</div>
-			<h3 class="mb-2 text-xl font-semibold">{m["home.home_how_it_works_step3_title"]()}</h3>
+			<h3 class="mb-2 text-xl font-semibold">{$home.how_it_works_step3_title.value}</h3>
 			<p class="text-gray-600">
-				{m["home.home_how_it_works_step3_desc"]()}
+				{$home.how_it_works_step3_desc.value}
 			</p>
 		</div>
 	</div>

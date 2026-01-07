@@ -58,9 +58,9 @@
 			<p class="text-muted-foreground">{data.instructor.email}</p>
 			<div class="mt-2 flex gap-2">
 				{#if data.instructor.isSuspended}
-					<Badge variant="destructive">{m["admin.instructors.status_suspended"]()}</Badge>
+					<Badge variant="destructive">{$instructors.status_suspended.value}</Badge>
 				{:else if data.instructor.isVerified}
-					<Badge class="bg-green-100 text-green-800">{m["admin.instructors.status_verified"]()}</Badge>
+					<Badge class="bg-green-100 text-green-800">{$instructors.status_verified.value}</Badge>
 				{:else}
 					<Badge class="bg-yellow-100 text-yellow-800">{$status.pending_verification.value}</Badge>
 				{/if}
@@ -73,23 +73,23 @@
 			{#if !data.instructor.isVerified && data.instructor.qualificationUrl}
 				<form method="POST" action="?/verify" use:enhance>
 					<Button type="submit" class="bg-green-600 hover:bg-green-700">
-						{m["admin.instructors.button_verify_instructor"]()}
+						{$instructors.button_verify_instructor.value}
 					</Button>
 				</form>
 				<Button variant="destructive" onclick={() => (showRejectDialog = true)}>
-					{m["admin.instructors.button_reject"]()}
+					{$instructors.button_reject.value}
 				</Button>
 			{/if}
 
 			{#if data.instructor.isSuspended}
 				<form method="POST" action="?/unsuspend" use:enhance>
 					<Button type="submit" variant="outline">
-						{m["admin.instructors.button_unsuspend"]()}
+						{$instructors.button_unsuspend.value}
 					</Button>
 				</form>
 			{:else}
 				<Button variant="destructive" onclick={() => (showSuspendDialog = true)}>
-					{m["admin.instructors.button_suspend"]()}
+					{$instructors.button_suspend.value}
 				</Button>
 			{/if}
 		</div>
@@ -100,23 +100,23 @@
 		<!-- Basic Information -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{m["admin.instructors.admin_basic_information"]()}</CardTitle>
+				<CardTitle>{$instructors.admin_basic_information.value}</CardTitle>
 			</CardHeader>
 			<CardContent class="space-y-2">
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{m["admin.instructors.form_label_phone"]()}</p>
-					<p>{data.instructor.phone || m["admin.instructors.admin_not_provided"]()}</p>
+					<p class="text-sm font-medium text-muted-foreground">{$instructors.form_label_phone.value}</p>
+					<p>{data.instructor.phone || $instructors.admin_not_provided.value}</p>
 				</div>
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{m["admin.instructors.form_label_professional_phone"]()}</p>
-					<p>{data.instructor.professionalPhone || m["admin.instructors.admin_not_provided"]()}</p>
+					<p class="text-sm font-medium text-muted-foreground">{$instructors.form_label_professional_phone.value}</p>
+					<p>{data.instructor.professionalPhone || $instructors.admin_not_provided.value}</p>
 				</div>
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{m["admin.instructors.form_label_bio"]()}</p>
-					<p class="text-sm">{data.instructor.bio || m["admin.instructors.admin_no_bio"]()}</p>
+					<p class="text-sm font-medium text-muted-foreground">{$instructors.form_label_bio.value}</p>
+					<p class="text-sm">{data.instructor.bio || $instructors.admin_no_bio.value}</p>
 				</div>
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{m["admin.instructors.table_joined"]()}</p>
+					<p class="text-sm font-medium text-muted-foreground">{$instructors.table_joined.value}</p>
 					<p>{formatDate(data.instructor.createdAt)}</p>
 				</div>
 			</CardContent>
@@ -125,13 +125,13 @@
 		<!-- Certification -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{m["admin.instructors.admin_certification"]()}</CardTitle>
+				<CardTitle>{$instructors.admin_certification.value}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				{#if data.instructor.qualificationUrl}
 					<div class="space-y-2">
 						<p class="text-sm text-muted-foreground">
-							{m["admin.instructors.admin_certification_uploaded"]()}
+							{$instructors.admin_certification_uploaded.value}
 						</p>
 						<a
 							href={data.instructor.qualificationUrl}
@@ -139,13 +139,13 @@
 							class="inline-block"
 						>
 							<Button variant="outline" size="sm">
-								{m["admin.instructors.button_view_certificate"]()} →
+								{$instructors.button_view_certificate.value} →
 							</Button>
 						</a>
 					</div>
 				{:else}
 					<p class="text-sm text-muted-foreground">
-						{m["admin.instructors.admin_no_certification"]()}
+						{$instructors.admin_no_certification.value}
 					</p>
 				{/if}
 			</CardContent>
@@ -154,7 +154,7 @@
 		<!-- Resorts -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{m["admin.instructors.table_resorts"]()}</CardTitle>
+				<CardTitle>{$instructors.table_resorts.value}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="flex flex-wrap gap-2">
@@ -166,7 +166,7 @@
 							</span>
 						</Badge>
 					{:else}
-						<p class="text-sm text-muted-foreground">{m["admin.instructors.admin_no_resorts"]()}</p>
+						<p class="text-sm text-muted-foreground">{$instructors.admin_no_resorts.value}</p>
 					{/each}
 				</div>
 			</CardContent>
@@ -175,14 +175,14 @@
 		<!-- Sports -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{m["admin.instructors.table_sports"]()}</CardTitle>
+				<CardTitle>{$instructors.table_sports.value}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="flex flex-wrap gap-2">
 					{#each data.instructor.sports as { sport }}
 						<Badge>{sport.sport}</Badge>
 					{:else}
-						<p class="text-sm text-muted-foreground">{m["admin.instructors.admin_no_sports"]()}</p>
+						<p class="text-sm text-muted-foreground">{$instructors.admin_no_sports.value}</p>
 					{/each}
 				</div>
 			</CardContent>
@@ -193,7 +193,7 @@
 	{#if data.instructor.isSuspended}
 		<Card class="border-red-200 bg-red-50">
 			<CardHeader>
-				<CardTitle class="text-red-900">{m["admin.instructors.admin_suspension_details"]()}</CardTitle>
+				<CardTitle class="text-red-900">{$instructors.admin_suspension_details.value}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="space-y-2">
@@ -202,7 +202,7 @@
 						<p class="text-sm">{data.instructor.suspensionReason}</p>
 					</div>
 					<div>
-						<p class="text-sm font-medium">{m["admin.instructors.admin_suspended_at"]()}:</p>
+						<p class="text-sm font-medium">{$instructors.admin_suspended_at.value}:</p>
 						<p class="text-sm">{formatDate(data.instructor.suspendedAt)}</p>
 					</div>
 				</div>
@@ -213,7 +213,7 @@
 	<!-- Bookings -->
 	<Card>
 		<CardHeader>
-			<CardTitle>{m["admin.instructors.admin_booking_history"]()} ({data.bookings.length})</CardTitle>
+			<CardTitle>{$instructors.admin_booking_history.value} ({data.bookings.length})</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<Table.Root>
@@ -242,7 +242,7 @@
 					{:else}
 						<Table.Row>
 							<Table.Cell colspan={5} class="text-center text-muted-foreground">
-								{m["admin.instructors.admin_no_bookings"]()}
+								{$instructors.admin_no_bookings.value}
 							</Table.Cell>
 						</Table.Row>
 					{/each}
@@ -272,13 +272,13 @@
 								</div>
 								<p class="mt-1 text-sm">{review.comment || $admin.no_comment.value}</p>
 								<p class="mt-1 text-xs text-muted-foreground">
-									{m["admin.instructors.admin_by"]()} {review.clientEmail}
+									{$instructors.admin_by.value} {review.clientEmail}
 								</p>
 							</div>
 						</div>
 					</div>
 				{:else}
-					<p class="text-sm text-muted-foreground">{m["admin.instructors.admin_no_reviews"]()}</p>
+					<p class="text-sm text-muted-foreground">{$instructors.admin_no_reviews.value}</p>
 				{/each}
 			</div>
 		</CardContent>
@@ -287,15 +287,15 @@
 	<!-- Audit Log -->
 	<Card>
 		<CardHeader>
-			<CardTitle>{m["admin.instructors.admin_actions_history"]()}</CardTitle>
+			<CardTitle>{$instructors.admin_actions_history.value}</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>{m["admin.instructors.table_action"]()}</Table.Head>
+						<Table.Head>{$instructors.table_action.value}</Table.Head>
 						<Table.Head>{$role.admin.value}</Table.Head>
-						<Table.Head>{m["admin.instructors.table_details"]()}</Table.Head>
+						<Table.Head>{$instructors.table_details.value}</Table.Head>
 						<Table.Head>{$table.date.value}</Table.Head>
 					</Table.Row>
 				</Table.Header>
@@ -303,7 +303,7 @@
 					{#each data.auditLogs as log}
 						<Table.Row>
 							<Table.Cell class="font-medium">{log.action}</Table.Cell>
-							<Table.Cell>{log.admin?.name || m["admin.instructors.admin_system"]()}</Table.Cell>
+							<Table.Cell>{log.admin?.name || $instructors.admin_system.value}</Table.Cell>
 							<Table.Cell>
 								<code class="text-xs">
 									{log.details ? JSON.parse(log.details).reason || '-' : '-'}
@@ -314,7 +314,7 @@
 					{:else}
 						<Table.Row>
 							<Table.Cell colspan={4} class="text-center text-muted-foreground">
-								{m["admin.instructors.admin_no_actions"]()}
+								{$instructors.admin_no_actions.value}
 							</Table.Cell>
 						</Table.Row>
 					{/each}
@@ -328,9 +328,9 @@
 <Dialog.Root bind:open={showSuspendDialog}>
 	<Dialog.Content>
 		<Dialog.Header>
-			<Dialog.Title>{m["admin.instructors.admin_suspend_instructor"]()}</Dialog.Title>
+			<Dialog.Title>{$instructors.admin_suspend_instructor.value}</Dialog.Title>
 			<Dialog.Description>
-				{m["admin.instructors.admin_suspend_description"]()}
+				{$instructors.admin_suspend_description.value}
 			</Dialog.Description>
 		</Dialog.Header>
 		<form method="POST" action="?/suspend" use:enhance>
@@ -338,7 +338,7 @@
 				<Textarea
 					name="reason"
 					bind:value={suspendReason}
-					placeholder={m["admin.instructors.admin_reason_placeholder"]()}
+					placeholder={$instructors.admin_reason_placeholder.value}
 					required
 				/>
 				<div class="flex justify-end gap-2">
@@ -346,7 +346,7 @@
 						{$button.cancel.value}
 					</Button>
 					<Button type="submit" variant="destructive">
-						{m["admin.instructors.button_suspend"]()}
+						{$instructors.button_suspend.value}
 					</Button>
 				</div>
 			</div>
@@ -358,9 +358,9 @@
 <Dialog.Root bind:open={showRejectDialog}>
 	<Dialog.Content>
 		<Dialog.Header>
-			<Dialog.Title>{m["admin.instructors.admin_reject_verification"]()}</Dialog.Title>
+			<Dialog.Title>{$instructors.admin_reject_verification.value}</Dialog.Title>
 			<Dialog.Description>
-				{m["admin.instructors.admin_reject_description"]()}
+				{$instructors.admin_reject_description.value}
 			</Dialog.Description>
 		</Dialog.Header>
 		<form method="POST" action="?/reject" use:enhance>
@@ -368,7 +368,7 @@
 				<Textarea
 					name="reason"
 					bind:value={rejectReason}
-					placeholder={m["admin.instructors.admin_rejection_reason_placeholder"]()}
+					placeholder={$instructors.admin_rejection_reason_placeholder.value}
 					required
 				/>
 				<div class="flex justify-end gap-2">
@@ -376,7 +376,7 @@
 						{$button.cancel.value}
 					</Button>
 					<Button type="submit" variant="destructive">
-						{m["admin.instructors.button_reject"]()}
+						{$instructors.button_reject.value}
 					</Button>
 				</div>
 			</div>

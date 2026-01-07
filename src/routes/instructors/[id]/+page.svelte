@@ -13,6 +13,7 @@
 
 	const button = useIntlayer('button');
 	const instructorContent = useIntlayer('instructor');
+	const instructors = useIntlayer('instructors');
 	const badge = useIntlayer('badge');
 	const lessons = useIntlayer('lessons');
 
@@ -554,7 +555,7 @@
 								d="M5 13l4 4L19 7"
 							/>
 						</svg>
-						<span>{m["instructors.instructor_benefit1"]()}</span>
+						<span>{$instructors.instructor_benefit1.value}</span>
 					</li>
 					<li class="flex items-start gap-2">
 						<svg
@@ -571,7 +572,7 @@
 								d="M5 13l4 4L19 7"
 							/>
 						</svg>
-						<span>{m["instructors.instructor_benefit2"]()}</span>
+						<span>{$instructors.instructor_benefit2.value}</span>
 					</li>
 					<li class="flex items-start gap-2">
 						<svg
@@ -588,7 +589,7 @@
 								d="M5 13l4 4L19 7"
 							/>
 						</svg>
-						<span>{m["instructors.instructor_benefit3"]()}</span>
+						<span>{$instructors.instructor_benefit3.value}</span>
 					</li>
 					<li class="flex items-start gap-2">
 						<svg
@@ -605,7 +606,7 @@
 								d="M5 13l4 4L19 7"
 							/>
 						</svg>
-						<span>{m["instructors.instructor_benefit4"]()}</span>
+						<span>{$instructors.instructor_benefit4.value}</span>
 					</li>
 				</ul>
 			</div>

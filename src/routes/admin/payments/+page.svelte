@@ -23,44 +23,44 @@
 
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8">
-		<h1 class="title2 mb-2">{m["admin.payments.admin_payment_overview"]()}</h1>
-		<p class="text-muted-foreground">{m["admin.payments.admin_payment_overview_desc"]()}</p>
+		<h1 class="title2 mb-2">{$payments.admin_payment_overview.value}</h1>
+		<p class="text-muted-foreground">{$payments.admin_payment_overview_desc.value}</p>
 	</div>
 
 	<!-- Revenue Summary -->
 	<div class="grid gap-4 md:grid-cols-3">
 		<Card>
 			<CardHeader>
-				<CardTitle>{m["admin.payments.admin_total_revenue"]()}</CardTitle>
+				<CardTitle>{$payments.admin_total_revenue.value}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">€{totalRevenue.toFixed(2)}</div>
 				<p class="text-xs text-muted-foreground">
-					{data.stats.deposits.count + data.stats.leads.count} {m["admin.payments.admin_transactions"]()}
+					{data.stats.deposits.count + data.stats.leads.count} {$payments.admin_transactions.value}
 				</p>
 			</CardContent>
 		</Card>
 
 		<Card>
 			<CardHeader>
-				<CardTitle>{m["admin.payments.admin_client_deposits"]()}</CardTitle>
+				<CardTitle>{$payments.admin_client_deposits.value}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">€{totalDepositRevenue.toFixed(2)}</div>
 				<p class="text-xs text-muted-foreground">
-					{data.stats.deposits.count} {m["admin.payments.admin_deposits"]()}
+					{data.stats.deposits.count} {$payments.admin_deposits.value}
 				</p>
 			</CardContent>
 		</Card>
 
 		<Card>
 			<CardHeader>
-				<CardTitle>{m["admin.payments.admin_lead_payments"]()}</CardTitle>
+				<CardTitle>{$payments.admin_lead_payments.value}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">€{totalLeadRevenue.toFixed(2)}</div>
 				<p class="text-xs text-muted-foreground">
-					{data.stats.leads.count} {m["admin.payments.admin_instructor_payments"]()}
+					{data.stats.leads.count} {$payments.admin_instructor_payments.value}
 				</p>
 			</CardContent>
 		</Card>
@@ -69,7 +69,7 @@
 	<!-- Recent Deposits -->
 	<Card>
 		<CardHeader>
-			<CardTitle>{m["admin.payments.admin_recent_client_deposits"]()}</CardTitle>
+			<CardTitle>{$payments.admin_recent_client_deposits.value}</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<Table.Root>
@@ -77,9 +77,9 @@
 					<Table.Row>
 						<Table.Head>{$table.id.value}</Table.Head>
 						<Table.Head>{$table.client.value}</Table.Head>
-						<Table.Head>{m["admin.payments.table_amount"]()}</Table.Head>
+						<Table.Head>{$payments.table_amount.value}</Table.Head>
 						<Table.Head>{$table.status.value}</Table.Head>
-						<Table.Head>{m["admin.payments.admin_stripe_id"]()}</Table.Head>
+						<Table.Head>{$payments.admin_stripe_id.value}</Table.Head>
 						<Table.Head>{$table.date.value}</Table.Head>
 					</Table.Row>
 				</Table.Header>
@@ -122,7 +122,7 @@
 	<!-- Recent Lead Payments -->
 	<Card>
 		<CardHeader>
-			<CardTitle>{m["admin.payments.admin_recent_lead_payments"]()}</CardTitle>
+			<CardTitle>{$payments.admin_recent_lead_payments.value}</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<Table.Root>
@@ -131,7 +131,7 @@
 						<Table.Head>{$table.id.value}</Table.Head>
 						<Table.Head>{$table.instructor.value}</Table.Head>
 						<Table.Head>{$table.client.value}</Table.Head>
-						<Table.Head>{m["admin.payments.table_amount"]()}</Table.Head>
+						<Table.Head>{$payments.table_amount.value}</Table.Head>
 						<Table.Head>{$table.status.value}</Table.Head>
 						<Table.Head>{$table.date.value}</Table.Head>
 					</Table.Row>

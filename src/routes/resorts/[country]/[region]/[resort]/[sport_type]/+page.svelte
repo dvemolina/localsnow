@@ -5,7 +5,6 @@
 	import { MapPin, Mountain, ExternalLink } from '@lucide/svelte';
 	import { page } from '$app/stores';
 	import Breadcrumb from '$lib/components/shared/Breadcrumb.svelte';
-	import * as m from '$src/lib/paraglide/messages.js';
 	import InstructorCard from '$src/features/Instructors/components/InstructorCard.svelte'
 
 	let { data } = $props();

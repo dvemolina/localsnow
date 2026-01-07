@@ -30,78 +30,78 @@
 	<section class="my-6">
 		<h2 class="title3">{$about.who_built_title.value}</h2>
 		<p>
-			{m["about.about_who_built_p1"]()}
+			{$about.about_who_built_p1.value}
 		</p>
 	</section>
 
 	<section class="my-6">
 		<h2 class="title3">{$about.economic_title.value}</h2>
 		<p>
-			{m["about.about_economic_p1"]()}
+			{$about.about_economic_p1.value}
 		</p>
 		<p>
-			{m["about.about_economic_p2"]()}
+			{$about.about_economic_p2.value}
 		</p>
 		<p>
-			{m["about.about_economic_p3"]()}
+			{$about.about_economic_p3.value}
 		</p>
 	</section>
 
 	<section class="my-6">
 		<h2 class="title3">{$about.visibility_title.value}</h2>
 		<p>
-			{m["about.about_visibility_p1"]()}
+			{$about.about_visibility_p1.value}
 		</p>
 		<p>
-			{m["about.about_visibility_p2"]()}
+			{$about.about_visibility_p2.value}
 		</p>
 	</section>
 
 	<section class="my-6">
 		<h2 class="title3">{$about.risk_title.value}</h2>
 		<p>
-			{m["about.about_risk_p1"]()}
+			{$about.about_risk_p1.value}
 		</p>
 		<p>
-			{m["about.about_risk_p2"]()}
+			{$about.about_risk_p2.value}
 		</p>
 	</section>
 
 	<section class="my-6">
 		<h2 class="title3">{$about.what_is_title.value}</h2>
 		<p>
-			{m["about.about_what_is_p1"]()}
+			{$about.about_what_is_p1.value}
 		</p>
 		<p>
-			{m["about.about_what_is_p2"]()}
+			{$about.about_what_is_p2.value}
 		</p>
-		<p>{m["about.about_what_is_p3"]()}</p>
+		<p>{$about.about_what_is_p3.value}</p>
 	</section>
 
 	<section class="my-6">
 		<h2 class="title3">{$about.verification_title.value}</h2>
 		<p>
-			{m["about.about_verification_p1"]()}
+			{$about.about_verification_p1.value}
 		</p>
 		<p>
-			{m["about.about_verification_p2"]()}
+			{$about.about_verification_p2.value}
 		</p>
 	</section>
 
 	<section class="my-6">
 		<h2 class="title3">{$about.spain_title.value}</h2>
 		<p>
-			{m["about.about_spain_p1"]()}
+			{$about.about_spain_p1.value}
 		</p>
 	</section>
 
 	<section class="my-6">
 		<h2 class="title3">{$about.goal_title.value}</h2>
 		<p>
-			{m["about.about_goal_p1"]()}
+			{$about.about_goal_p1.value}
 		</p>
 		<p>
-			{m["about.about_goal_p2"]()}
+			{$about.about_goal_p2.value}
 		</p>
 	</section>
 
@@ -113,6 +113,6 @@
 				email: `<strong>${$about.contact_email.value}</strong>`
 			})}
 		</p>
-		<p>{m["about.about_contact_p2"]()}</p>
+		<p>{$about.about_contact_p2.value}</p>
 	</section>
 </article>

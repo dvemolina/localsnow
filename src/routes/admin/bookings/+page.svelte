@@ -48,8 +48,8 @@
 
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8">
-		<h1 class="title2 mb-2">{m["admin.bookings.admin_booking_management"]()}</h1>
-		<p class="text-muted-foreground">{m["admin.bookings.admin_booking_management_desc"]()}</p>
+		<h1 class="title2 mb-2">{$bookings.admin_booking_management.value}</h1>
+		<p class="text-muted-foreground">{$bookings.admin_booking_management_desc.value}</p>
 	</div>
 
 	<!-- Filters -->
@@ -59,7 +59,7 @@
 				<div class="col-span-2">
 					<Input
 						bind:value={searchValue}
-						placeholder={m["admin.bookings.admin_search_client_placeholder"]()}
+						placeholder={$bookings.admin_search_client_placeholder.value}
 						onkeydown={(e) => e.key === 'Enter' && applyFilters()}
 					/>
 				</div>
@@ -71,12 +71,12 @@
 						<Select.Value placeholder={$table.status.value} />
 					</Select.Trigger>
 					<Select.Content>
-						<Select.Item value="all">{m["admin.bookings.admin_all_statuses"]()}</Select.Item>
+						<Select.Item value="all">{$bookings.admin_all_statuses.value}</Select.Item>
 						<Select.Item value="pending">{$status.pending.value}</Select.Item>
-						<Select.Item value="viewed">{m["admin.bookings.status_viewed"]()}</Select.Item>
-						<Select.Item value="accepted">{m["dashboard.my-bookings.status_accepted"]()}</Select.Item>
+						<Select.Item value="viewed">{$bookings.status_viewed.value}</Select.Item>
+						<Select.Item value="accepted">{$my_bookings.status_accepted.value}</Select.Item>
 						<Select.Item value="completed">{$status.completed.value}</Select.Item>
-						<Select.Item value="rejected">{m["dashboard.my-bookings.status_rejected"]()}</Select.Item>
+						<Select.Item value="rejected">{$my_bookings.status_rejected.value}</Select.Item>
 					</Select.Content>
 				</Select.Root>
 			</div>
@@ -97,12 +97,12 @@
 						<Table.Head>{$table.id.value}</Table.Head>
 						<Table.Head>{$table.client.value}</Table.Head>
 						<Table.Head>{$table.instructor.value}</Table.Head>
-						<Table.Head>{m["admin.bookings.table_resort_sport"]()}</Table.Head>
+						<Table.Head>{$bookings.table_resort_sport.value}</Table.Head>
 						<Table.Head>{$table.date.value}</Table.Head>
 						<Table.Head>{$table.students.value}</Table.Head>
 						<Table.Head>{$table.price.value}</Table.Head>
 						<Table.Head>{$table.status.value}</Table.Head>
-						<Table.Head>{m["admin.bookings.table_created"]()}</Table.Head>
+						<Table.Head>{$bookings.table_created.value}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>

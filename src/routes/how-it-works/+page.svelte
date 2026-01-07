@@ -9,42 +9,42 @@
 		mainEntity: [
 			{
 				'@type': 'Question',
-				name: m["how-it-works.how_it_works_page_faq_deposit_q"](),
+				name: $how_it_works.how_it_works_page_faq_deposit_q.value,
 				acceptedAnswer: {
 					'@type': 'Answer',
-					text: m["how-it-works.how_it_works_page_faq_deposit_a"]()
+					text: $how_it_works.how_it_works_page_faq_deposit_a.value
 				}
 			},
 			{
 				'@type': 'Question',
-				name: m["how-it-works.how_it_works_page_faq_lead_fee_q"](),
+				name: $how_it_works.how_it_works_page_faq_lead_fee_q.value,
 				acceptedAnswer: {
 					'@type': 'Answer',
-					text: m["how-it-works.how_it_works_page_faq_lead_fee_a"]()
+					text: $how_it_works.how_it_works_page_faq_lead_fee_a.value
 				}
 			},
 			{
 				'@type': 'Question',
-				name: m["how-it-works.how_it_works_page_faq_no_response_q"](),
+				name: $how_it_works.how_it_works_page_faq_no_response_q.value,
 				acceptedAnswer: {
 					'@type': 'Answer',
-					text: m["how-it-works.how_it_works_page_faq_no_response_a"]()
+					text: $how_it_works.how_it_works_page_faq_no_response_a.value
 				}
 			},
 			{
 				'@type': 'Question',
-				name: m["how-it-works.how_it_works_page_faq_payments_q"](),
+				name: $how_it_works.how_it_works_page_faq_payments_q.value,
 				acceptedAnswer: {
 					'@type': 'Answer',
-					text: m["how-it-works.how_it_works_page_faq_payments_a"]()
+					text: $how_it_works.how_it_works_page_faq_payments_a.value
 				}
 			},
 			{
 				'@type': 'Question',
-				name: m["how-it-works.how_it_works_page_faq_contact_q"](),
+				name: $how_it_works.how_it_works_page_faq_contact_q.value,
 				acceptedAnswer: {
 					'@type': 'Answer',
-					text: m["how-it-works.how_it_works_page_faq_contact_a"]()
+					text: $how_it_works.how_it_works_page_faq_contact_a.value
 				}
 			}
 		]
@@ -86,10 +86,10 @@
 </svelte:head>
 
 <article class="prose prose-sm mx-auto max-w-3xl">
-	<h1 class="title2">{m["how-it-works.how_it_works_page_title"]()}</h1>
+	<h1 class="title2">{$how_it_works.how_it_works_page_title.value}</h1>
 
 	<p class="text-lg text-muted-foreground">
-		{m["how-it-works.how_it_works_page_intro"]()}
+		{$how_it_works.how_it_works_page_intro.value}
 	</p>
 
 	<!-- Free Highlight -->
@@ -110,16 +110,16 @@
 				class="text-green-600"
 				><polyline points="20 6 9 17 4 12"></polyline></svg
 			>
-			<h3 class="text-xl font-bold text-green-900 m-0">{m["how-it-works.how_works_free_forever_badge"]()}</h3>
+			<h3 class="text-xl font-bold text-green-900 m-0">{$how_it_works.how_works_free_forever_badge.value}</h3>
 		</div>
 		<p class="text-gray-700 m-0">
-			{m["how-it-works.how_works_free_forever_desc"]()}
+			{$how_it_works.how_works_free_forever_desc.value}
 		</p>
 	</div>
 
 	<!-- For Students Section -->
 	<section class="mt-12 rounded-lg border border-border bg-card p-6 shadow-sm not-prose">
-		<h2 class="title3 mb-6">{m["how-it-works.how_it_works_page_clients_title"]()}</h2>
+		<h2 class="title3 mb-6">{$how_it_works.how_it_works_page_clients_title.value}</h2>
 
 		<div class="space-y-6">
 			<div class="flex gap-4">
@@ -129,9 +129,9 @@
 					1
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{m["how-it-works.how_it_works_page_clients_step1_title"]()}</h3>
+					<h3 class="title4 mb-2">{$how_it_works.how_it_works_page_clients_step1_title.value}</h3>
 					<p class="text-sm text-gray-600">
-						{m["how-it-works.how_it_works_page_clients_step1_desc"]()}
+						{$how_it_works.how_it_works_page_clients_step1_desc.value}
 					</p>
 				</div>
 			</div>
@@ -143,9 +143,9 @@
 					2
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{m["how-it-works.how_it_works_page_clients_step2_title"]()}</h3>
+					<h3 class="title4 mb-2">{$how_it_works.how_it_works_page_clients_step2_title.value}</h3>
 					<p class="text-sm text-gray-600">
-						{m["how-it-works.how_it_works_page_clients_step2_desc"]()}
+						{$how_it_works.how_it_works_page_clients_step2_desc.value}
 					</p>
 				</div>
 			</div>
@@ -157,12 +157,12 @@
 					3
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{m["how-it-works.how_it_works_page_clients_step3_title"]()}</h3>
+					<h3 class="title4 mb-2">{$how_it_works.how_it_works_page_clients_step3_title.value}</h3>
 					<p class="text-sm text-gray-600">
-						{m["how-it-works.how_it_works_page_clients_step3_desc"]()}
+						{$how_it_works.how_it_works_page_clients_step3_desc.value}
 					</p>
 					<p class="text-xs text-gray-500 mt-2 italic">
-						{m["how-it-works.how_it_works_page_clients_step3_note"]()}
+						{$how_it_works.how_it_works_page_clients_step3_note.value}
 					</p>
 				</div>
 			</div>
@@ -174,9 +174,9 @@
 					4
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{m["how-it-works.how_it_works_page_clients_step4_title"]()}</h3>
+					<h3 class="title4 mb-2">{$how_it_works.how_it_works_page_clients_step4_title.value}</h3>
 					<p class="text-sm text-gray-600">
-						{m["how-it-works.how_it_works_page_clients_step4_desc"]()}
+						{$how_it_works.how_it_works_page_clients_step4_desc.value}
 					</p>
 				</div>
 			</div>
@@ -188,9 +188,9 @@
 					5
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{m["how-it-works.how_it_works_page_clients_step5_title"]()}</h3>
+					<h3 class="title4 mb-2">{$how_it_works.how_it_works_page_clients_step5_title.value}</h3>
 					<p class="text-sm text-gray-600">
-						{m["how-it-works.how_it_works_page_clients_step5_desc"]()}
+						{$how_it_works.how_it_works_page_clients_step5_desc.value}
 					</p>
 				</div>
 			</div>
@@ -202,27 +202,27 @@
 					6
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{m["how-it-works.how_it_works_page_clients_step6_title"]()}</h3>
+					<h3 class="title4 mb-2">{$how_it_works.how_it_works_page_clients_step6_title.value}</h3>
 					<p class="text-sm text-gray-600">
-						{m["how-it-works.how_it_works_page_clients_step6_desc"]()}
+						{$how_it_works.how_it_works_page_clients_step6_desc.value}
 					</p>
 				</div>
 			</div>
 		</div>
 
 		<div class="mt-6 rounded-md bg-green-50 border border-green-200 p-4">
-			<h4 class="font-semibold text-green-900 mb-2">{m["how-it-works.how_it_works_page_clients_cost_title"]()}</h4>
+			<h4 class="font-semibold text-green-900 mb-2">{$how_it_works.how_it_works_page_clients_cost_title.value}</h4>
 			<ul class="space-y-1 text-sm text-green-800 mb-0">
-				<li>✅ {m["how-it-works.how_it_works_page_clients_cost_no_fees"]()}</li>
-				<li>✅ {m["how-it-works.how_it_works_page_clients_cost_deposit"]()}</li>
-				<li>✅ {m["how-it-works.how_it_works_page_clients_cost_unlimited"]()}</li>
+				<li>✅ {$how_it_works.how_it_works_page_clients_cost_no_fees.value}</li>
+				<li>✅ {$how_it_works.how_it_works_page_clients_cost_deposit.value}</li>
+				<li>✅ {$how_it_works.how_it_works_page_clients_cost_unlimited.value}</li>
 			</ul>
 		</div>
 	</section>
 
 	<!-- For Instructors Section -->
 	<section class="mt-12 rounded-lg border border-border bg-card p-6 shadow-sm not-prose">
-		<h2 class="title3 mb-6">{m["how-it-works.how_it_works_page_instructors_title"]()}</h2>
+		<h2 class="title3 mb-6">{$how_it_works.how_it_works_page_instructors_title.value}</h2>
 
 		<div class="space-y-6">
 			<div class="flex gap-4">
@@ -232,12 +232,12 @@
 					1
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{m["how-it-works.how_it_works_page_instructors_step1_title"]()}</h3>
+					<h3 class="title4 mb-2">{$how_it_works.how_it_works_page_instructors_step1_title.value}</h3>
 					<p class="text-sm text-gray-600">
-						{m["how-it-works.how_it_works_page_instructors_step1_desc"]()}
+						{$how_it_works.how_it_works_page_instructors_step1_desc.value}
 					</p>
 					<p class="text-xs text-gray-500 mt-2 italic">
-						{m["how-it-works.how_it_works_page_instructors_step1_note"]()}
+						{$how_it_works.how_it_works_page_instructors_step1_note.value}
 					</p>
 				</div>
 			</div>
@@ -249,9 +249,9 @@
 					2
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{m["how-it-works.how_it_works_page_instructors_step2_title"]()}</h3>
+					<h3 class="title4 mb-2">{$how_it_works.how_it_works_page_instructors_step2_title.value}</h3>
 					<p class="text-sm text-gray-600">
-						{m["how-it-works.how_it_works_page_instructors_step2_desc"]()}
+						{$how_it_works.how_it_works_page_instructors_step2_desc.value}
 					</p>
 				</div>
 			</div>
@@ -263,9 +263,9 @@
 					3
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{m["how-it-works.how_it_works_page_instructors_step3_title"]()}</h3>
+					<h3 class="title4 mb-2">{$how_it_works.how_it_works_page_instructors_step3_title.value}</h3>
 					<p class="text-sm text-gray-600">
-						{m["how-it-works.how_it_works_page_instructors_step3_desc"]()}
+						{$how_it_works.how_it_works_page_instructors_step3_desc.value}
 					</p>
 				</div>
 			</div>
@@ -277,12 +277,12 @@
 					4
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{m["how-it-works.how_it_works_page_instructors_step4_title"]()}</h3>
+					<h3 class="title4 mb-2">{$how_it_works.how_it_works_page_instructors_step4_title.value}</h3>
 					<p class="text-sm text-gray-600">
-						{m["how-it-works.how_it_works_page_instructors_step4_desc"]()}
+						{$how_it_works.how_it_works_page_instructors_step4_desc.value}
 					</p>
 					<p class="text-xs text-gray-500 mt-2 italic">
-						{m["how-it-works.how_it_works_page_instructors_step4_note"]()}
+						{$how_it_works.how_it_works_page_instructors_step4_note.value}
 					</p>
 				</div>
 			</div>
@@ -294,9 +294,9 @@
 					5
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{m["how-it-works.how_it_works_page_instructors_step5_title"]()}</h3>
+					<h3 class="title4 mb-2">{$how_it_works.how_it_works_page_instructors_step5_title.value}</h3>
 					<p class="text-sm text-gray-600">
-						{m["how-it-works.how_it_works_page_instructors_step5_desc"]()}
+						{$how_it_works.how_it_works_page_instructors_step5_desc.value}
 					</p>
 				</div>
 			</div>
@@ -308,65 +308,65 @@
 					6
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{m["how-it-works.how_it_works_page_instructors_step6_title"]()}</h3>
+					<h3 class="title4 mb-2">{$how_it_works.how_it_works_page_instructors_step6_title.value}</h3>
 					<p class="text-sm text-gray-600">
-						{m["how-it-works.how_it_works_page_instructors_step6_desc"]()}
+						{$how_it_works.how_it_works_page_instructors_step6_desc.value}
 					</p>
 					<p class="text-xs text-gray-500 mt-2 italic">
-						{m["how-it-works.how_it_works_page_instructors_step6_note"]()}
+						{$how_it_works.how_it_works_page_instructors_step6_note.value}
 					</p>
 				</div>
 			</div>
 		</div>
 
 		<div class="mt-6 rounded-md bg-green-50 border border-green-200 p-4">
-			<h4 class="font-semibold text-green-900 mb-2">{m["how-it-works.how_it_works_page_instructors_cost_title"]()}</h4>
+			<h4 class="font-semibold text-green-900 mb-2">{$how_it_works.how_it_works_page_instructors_cost_title.value}</h4>
 			<ul class="space-y-1 text-sm text-green-800 mb-0">
-				<li>✅ {m["how-it-works.how_it_works_page_instructors_cost_free"]()}</li>
-				<li>✅ {m["how-it-works.how_it_works_page_instructors_cost_lead"]()}</li>
-				<li>✅ {m["how-it-works.how_it_works_page_instructors_cost_no_commission"]()}</li>
-				<li>✅ {m["how-it-works.how_it_works_page_instructors_cost_no_monthly"]()}</li>
+				<li>✅ {$how_it_works.how_it_works_page_instructors_cost_free.value}</li>
+				<li>✅ {$how_it_works.how_it_works_page_instructors_cost_lead.value}</li>
+				<li>✅ {$how_it_works.how_it_works_page_instructors_cost_no_commission.value}</li>
+				<li>✅ {$how_it_works.how_it_works_page_instructors_cost_no_monthly.value}</li>
 			</ul>
 		</div>
 	</section>
 
 	<!-- FAQ Section -->
 	<section class="mt-12 not-prose">
-		<h2 class="title3">{m["how-it-works.how_it_works_page_faq_title"]()}</h2>
+		<h2 class="title3">{$how_it_works.how_it_works_page_faq_title.value}</h2>
 
 		<div class="space-y-6 mt-6">
 			<div class="rounded-lg border border-border p-5">
-				<h3 class="title4 mb-2">{m["how-it-works.how_it_works_page_faq_deposit_q"]()}</h3>
+				<h3 class="title4 mb-2">{$how_it_works.how_it_works_page_faq_deposit_q.value}</h3>
 				<p class="text-sm text-gray-600 mb-0">
-					{m["how-it-works.how_it_works_page_faq_deposit_a"]()}
+					{$how_it_works.how_it_works_page_faq_deposit_a.value}
 				</p>
 			</div>
 
 			<div class="rounded-lg border border-border p-5">
-				<h3 class="title4 mb-2">{m["how-it-works.how_it_works_page_faq_lead_fee_q"]()}</h3>
+				<h3 class="title4 mb-2">{$how_it_works.how_it_works_page_faq_lead_fee_q.value}</h3>
 				<p class="text-sm text-gray-600 mb-0">
-					{m["how-it-works.how_it_works_page_faq_lead_fee_a"]()}
+					{$how_it_works.how_it_works_page_faq_lead_fee_a.value}
 				</p>
 			</div>
 
 			<div class="rounded-lg border border-border p-5">
-				<h3 class="title4 mb-2">{m["how-it-works.how_it_works_page_faq_no_response_q"]()}</h3>
+				<h3 class="title4 mb-2">{$how_it_works.how_it_works_page_faq_no_response_q.value}</h3>
 				<p class="text-sm text-gray-600 mb-0">
-					{m["how-it-works.how_it_works_page_faq_no_response_a"]()}
+					{$how_it_works.how_it_works_page_faq_no_response_a.value}
 				</p>
 			</div>
 
 			<div class="rounded-lg border border-border p-5">
-				<h3 class="title4 mb-2">{m["how-it-works.how_it_works_page_faq_payments_q"]()}</h3>
+				<h3 class="title4 mb-2">{$how_it_works.how_it_works_page_faq_payments_q.value}</h3>
 				<p class="text-sm text-gray-600 mb-0">
-					{m["how-it-works.how_it_works_page_faq_payments_a"]()}
+					{$how_it_works.how_it_works_page_faq_payments_a.value}
 				</p>
 			</div>
 
 			<div class="rounded-lg border border-border p-5">
-				<h3 class="title4 mb-2">{m["how-it-works.how_it_works_page_faq_contact_q"]()}</h3>
+				<h3 class="title4 mb-2">{$how_it_works.how_it_works_page_faq_contact_q.value}</h3>
 				<p class="text-sm text-gray-600 mb-0">
-					{m["how-it-works.how_it_works_page_faq_contact_a"]()}
+					{$how_it_works.how_it_works_page_faq_contact_a.value}
 				</p>
 			</div>
 		</div>
@@ -417,19 +417,19 @@
 
 	<!-- CTA Section -->
 	<section class="mt-12 text-center not-prose">
-		<h2 class="title3 mb-6">{m["how-it-works.how_it_works_page_cta_title"]()}</h2>
+		<h2 class="title3 mb-6">{$how_it_works.how_it_works_page_cta_title.value}</h2>
 		<div class="flex flex-col gap-4 sm:flex-row sm:justify-center">
 			<a
 				href={route('/')}
 				class="bg-primary inline-block rounded-md px-6 py-3 font-medium text-white"
 			>
-				{m["how-it-works.how_it_works_page_cta_find_instructor"]()}
+				{$how_it_works.how_it_works_page_cta_find_instructor.value}
 			</a>
 			<a
 				href={route('/signup')}
 				class="inline-block rounded-md border border-border bg-card px-6 py-3 font-medium"
 			>
-				{m["how-it-works.how_it_works_page_cta_list_instructor"]()}
+				{$how_it_works.how_it_works_page_cta_list_instructor.value}
 			</a>
 		</div>
 	</section>

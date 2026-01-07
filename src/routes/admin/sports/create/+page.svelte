@@ -23,7 +23,7 @@
 			</Button>
 		</div>
 		<h1 class="title2 mb-2">{$admin.create_sport.value}</h1>
-		<p class="text-muted-foreground">{m["admin.sports.create.admin_create_sport_desc"]()}</p>
+		<p class="text-muted-foreground">{$create.admin_create_sport_desc.value}</p>
 	</div>
 
 	<form
