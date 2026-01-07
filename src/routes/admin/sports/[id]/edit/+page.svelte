@@ -4,8 +4,12 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
-	import * as m from '$lib/paraglide/messages';
+	import { useIntlayer } from 'svelte-intlayer';
 	import { enhance } from '$app/forms';
+
+	const admin = useIntlayer('admin');
+	const label = useIntlayer('label');
+	const button = useIntlayer('button');
 
 	let { data, form } = $props();
 	const { sport } = data;
@@ -19,7 +23,7 @@
 	<div class="mb-8">
 		<div class="mb-4">
 			<Button href="/admin/sports" variant="outline" size="sm">
-				← {m.admin_back_to_sports()}
+				← {$admin.back_to_sports.value}
 			</Button>
 		</div>
 		<h1 class="title2 mb-2">{m["admin.sports.edit.admin_edit_sport"]()}: {sport.sport}</h1>
@@ -40,7 +44,7 @@
 	>
 		<Card>
 			<CardHeader>
-				<CardTitle>{m.admin_sport_details()}</CardTitle>
+				<CardTitle>{$admin.sport_details.value}</CardTitle>
 			</CardHeader>
 			<CardContent class="space-y-6">
 				{#if form?.error}
@@ -58,19 +62,19 @@
 				<div class="space-y-4">
 					<!-- ID -->
 					<div class="space-y-2">
-						<Label>{m.label_id()}</Label>
+						<Label>{$label.id.value}</Label>
 						<p class="text-muted-foreground">#{sport.id}</p>
 					</div>
 
 					<!-- Sport Name -->
 					<div class="space-y-2">
-						<Label for="sport">{m.label_sport_name()} *</Label>
+						<Label for="sport">{$label.sport_name.value} *</Label>
 						<Input id="sport" name="sport" required value={sport.sport} />
 					</div>
 
 					<!-- Slug -->
 					<div class="space-y-2">
-						<Label for="sportSlug">{m.label_slug()} *</Label>
+						<Label for="sportSlug">{$label.slug.value} *</Label>
 						<Input
 							id="sportSlug"
 							name="sportSlug"
@@ -79,7 +83,7 @@
 							pattern="[a-z0-9-]+"
 						/>
 						<p class="text-xs text-muted-foreground">
-							{m.label_slug_hint()}
+							{$label.slug_hint.value}
 						</p>
 					</div>
 				</div>
@@ -87,9 +91,9 @@
 				<div class="flex gap-2 pt-4">
 					<Button type="submit" disabled={submitting}>
 						{#if submitting}
-							{m.button_updating()}
+							{$button.updating.value}
 						{:else}
-							{m.button_update()}
+							{$button.update.value}
 						{/if}
 					</Button>
 				</div>
@@ -100,7 +104,7 @@
 	<!-- Danger Zone -->
 	<Card class="border-destructive">
 		<CardHeader>
-			<CardTitle class="text-destructive">{m.admin_danger_zone()}</CardTitle>
+			<CardTitle class="text-destructive">{$admin.danger_zone.value}</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<p class="mb-4 text-sm text-muted-foreground">
@@ -123,7 +127,7 @@
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
-			<AlertDialog.Cancel>{m.button_cancel()}</AlertDialog.Cancel>
+			<AlertDialog.Cancel>{$button.cancel.value}</AlertDialog.Cancel>
 			<form
 				method="POST"
 				action="?/delete"
@@ -143,9 +147,9 @@
 						disabled={deleting}
 					>
 						{#if deleting}
-							{m.button_deleting()}
+							{$button.deleting.value}
 						{:else}
-							{m.button_delete()}
+							{$button.delete.value}
 						{/if}
 					</Button>
 				</AlertDialog.Action>

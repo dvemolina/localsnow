@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
+	import { useIntlayer } from 'svelte-intlayer';
 	import { route } from '$lib/i18n/routeHelpers';
 
 	// FAQ Schema for SEO - using message functions

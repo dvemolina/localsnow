@@ -1,6 +1,6 @@
 <script>
 	import { buttonVariants } from "$src/lib/components/ui/button";
-	import * as m from '$lib/paraglide/messages';
+	import { useIntlayer } from 'svelte-intlayer';
 	import { enhance } from '$app/forms';
 
 	let { data } = $props();

@@ -4,7 +4,14 @@
 	import { Textarea } from '$src/lib/components/ui/textarea';
 	import { Button } from '$src/lib/components/ui/button';
 	import * as Select from '$src/lib/components/ui/select';
-	import * as m from '$lib/paraglide/messages';
+	import { useIntlayer } from 'svelte-intlayer';
+
+	const lesson = useIntlayer('lesson');
+	const skill = useIntlayer('skill');
+	const booking = useIntlayer('booking');
+	const error = useIntlayer('error');
+	const form = useIntlayer('form');
+	const button = useIntlayer('button');
 
 	let { instructorId, instructorName } = $props();
 
@@ -67,29 +74,29 @@
 	}
 
 	const lessonTypes = $derived([
-		{ value: 'private', label: m.lesson_type_private() },
-		{ value: 'group', label: m.lesson_type_group() },
-		{ value: 'half-day', label: m.lesson_type_half_day() },
-		{ value: 'full-day', label: m.lesson_type_full_day() }
+		{ value: 'private', label: $lesson.type_private.value },
+		{ value: 'group', label: $lesson.type_group.value },
+		{ value: 'half-day', label: $lesson.type_half_day.value },
+		{ value: 'full-day', label: $lesson.type_full_day.value }
 	]);
 
 	const skillLevels = $derived([
-		{ value: 'beginner', label: m.skill_level_beginner() },
-		{ value: 'intermediate', label: m.skill_level_intermediate() },
-		{ value: 'advanced', label: m.skill_level_advanced() },
-		{ value: 'expert', label: m.skill_level_expert() }
+		{ value: 'beginner', label: $skill.level_beginner.value },
+		{ value: 'intermediate', label: $skill.level_intermediate.value },
+		{ value: 'advanced', label: $skill.level_advanced.value },
+		{ value: 'expert', label: $skill.level_expert.value }
 	]);
 </script>
 
 <div class="rounded-lg border border-border bg-card p-6 shadow-md">
-	<h2 class="title4 mb-2">{m.booking_form_title()}</h2>
+	<h2 class="title4 mb-2">{$booking.form_title.value}</h2>
 	<p class="mb-6 text-sm text-muted-foreground">
 		{m.booking_form_subtitle({ name: instructorName })}
 	</p>
 
 	{#if submitSuccess}
 		<div class="mb-6 rounded-lg bg-green-50 p-4 text-green-800 dark:bg-green-900/20 dark:text-green-200">
-			<p class="font-medium">{m.booking_form_success()} ✓</p>
+			<p class="font-medium">{$booking.form_success.value} ✓</p>
 			<p class="mt-1 text-sm">
 				{m.booking_form_success_message({ name: instructorName })}
 			</p>
@@ -98,7 +105,7 @@
 
 	{#if submitError}
 		<div class="mb-6 rounded-lg bg-red-50 p-4 text-red-800 dark:bg-red-900/20 dark:text-red-200">
-			<p class="font-medium">{m.error_title()}</p>
+			<p class="font-medium">{$error.title.value}</p>
 			<p class="mt-1 text-sm">{submitError}</p>
 		</div>
 	{/if}
@@ -106,12 +113,12 @@
 	<form onsubmit={handleSubmit} class="space-y-4">
 		<!-- Client Name -->
 		<div class="w-full">
-			<label for="clientName" class="mb-1 block text-sm font-medium">{m.form_label_your_name()} *</label>
+			<label for="clientName" class="mb-1 block text-sm font-medium">{$form.label_your_name.value} *</label>
 			<Input
 				id="clientName"
 				bind:value={formData.clientName}
 				required
-				placeholder={m.form_placeholder_your_name()}
+				placeholder={$form.placeholder_your_name.value}
 				disabled={isSubmitting}
 			/>
 		</div>
@@ -119,13 +126,13 @@
 		<!-- Email & Phone Row -->
 		<div class="grid gap-4 sm:grid-cols-2">
 			<div>
-				<label for="clientEmail" class="mb-1 block text-sm font-medium">{m.form_label_email()} *</label>
+				<label for="clientEmail" class="mb-1 block text-sm font-medium">{$form.label_email.value} *</label>
 				<Input
 					id="clientEmail"
 					type="email"
 					bind:value={formData.clientEmail}
 					required
-					placeholder={m.form_placeholder_email()}
+					placeholder={$form.placeholder_email.value}
 					disabled={isSubmitting}
 				/>
 			</div>
@@ -135,7 +142,7 @@
 					id="clientPhone"
 					type="tel"
 					bind:value={formData.clientPhone}
-					placeholder={m.form_placeholder_phone()}
+					placeholder={$form.placeholder_phone.value}
 					disabled={isSubmitting}
 				/>
 			</div>
@@ -144,7 +151,7 @@
 		<!-- Preferred Date & Lesson Type Row -->
 		<div class="grid gap-4 sm:grid-cols-2">
 			<div>
-				<label for="preferredDate" class="mb-1 block text-sm font-medium">{m.form_label_preferred_date()} *</label>
+				<label for="preferredDate" class="mb-1 block text-sm font-medium">{$form.label_preferred_date.value} *</label>
 				<Input
 					id="preferredDate"
 					type="date"
@@ -155,10 +162,10 @@
 				/>
 			</div>
 			<div>
-				<label for="lessonType" class="mb-1 block text-sm font-medium">{m.form_label_lesson_type()} *</label>
+				<label for="lessonType" class="mb-1 block text-sm font-medium">{$form.label_lesson_type.value} *</label>
 				<Select.Root bind:value={formData.lessonType}>
 					<Select.Trigger disabled={isSubmitting}>
-						<Select.Value placeholder={m.form_placeholder_select_lesson_type()} />
+						<Select.Value placeholder={$form.placeholder_select_lesson_type.value} />
 					</Select.Trigger>
 					<Select.Content>
 						{#each lessonTypes as type}
@@ -172,7 +179,7 @@
 		<!-- Number of People & Skill Level Row -->
 		<div class="grid gap-4 sm:grid-cols-2">
 			<div>
-				<label for="numberOfPeople" class="mb-1 block text-sm font-medium">{m.form_label_number_of_people()}</label>
+				<label for="numberOfPeople" class="mb-1 block text-sm font-medium">{$form.label_number_of_people.value}</label>
 				<Input
 					id="numberOfPeople"
 					type="number"
@@ -183,10 +190,10 @@
 				/>
 			</div>
 			<div>
-				<label for="skillLevel" class="mb-1 block text-sm font-medium">{m.form_label_skill_level()} *</label>
+				<label for="skillLevel" class="mb-1 block text-sm font-medium">{$form.label_skill_level.value} *</label>
 				<Select.Root bind:value={formData.skillLevel} required>
 					<Select.Trigger disabled={isSubmitting}>
-						<Select.Value placeholder={m.form_placeholder_select_level()} />
+						<Select.Value placeholder={$form.placeholder_select_level.value} />
 					</Select.Trigger>
 					<Select.Content>
 						{#each skillLevels as level}
@@ -199,30 +206,30 @@
 
 		<!-- Message -->
 		<div>
-			<label for="message" class="mb-1 block text-sm font-medium">{m.form_label_additional_info()}</label>
+			<label for="message" class="mb-1 block text-sm font-medium">{$form.label_additional_info.value}</label>
 			<Textarea
 				id="message"
 				bind:value={formData.message}
-				placeholder={m.form_placeholder_additional_info()}
+				placeholder={$form.placeholder_additional_info.value}
 				rows={4}
 				disabled={isSubmitting}
 			/>
 			<p class="mt-1 text-xs text-muted-foreground">
-				{m.form_help_additional_info()}
+				{$form.help_additional_info.value}
 			</p>
 		</div>
 
 		<!-- Submit Button -->
 		<Button type="submit" class="w-full" disabled={isSubmitting}>
 			{#if isSubmitting}
-				{m.button_sending_request()}
+				{$button.sending_request.value}
 			{:else}
-				{m.button_send_lesson_request()}
+				{$button.send_lesson_request.value}
 			{/if}
 		</Button>
 
 		<p class="text-center text-xs text-muted-foreground">
-			{m.booking_form_disclaimer()}
+			{$booking.form_disclaimer.value}
 		</p>
 	</form>
 </div>

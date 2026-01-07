@@ -1,6 +1,9 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
+	import { useIntlayer } from 'svelte-intlayer';
 	import { route } from '$lib/i18n/routeHelpers';
+
+	const seo = useIntlayer('seo');
+	const contact = useIntlayer('contact');
 
 	const contactEmail = 'support@localsnow.org';
 
@@ -24,18 +27,18 @@
 </script>
 
 <svelte:head>
-	<title>{m.seo_meta_contact_title()}</title>
-	<meta name="description" content={m.seo_meta_contact_description()} />
+	<title>{$seo.meta_contact_title.value}</title>
+	<meta name="description" content={$seo.meta_contact_description.value} />
 
 	<!-- Open Graph -->
-	<meta property="og:title" content={m.seo_meta_contact_title()} />
-	<meta property="og:description" content={m.seo_meta_contact_description()} />
+	<meta property="og:title" content={$seo.meta_contact_title.value} />
+	<meta property="og:description" content={$seo.meta_contact_description.value} />
 	<meta property="og:url" content="https://localsnow.org/contact" />
 	<meta property="og:image" content="https://localsnow.org/og-image.jpg" />
 
 	<!-- Twitter Card -->
-	<meta name="twitter:title" content={m.seo_meta_contact_title()} />
-	<meta name="twitter:description" content={m.seo_meta_contact_description()} />
+	<meta name="twitter:title" content={$seo.meta_contact_title.value} />
+	<meta name="twitter:description" content={$seo.meta_contact_description.value} />
 	<meta name="twitter:image" content="https://localsnow.org/og-image.jpg" />
 
 	<!-- Structured Data -->
@@ -47,15 +50,15 @@
 </svelte:head>
 
 <article class="prose prose-sm mx-auto max-w-3xl">
-	<h1 class="title2">{m.contact_page_title()}</h1>
+	<h1 class="title2">{$contact.page_title.value}</h1>
 	<p class="text-lg text-muted-foreground">
-		{m.contact_page_subtitle()}
+		{$contact.page_subtitle.value}
 	</p>
 
 	<!-- General Inquiries Section -->
 	<section class="my-8 rounded-lg border border-border bg-card p-6 shadow-sm">
-		<h2 class="title3 mb-3">{m.contact_page_general_title()}</h2>
-		<p class="mb-4 text-muted-foreground">{m.contact_page_general_desc()}</p>
+		<h2 class="title3 mb-3">{$contact.page_general_title.value}</h2>
+		<p class="mb-4 text-muted-foreground">{$contact.page_general_desc.value}</p>
 		<div class="flex items-center gap-3">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
@@ -72,7 +75,7 @@
 				/>
 			</svg>
 			<div>
-				<p class="text-sm font-medium text-muted-foreground">{m.contact_page_email_label()}</p>
+				<p class="text-sm font-medium text-muted-foreground">{$contact.page_email_label.value}</p>
 				<a href="mailto:{contactEmail}" class="text-primary hover:underline">
 					{contactEmail}
 				</a>
@@ -82,13 +85,13 @@
 
 	<!-- For Instructors Section -->
 	<section class="my-8 rounded-lg border border-border bg-card p-6 shadow-sm">
-		<h2 class="title3 mb-3">{m.contact_page_instructors_title()}</h2>
+		<h2 class="title3 mb-3">{$contact.page_instructors_title.value}</h2>
 		<p class="mb-4 text-muted-foreground">
-			{m.contact_page_instructors_desc()}
+			{$contact.page_instructors_desc.value}
 		</p>
 
 		<div class="mb-6">
-			<h3 class="title4 mb-3">{m.contact_page_instructors_benefits()}</h3>
+			<h3 class="title4 mb-3">{$contact.page_instructors_benefits.value}</h3>
 			<ul class="space-y-2.5">
 				<li class="flex items-start gap-2">
 					<svg
@@ -165,27 +168,27 @@
 			href={route('/signup')}
 			class="bg-primary inline-block rounded-md px-6 py-3 font-medium text-white hover:bg-primary/90"
 		>
-			{m.contact_page_join_button()}
+			{$contact.page_join_button.value}
 		</a>
 	</section>
 
 	<!-- For Clients Section -->
 	<section class="my-8 rounded-lg border border-border bg-card p-6 shadow-sm">
-		<h2 class="title3 mb-3">{m.contact_page_clients_title()}</h2>
+		<h2 class="title3 mb-3">{$contact.page_clients_title.value}</h2>
 		<p class="mb-4 text-muted-foreground">
-			{m.contact_page_clients_desc()}
+			{$contact.page_clients_desc.value}
 		</p>
 		<a
 			href={route('/instructors')}
 			class="inline-block rounded-md border border-border bg-card px-6 py-3 font-medium hover:bg-muted"
 		>
-			{m.contact_page_find_button()}
+			{$contact.page_find_button.value}
 		</a>
 	</section>
 
 	<!-- Support Section -->
 	<section class="my-8 rounded-lg border border-border bg-card p-6 shadow-sm">
-		<h2 class="title3 mb-3">{m.contact_page_support_title()}</h2>
+		<h2 class="title3 mb-3">{$contact.page_support_title.value}</h2>
 		<p class="text-muted-foreground">
 			{@html m.contact_page_support_desc({ email: `<a href="mailto:${contactEmail}" class="text-primary hover:underline">${contactEmail}</a>` })}
 		</p>
@@ -193,15 +196,15 @@
 
 	<!-- FAQ Section -->
 	<section class="my-8 rounded-lg border border-border bg-card p-6 shadow-sm">
-		<h2 class="title3 mb-3">{m.contact_page_faq_title()}</h2>
+		<h2 class="title3 mb-3">{$contact.page_faq_title.value}</h2>
 		<p class="mb-4 text-muted-foreground">
-			{m.contact_page_faq_cta()}
+			{$contact.page_faq_cta.value}
 		</p>
 		<a
 			href={route('/how-it-works')}
 			class="inline-block rounded-md border border-border bg-card px-6 py-3 font-medium hover:bg-muted"
 		>
-			{m.contact_page_how_it_works_button()}
+			{$contact.page_how_it_works_button.value}
 		</a>
 	</section>
 </article>

@@ -13,7 +13,11 @@
 	import AvailabilityCalendar from '$src/features/Availability/components/AvailabilityCalendar.svelte';
 	import { toast } from 'svelte-sonner';
 	import { getSportName } from '$src/features/Sports/lib/sportsConstants';
-	import * as m from '$lib/paraglide/messages';
+	import { useIntlayer } from 'svelte-intlayer';
+
+	const levels = useIntlayer('levels');
+	const formContent = useIntlayer('form');
+	const launch = useIntlayer('launch');
 
 	let { 
 		instructorId,
@@ -187,10 +191,10 @@
 	}
 
 	const skillLevels = $derived([
-		{ value: 'beginner', label: m.levels_beginner() },
-		{ value: 'intermediate', label: m.levels_intermediate() },
-		{ value: 'advanced', label: m.levels_advanced() },
-		{ value: 'expert', label: m.levels_expert() }
+		{ value: 'beginner', label: $levels.beginner.value },
+		{ value: 'intermediate', label: $levels.intermediate.value },
+		{ value: 'advanced', label: $levels.advanced.value },
+		{ value: 'expert', label: $levels.expert.value }
 	]);
 
 	let availableSports = $derived(baseLesson?.sports || []);
@@ -502,11 +506,11 @@
 
 					<div>
 						<label class="mb-1.5 block text-sm font-medium">
-							{m.form_label_promo_code()} <span class="text-xs text-muted-foreground">({m.launch_code_optional()})</span>
+							{$formContent.label_promo_code.value} <span class="text-xs text-muted-foreground">({$launch.code_optional.value})</span>
 						</label>
-						<Input bind:value={$formData.launchCode} placeholder={m.form_placeholder_promo_code()} disabled={isSubmitting || submitSuccess} />
+						<Input bind:value={$formData.launchCode} placeholder={$formContent.placeholder_promo_code.value} disabled={isSubmitting || submitSuccess} />
 						<p class="mt-1 text-xs text-muted-foreground">
-							{m.launch_code_help_booking()} <a href="/how-it-works" class="text-primary underline">{m.launch_code_learn_more()}</a>
+							{$launch.code_help_booking.value} <a href="/how-it-works" class="text-primary underline">{$launch.code_learn_more.value}</a>
 						</p>
 					</div>
 

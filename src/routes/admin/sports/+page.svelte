@@ -3,7 +3,11 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Table from '$lib/components/ui/table';
-	import * as m from '$lib/paraglide/messages';
+	import { useIntlayer } from 'svelte-intlayer';
+
+	const admin = useIntlayer('admin');
+	const table = useIntlayer('table');
+	const button = useIntlayer('button');
 
 	let { data } = $props();
 </script>
@@ -15,7 +19,7 @@
 			<p class="text-muted-foreground">{m["admin.sports.admin_sport_management_desc"]()}</p>
 		</div>
 		<Button href="/admin/sports/create">
-			{m.admin_create_sport()}
+			{$admin.create_sport.value}
 		</Button>
 	</div>
 
@@ -24,11 +28,11 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>{m.table_id()}</Table.Head>
+						<Table.Head>{$table.id.value}</Table.Head>
 						<Table.Head>{m["admin.sports.table_sport"]()}</Table.Head>
 						<Table.Head>{m["admin.sports.table_slug"]()}</Table.Head>
 						<Table.Head>{m["admin.sports.admin_instructors_teaching"]()}</Table.Head>
-						<Table.Head>{m.table_actions()}</Table.Head>
+						<Table.Head>{$table.actions.value}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -49,11 +53,11 @@
 									<Badge variant="outline">{sport.sportSlug}</Badge>
 								</Table.Cell>
 								<Table.Cell>
-									<Badge>{sport.instructorCount} {m.admin_instructors().toLowerCase()}</Badge>
+									<Badge>{sport.instructorCount} {$admin.instructors.value.toLowerCase()}</Badge>
 								</Table.Cell>
 								<Table.Cell>
 									<Button href="/admin/sports/{sport.id}/edit" size="sm" variant="outline">
-										{m.button_edit()}
+										{$button.edit.value}
 									</Button>
 								</Table.Cell>
 							</Table.Row>

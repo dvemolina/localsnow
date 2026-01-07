@@ -7,7 +7,7 @@
 	import { toast } from 'svelte-sonner';
 	import { invalidateAll } from '$app/navigation';
 	import { route } from '$lib/i18n/routeHelpers';
-	import * as m from '$lib/paraglide/messages';
+	import { useIntlayer } from 'svelte-intlayer';
 
 	let { data } = $props();
 

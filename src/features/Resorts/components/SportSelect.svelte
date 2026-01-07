@@ -1,7 +1,10 @@
 <script lang="ts">
 	import * as Select from '$lib/components/ui/select/index.js';
 	import * as Form from '$lib/components/ui/form';
-	import * as m from '$lib/paraglide/messages';
+	import { useIntlayer } from 'svelte-intlayer';
+
+	const sports = useIntlayer('sports');
+	const filter = useIntlayer('filter');
 
 	let props = $props();
 
@@ -10,9 +13,9 @@
 
 	// Use $derived for reactive translations
 	const sports = $derived([
-		{ label: m.sports_ski(), value: 'ski' },
-		{ label: m.sports_snowboard(), value: 'snowboard' },
-		{ label: m.sports_telemark(), value: 'telemark' }
+		{ label: $sports.ski.value, value: 'ski' },
+		{ label: $sports.snowboard.value, value: 'snowboard' },
+		{ label: $sports.telemark.value, value: 'telemark' }
 	]);
 	let isHero: boolean = props.isHero ?? false;
 
@@ -22,13 +25,13 @@
 <Form.Field {form} {name} class="h-ful w-full">
 	<Form.Control>
 		{#snippet children({ props })}
-			<Form.Label class="text-foreground">{m.filter_choose_sport()}</Form.Label>
+			<Form.Label class="text-foreground">{$filter.choose_sport.value}</Form.Label>
 			<Select.Root type="single" bind:value={$formStore[name]} name={props.name}>
 				<Select.Trigger class="h-full w-full {isHero ? 'py-[23px]' : ''}" {...props}>
 					{#if $formStore[name]}
 						{sports.find((s) => s.value === $formStore[name])?.label}
 					{:else}
-						{m.filter_select_sport()}
+						{$filter.select_sport.value}
 					{/if}
 				</Select.Trigger>
 				<Select.Content class="text-foreground w-full">

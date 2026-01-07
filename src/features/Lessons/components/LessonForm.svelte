@@ -12,7 +12,11 @@
 	import SportsCheckboxes from '$src/features/Sports/components/SportsCheckboxes.svelte';
 	import CurrencySelect from '$src/lib/components/shared/CurrencySelect.svelte';
 	import { route } from '$lib/i18n/routeHelpers';
-	import * as m from '$lib/paraglide/messages';
+	import { useIntlayer } from 'svelte-intlayer';
+
+	const formContent = useIntlayer('form');
+	const button = useIntlayer('button');
+	const common = useIntlayer('common');
 
 
     let { lessonForm }: { lessonForm: SuperValidated<Infer<LessonSchema>> } = $props();
@@ -38,11 +42,11 @@
 		<Form.Field {form} name="basePrice" class="w-full">
 			<Form.Control>
 				{#snippet children({ props })}
-					<Form.Label>{m.form_label_base_price()}</Form.Label>
+					<Form.Label>{$formContent.label_base_price.value}</Form.Label>
 
 					<Input {...props} bind:value={$formData.basePrice} type="number" min="0" />
 					<Form.Description class="text-xs"
-						>{m.form_description_base_price()}</Form.Description
+						>{$formContent.description_base_price.value}</Form.Description
 					>
 				{/snippet}
 			</Form.Control>
@@ -53,8 +57,8 @@
 
 
 	<div class="mt-6 flex w-full flex-row items-center justify-center gap-2">
-		<a href={route('/dashboard')} class="text-sm {buttonVariants({ variant: 'outline' })}">{m.button_go_back()}</a>
-		<Form.Button type="submit">{m.common_submit()}</Form.Button>
+		<a href={route('/dashboard')} class="text-sm {buttonVariants({ variant: 'outline' })}">{$button.go_back.value}</a>
+		<Form.Button type="submit">{$common.submit.value}</Form.Button>
 	</div>
 </form>
 

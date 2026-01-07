@@ -3,7 +3,9 @@
 	import { Button } from '$src/lib/components/ui/button';
 	import * as Card from '$src/lib/components/ui/card';
 	import { formatDate } from '$src/lib/utils/generics';
-	import * as m from '$lib/paraglide/messages';
+	import { useIntlayer } from 'svelte-intlayer';
+
+	const status = useIntlayer('status');
 
 	let {
 		booking,
@@ -15,7 +17,7 @@
 
 	const statusConfig = $derived({
 		pending: {
-			label: m.status_pending_review(),
+			label: $status.pending_review.value,
 			variant: 'secondary' as const,
 			color: 'bg-yellow-100 text-yellow-800 border-yellow-200'
 		},
@@ -25,7 +27,7 @@
 			color: 'bg-green-100 text-green-800 border-green-200'
 		},
 		viewed: {  // Instructor unlocked but not accepted yet
-			label: m.status_unlocked ? m.status_unlocked() : 'Unlocked',
+			label: m.status_unlocked ? $status.unlocked.value : 'Unlocked',
 			variant: 'default' as const,
 			color: 'bg-blue-100 text-blue-800 border-blue-200'
 		},
@@ -35,7 +37,7 @@
 			color: 'bg-red-100 text-red-800 border-red-200'
 		},
 		cancelled: {
-			label: m.status_cancelled ? m.status_cancelled() : 'Cancelled',
+			label: m.status_cancelled ? $status.cancelled.value : 'Cancelled',
 			variant: 'outline' as const,
 			color: 'bg-gray-100 text-gray-800 border-gray-200'
 		},

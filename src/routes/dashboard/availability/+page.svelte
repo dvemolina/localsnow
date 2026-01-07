@@ -4,7 +4,7 @@
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { toast } from 'svelte-sonner';
 	import { invalidateAll } from '$app/navigation';
-	import * as m from '$lib/paraglide/messages';
+	import { useIntlayer } from 'svelte-intlayer';
 	import { route } from '$lib/i18n/routeHelpers';
 
 	let { data } = $props();

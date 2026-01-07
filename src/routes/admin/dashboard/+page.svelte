@@ -3,7 +3,11 @@
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { Button } from '$src/lib/components/ui/button';
 	import * as Table from '$src/lib/components/ui/table';
-	import * as m from '$lib/paraglide/messages';
+	import { useIntlayer } from 'svelte-intlayer';
+
+	const admin = useIntlayer('admin');
+	const status = useIntlayer('status');
+	const table = useIntlayer('table');
 
 	let { data } = $props();
 
@@ -65,7 +69,7 @@
 
 		<Card>
 			<CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-				<CardTitle class="text-sm font-medium">{m.admin_instructors()}</CardTitle>
+				<CardTitle class="text-sm font-medium">{$admin.instructors.value}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">{verifiedInstructors}/{totalInstructors}</div>
@@ -77,12 +81,12 @@
 
 		<Card>
 			<CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-				<CardTitle class="text-sm font-medium">{m.admin_bookings()}</CardTitle>
+				<CardTitle class="text-sm font-medium">{$admin.bookings.value}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">{totalBookings}</div>
 				<p class="text-xs text-muted-foreground">
-					{completedBookings} {m.status_completed()}, {pendingBookings} {m.status_pending()}
+					{completedBookings} {$status.completed.value}, {pendingBookings} {$status.pending.value}
 				</p>
 			</CardContent>
 		</Card>
@@ -146,7 +150,7 @@
 							<div>
 								<p class="font-medium">{user.name} {user.lastName}</p>
 								<p class="text-sm text-muted-foreground">{user.email}</p>
-								<p class="text-xs text-red-600">{m.admin_reason()}: {user.suspensionReason}</p>
+								<p class="text-xs text-red-600">{$admin.reason.value}: {user.suspensionReason}</p>
 							</div>
 							<Badge variant="destructive">{user.role}</Badge>
 						</div>
@@ -167,10 +171,10 @@
 				<Table.Root>
 					<Table.Header>
 						<Table.Row>
-							<Table.Head>{m.table_client()}</Table.Head>
-							<Table.Head>{m.table_instructor()}</Table.Head>
-							<Table.Head>{m.table_date()}</Table.Head>
-							<Table.Head>{m.table_status()}</Table.Head>
+							<Table.Head>{$table.client.value}</Table.Head>
+							<Table.Head>{$table.instructor.value}</Table.Head>
+							<Table.Head>{$table.date.value}</Table.Head>
+							<Table.Head>{$table.status.value}</Table.Head>
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
@@ -248,7 +252,7 @@
 				<div class="space-y-2">
 					{#each data.stats.userStats as stat}
 						<div class="flex items-center justify-between">
-							<span class="text-sm capitalize">{stat.role || m.admin_no_role()}</span>
+							<span class="text-sm capitalize">{stat.role || $admin.no_role.value}</span>
 							<Badge variant="secondary">{stat.count}</Badge>
 						</div>
 					{/each}

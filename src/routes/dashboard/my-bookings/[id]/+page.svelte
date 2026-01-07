@@ -3,14 +3,16 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
-	import * as m from '$lib/paraglide/messages';
+	import { useIntlayer } from 'svelte-intlayer';
+
+	const status = useIntlayer('status');
 
 	let { data } = $props();
 	const { booking } = data;
 
 	function getStatusBadge(status: string) {
 		const variants: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline', class: string, label: string }> = {
-			'pending': { variant: 'outline', class: 'border-yellow-500 text-yellow-700', label: m.status_pending() },
+			'pending': { variant: 'outline', class: 'border-yellow-500 text-yellow-700', label: $status.pending.value },
 			'viewed': { variant: 'outline', class: 'border-blue-500 text-blue-700', label: m["dashboard.my-bookings.client_status_viewed"]() },
 			'accepted': { variant: 'default', class: 'bg-green-600', label: m["dashboard.my-bookings.status_accepted"]() },
 			'rejected': { variant: 'destructive', class: '', label: m["dashboard.my-bookings.status_rejected"]() },

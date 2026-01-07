@@ -12,7 +12,11 @@
 	import SearchResort from '$src/features/Resorts/components/SearchResort.svelte';
 	import { onDestroy } from 'svelte';
 	import { route } from '$lib/i18n/routeHelpers';
-	import * as m from '$lib/paraglide/messages';
+	import { useIntlayer } from 'svelte-intlayer';
+
+	const formContent = useIntlayer('form');
+	const button = useIntlayer('button');
+	const common = useIntlayer('common');
 
 	let { data }: { data: { form: SuperValidated<Infer<SchoolSignupSchema>> } } = $props();
 
@@ -53,7 +57,7 @@
 	<Form.Field {form} name="name" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>{m.form_label_school_name()}</Form.Label>
+				<Form.Label>{$formContent.label_school_name.value}</Form.Label>
 				<Input {...props} bind:value={$formData.name} />
 			{/snippet}
 		</Form.Control>
@@ -63,9 +67,9 @@
 	<Form.Field {form} name="logo" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>{m.form_label_school_logo()}</Form.Label>
+				<Form.Label>{$formContent.label_school_logo.value}</Form.Label>
 				<Form.Description class="text-xs"
-					>{m.form_description_school_logo()}</Form.Description
+					>{$formContent.description_school_logo.value}</Form.Description
 				>
 				<!-- File input -->
 				<Input
@@ -95,8 +99,8 @@
 	<Form.Field {form} name="schoolEmail" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>{m.form_label_school_email()}</Form.Label>
-				<Form.Description class="text-xs">{m.form_description_school_email()}</Form.Description>
+				<Form.Label>{$formContent.label_school_email.value}</Form.Label>
+				<Form.Description class="text-xs">{$formContent.description_school_email.value}</Form.Description>
 				<Input {...props} bind:value={$formData.schoolEmail} type="email" />
 			{/snippet}
 		</Form.Control>
@@ -109,7 +113,7 @@
 		<Form.Field {form} name="schoolPhone" class="w-full">
 			<Form.Control>
 				{#snippet children({ props })}
-					<Form.Label>{m.form_label_school_phone()}</Form.Label>
+					<Form.Label>{$formContent.label_school_phone.value}</Form.Label>
 					<Input {...props} bind:value={$formData.schoolPhone} type="tel" />
 				{/snippet}
 			</Form.Control>
@@ -120,8 +124,8 @@
 	<Form.Field {form} name="bio" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>{m.form_label_biography()}</Form.Label>
-				<Form.Description class="text-xs">{m.form_description_school_bio()}</Form.Description>
+				<Form.Label>{$formContent.label_biography.value}</Form.Label>
+				<Form.Description class="text-xs">{$formContent.description_school_bio.value}</Form.Description>
 				<Textarea name="bio" bind:value={$formData.bio} />
 			{/snippet}
 		</Form.Control>
@@ -151,8 +155,8 @@
 	</Form.Field> -->
 
 	<div class="mt-6 flex w-full flex-row items-center justify-center gap-2">
-		<a href={route('/dashboard')} class="text-sm {buttonVariants({ variant: 'outline' })}">{m.button_go_back()}</a>
-		<Form.Button type="submit">{m.common_submit()}</Form.Button>
+		<a href={route('/dashboard')} class="text-sm {buttonVariants({ variant: 'outline' })}">{$button.go_back.value}</a>
+		<Form.Button type="submit">{$common.submit.value}</Form.Button>
 	</div>
 </form>
 

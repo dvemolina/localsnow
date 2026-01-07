@@ -7,7 +7,11 @@
 	import { Input } from '$lib/components/ui/input';
 	import * as Select from '$lib/components/ui/select';
 	import * as Table from '$lib/components/ui/table';
-	import * as m from '$lib/paraglide/messages';
+	import { useIntlayer } from 'svelte-intlayer';
+
+	const admin = useIntlayer('admin');
+	const button = useIntlayer('button');
+	const table = useIntlayer('table');
 
 	let { data } = $props();
 
@@ -66,7 +70,7 @@
 			</p>
 		</div>
 		<Button href="/admin/resorts/create">
-			{m.admin_create_resort()}
+			{$admin.create_resort.value}
 		</Button>
 	</div>
 
@@ -99,7 +103,7 @@
 						<Select.Trigger>
 							{countryValue
 								? data.countries.find((c) => c.id.toString() === countryValue)?.country
-								: m.admin_filter_country()}
+								: $admin.filter_country.value}
 						</Select.Trigger>
 						<Select.Content>
 							<Select.Item value="">
@@ -125,7 +129,7 @@
 						<Select.Trigger>
 							{regionValue
 								? data.regions.find((r) => r.id.toString() === regionValue)?.region
-								: m.admin_filter_region()}
+								: $admin.filter_region.value}
 						</Select.Trigger>
 						<Select.Content>
 							<Select.Item value="">
@@ -140,10 +144,10 @@
 					</Select.Root>
 				</div>
 
-				<Button type="submit">{m.button_apply()}</Button>
+				<Button type="submit">{$button.apply.value}</Button>
 				{#if data.filters.search || data.filters.country || data.filters.region}
 					<Button type="button" variant="outline" onclick={clearFilters}>
-						{m.button_clear()}
+						{$button.clear.value}
 					</Button>
 				{/if}
 			</form>
@@ -156,12 +160,12 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>{m.table_id()}</Table.Head>
-						<Table.Head>{m.table_name()}</Table.Head>
+						<Table.Head>{$table.id.value}</Table.Head>
+						<Table.Head>{$table.name.value}</Table.Head>
 						<Table.Head>{m["admin.resorts.table_region"]()}</Table.Head>
 						<Table.Head>{m["admin.resorts.table_country"]()}</Table.Head>
 						<Table.Head>{m["admin.resorts.table_image"]()}</Table.Head>
-						<Table.Head>{m.table_actions()}</Table.Head>
+						<Table.Head>{$table.actions.value}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -199,13 +203,13 @@
 											<span class="text-xs text-muted-foreground">{m["admin.resorts.admin_set"]()}</span>
 										</div>
 									{:else}
-										<span class="text-xs text-muted-foreground">{m.admin_no_image()}</span>
+										<span class="text-xs text-muted-foreground">{$admin.no_image.value}</span>
 									{/if}
 								</Table.Cell>
 								<Table.Cell>
 									<div class="flex gap-2">
 										<Button href="/admin/resorts/{resort.id}/edit" size="sm" variant="outline">
-											{m.button_edit()}
+											{$button.edit.value}
 										</Button>
 									</div>
 								</Table.Cell>
@@ -234,7 +238,7 @@
 					disabled={data.pagination.page === 1}
 					onclick={() => goToPage(data.pagination.page - 1)}
 				>
-					{m.button_previous()}
+					{$button.previous.value}
 				</Button>
 				<div class="flex items-center gap-1">
 					{#if data.pagination.page > 3}
@@ -268,7 +272,7 @@
 					disabled={data.pagination.page === data.pagination.totalPages}
 					onclick={() => goToPage(data.pagination.page + 1)}
 				>
-					{m.button_next()}
+					{$button.next.value}
 				</Button>
 			</div>
 		</div>

@@ -10,8 +10,7 @@
 	 */
 
 	import { page } from '$app/stores';
-	import { getLocale } from '$lib/paraglide/runtime';
-	import { getAlternateUrls, getCanonicalUrl } from '$lib/i18n/routeHelpers';
+		import { getAlternateUrls, getCanonicalUrl } from '$lib/i18n/routeHelpers';
 	import type { Locale } from '$lib/i18n/routes';
 
 	interface Props {

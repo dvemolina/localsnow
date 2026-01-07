@@ -2,7 +2,9 @@
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Table from '$lib/components/ui/table';
-	import * as m from '$lib/paraglide/messages';
+	import { useIntlayer } from 'svelte-intlayer';
+
+	const table = useIntlayer('table');
 
 	let { data } = $props();
 
@@ -73,12 +75,12 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>{m.table_id()}</Table.Head>
-						<Table.Head>{m.table_client()}</Table.Head>
+						<Table.Head>{$table.id.value}</Table.Head>
+						<Table.Head>{$table.client.value}</Table.Head>
 						<Table.Head>{m["admin.payments.table_amount"]()}</Table.Head>
-						<Table.Head>{m.table_status()}</Table.Head>
+						<Table.Head>{$table.status.value}</Table.Head>
 						<Table.Head>{m["admin.payments.admin_stripe_id"]()}</Table.Head>
-						<Table.Head>{m.table_date()}</Table.Head>
+						<Table.Head>{$table.date.value}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -126,12 +128,12 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>{m.table_id()}</Table.Head>
-						<Table.Head>{m.table_instructor()}</Table.Head>
-						<Table.Head>{m.table_client()}</Table.Head>
+						<Table.Head>{$table.id.value}</Table.Head>
+						<Table.Head>{$table.instructor.value}</Table.Head>
+						<Table.Head>{$table.client.value}</Table.Head>
 						<Table.Head>{m["admin.payments.table_amount"]()}</Table.Head>
-						<Table.Head>{m.table_status()}</Table.Head>
-						<Table.Head>{m.table_date()}</Table.Head>
+						<Table.Head>{$table.status.value}</Table.Head>
+						<Table.Head>{$table.date.value}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>

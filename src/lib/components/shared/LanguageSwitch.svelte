@@ -1,13 +1,36 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { locales, getLocale } from '$lib/paraglide/runtime';
 	import { getLocalizedRedirect } from '$lib/i18n/routeHelpers';
 	import type { Locale } from '$lib/i18n/routes';
 
 	// Props using Svelte 5 syntax
 	const { position = 'auto' }: { position?: 'auto' | 'top' | 'bottom' } = $props();
 
-	const currentLocale = $derived(getLocale());
+	// Available locales for the switcher
+	const locales: Locale[] = ['en', 'es'];
+
+	// Extract current locale from URL path
+	function getCurrentLocale(): Locale {
+		const pathname = page.url.pathname;
+		// Extract locale from path (e.g., /en/about -> en)
+		const parts = pathname.split('/').filter(Boolean);
+		const firstPart = parts[0];
+
+		if (firstPart === 'en' || firstPart === 'es') {
+			return firstPart;
+		}
+
+		// Check if path matches a Spanish route
+		const spanishRoutes = ['/acerca-de', '/como-funciona', '/instructores', '/estaciones',
+			'/iniciar-sesion', '/registrarse', '/panel', '/contacto'];
+		if (spanishRoutes.some(route => pathname.includes(route))) {
+			return 'es';
+		}
+
+		return 'en'; // Default to English
+	}
+
+	const currentLocale = $derived(getCurrentLocale());
 	let isOpen = $state(false);
 
 	let triggerEl: HTMLElement | null = null;

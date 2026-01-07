@@ -2,7 +2,9 @@
   import { Label } from '$src/lib/components/ui/label';
   import * as Form from '$src/lib/components/ui/form';
   import { onMount } from 'svelte';
-  import * as m from '$lib/paraglide/messages';
+  import { useIntlayer } from 'svelte-intlayer';
+
+	const filter = useIntlayer('filter');
 
   let {
     form,
@@ -21,8 +23,8 @@
   } = $props();
 
   // Use translated label if not provided
-  const displayLabel = $derived(label ?? m.filter_choose_resort());
-  const placeholder = $derived(m.filter_search_resorts_placeholder());
+  const displayLabel = $derived(label ?? $filter.choose_resort.value);
+  const placeholder = $derived($filter.search_resorts_placeholder.value);
 
   type Resort = {
     id: number;

@@ -4,7 +4,7 @@
 	import LanguageSwitch from './LanguageSwitch.svelte';
 	import Breadcrumb from './Breadcrumb.svelte';
 	import { isCurrentPath } from "$src/lib/utils/generics";
-	import * as m from '$lib/paraglide/messages';
+	import { useIntlayer } from 'svelte-intlayer';
 	import { route } from '$lib/i18n/routeHelpers';
 
 	type User = {
@@ -18,15 +18,18 @@
 
 	let isMobileMenuOpen = $state(false);
 
+	// Use Intlayer for translations
+	const nav = useIntlayer('nav');
+
 	// Navigation items - use $derived so translations update on locale change
 	// Conditionally show Dashboard or Sign Up based on user state
 	const items = $derived([
-		{ href: route('/resorts'), label: m.nav_resorts() },
-		{ href: route('/how-it-works'), label: m.nav_how_it_works() },
-		{ href: route('/about'), label: m.nav_about() },
+		{ href: route('/resorts'), label: $nav.resorts.value },
+		{ href: route('/how-it-works'), label: $nav.how_it_works.value },
+		{ href: route('/about'), label: $nav.about.value },
 		user
-			? { href: route('/dashboard'), label: m.nav_dashboard() }
-			: { href: route('/signup'), label: m.nav_signup() }
+			? { href: route('/dashboard'), label: $nav.dashboard.value }
+			: { href: route('/signup'), label: $nav.signup.value }
 	]);
 
 	// Prevent scrolling when menu is open

@@ -4,8 +4,13 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Table from '$lib/components/ui/table';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
-	import * as m from '$lib/paraglide/messages';
+	import { useIntlayer } from 'svelte-intlayer';
 	import { enhance } from '$app/forms';
+
+	const status = useIntlayer('status');
+	const table = useIntlayer('table');
+	const button = useIntlayer('button');
+	const client = useIntlayer('client');
 
 
 	let { data, form } = $props();
@@ -22,17 +27,27 @@
 		return data.bookingRequests;
 	});
 
-	function getStatusBadge(status: string) {
+	// Status labels extracted at top level
+	const statusLabels = $derived({
+		pending: $status.pending.value,
+		viewed: $client.status_viewed.value,
+		accepted: $status.accepted.value,
+		rejected: $status.rejected.value,
+		cancelled: $client.status_cancelled.value,
+		expired: $status.expired.value
+	});
+
+	function getStatusBadge(statusValue: string) {
 		const variants: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline', class: string, label: string }> = {
-			'pending': { variant: 'outline', class: 'border-yellow-500 text-yellow-700', label: m.status_pending() },
-			'viewed': { variant: 'outline', class: 'border-blue-500 text-blue-700', label: m["dashboard.my-bookings.client_status_viewed"]() },
-			'accepted': { variant: 'default', class: 'bg-green-600', label: m["dashboard.my-bookings.status_accepted"]() },
-			'rejected': { variant: 'destructive', class: '', label: m["dashboard.my-bookings.status_rejected"]() },
-			'cancelled': { variant: 'secondary', class: '', label: m["dashboard.my-bookings.client_status_cancelled"]() },
-			'expired': { variant: 'secondary', class: '', label: m["dashboard.my-bookings.status_expired"]() }
+			'pending': { variant: 'outline', class: 'border-yellow-500 text-yellow-700', label: statusLabels.pending },
+			'viewed': { variant: 'outline', class: 'border-blue-500 text-blue-700', label: statusLabels.viewed },
+			'accepted': { variant: 'default', class: 'bg-green-600', label: statusLabels.accepted },
+			'rejected': { variant: 'destructive', class: '', label: statusLabels.rejected },
+			'cancelled': { variant: 'secondary', class: '', label: statusLabels.cancelled },
+			'expired': { variant: 'secondary', class: '', label: statusLabels.expired }
 		};
 
-		const config = variants[status] || { variant: 'outline' as const, class: '', label: status };
+		const config = variants[statusValue] || { variant: 'outline' as const, class: '', label: statusValue };
 		return config;
 	}
 
@@ -61,7 +76,7 @@
 
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8">
-		<h1 class="title2 mb-2">{m["dashboard.my-bookings.client_my_bookings"]()}</h1>
+		<h1 class="title2 mb-2">{$client.my_bookings.value}</h1>
 		<p class="text-muted-foreground">{m["dashboard.my-bookings.client_my_bookings_desc"]()}</p>
 	</div>
 
@@ -119,13 +134,13 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>{m.table_id()}</Table.Head>
+						<Table.Head>{$table.id.value}</Table.Head>
 						<Table.Head>{m["dashboard.my-bookings.client_table_instructor"]()}</Table.Head>
 						<Table.Head>{m["dashboard.my-bookings.table_dates"]()}</Table.Head>
 						<Table.Head>{m["dashboard.my-bookings.client_table_students"]()}</Table.Head>
 						<Table.Head>{m["dashboard.my-bookings.client_table_sports"]()}</Table.Head>
-						<Table.Head>{m.table_status()}</Table.Head>
-						<Table.Head>{m.table_actions()}</Table.Head>
+						<Table.Head>{$table.status.value}</Table.Head>
+						<Table.Head>{$table.actions.value}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -188,7 +203,7 @@
 											size="sm"
 											variant="outline"
 										>
-											{m.button_view()}
+											{$button.view.value}
 										</Button>
 										{#if ['pending', 'viewed'].includes(booking.status)}
 											<Button
@@ -196,7 +211,7 @@
 												variant="destructive"
 												onclick={() => openCancelDialog(booking.id)}
 											>
-												{m.button_cancel()}
+												{$button.cancel.value}
 											</Button>
 										{/if}
 									</div>

@@ -1,7 +1,9 @@
 <script lang="ts">
 	import * as Select from '$lib/components/ui/select/index.js';
 	import * as Form from '$lib/components/ui/form';
-	import * as m from '$lib/paraglide/messages';
+	import { useIntlayer } from 'svelte-intlayer';
+
+	const form = useIntlayer('form');
 
 	let props = $props();
 
@@ -32,10 +34,10 @@
 <Form.Field {form} {name}>
 	<Form.Control>
 		{#snippet children({ props })}
-			<Form.Label>{m.form_label_currency()}</Form.Label>
+			<Form.Label>{$form.label_currency.value}</Form.Label>
 			<Select.Root type="single" bind:value={$formStore[name]} name={props.name}>
 				<Select.Trigger {...props}>
-					{$formStore[name] ? $formStore[name] : m.form_placeholder_select_currency()}
+					{$formStore[name] ? $formStore[name] : $form.placeholder_select_currency.value}
 				</Select.Trigger>
 				<Select.Content>
 					{#each currencies as { label, value }}

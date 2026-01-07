@@ -1,7 +1,10 @@
 <script lang="ts">
 	import * as Select from '$lib/components/ui/select/index.js';
 	import * as Form from '$lib/components/ui/form';
-	import * as m from '$lib/paraglide/messages';
+	import { useIntlayer } from 'svelte-intlayer';
+
+	const instructor = useIntlayer('instructor');
+	const form = useIntlayer('form');
 
 	let props = $props();
 
@@ -11,13 +14,13 @@
 
 	const instructorTypes = $derived(isFilter
 		? [
-			{ label: m.instructor_type_all(), value: '' },
-			{ label: m.instructor_type_independent(), value: 'instructor-independent' },
-			{ label: m.instructor_type_school_instructor(), value: 'instructor-school' }
+			{ label: $instructor.type_all.value, value: '' },
+			{ label: $instructor.type_independent.value, value: 'instructor-independent' },
+			{ label: $instructor.type_school_instructor.value, value: 'instructor-school' }
 		]
 		: [
-			{ label: m.instructor_type_school(), value: 'instructor-school' },
-			{ label: m.instructor_type_independent(), value: 'instructor-independent' }
+			{ label: $instructor.type_school.value, value: 'instructor-school' },
+			{ label: $instructor.type_independent.value, value: 'instructor-independent' }
 		]);
 
 	const formStore = form.form; //the reactive store for form values
@@ -26,13 +29,13 @@
 <Form.Field class="w-full" {form} {name}>
 	<Form.Control>
 		{#snippet children({ props })}
-			<Form.Label>{m.form_label_instructor_type()}</Form.Label>
+			<Form.Label>{$form.label_instructor_type.value}</Form.Label>
 			<Select.Root type="single" bind:value={$formStore[name]} name={props.name}>
 				<Select.Trigger {...props}>
 					{#if $formStore[name] !== undefined && $formStore[name] !== null}
 						{instructorTypes.find((s) => s.value === $formStore[name])?.label}
 					{:else}
-						{isFilter ? m.instructor_type_all() : m.form_placeholder_select_instructor_type()}
+						{isFilter ? $instructor.type_all.value : $form.placeholder_select_instructor_type.value}
 					{/if}
 				</Select.Trigger>
 				<Select.Content>

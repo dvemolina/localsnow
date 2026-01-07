@@ -5,7 +5,9 @@
 	import SchoolProfileForm from '$src/features/Schools/components/SchoolProfileForm.svelte';
 	import { Badge } from '$src/lib/components/ui/badge';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import * as m from '$lib/paraglide/messages';
+	import { useIntlayer } from 'svelte-intlayer';
+
+	const status = useIntlayer('status');
 
 	let { data } = $props();
 
@@ -36,7 +38,7 @@
 				</Badge>
 			{:else}
 				<Badge variant="outline">
-					{m.status_pending_verification()}
+					{$status.pending_verification.value}
 				</Badge>
 			{/if}
 		</div>

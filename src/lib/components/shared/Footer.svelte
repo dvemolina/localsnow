@@ -1,24 +1,27 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { isCurrentPath } from '$src/lib/utils/generics';
-	import * as m from '$lib/paraglide/messages';
+	import { useIntlayer } from 'svelte-intlayer';
 	import { route } from '$lib/i18n/routeHelpers';
+
+	const nav = useIntlayer('nav');
+	const footer = useIntlayer('footer');
 
 	// Navigation items - use $derived for translation reactivity
 	const items = $derived([
-		{ label: m.nav_instructors(), href: route('/instructors') },
-		{ label: m.nav_resorts(), href: route('/resorts') },
-		{ label: m.nav_how_it_works(), href: route('/how-it-works') },
-		{ label: m.nav_about(), href: route('/about') },
-		{ label: m.nav_signup(), href: route('/signup') },
-		{ label: m.nav_contact(), href: route('/contact')}
+		{ label: $nav.instructors.value, href: route('/instructors') },
+		{ label: $nav.resorts.value, href: route('/resorts') },
+		{ label: $nav.how_it_works.value, href: route('/how-it-works') },
+		{ label: $nav.about.value, href: route('/about') },
+		{ label: $nav.signup.value, href: route('/signup') },
+		{ label: $nav.contact.value, href: route('/contact')}
 	]);
 
 	// Legal links - use $derived for translation reactivity
 	const legalLinks = $derived([
-		{ label: m.footer_privacy(), href: route('/legal/privacy') },
-		{ label: m.footer_terms(), href: route('/legal/terms') },
-		{ label: m.footer_cookies(), href: route('/legal/cookies') }
+		{ label: $footer.privacy.value, href: route('/legal/privacy') },
+		{ label: $footer.terms.value, href: route('/legal/terms') },
+		{ label: $footer.cookies.value, href: route('/legal/cookies') }
 	]);
 </script>
 
@@ -28,13 +31,13 @@
 	>
 		<div class="flex max-w-64 flex-col items-center justify-center gap-2 text-center">
 			<img src="/local-snow.png" alt="Local Snow Ski Instructor Logo" class="w-36" />
-			<h3 class="title4">{m.footer_tagline()}</h3>
+			<h3 class="title4">{$footer.tagline.value}</h3>
 		</div>
 
 		<div class="flex flex-col gap-6 sm:flex-row sm:gap-12">
 			<!-- Main Navigation -->
 			<nav class="flex flex-col items-center justify-start">
-				<h4 class="mb-2 text-sm font-semibold text-foreground">{m.footer_navigation()}</h4>
+				<h4 class="mb-2 text-sm font-semibold text-foreground">{$footer.navigation.value}</h4>
 				<ul class="flex flex-col items-start gap-1">
 					{#each items as { href, label }}
 						<li>
@@ -53,7 +56,7 @@
 
 			<!-- Legal Links -->
 			<nav class="flex flex-col items-center justify-start">
-				<h4 class="mb-2 text-sm font-semibold text-foreground">{m.footer_legal()}</h4>
+				<h4 class="mb-2 text-sm font-semibold text-foreground">{$footer.legal.value}</h4>
 				<ul class="flex flex-col items-start gap-1">
 					{#each legalLinks as { href, label }}
 						<li>
