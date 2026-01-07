@@ -3,7 +3,7 @@
 	import * as Form from '$lib/components/ui/form';
 	import { useIntlayer } from 'svelte-intlayer';
 
-	const sports = useIntlayer('sports');
+	const sportsContent = useIntlayer('sports');
 	const filter = useIntlayer('filter');
 
 	let props = $props();
@@ -13,9 +13,9 @@
 
 	// Use $derived for reactive translations
 	const sports = $derived([
-		{ label: $sports.ski.value, value: 'ski' },
-		{ label: $sports.snowboard.value, value: 'snowboard' },
-		{ label: $sports.telemark.value, value: 'telemark' }
+		{ label: $sportsContent.ski.value, value: 'ski' },
+		{ label: $sportsContent.snowboard.value, value: 'snowboard' },
+		{ label: $sportsContent.telemark.value, value: 'telemark' }
 	]);
 	let isHero: boolean = props.isHero ?? false;
 

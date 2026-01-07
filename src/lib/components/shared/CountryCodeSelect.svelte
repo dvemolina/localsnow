@@ -3,7 +3,7 @@
 	import * as Form from '$lib/components/ui/form';
 	import { useIntlayer } from 'svelte-intlayer';
 
-	const form = useIntlayer('form');
+	const formContent = useIntlayer('form');
 
 	let props = $props();
 
@@ -122,10 +122,10 @@
 <Form.Field {form} {name} class="w-full">
 	<Form.Control>
 		{#snippet children({ props })}
-			<Form.Label>{$form.label_country_prefix.value}</Form.Label>
+			<Form.Label>{$formContent.label_country_prefix.value}</Form.Label>
 			<Select.Root type="single" bind:value={$formStore[name]} name={props.name}>
 				<Select.Trigger {...props} class="w-full">
-					{$formStore[name] ? $formStore[name] : $form.placeholder_country_prefix.value}
+					{$formStore[name] ? $formStore[name] : $formContent.placeholder_country_prefix.value}
 				</Select.Trigger>
 				<Select.Content>
 					{#each prefixes as { label, value }}

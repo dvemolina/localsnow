@@ -4,7 +4,7 @@
 	import { useIntlayer } from 'svelte-intlayer';
 
 	const instructor = useIntlayer('instructor');
-	const form = useIntlayer('form');
+	const formContent = useIntlayer('form');
 
 	let props = $props();
 
@@ -29,13 +29,13 @@
 <Form.Field class="w-full" {form} {name}>
 	<Form.Control>
 		{#snippet children({ props })}
-			<Form.Label>{$form.label_instructor_type.value}</Form.Label>
+			<Form.Label>{$formContent.label_instructor_type.value}</Form.Label>
 			<Select.Root type="single" bind:value={$formStore[name]} name={props.name}>
 				<Select.Trigger {...props}>
 					{#if $formStore[name] !== undefined && $formStore[name] !== null}
 						{instructorTypes.find((s) => s.value === $formStore[name])?.label}
 					{:else}
-						{isFilter ? $instructor.type_all.value : $form.placeholder_select_instructor_type.value}
+						{isFilter ? $instructor.type_all.value : $formContent.placeholder_select_instructor_type.value}
 					{/if}
 				</Select.Trigger>
 				<Select.Content>

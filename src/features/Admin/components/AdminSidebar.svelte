@@ -8,7 +8,7 @@
 	import LanguageSwitch from '$lib/components/shared/LanguageSwitch.svelte';
 
 	const admin = useIntlayer('admin');
-	const sidebar = useIntlayer('sidebar');
+	const sidebarContent = useIntlayer('sidebar');
 
 	const items = $derived([
 		{
@@ -125,7 +125,7 @@
 				← {$admin.back_to_dashboard.value}
 			</a>
 			<div class="flex items-center justify-between border-t pt-3">
-				<span class="text-sm text-muted-foreground">{$sidebar.language.value}</span>
+				<span class="text-sm text-muted-foreground">{$sidebarContent.language.value}</span>
 				<LanguageSwitch />
 			</div>
 		</div>

@@ -12,7 +12,7 @@
 	import { useIntlayer } from 'svelte-intlayer';
 
 	const button = useIntlayer('button');
-	const instructor = useIntlayer('instructor');
+	const instructorContent = useIntlayer('instructor');
 	const badge = useIntlayer('badge');
 	const lessons = useIntlayer('lessons');
 
@@ -252,12 +252,12 @@
 								<StarScore score={reviewStats.averageRating} />
 							</div>
 							<span class="text-xs text-muted-foreground">
-								{reviewStats.totalReviews} {reviewStats.totalReviews === 1 ? $instructor.review.value : $instructor.reviews.value}
+								{reviewStats.totalReviews} {reviewStats.totalReviews === 1 ? $instructorContent.review.value : $instructorContent.reviews.value}
 							</span>
 						</div>
 					{:else}
 						<div class="flex justify-center">
-							<span class="text-xs text-muted-foreground">{$instructor.no_reviews_yet.value}</span>
+							<span class="text-xs text-muted-foreground">{$instructorContent.no_reviews_yet.value}</span>
 						</div>
 					{/if}
 				</div>
@@ -299,7 +299,7 @@
 			<div class="mt-4 w-full space-y-3 rounded-lg bg-muted p-4">
 				<div class="flex items-center gap-2">
 					<img src="/icons/certificate.svg" alt="Certification" class="size-5" />
-					<span class="text-sm font-medium">{$instructor.verified_badge.value}</span>
+					<span class="text-sm font-medium">{$instructorContent.verified_badge.value}</span>
 				</div>
 				<div class="flex items-center gap-2">
 					<svg
@@ -316,7 +316,7 @@
 							d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
 						/>
 					</svg>
-					<span class="text-sm">{$instructor.response_time.value}</span>
+					<span class="text-sm">{$instructorContent.response_time.value}</span>
 				</div>
 			</div>
 		</div>
@@ -336,7 +336,7 @@
 						<span class="text-sm text-muted-foreground">{data.baseLesson.currency}/h</span>
 					</div>
 					<p class="mt-2 text-xs text-muted-foreground">
-						{$instructor.base_rate_help.value}
+						{$instructorContent.base_rate_help.value}
 					</p>
 				</div>
 			{/if}
@@ -366,7 +366,7 @@
 								d="M13 10V3L4 14h7v7l9-11h-7z"
 							/>
 						</svg>
-						{$instructor.sports_offered.value}
+						{$instructorContent.sports_offered.value}
 					</h2>
 					<div class="flex flex-wrap gap-2">
 						{#each sports as sport}
@@ -400,7 +400,7 @@
 								d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
 							/>
 						</svg>
-						{$instructor.teaching_location.value}
+						{$instructorContent.teaching_location.value}
 					</h2>
 					<div class="flex flex-wrap gap-2">
 						{#if resorts.length > 0}
@@ -411,7 +411,7 @@
 							{/each}
 						{:else}
 							<span class="text-sm text-muted-foreground">
-								{$instructor.multiple_locations.value}
+								{$instructorContent.multiple_locations.value}
 							</span>
 						{/if}
 					</div>
@@ -435,7 +435,7 @@
 									d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
 								/>
 							</svg>
-							{$instructor.languages.value}
+							{$instructorContent.languages.value}
 						</h2>
 						<div class="flex flex-wrap gap-2">
 							{#each instructor.spokenLanguages as language}
@@ -510,7 +510,7 @@
 				<div>
 					<h2 class="title4 mb-3">{m.instructor_about_heading({ name: instructor.name })}</h2>
 					<p class="hyphens-auto text-sm leading-relaxed text-muted-foreground">
-						{$instructor.default_bio.value}
+						{$instructorContent.default_bio.value}
 					</p>
 				</div>
 			{/if}

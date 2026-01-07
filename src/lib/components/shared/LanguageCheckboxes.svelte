@@ -3,7 +3,7 @@
 	import { useIntlayer } from 'svelte-intlayer';
 
 	const lang = useIntlayer('lang');
-	const languages = useIntlayer('languages');
+	const languagesContent = useIntlayer('languages');
 
     // Common languages spoken in ski resorts across Europe and worldwide
     const languages = $derived([

@@ -3,7 +3,7 @@
 	import * as Form from '$lib/components/ui/form';
 	import { useIntlayer } from 'svelte-intlayer';
 
-	const form = useIntlayer('form');
+	const formContent = useIntlayer('form');
 
 	let props = $props();
 
@@ -34,10 +34,10 @@
 <Form.Field {form} {name}>
 	<Form.Control>
 		{#snippet children({ props })}
-			<Form.Label>{$form.label_currency.value}</Form.Label>
+			<Form.Label>{$formContent.label_currency.value}</Form.Label>
 			<Select.Root type="single" bind:value={$formStore[name]} name={props.name}>
 				<Select.Trigger {...props}>
-					{$formStore[name] ? $formStore[name] : $form.placeholder_select_currency.value}
+					{$formStore[name] ? $formStore[name] : $formContent.placeholder_select_currency.value}
 				</Select.Trigger>
 				<Select.Content>
 					{#each currencies as { label, value }}
