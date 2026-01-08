@@ -39,8 +39,8 @@ importers:
         specifier: ^164.1.0
         version: 164.1.0
       intlayer:
-        specifier: ^7.5.10
-        version: 7.5.10
+        specifier: ^7.5.11
+        version: 7.5.11
       mode-watcher:
         specifier: ^0.5.1
         version: 0.5.1(svelte@5.41.3)
@@ -60,8 +60,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(@types/node@22.13.14)
       svelte-intlayer:
-        specifier: ^7.5.10
-        version: 7.5.10(intlayer@7.5.10)(svelte@5.41.3)
+        specifier: ^7.5.11
+        version: 7.5.11(intlayer@7.5.11)(svelte@5.41.3)
       svelte-sonner:
         specifier: ^1.0.2
         version: 1.0.2(svelte@5.41.3)
@@ -214,8 +214,8 @@ importers:
         specifier: ^6.0.0
         version: 6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.30.1)(tsx@4.20.6)(yaml@2.7.1)
       vite-intlayer:
-        specifier: ^7.5.10
-        version: 7.5.10(@babel/core@7.28.5)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.30.1)(tsx@4.20.6)(yaml@2.7.1))
+        specifier: ^7.5.11
+        version: 7.5.11(@babel/core@7.28.5)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.30.1)(tsx@4.20.6)(yaml@2.7.1))
       vitest:
         specifier: ^4.0.15
         version: 4.0.15(@opentelemetry/api@1.9.0)(@types/node@22.13.14)(@vitest/ui@4.0.15)(happy-dom@20.0.11)(jiti@2.4.2)(lightningcss@1.30.1)(tsx@4.20.6)(yaml@2.7.1)
@@ -1469,52 +1469,52 @@ packages:
   '@internationalized/date@3.10.0':
     resolution: {integrity: sha512-oxDR/NTEJ1k+UFVQElaNIk65E/Z83HK1z1WI3lQyhTtnNg4R5oVXaPzK3jcpKG8UHKDVuDQHzn+wsxSz8RP3aw==}
 
-  '@intlayer/api@7.5.10':
-    resolution: {integrity: sha512-pFp1wWW3B35iOP1H/uSdtq9MLVQ2NcwRlbZNSbJkxZGUkU4cB93126GZkexR0G9O6JVGBsB2f1ZyA/8F3yJNkA==}
+  '@intlayer/api@7.5.11':
+    resolution: {integrity: sha512-zfbgmXUurKSMznkqOk+gokATy33tkrtiochII8AUSvH5FQLM9lEg0hNlZyon5wsLehv7UO/q6yYHWDahUlIt1Q==}
     engines: {node: '>=14.18'}
     peerDependencies:
-      '@intlayer/backend': 7.5.10
-      intlayer-editor: 7.5.10
+      '@intlayer/backend': 7.5.11
+      intlayer-editor: 7.5.11
     peerDependenciesMeta:
       '@intlayer/backend':
         optional: true
       intlayer-editor:
         optional: true
 
-  '@intlayer/babel@7.5.10':
-    resolution: {integrity: sha512-KDsdSfSH/CI/UtT4vt3dPChQMLYiGk80L/66w4nnX6RBHgGJMZreQMnyuj/AkQqXEr7efJ38PMTA40r2Of/SBA==}
+  '@intlayer/babel@7.5.11':
+    resolution: {integrity: sha512-FPfT0AkLpRipSNviOiERA5CSWgIWJz4CUbQoU8xAExDQa9FTDYWcFpW4T9N/E7Vrhr1m3cR+IF4dhVzo+iUcRQ==}
     engines: {node: '>=14.18'}
     peerDependencies:
-      '@intlayer/dictionaries-entry': 7.5.10
+      '@intlayer/dictionaries-entry': 7.5.11
     peerDependenciesMeta:
       '@intlayer/dictionaries-entry':
         optional: true
 
-  '@intlayer/chokidar@7.5.10':
-    resolution: {integrity: sha512-qtBOuP5vTq6/Hz8l3EDGU7hv+diKx+OsP9nRAkkDisAeerTohfDHSsD611xZEgmgtaMPxSqXvYPvGfNwlXYbCw==}
+  '@intlayer/chokidar@7.5.11':
+    resolution: {integrity: sha512-gyXeQs9ByJ3YOQ8sJd18bHsulWsEDB8hdJlObuHLzGx/ABwWoteXu3ejhvqes7OHjmykUzZexE8kSJjnstJqwA==}
     engines: {node: '>=14.18'}
     peerDependencies:
-      '@intlayer/svelte-transformer': 7.5.10
-      '@intlayer/vue-transformer': 7.5.10
+      '@intlayer/svelte-transformer': 7.5.11
+      '@intlayer/vue-transformer': 7.5.11
     peerDependenciesMeta:
       '@intlayer/svelte-transformer':
         optional: true
       '@intlayer/vue-transformer':
         optional: true
 
-  '@intlayer/cli@7.5.10':
-    resolution: {integrity: sha512-m4ELpHAaUhtgxyFVvRLOXU5Zn4y9UvjwASX9EUJrNCudGCqFlZub5vMPU18EQ2sBMCPLLmmCB95/G4xmkltHBQ==}
+  '@intlayer/cli@7.5.11':
+    resolution: {integrity: sha512-cWTmxvwDAED24TeATInYhaaDmoHca2pu3sBF5TjQrRm43ephncBbSpSnVuV1CG1jOQqJz1ujDIRYwiSA19Wkng==}
     peerDependencies:
-      '@intlayer/ai': 7.5.10
+      '@intlayer/ai': 7.5.11
     peerDependenciesMeta:
       '@intlayer/ai':
         optional: true
 
-  '@intlayer/config@7.5.10':
-    resolution: {integrity: sha512-xhteXIPcVNvX7oAmM8rOgvz4f+2S3Zbp7O+kOe9ChgiTMvAK7sE9op0vvRtuvEqmdAZHbGf95QIAktA2xQeb6g==}
+  '@intlayer/config@7.5.11':
+    resolution: {integrity: sha512-6ayQosXUmtrK8I7y2hkTddUSoiCFFOlu+exFjW6bPWymT2XPO3MTtVlJLTuFpsJ4po1z8fL0oUOr0pJZBcdYWQ==}
     engines: {node: '>=14.18'}
     peerDependencies:
-      intlayer: 7.5.10
+      intlayer: 7.5.11
       react: '>=16.0.0'
     peerDependenciesMeta:
       intlayer:
@@ -1522,28 +1522,28 @@ packages:
       react:
         optional: true
 
-  '@intlayer/core@7.5.10':
-    resolution: {integrity: sha512-KB2F3VCeD/ZYySzVOdnG63dusIgAn9tzqGbRqx6Hx3zUjzY6/6oSYPzgOlmooW0IG/D3du/wj6UcOs8+oqrnRA==}
+  '@intlayer/core@7.5.11':
+    resolution: {integrity: sha512-A+Ujh8bJO7zlHY7vJImn2FKim+iTGVDk8U6H2Z5OrpfRWbyDFZC9zqUH/3Iq0clXDj4cVEDv0u1Ws7MbWYY+jA==}
     engines: {node: '>=14.18'}
 
-  '@intlayer/dictionaries-entry@7.5.10':
-    resolution: {integrity: sha512-/LInAefNa1G3uE0QHOqqTw1yfo2p4uT5pKtO1eHXg1Gd7WAQJeqCn2Qi951Hl5FHBUyhT1PzWMLTcRjAoV1m0A==}
+  '@intlayer/dictionaries-entry@7.5.11':
+    resolution: {integrity: sha512-ZXj4Xwfqcazylo6MN1KZVjL9x9BshPA9sTf2v9CndjeqG1vp1Dq2K9wIpF+IyUEpH4MSq9T7ZZGl4a/5A4N7fQ==}
     engines: {node: '>=14.18'}
 
-  '@intlayer/editor@7.5.10':
-    resolution: {integrity: sha512-dDbAJSEUmfPJkJGM5UlGhHX7BRw2oFXqOdhS0kLHjG8M+VF3mhlbbr/4FTbLLnsnpuUtmgaCU6K/425s6dz1ug==}
+  '@intlayer/editor@7.5.11':
+    resolution: {integrity: sha512-wDejsiYYtpg+90kt2kGxkSvDyR1PE32rVXlIauCLacAnyYEraaU5Wmjp25LgcL6RAVbSLYVLfKCSzxv5EKyw+Q==}
     engines: {node: '>=14.18'}
 
-  '@intlayer/remote-dictionaries-entry@7.5.10':
-    resolution: {integrity: sha512-EKY+UQFkrV/ARLS8y0iv4YEkgn0bSQg8Kg9CTjgJLmHzwFIhBjqn77N+8KNsTM8C76UdMFUOxFxv6iYNJSzBIw==}
+  '@intlayer/remote-dictionaries-entry@7.5.11':
+    resolution: {integrity: sha512-ne6Fw4yfZEkRGbARKXlMF1VCe9bDL3NvYiZMnXayrhk0F5ZhjAl9nkwmsFa+XulC6mVM4+Z9IU2G3my1B7F2cw==}
     engines: {node: '>=14.18'}
 
-  '@intlayer/types@7.5.10':
-    resolution: {integrity: sha512-uct90WEK3mgqaivOJOg/3BnKOwOfI/hci6uN0AltoUcsi+yzLaXyboOu9PQoQdcUEZ4r/1VV93o/4kyGQoRxVA==}
+  '@intlayer/types@7.5.11':
+    resolution: {integrity: sha512-nkJNW/pcQZdziHno4EqbGTzhpDd76zZthLN1VkFveDJsoRi/qgQGT3RN01ts6aYjZigcGkpLw/Gk159umMexkw==}
     engines: {node: '>=14.18'}
 
-  '@intlayer/unmerged-dictionaries-entry@7.5.10':
-    resolution: {integrity: sha512-dvIutL7ahoAb+hWWq43UHJ1vH68/NLOj6YLgKyrfyVQ4Gi5hlInrUlBWyl0Eqsn7u0BwnVFd+9Qpt4/mGgfDRw==}
+  '@intlayer/unmerged-dictionaries-entry@7.5.11':
+    resolution: {integrity: sha512-rjdUppuO2nHMKBoNTeYybLeaDSiw6AA5GhlyfkZEx7QK/oMgdyr3X1KCVjhMO9ZqdXchaRNfBh1rjTyxRqd7+A==}
     engines: {node: '>=14.18'}
 
   '@isaacs/balanced-match@4.0.1':
@@ -3725,8 +3725,8 @@ packages:
   inline-style-parser@0.2.4:
     resolution: {integrity: sha512-0aO8FkhNZlj/ZIbNi7Lxxr12obT7cL1moPfE4tg1LkX7LlLfC6DeX4l2ZEud1ukP9jNQyNnfzQVqwbwmAATY4Q==}
 
-  intlayer@7.5.10:
-    resolution: {integrity: sha512-A+q/URmtukyYmT+kAlp9KrnTpyAMy242IVXs76tQar2ZFbw8EuYPokySKIUbETdvSj5fj6v9hsAJG3a2BGu/1g==}
+  intlayer@7.5.11:
+    resolution: {integrity: sha512-4KBQBWfWEo8PQeudx81KdLTytO97oWFWAzx9v9PO2wXgogAoEnTE+0La5vqzgeshmfGKQuQ0+1T68yYuaeIMxA==}
     engines: {node: '>=14.18'}
     hasBin: true
 
@@ -4598,8 +4598,8 @@ packages:
       svelte:
         optional: true
 
-  svelte-intlayer@7.5.10:
-    resolution: {integrity: sha512-KTJCGS4XdL9A37abYU3/aWygObZuKcRLKakNw1RwtW7VzUp1uHpmJRMxig5jCzwtSsF36nOeBL9CikGYHR4TZA==}
+  svelte-intlayer@7.5.11:
+    resolution: {integrity: sha512-ryrm0EfaK2pe3QkstphXjcEJ2x05iTca+aSfki9Q3cD5cq1EUNox3zoXa9td6rdFkAYoN0288hc/uUG3GXA95g==}
     engines: {node: '>=14.18'}
     peerDependencies:
       svelte: '>=5.0.0'
@@ -4832,13 +4832,13 @@ packages:
   vfile-message@2.0.4:
     resolution: {integrity: sha512-DjssxRGkMvifUOJre00juHoP9DPWuzjxKuMDrhNbk2TdaYYBNMStsNhEOt3idrtI12VQYM/1+iM0KOzXi4pxwQ==}
 
-  vite-intlayer@7.5.10:
-    resolution: {integrity: sha512-ImpOtsxWn6tam3yKkixCA+R+/RNkdZV6pciW5b/oeKPoAaacteo3LmNvYuWllBaEIspDYpMwxolVnKK+QvzWRw==}
+  vite-intlayer@7.5.11:
+    resolution: {integrity: sha512-poyrlTw1oviNYV0QeUUNktYZbElHDj6Bpu5PZ5w9tKhEL186xj6eLicSbIdVvtdS7cp12uujtDwzKM+AJgeyRA==}
     engines: {node: '>=14.18'}
     peerDependencies:
       '@babel/core': '>=6.0.0'
-      '@intlayer/svelte-compiler': 7.5.10
-      '@intlayer/vue-compiler': 7.5.10
+      '@intlayer/svelte-compiler': 7.5.11
+      '@intlayer/vue-compiler': 7.5.11
       vite: '>=4.0.0'
     peerDependenciesMeta:
       '@babel/core':
@@ -5546,7 +5546,7 @@ snapshots:
       '@babel/types': 7.28.5
       '@jridgewell/remapping': 2.3.5
       convert-source-map: 2.0.0
-      debug: 4.4.0
+      debug: 4.4.3
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -5657,7 +5657,7 @@ snapshots:
       '@babel/parser': 7.28.5
       '@babel/template': 7.27.2
       '@babel/types': 7.28.5
-      debug: 4.4.0
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -6280,30 +6280,30 @@ snapshots:
     dependencies:
       '@swc/helpers': 0.5.15
 
-  '@intlayer/api@7.5.10(intlayer@7.5.10)':
+  '@intlayer/api@7.5.11(intlayer@7.5.11)':
     dependencies:
-      '@intlayer/config': 7.5.10(intlayer@7.5.10)
-      '@intlayer/types': 7.5.10
+      '@intlayer/config': 7.5.11(intlayer@7.5.11)
+      '@intlayer/types': 7.5.11
     transitivePeerDependencies:
       - intlayer
       - react
 
-  '@intlayer/babel@7.5.10(@intlayer/dictionaries-entry@7.5.10(intlayer@7.5.10))(intlayer@7.5.10)':
+  '@intlayer/babel@7.5.11(@intlayer/dictionaries-entry@7.5.11(intlayer@7.5.11))(intlayer@7.5.11)':
     dependencies:
       '@babel/core': 7.20.5
       '@babel/generator': 7.27.0
       '@babel/parser': 7.1.5
       '@babel/traverse': 7.28.0
       '@babel/types': 7.28.4
-      '@intlayer/chokidar': 7.5.10(intlayer@7.5.10)
-      '@intlayer/config': 7.5.10(intlayer@7.5.10)
-      '@intlayer/types': 7.5.10
+      '@intlayer/chokidar': 7.5.11(intlayer@7.5.11)
+      '@intlayer/config': 7.5.11(intlayer@7.5.11)
+      '@intlayer/types': 7.5.11
       '@types/babel__core': 7.20.5
       '@types/babel__generator': 7.27.0
       '@types/babel__traverse': 7.28.0
       fast-glob: 3.3.3
     optionalDependencies:
-      '@intlayer/dictionaries-entry': 7.5.10(intlayer@7.5.10)
+      '@intlayer/dictionaries-entry': 7.5.11(intlayer@7.5.11)
     transitivePeerDependencies:
       - '@intlayer/backend'
       - '@intlayer/svelte-transformer'
@@ -6313,15 +6313,15 @@ snapshots:
       - react
       - supports-color
 
-  '@intlayer/chokidar@7.5.10(intlayer@7.5.10)':
+  '@intlayer/chokidar@7.5.11(intlayer@7.5.11)':
     dependencies:
-      '@intlayer/api': 7.5.10(intlayer@7.5.10)
-      '@intlayer/config': 7.5.10(intlayer@7.5.10)
-      '@intlayer/core': 7.5.10(intlayer@7.5.10)
-      '@intlayer/dictionaries-entry': 7.5.10(intlayer@7.5.10)
-      '@intlayer/remote-dictionaries-entry': 7.5.10(intlayer@7.5.10)
-      '@intlayer/types': 7.5.10
-      '@intlayer/unmerged-dictionaries-entry': 7.5.10(intlayer@7.5.10)
+      '@intlayer/api': 7.5.11(intlayer@7.5.11)
+      '@intlayer/config': 7.5.11(intlayer@7.5.11)
+      '@intlayer/core': 7.5.11(intlayer@7.5.11)
+      '@intlayer/dictionaries-entry': 7.5.11(intlayer@7.5.11)
+      '@intlayer/remote-dictionaries-entry': 7.5.11(intlayer@7.5.11)
+      '@intlayer/types': 7.5.11
+      '@intlayer/unmerged-dictionaries-entry': 7.5.11(intlayer@7.5.11)
       chokidar: 3.6.0
       crypto-js: 4.2.0
       defu: 6.1.4
@@ -6335,17 +6335,17 @@ snapshots:
       - react
       - supports-color
 
-  '@intlayer/cli@7.5.10(intlayer@7.5.10)':
+  '@intlayer/cli@7.5.11(intlayer@7.5.11)':
     dependencies:
       '@clack/prompts': 0.11.0
-      '@intlayer/api': 7.5.10(intlayer@7.5.10)
-      '@intlayer/chokidar': 7.5.10(intlayer@7.5.10)
-      '@intlayer/config': 7.5.10(intlayer@7.5.10)
-      '@intlayer/core': 7.5.10(intlayer@7.5.10)
-      '@intlayer/dictionaries-entry': 7.5.10(intlayer@7.5.10)
-      '@intlayer/remote-dictionaries-entry': 7.5.10(intlayer@7.5.10)
-      '@intlayer/types': 7.5.10
-      '@intlayer/unmerged-dictionaries-entry': 7.5.10(intlayer@7.5.10)
+      '@intlayer/api': 7.5.11(intlayer@7.5.11)
+      '@intlayer/chokidar': 7.5.11(intlayer@7.5.11)
+      '@intlayer/config': 7.5.11(intlayer@7.5.11)
+      '@intlayer/core': 7.5.11(intlayer@7.5.11)
+      '@intlayer/dictionaries-entry': 7.5.11(intlayer@7.5.11)
+      '@intlayer/remote-dictionaries-entry': 7.5.11(intlayer@7.5.11)
+      '@intlayer/types': 7.5.11
+      '@intlayer/unmerged-dictionaries-entry': 7.5.11(intlayer@7.5.11)
       commander: 14.0.1
       eventsource: 3.0.7
       fast-glob: 3.3.3
@@ -6358,22 +6358,22 @@ snapshots:
       - react
       - supports-color
 
-  '@intlayer/config@7.5.10(intlayer@7.5.10)':
+  '@intlayer/config@7.5.11(intlayer@7.5.11)':
     dependencies:
-      '@intlayer/types': 7.5.10
+      '@intlayer/types': 7.5.11
       defu: 6.1.4
       dotenv: 16.6.1
       esbuild: 0.27.2
     optionalDependencies:
-      intlayer: 7.5.10
+      intlayer: 7.5.11
 
-  '@intlayer/core@7.5.10(intlayer@7.5.10)':
+  '@intlayer/core@7.5.11(intlayer@7.5.11)':
     dependencies:
-      '@intlayer/api': 7.5.10(intlayer@7.5.10)
-      '@intlayer/config': 7.5.10(intlayer@7.5.10)
-      '@intlayer/dictionaries-entry': 7.5.10(intlayer@7.5.10)
-      '@intlayer/types': 7.5.10
-      '@intlayer/unmerged-dictionaries-entry': 7.5.10(intlayer@7.5.10)
+      '@intlayer/api': 7.5.11(intlayer@7.5.11)
+      '@intlayer/config': 7.5.11(intlayer@7.5.11)
+      '@intlayer/dictionaries-entry': 7.5.11(intlayer@7.5.11)
+      '@intlayer/types': 7.5.11
+      '@intlayer/unmerged-dictionaries-entry': 7.5.11(intlayer@7.5.11)
       defu: 6.1.4
     transitivePeerDependencies:
       - '@intlayer/backend'
@@ -6381,27 +6381,27 @@ snapshots:
       - intlayer-editor
       - react
 
-  '@intlayer/dictionaries-entry@7.5.10(intlayer@7.5.10)':
+  '@intlayer/dictionaries-entry@7.5.11(intlayer@7.5.11)':
     dependencies:
-      '@intlayer/config': 7.5.10(intlayer@7.5.10)
+      '@intlayer/config': 7.5.11(intlayer@7.5.11)
     transitivePeerDependencies:
       - intlayer
       - react
 
-  '@intlayer/editor@7.5.10': {}
+  '@intlayer/editor@7.5.11': {}
 
-  '@intlayer/remote-dictionaries-entry@7.5.10(intlayer@7.5.10)':
+  '@intlayer/remote-dictionaries-entry@7.5.11(intlayer@7.5.11)':
     dependencies:
-      '@intlayer/config': 7.5.10(intlayer@7.5.10)
+      '@intlayer/config': 7.5.11(intlayer@7.5.11)
     transitivePeerDependencies:
       - intlayer
       - react
 
-  '@intlayer/types@7.5.10': {}
+  '@intlayer/types@7.5.11': {}
 
-  '@intlayer/unmerged-dictionaries-entry@7.5.10(intlayer@7.5.10)':
+  '@intlayer/unmerged-dictionaries-entry@7.5.11(intlayer@7.5.11)':
     dependencies:
-      '@intlayer/config': 7.5.10(intlayer@7.5.10)
+      '@intlayer/config': 7.5.11(intlayer@7.5.11)
     transitivePeerDependencies:
       - intlayer
       - react
@@ -6433,8 +6433,8 @@ snapshots:
   '@jridgewell/gen-mapping@0.3.8':
     dependencies:
       '@jridgewell/set-array': 1.2.1
-      '@jridgewell/sourcemap-codec': 1.5.0
-      '@jridgewell/trace-mapping': 0.3.25
+      '@jridgewell/sourcemap-codec': 1.5.5
+      '@jridgewell/trace-mapping': 0.3.31
 
   '@jridgewell/remapping@2.3.5':
     dependencies:
@@ -6462,7 +6462,7 @@ snapshots:
   '@jridgewell/trace-mapping@0.3.9':
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
-      '@jridgewell/sourcemap-codec': 1.5.0
+      '@jridgewell/sourcemap-codec': 1.5.5
 
   '@kwsites/file-exists@1.1.1':
     dependencies:
@@ -7006,7 +7006,7 @@ snapshots:
       '@babel/core': 7.28.5
       '@sentry/babel-plugin-component-annotate': 4.6.1
       '@sentry/cli': 2.58.2
-      dotenv: 16.4.7
+      dotenv: 16.6.1
       find-up: 5.0.0
       glob: 10.5.0
       magic-string: 0.30.8
@@ -7837,7 +7837,7 @@ snapshots:
       '@typescript-eslint/types': 8.28.0
       '@typescript-eslint/typescript-estree': 8.28.0(typescript@5.8.2)
       '@typescript-eslint/visitor-keys': 8.28.0
-      debug: 4.4.0
+      debug: 4.4.3
       eslint: 9.23.0(jiti@2.4.2)
       typescript: 5.8.2
     transitivePeerDependencies:
@@ -7852,7 +7852,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/typescript-estree': 8.28.0(typescript@5.8.2)
       '@typescript-eslint/utils': 8.28.0(eslint@9.23.0(jiti@2.4.2))(typescript@5.8.2)
-      debug: 4.4.0
+      debug: 4.4.3
       eslint: 9.23.0(jiti@2.4.2)
       ts-api-utils: 2.1.0(typescript@5.8.2)
       typescript: 5.8.2
@@ -7865,7 +7865,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 8.28.0
       '@typescript-eslint/visitor-keys': 8.28.0
-      debug: 4.4.0
+      debug: 4.4.3
       fast-glob: 3.3.3
       is-glob: 4.0.3
       minimatch: 9.0.5
@@ -7974,7 +7974,7 @@ snapshots:
 
   agent-base@6.0.2:
     dependencies:
-      debug: 4.4.0
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -8808,14 +8808,14 @@ snapshots:
   https-proxy-agent@5.0.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.4.0
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
   https-proxy-agent@7.0.6:
     dependencies:
       agent-base: 7.1.4
-      debug: 4.4.0
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -8843,12 +8843,12 @@ snapshots:
 
   inline-style-parser@0.2.4: {}
 
-  intlayer@7.5.10:
+  intlayer@7.5.11:
     dependencies:
-      '@intlayer/cli': 7.5.10(intlayer@7.5.10)
-      '@intlayer/config': 7.5.10(intlayer@7.5.10)
-      '@intlayer/core': 7.5.10(intlayer@7.5.10)
-      '@intlayer/types': 7.5.10
+      '@intlayer/cli': 7.5.11(intlayer@7.5.11)
+      '@intlayer/config': 7.5.11(intlayer@7.5.11)
+      '@intlayer/core': 7.5.11(intlayer@7.5.11)
+      '@intlayer/types': 7.5.11
     transitivePeerDependencies:
       - '@intlayer/ai'
       - '@intlayer/backend'
@@ -9347,7 +9347,7 @@ snapshots:
 
   require-in-the-middle@7.5.2:
     dependencies:
-      debug: 4.4.0
+      debug: 4.4.3
       module-details-from-path: 1.0.4
       resolve: 1.22.11
     transitivePeerDependencies:
@@ -9644,14 +9644,14 @@ snapshots:
     optionalDependencies:
       svelte: 5.41.3
 
-  svelte-intlayer@7.5.10(intlayer@7.5.10)(svelte@5.41.3):
+  svelte-intlayer@7.5.11(intlayer@7.5.11)(svelte@5.41.3):
     dependencies:
-      '@intlayer/api': 7.5.10(intlayer@7.5.10)
-      '@intlayer/config': 7.5.10(intlayer@7.5.10)
-      '@intlayer/core': 7.5.10(intlayer@7.5.10)
-      '@intlayer/editor': 7.5.10
-      '@intlayer/types': 7.5.10
-      '@intlayer/unmerged-dictionaries-entry': 7.5.10(intlayer@7.5.10)
+      '@intlayer/api': 7.5.11(intlayer@7.5.11)
+      '@intlayer/config': 7.5.11(intlayer@7.5.11)
+      '@intlayer/core': 7.5.11(intlayer@7.5.11)
+      '@intlayer/editor': 7.5.11
+      '@intlayer/types': 7.5.11
+      '@intlayer/unmerged-dictionaries-entry': 7.5.11(intlayer@7.5.11)
       svelte: 5.41.3
     transitivePeerDependencies:
       - '@intlayer/backend'
@@ -9913,15 +9913,15 @@ snapshots:
       '@types/unist': 2.0.11
       unist-util-stringify-position: 2.0.3
 
-  vite-intlayer@7.5.10(@babel/core@7.28.5)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.30.1)(tsx@4.20.6)(yaml@2.7.1)):
+  vite-intlayer@7.5.11(@babel/core@7.28.5)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.30.1)(tsx@4.20.6)(yaml@2.7.1)):
     dependencies:
-      '@intlayer/babel': 7.5.10(@intlayer/dictionaries-entry@7.5.10(intlayer@7.5.10))(intlayer@7.5.10)
-      '@intlayer/chokidar': 7.5.10(intlayer@7.5.10)
-      '@intlayer/config': 7.5.10(intlayer@7.5.10)
-      '@intlayer/core': 7.5.10(intlayer@7.5.10)
-      '@intlayer/dictionaries-entry': 7.5.10(intlayer@7.5.10)
-      '@intlayer/types': 7.5.10
-      intlayer: 7.5.10
+      '@intlayer/babel': 7.5.11(@intlayer/dictionaries-entry@7.5.11(intlayer@7.5.11))(intlayer@7.5.11)
+      '@intlayer/chokidar': 7.5.11(intlayer@7.5.11)
+      '@intlayer/config': 7.5.11(intlayer@7.5.11)
+      '@intlayer/core': 7.5.11(intlayer@7.5.11)
+      '@intlayer/dictionaries-entry': 7.5.11(intlayer@7.5.11)
+      '@intlayer/types': 7.5.11
+      intlayer: 7.5.11
       vite: 6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.30.1)(tsx@4.20.6)(yaml@2.7.1)
     optionalDependencies:
       '@babel/core': 7.28.5
