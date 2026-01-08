@@ -102,7 +102,7 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 	return resolve(event);
 };
 
-const intlayerHandle: Handle = async ({ event, resolve }) => {
+const i18nHandle: Handle = async ({ event, resolve }) => {
 	// Extract locale from our translated URL (already set by languageHandle)
 	const { locale: detectedLocale } = extractLocale(event.url.pathname);
 	const currentLocale = (detectedLocale || 'en') as Locale;
@@ -130,6 +130,6 @@ if (process.env.NODE_ENV === 'production') {
 
 export const handle: Handle = sequence(
 	Sentry.sentryHandle(),
-	sequence(rateLimitHandle, languageHandle, intlayerHandle, handleAuth)
+	sequence(rateLimitHandle, languageHandle, i18nHandle, handleAuth)
 );
 export const handleError = Sentry.handleErrorWithSentry();
