@@ -1,9 +1,9 @@
-import { type IntlayerConfig } from "intlayer";
+import { Locales, type IntlayerConfig } from "intlayer";
 
 const config: IntlayerConfig = {
   internationalization: {
-    locales: ["en", "es"],
-    defaultLocale: "en",
+    locales: [Locales.ENGLISH, Locales.SPANISH],
+    defaultLocale: Locales.ENGLISH,
   },
   middleware: {
     headerName: "Accept-Language",

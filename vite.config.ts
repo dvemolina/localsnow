@@ -15,5 +15,10 @@ export default defineConfig({
 		tailwindcss(),
 		intlayer(),
 		sveltekit()
-	]
+	],
+	resolve: {
+		alias: {
+			'@intlayer/config/built': '@intlayer/config/dist/esm/built.mjs'
+		}
+	}
 });
