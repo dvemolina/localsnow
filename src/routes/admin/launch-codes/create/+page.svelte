@@ -5,13 +5,8 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Checkbox } from '$lib/components/ui/checkbox';
-	import { useIntlayer } from 'svelte-intlayer';
+	import { t } from '$lib/i18n/i18n';
 	import { enhance } from '$app/forms';
-
-	const admin = useIntlayer('admin');
-	const formContent = useIntlayer('form');
-	const button = useIntlayer('button');
-
 	let { form } = $props();
 
 	// Default to one year from now
@@ -24,9 +19,9 @@
 	<!-- Page Header -->
 	<div class="mb-8">
 		<a href="/admin/launch-codes" class="text-sm text-muted-foreground hover:text-foreground">
-			← {$admin.back_to_launch_codes.value}
+			← {$t('admin_back_to_launch_codes')}
 		</a>
-		<h1 class="title2 mb-2 mt-4">{$admin.create_launch_code.value}</h1>
+		<h1 class="title2 mb-2 mt-4">{$t('admin_create_launch_code')}</h1>
 		<p class="text-muted-foreground">{$create.admin_create_launch_code_desc.value}</p>
 	</div>
 
@@ -41,12 +36,12 @@
 	<form method="POST" use:enhance>
 		<Card>
 			<CardHeader>
-				<CardTitle>{$admin.code_details.value}</CardTitle>
+				<CardTitle>{$t('admin_code_details')}</CardTitle>
 			</CardHeader>
 			<CardContent class="space-y-6">
 				<!-- Code -->
 				<div class="space-y-2">
-					<Label for="code">{$formContent.label_code.value} *</Label>
+					<Label for="code">{$t('form_label_code')} *</Label>
 					<Input
 						type="text"
 						id="code"
@@ -58,25 +53,25 @@
 						maxlength="50"
 					/>
 					<p class="text-xs text-muted-foreground">
-						{$admin.code_help.value}
+						{$t('admin_code_help')}
 					</p>
 				</div>
 
 				<!-- Description -->
 				<div class="space-y-2">
-					<Label for="description">{$formContent.label_description.value}</Label>
+					<Label for="description">{$t('form_label_description')}</Label>
 					<Textarea
 						id="description"
 						name="description"
 						value={form?.description || ''}
-						placeholder={$admin.description_placeholder.value}
+						placeholder={$t('admin_description_placeholder')}
 						rows="3"
 					/>
 				</div>
 
 				<!-- Valid Until -->
 				<div class="space-y-2">
-					<Label for="validUntil">{$formContent.label_valid_until.value} *</Label>
+					<Label for="validUntil">{$t('form_label_valid_until')} *</Label>
 					<Input
 						type="datetime-local"
 						id="validUntil"
@@ -85,22 +80,22 @@
 						required
 					/>
 					<p class="text-xs text-muted-foreground">
-						{$admin.valid_until_help.value}
+						{$t('admin_valid_until_help')}
 					</p>
 				</div>
 
 				<!-- Max Uses -->
 				<div class="space-y-2">
-					<Label for="maxUses">{$formContent.label_max_uses.value}</Label>
+					<Label for="maxUses">{$t('form_label_max_uses')}</Label>
 					<Input
 						type="number"
 						id="maxUses"
 						name="maxUses"
-						placeholder={$admin.unlimited.value}
+						placeholder={$t('admin_unlimited')}
 						min="1"
 					/>
 					<p class="text-xs text-muted-foreground">
-						{$admin.max_uses_help.value}
+						{$t('admin_max_uses_help')}
 					</p>
 				</div>
 
@@ -120,7 +115,7 @@
 				{$create.admin_create_code.value}
 			</Button>
 			<Button type="button" variant="outline" href="/admin/launch-codes">
-				{$button.cancel.value}
+				{$t('button_cancel')}
 			</Button>
 		</div>
 	</form>

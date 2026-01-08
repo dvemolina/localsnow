@@ -9,14 +9,7 @@
 	import ReviewList from '$src/features/Reviews/components/ReviewList.svelte';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
-	import { useIntlayer } from 'svelte-intlayer';
-
-	const button = useIntlayer('button');
-	const instructorContent = useIntlayer('instructor');
-	const instructors = useIntlayer('instructors');
-	const badge = useIntlayer('badge');
-	const lessons = useIntlayer('lessons');
-
+	import { t } from '$lib/i18n/i18n';
 	let { data } = $props();
 	let showBookingDialog = $state(false);
 
@@ -221,7 +214,7 @@
 					d="M15 19l-7-7 7-7"
 				/>
 			</svg>
-			{$button.back_to_instructors.value}
+			{$t('button_back_to_instructors')}
 		</a>
 	</div>
 
@@ -253,12 +246,12 @@
 								<StarScore score={reviewStats.averageRating} />
 							</div>
 							<span class="text-xs text-muted-foreground">
-								{reviewStats.totalReviews} {reviewStats.totalReviews === 1 ? $instructorContent.review.value : $instructorContent.reviews.value}
+								{reviewStats.totalReviews} {reviewStats.totalReviews === 1 ? $t('instructor_review') : $t('instructor_reviews')}
 							</span>
 						</div>
 					{:else}
 						<div class="flex justify-center">
-							<span class="text-xs text-muted-foreground">{$instructorContent.no_reviews_yet.value}</span>
+							<span class="text-xs text-muted-foreground">{$t('instructor_no_reviews_yet')}</span>
 						</div>
 					{/if}
 				</div>
@@ -266,9 +259,9 @@
 				<!-- Instructor Type Badge -->
 				<div class="mt-4">
 					{#if isIndependent}
-						<Badge variant="secondary" class="text-sm">{$badge.independent_instructor.value}</Badge>
+						<Badge variant="secondary" class="text-sm">{$t('badge_independent_instructor')}</Badge>
 					{:else}
-						<Badge variant="secondary" class="text-sm">{$badge.school_instructor.value}</Badge>
+						<Badge variant="secondary" class="text-sm">{$t('badge_school_instructor')}</Badge>
 					{/if}
 				</div>
 			</div>
@@ -293,14 +286,14 @@
 						d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
 					/>
 				</svg>
-				{$button.request_lesson.value}
+				{$t('button_request_lesson')}
 			</Button>
 
 			<!-- Quick Info Box -->
 			<div class="mt-4 w-full space-y-3 rounded-lg bg-muted p-4">
 				<div class="flex items-center gap-2">
 					<img src="/icons/certificate.svg" alt="Certification" class="size-5" />
-					<span class="text-sm font-medium">{$instructorContent.verified_badge.value}</span>
+					<span class="text-sm font-medium">{$t('instructor_verified_badge')}</span>
 				</div>
 				<div class="flex items-center gap-2">
 					<svg
@@ -317,7 +310,7 @@
 							d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
 						/>
 					</svg>
-					<span class="text-sm">{$instructorContent.response_time.value}</span>
+					<span class="text-sm">{$t('instructor_response_time')}</span>
 				</div>
 			</div>
 		</div>
@@ -329,15 +322,15 @@
 			{#if data.baseLesson && !data.groupTiers?.length && !data.durationPackages?.length }
 				<div class="w-full rounded-lg border border-primary/20 bg-card p-4">
 					<div class="mb-2 flex items-center justify-between">
-						<span class="text-sm font-medium">{$lessons.hourly_rate_label.value}</span>
-						<Badge variant="secondary" class="text-xs">{$badge.from.value}</Badge>
+						<span class="text-sm font-medium">{$t('lessons_hourly_rate_label')}</span>
+						<Badge variant="secondary" class="text-xs">{$t('badge_from')}</Badge>
 					</div>
 					<div class="flex items-baseline gap-2">
 						<span class="text-2xl font-bold text-primary">{data.baseLesson.basePrice}</span>
 						<span class="text-sm text-muted-foreground">{data.baseLesson.currency}/h</span>
 					</div>
 					<p class="mt-2 text-xs text-muted-foreground">
-						{$instructorContent.base_rate_help.value}
+						{$t('instructor_base_rate_help')}
 					</p>
 				</div>
 			{/if}
@@ -367,7 +360,7 @@
 								d="M13 10V3L4 14h7v7l9-11h-7z"
 							/>
 						</svg>
-						{$instructorContent.sports_offered.value}
+						{$t('instructor_sports_offered')}
 					</h2>
 					<div class="flex flex-wrap gap-2">
 						{#each sports as sport}
@@ -401,7 +394,7 @@
 								d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
 							/>
 						</svg>
-						{$instructorContent.teaching_location.value}
+						{$t('instructor_teaching_location')}
 					</h2>
 					<div class="flex flex-wrap gap-2">
 						{#if resorts.length > 0}
@@ -412,7 +405,7 @@
 							{/each}
 						{:else}
 							<span class="text-sm text-muted-foreground">
-								{$instructorContent.multiple_locations.value}
+								{$t('instructor_multiple_locations')}
 							</span>
 						{/if}
 					</div>
@@ -436,7 +429,7 @@
 									d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
 								/>
 							</svg>
-							{$instructorContent.languages.value}
+							{$t('instructor_languages')}
 						</h2>
 						<div class="flex flex-wrap gap-2">
 							{#each instructor.spokenLanguages as language}
@@ -511,7 +504,7 @@
 				<div>
 					<h2 class="title4 mb-3">{m.instructor_about_heading({ name: instructor.name })}</h2>
 					<p class="hyphens-auto text-sm leading-relaxed text-muted-foreground">
-						{$instructorContent.default_bio.value}
+						{$t('instructor_default_bio')}
 					</p>
 				</div>
 			{/if}
@@ -555,7 +548,7 @@
 								d="M5 13l4 4L19 7"
 							/>
 						</svg>
-						<span>{$instructors.instructor_benefit1.value}</span>
+						<span>{$t('instructors_instructor_benefit1')}</span>
 					</li>
 					<li class="flex items-start gap-2">
 						<svg
@@ -572,7 +565,7 @@
 								d="M5 13l4 4L19 7"
 							/>
 						</svg>
-						<span>{$instructors.instructor_benefit2.value}</span>
+						<span>{$t('instructors_instructor_benefit2')}</span>
 					</li>
 					<li class="flex items-start gap-2">
 						<svg
@@ -589,7 +582,7 @@
 								d="M5 13l4 4L19 7"
 							/>
 						</svg>
-						<span>{$instructors.instructor_benefit3.value}</span>
+						<span>{$t('instructors_instructor_benefit3')}</span>
 					</li>
 					<li class="flex items-start gap-2">
 						<svg
@@ -606,7 +599,7 @@
 								d="M5 13l4 4L19 7"
 							/>
 						</svg>
-						<span>{$instructors.instructor_benefit4.value}</span>
+						<span>{$t('instructors_instructor_benefit4')}</span>
 					</li>
 				</ul>
 			</div>
@@ -660,7 +653,7 @@
 				d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
 			/>
 		</svg>
-		{$button.request_lesson.value}
+		{$t('button_request_lesson')}
 	</Button>
 </section>
 <BookingRequestDialog 

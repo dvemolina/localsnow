@@ -7,13 +7,8 @@
 	import { buttonVariants } from '$src/lib/components/ui/button';
 	import { Checkbox } from '$src/lib/components/ui/checkbox';
 	import { Label } from '$src/lib/components/ui/label';
-	import { useIntlayer } from 'svelte-intlayer';
+	import { t } from '$lib/i18n/i18n';
 	import { route } from '$lib/i18n/routeHelpers';
-
-	const formContent = useIntlayer('form');
-	const common = useIntlayer('common');
-	const login = useIntlayer('login');
-
 	let { data }: { data: { form: SuperValidated<Infer<UserSignupSchema>> } } = $props();
 
 	const form = superForm(data.form, {
@@ -30,7 +25,7 @@
 		<Form.Field {form} name="name" class="w-full">
 			<Form.Control>
 				{#snippet children({ props })}
-					<Form.Label>{$formContent.label_name.value}</Form.Label>
+					<Form.Label>{$t('form_label_name')}</Form.Label>
 					<Input {...props} bind:value={$formData.name} />
 				{/snippet}
 			</Form.Control>
@@ -40,7 +35,7 @@
 		<Form.Field {form} name="lastName" class="w-full">
 			<Form.Control>
 				{#snippet children({ props })}
-					<Form.Label>{$formContent.label_last_name.value}</Form.Label>
+					<Form.Label>{$t('form_label_last_name')}</Form.Label>
 					<Input {...props} bind:value={$formData.lastName} />
 				{/snippet}
 			</Form.Control>
@@ -51,7 +46,7 @@
 		<Form.Field {form} name="phone" class="w-full">
 			<Form.Control>
 				{#snippet children({ props })}
-				<Form.Label>{$formContent.label_phone_optional.value}</Form.Label>
+				<Form.Label>{$t('form_label_phone_optional')}</Form.Label>
 				<Input {...props} value={$formData.phone} />
 				{/snippet}
 			</Form.Control>
@@ -63,7 +58,7 @@
 		<Form.Field {form} name="email" class="w-full">
 			<Form.Control>
 				{#snippet children({ props })}
-					<Form.Label>{$formContent.label_email.value}</Form.Label>
+					<Form.Label>{$t('form_label_email')}</Form.Label>
 					<Input {...props} bind:value={$formData.email} type="email" />
 				{/snippet}
 			</Form.Control>
@@ -73,7 +68,7 @@
 	<Form.Field {form} name="password" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>{$formContent.label_password.value}</Form.Label>
+				<Form.Label>{$t('form_label_password')}</Form.Label>
 				<Input {...props} bind:value={$formData.password} type="password" />
 			{/snippet}
 		</Form.Control>
@@ -101,7 +96,7 @@
 		</Form.Field>
 	
     <div class="flex flex-row gap-2 items-center justify-center w-full mt-6">
-        <Form.Button>{$common.submit.value}</Form.Button>
-        <a href={route('/login')} class="text-sm {buttonVariants({ variant: "outline-solid" })}">{$login.already_have_account.value}</a>
+        <Form.Button>{$t('common_submit')}</Form.Button>
+        <a href={route('/login')} class="text-sm {buttonVariants({ variant: "outline-solid" })}">{$t('login_already_have_account')}</a>
     </div>
 </form>

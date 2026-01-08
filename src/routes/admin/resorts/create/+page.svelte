@@ -4,13 +4,8 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import * as Select from '$lib/components/ui/select';
-	import { useIntlayer } from 'svelte-intlayer';
+	import { t } from '$lib/i18n/i18n';
 	import { enhance } from '$app/forms';
-
-	const admin = useIntlayer('admin');
-	const label = useIntlayer('label');
-	const button = useIntlayer('button');
-
 	let { data, form } = $props();
 
 	let submitting = $state(false);
@@ -34,10 +29,10 @@
 	<div class="mb-8">
 		<div class="mb-4">
 			<Button href="/admin/resorts" variant="outline" size="sm">
-				← {$admin.back_to_resorts.value}
+				← {$t('admin_back_to_resorts')}
 			</Button>
 		</div>
-		<h1 class="title2 mb-2">{$admin.create_resort.value}</h1>
+		<h1 class="title2 mb-2">{$t('admin_create_resort')}</h1>
 		<p class="text-muted-foreground">{$create.admin_create_resort_desc.value}</p>
 	</div>
 
@@ -53,7 +48,7 @@
 	>
 		<Card>
 			<CardHeader>
-				<CardTitle>{$admin.resort_details.value}</CardTitle>
+				<CardTitle>{$t('admin_resort_details')}</CardTitle>
 			</CardHeader>
 			<CardContent class="space-y-6">
 				{#if form?.error}
@@ -65,13 +60,13 @@
 				<div class="grid gap-6 md:grid-cols-2">
 					<!-- Name -->
 					<div class="space-y-2">
-						<Label for="name">{$label.resort_name.value} *</Label>
+						<Label for="name">{$t('label_resort_name')} *</Label>
 						<Input id="name" name="name" required placeholder="Val d'Isère" />
 					</div>
 
 					<!-- Slug -->
 					<div class="space-y-2">
-						<Label for="slug">{$label.slug.value} *</Label>
+						<Label for="slug">{$t('label_slug')} *</Label>
 						<Input
 							id="slug"
 							name="slug"
@@ -80,19 +75,19 @@
 							pattern="[a-z0-9-]+"
 						/>
 						<p class="text-xs text-muted-foreground">
-							{$label.slug_hint.value}
+							{$t('label_slug_hint')}
 						</p>
 					</div>
 
 					<!-- Label -->
 					<div class="space-y-2">
-						<Label for="label">{$label.display_label.value}</Label>
+						<Label for="label">{$t('label_display_label')}</Label>
 						<Input id="label" name="label" placeholder="Val d'Isère - Tignes" />
 					</div>
 
 					<!-- Country -->
 					<div class="space-y-2">
-						<Label for="countryId">{$label.country.value} *</Label>
+						<Label for="countryId">{$t('label_country')} *</Label>
 						<input type="hidden" name="countryId" value={selectedCountryId} />
 						<Select.Root
 							selected={selectedCountryId ? {
@@ -116,7 +111,7 @@
 
 					<!-- Region -->
 					<div class="space-y-2">
-						<Label for="regionId">{$label.region.value}</Label>
+						<Label for="regionId">{$t('label_region')}</Label>
 						<input type="hidden" name="regionId" value={selectedRegionId} />
 						<Select.Root
 							selected={selectedRegionId ? {
@@ -131,7 +126,7 @@
 							</Select.Trigger>
 							<Select.Content>
 								<Select.Item value="">
-									{$admin.no_region.value}
+									{$t('admin_no_region')}
 								</Select.Item>
 								{#each filteredRegions as region}
 									<Select.Item value={region.id.toString()}>
@@ -144,7 +139,7 @@
 
 					<!-- Min Elevation -->
 					<div class="space-y-2">
-						<Label for="minElevation">{$label.min_elevation.value}</Label>
+						<Label for="minElevation">{$t('label_min_elevation')}</Label>
 						<Input
 							id="minElevation"
 							name="minElevation"
@@ -155,7 +150,7 @@
 
 					<!-- Max Elevation -->
 					<div class="space-y-2">
-						<Label for="maxElevation">{$label.max_elevation.value}</Label>
+						<Label for="maxElevation">{$t('label_max_elevation')}</Label>
 						<Input
 							id="maxElevation"
 							name="maxElevation"
@@ -166,7 +161,7 @@
 
 					<!-- Latitude -->
 					<div class="space-y-2">
-						<Label for="lat">{$label.latitude.value}</Label>
+						<Label for="lat">{$t('label_latitude')}</Label>
 						<Input
 							id="lat"
 							name="lat"
@@ -178,7 +173,7 @@
 
 					<!-- Longitude -->
 					<div class="space-y-2">
-						<Label for="lon">{$label.longitude.value}</Label>
+						<Label for="lon">{$t('label_longitude')}</Label>
 						<Input
 							id="lon"
 							name="lon"
@@ -190,7 +185,7 @@
 
 					<!-- Website -->
 					<div class="col-span-2 space-y-2">
-						<Label for="website">{$label.website.value}</Label>
+						<Label for="website">{$t('label_website')}</Label>
 						<Input
 							id="website"
 							name="website"
@@ -203,13 +198,13 @@
 				<div class="flex gap-2 pt-4">
 					<Button type="submit" disabled={submitting}>
 						{#if submitting}
-							{$button.creating.value}
+							{$t('button_creating')}
 						{:else}
-							{$button.create.value}
+							{$t('button_create')}
 						{/if}
 					</Button>
 					<Button href="/admin/resorts" variant="outline" type="button">
-						{$button.cancel.value}
+						{$t('button_cancel')}
 					</Button>
 				</div>
 			</CardContent>

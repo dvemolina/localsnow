@@ -6,14 +6,7 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { enhance } from '$app/forms';
-	import { useIntlayer } from 'svelte-intlayer';
-
-	const button = useIntlayer('button');
-	const status = useIntlayer('status');
-	const admin = useIntlayer('admin');
-	const table = useIntlayer('table');
-	const role = useIntlayer('role');
-
+	import { t } from '$lib/i18n/i18n';
 	let { data } = $props();
 
 	let showSuspendDialog = $state(false);
@@ -46,7 +39,7 @@
 <div class="container mx-auto max-w-7xl space-y-6">
 	<!-- Back Button -->
 	<Button href="/admin/instructors" variant="outline" size="sm">
-		← {$button.back_to_instructors.value}
+		← {$t('button_back_to_instructors')}
 	</Button>
 
 	<!-- Instructor Header -->
@@ -62,7 +55,7 @@
 				{:else if data.instructor.isVerified}
 					<Badge class="bg-green-100 text-green-800">{$instructors.status_verified.value}</Badge>
 				{:else}
-					<Badge class="bg-yellow-100 text-yellow-800">{$status.pending_verification.value}</Badge>
+					<Badge class="bg-yellow-100 text-yellow-800">{$t('status_pending_verification')}</Badge>
 				{/if}
 				<Badge variant="outline">{data.instructor.role}</Badge>
 			</div>
@@ -198,7 +191,7 @@
 			<CardContent>
 				<div class="space-y-2">
 					<div>
-						<p class="text-sm font-medium">{$admin.reason.value}:</p>
+						<p class="text-sm font-medium">{$t('admin_reason')}:</p>
 						<p class="text-sm">{data.instructor.suspensionReason}</p>
 					</div>
 					<div>
@@ -219,11 +212,11 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>{$table.client.value}</Table.Head>
-						<Table.Head>{$table.date.value}</Table.Head>
-						<Table.Head>{$table.students.value}</Table.Head>
-						<Table.Head>{$table.status.value}</Table.Head>
-						<Table.Head>{$table.price.value}</Table.Head>
+						<Table.Head>{$t('table_client')}</Table.Head>
+						<Table.Head>{$t('table_date')}</Table.Head>
+						<Table.Head>{$t('table_students')}</Table.Head>
+						<Table.Head>{$t('table_status')}</Table.Head>
+						<Table.Head>{$t('table_price')}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -254,7 +247,7 @@
 	<!-- Reviews -->
 	<Card>
 		<CardHeader>
-			<CardTitle>{$admin.reviews.value} ({data.reviews.length})</CardTitle>
+			<CardTitle>{$t('admin_reviews')} ({data.reviews.length})</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<div class="space-y-3">
@@ -270,7 +263,7 @@
 										{formatDate(review.createdAt)}
 									</span>
 								</div>
-								<p class="mt-1 text-sm">{review.comment || $admin.no_comment.value}</p>
+								<p class="mt-1 text-sm">{review.comment || $t('admin_no_comment')}</p>
 								<p class="mt-1 text-xs text-muted-foreground">
 									{$instructors.admin_by.value} {review.clientEmail}
 								</p>
@@ -294,9 +287,9 @@
 				<Table.Header>
 					<Table.Row>
 						<Table.Head>{$instructors.table_action.value}</Table.Head>
-						<Table.Head>{$role.admin.value}</Table.Head>
+						<Table.Head>{$t('role_admin')}</Table.Head>
 						<Table.Head>{$instructors.table_details.value}</Table.Head>
-						<Table.Head>{$table.date.value}</Table.Head>
+						<Table.Head>{$t('table_date')}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -343,7 +336,7 @@
 				/>
 				<div class="flex justify-end gap-2">
 					<Button type="button" variant="outline" onclick={() => (showSuspendDialog = false)}>
-						{$button.cancel.value}
+						{$t('button_cancel')}
 					</Button>
 					<Button type="submit" variant="destructive">
 						{$instructors.button_suspend.value}
@@ -373,7 +366,7 @@
 				/>
 				<div class="flex justify-end gap-2">
 					<Button type="button" variant="outline" onclick={() => (showRejectDialog = false)}>
-						{$button.cancel.value}
+						{$t('button_cancel')}
 					</Button>
 					<Button type="submit" variant="destructive">
 						{$instructors.button_reject.value}

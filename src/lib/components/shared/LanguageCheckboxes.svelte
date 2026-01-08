@@ -1,30 +1,26 @@
 <script>
 	import GroupCheckboxes from "$src/lib/components/shared/GroupCheckboxes.svelte";
-	import { useIntlayer } from 'svelte-intlayer';
-
-	const lang = useIntlayer('lang');
-	const languagesContent = useIntlayer('languages');
-
+	import { t } from '$lib/i18n/i18n';
     // Common languages spoken in ski resorts across Europe and worldwide
     const languages = $derived([
-        { id: 'English', label: $lang.english.value },
-        { id: 'French', label: $lang.french.value },
-        { id: 'German', label: $lang.german.value },
-        { id: 'Italian', label: $lang.italian.value },
-        { id: 'Spanish', label: $lang.spanish.value },
-        { id: 'Portuguese', label: $lang.portuguese.value },
-        { id: 'Dutch', label: $lang.dutch.value },
-        { id: 'Russian', label: $lang.russian.value },
-        { id: 'Polish', label: $lang.polish.value },
-        { id: 'Czech', label: $lang.czech.value },
-        { id: 'Swedish', label: $lang.swedish.value },
-        { id: 'Norwegian', label: $lang.norwegian.value },
-        { id: 'Danish', label: $lang.danish.value },
-        { id: 'Finnish', label: $lang.finnish.value },
-        { id: 'Japanese', label: $lang.japanese.value },
-        { id: 'Chinese', label: $lang.chinese.value },
-        { id: 'Korean', label: $lang.korean.value },
-        { id: 'Arabic', label: $lang.arabic.value }
+        { id: 'English', label: $t('lang_english') },
+        { id: 'French', label: $t('lang_french') },
+        { id: 'German', label: $t('lang_german') },
+        { id: 'Italian', label: $t('lang_italian') },
+        { id: 'Spanish', label: $t('lang_spanish') },
+        { id: 'Portuguese', label: $t('lang_portuguese') },
+        { id: 'Dutch', label: $t('lang_dutch') },
+        { id: 'Russian', label: $t('lang_russian') },
+        { id: 'Polish', label: $t('lang_polish') },
+        { id: 'Czech', label: $t('lang_czech') },
+        { id: 'Swedish', label: $t('lang_swedish') },
+        { id: 'Norwegian', label: $t('lang_norwegian') },
+        { id: 'Danish', label: $t('lang_danish') },
+        { id: 'Finnish', label: $t('lang_finnish') },
+        { id: 'Japanese', label: $t('lang_japanese') },
+        { id: 'Chinese', label: $t('lang_chinese') },
+        { id: 'Korean', label: $t('lang_korean') },
+        { id: 'Arabic', label: $t('lang_arabic') }
     ]);
 
     let { form, name } = $props();

@@ -4,55 +4,51 @@
 	import { get } from 'svelte/store';
 	import { page } from '$app/stores';
 	import { route } from '$lib/i18n/routeHelpers';
-	import { useIntlayer } from 'svelte-intlayer';
+	import { t } from '$lib/i18n/i18n';
 	import LanguageSwitch from '$lib/components/shared/LanguageSwitch.svelte';
-
-	const admin = useIntlayer('admin');
-	const sidebarContent = useIntlayer('sidebar');
-
 	const items = $derived([
 		{
-			title: $admin.sidebar_overview.value,
+			title: $t('admin_sidebar_overview'),
 			url: '/admin/dashboard',
 			icon: '/icons/home.svg'
 		},
 		{
-			title: $admin.sidebar_instructors.value,
+			title: $t('admin_sidebar_instructors'),
 			url: '/admin/instructors',
 			icon: '/icons/service.svg'
 		},
 		{
-			title: $admin.sidebar_bookings.value,
+			title: $t('admin_sidebar_bookings'),
 			url: '/admin/bookings',
 			icon: '/icons/notebook.svg'
 		},
 		{
-			title: $admin.sidebar_users.value,
+			title: $t('admin_sidebar_users'),
 			url: '/admin/users',
 			icon: '/icons/ski-resort.svg'
 		},
 		{
-			title: $admin.sidebar_reviews.value,
+			title: $t('admin_sidebar_reviews'),
 			url: '/admin/reviews',
 			icon: '/icons/calendar.svg'
 		},
 		{
-			title: $admin.sidebar_resorts.value,
+			title: $t('admin_sidebar_resorts'),
 			url: '/admin/resorts',
 			icon: '/icons/ski-resort.svg'
 		},
 		{
-			title: $admin.sidebar_sports.value,
+			title: $t('admin_sidebar_sports'),
 			url: '/admin/sports',
 			icon: '/icons/service.svg'
 		},
 		{
-			title: $admin.sidebar_launch_codes.value,
+			title: $t('admin_sidebar_launch_codes'),
 			url: '/admin/launch-codes',
 			icon: '/icons/notebook.svg'
 		},
 		{
-			title: $admin.sidebar_payments.value,
+			title: $t('admin_sidebar_payments'),
 			url: '/admin/payments',
 			icon: '/icons/notebook.svg'
 		}
@@ -88,13 +84,13 @@
 				<p class="title4 mt-0 text-foreground/85 transition-all group-hover:text-foreground">
 					localsnow
 				</p>
-				<span class="text-xs text-muted-foreground">{$admin.panel.value}</span>
+				<span class="text-xs text-muted-foreground">{$t('admin_panel')}</span>
 			</div>
 		</a>
 	</Sidebar.Header>
 	<Sidebar.Content class="px-3 bg-white">
 		<Sidebar.Group />
-		<Sidebar.GroupLabel>{$admin.dashboard.value}</Sidebar.GroupLabel>
+		<Sidebar.GroupLabel>{$t('admin_dashboard')}</Sidebar.GroupLabel>
 		<Sidebar.GroupContent>
 			<Sidebar.Menu>
 				{#each items as item (item.url)}
@@ -122,10 +118,10 @@
 	<Sidebar.Footer class="bg-white p-4">
 		<div class="flex flex-col gap-3">
 			<a href={route('/dashboard')} class="text-sm text-muted-foreground hover:text-foreground">
-				← {$admin.back_to_dashboard.value}
+				← {$t('admin_back_to_dashboard')}
 			</a>
 			<div class="flex items-center justify-between border-t pt-3">
-				<span class="text-sm text-muted-foreground">{$sidebarContent.language.value}</span>
+				<span class="text-sm text-muted-foreground">{$t('sidebar_language')}</span>
 				<LanguageSwitch />
 			</div>
 		</div>

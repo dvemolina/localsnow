@@ -7,13 +7,7 @@
 	import * as Select from '$lib/components/ui/select';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { useIntlayer } from 'svelte-intlayer';
-
-	const admin = useIntlayer('admin');
-	const status = useIntlayer('status');
-	const button = useIntlayer('button');
-	const table = useIntlayer('table');
-
+	import { t } from '$lib/i18n/i18n';
 	let { data } = $props();
 
 	let searchValue = $state(data.filters.search || '');
@@ -64,7 +58,7 @@
 					<Input
 						id="search"
 						bind:value={searchValue}
-						placeholder={$admin.search_name_email.value}
+						placeholder={$t('admin_search_name_email')}
 						onkeydown={(e) => e.key === 'Enter' && applyFilters()}
 					/>
 				</div>
@@ -81,7 +75,7 @@
 						<Select.Content>
 							<Select.Item value="all">{$instructors.filter_all.value}</Select.Item>
 							<Select.Item value="true">{$instructors.status_verified.value}</Select.Item>
-							<Select.Item value="false">{$status.pending.value}</Select.Item>
+							<Select.Item value="false">{$t('status_pending')}</Select.Item>
 						</Select.Content>
 					</Select.Root>
 				</div>
@@ -97,7 +91,7 @@
 						</Select.Trigger>
 						<Select.Content>
 							<Select.Item value="all">{$instructors.filter_all.value}</Select.Item>
-							<Select.Item value="false">{$status.active.value}</Select.Item>
+							<Select.Item value="false">{$t('status_active')}</Select.Item>
 							<Select.Item value="true">{$instructors.status_suspended.value}</Select.Item>
 						</Select.Content>
 					</Select.Root>
@@ -105,8 +99,8 @@
 			</div>
 
 			<div class="mt-4 flex gap-2">
-				<Button onclick={applyFilters}>{$button.apply_filters.value}</Button>
-				<Button variant="outline" onclick={clearFilters}>{$button.clear.value}</Button>
+				<Button onclick={applyFilters}>{$t('button_apply_filters')}</Button>
+				<Button variant="outline" onclick={clearFilters}>{$t('button_clear')}</Button>
 			</div>
 		</CardContent>
 	</Card>
@@ -114,7 +108,7 @@
 	<!-- Results Summary -->
 	<div class="flex items-center justify-between">
 		<p class="text-sm text-muted-foreground">
-			{m.admin_showing_of({ count: data.instructors.length, total: data.pagination.total })} {$admin.instructors.value.toLowerCase()}
+			{m.admin_showing_of({ count: data.instructors.length, total: data.pagination.total })} {$t('admin_instructors').toLowerCase()}
 		</p>
 		<div class="text-sm text-muted-foreground">
 			{m.admin_page_of({ page: data.pagination.page, total: data.pagination.totalPages })}
@@ -127,16 +121,16 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>{$table.id.value}</Table.Head>
-						<Table.Head>{$table.name.value}</Table.Head>
-						<Table.Head>{$table.email.value}</Table.Head>
+						<Table.Head>{$t('table_id')}</Table.Head>
+						<Table.Head>{$t('table_name')}</Table.Head>
+						<Table.Head>{$t('table_email')}</Table.Head>
 						<Table.Head>{$instructors.table_resorts.value}</Table.Head>
 						<Table.Head>{$instructors.table_sports.value}</Table.Head>
-						<Table.Head>{$admin.bookings.value}</Table.Head>
-						<Table.Head>{$table.rating.value}</Table.Head>
-						<Table.Head>{$table.status.value}</Table.Head>
+						<Table.Head>{$t('admin_bookings')}</Table.Head>
+						<Table.Head>{$t('table_rating')}</Table.Head>
+						<Table.Head>{$t('table_status')}</Table.Head>
 						<Table.Head>{$instructors.table_joined.value}</Table.Head>
-						<Table.Head>{$table.actions.value}</Table.Head>
+						<Table.Head>{$t('table_actions')}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -193,7 +187,7 @@
 									{:else if instructor.isVerified}
 										<Badge class="bg-green-100 text-green-800">{$instructors.status_verified.value}</Badge>
 									{:else}
-										<Badge class="bg-yellow-100 text-yellow-800">{$status.pending.value}</Badge>
+										<Badge class="bg-yellow-100 text-yellow-800">{$t('status_pending')}</Badge>
 									{/if}
 								</div>
 							</Table.Cell>
@@ -202,7 +196,7 @@
 							</Table.Cell>
 							<Table.Cell>
 								<Button href="/admin/instructors/{instructor.id}" size="sm" variant="outline">
-									{$button.view.value}
+									{$t('button_view')}
 								</Button>
 							</Table.Cell>
 						</Table.Row>
@@ -221,7 +215,7 @@
 					variant="outline"
 					size="sm"
 				>
-					{$button.previous.value}
+					{$t('button_previous')}
 				</Button>
 			{/if}
 
@@ -235,7 +229,7 @@
 					variant="outline"
 					size="sm"
 				>
-					{$button.next.value}
+					{$t('button_next')}
 				</Button>
 			{/if}
 		</div>

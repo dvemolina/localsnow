@@ -5,10 +5,7 @@
 	import { Separator } from '$src/lib/components/ui/separator';
 	import { formatDate } from '$src/lib/utils/generics';
 	import { enhance } from '$app/forms';
-	import { useIntlayer } from 'svelte-intlayer';
-
-	const status = useIntlayer('status');
-
+	import { t } from '$lib/i18n/i18n';
 	let {
 		booking,
 		open = $bindable(false)
@@ -22,11 +19,11 @@
 	let showRejectConfirm = $state(false);
 
 	const statusConfig = $derived({
-		pending: { label: $status.pending_payment.value, color: 'bg-yellow-100 text-yellow-800' },
-		unlocked: { label: $status.unlocked.value, color: 'bg-blue-100 text-blue-800' },
+		pending: { label: $t('status_pending_payment'), color: 'bg-yellow-100 text-yellow-800' },
+		unlocked: { label: $t('status_unlocked'), color: 'bg-blue-100 text-blue-800' },
 		accepted: { label: $my_bookings.status_accepted.value, color: 'bg-green-100 text-green-800' },
 		rejected: { label: $my_bookings.status_rejected.value, color: 'bg-red-100 text-red-800' },
-		cancelled: { label: $status.cancelled.value, color: 'bg-gray-100 text-gray-800' },
+		cancelled: { label: $t('status_cancelled'), color: 'bg-gray-100 text-gray-800' },
 		expired: { label: m.status_expired ? $my_bookings.status_expired.value : 'Expired', color: 'bg-gray-100 text-gray-800' }
 	});
 

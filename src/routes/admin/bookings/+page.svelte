@@ -6,13 +6,7 @@
 	import * as Table from '$lib/components/ui/table';
 	import * as Select from '$lib/components/ui/select';
 	import { goto } from '$app/navigation';
-	import { useIntlayer } from 'svelte-intlayer';
-
-	const table = useIntlayer('table');
-	const status = useIntlayer('status');
-	const button = useIntlayer('button');
-	const admin = useIntlayer('admin');
-
+	import { t } from '$lib/i18n/i18n';
 	let { data } = $props();
 
 	let searchValue = $state(data.filters.search || '');
@@ -68,24 +62,24 @@
 					onSelectedChange={(v) => statusFilter = v?.value || 'all'}
 				>
 					<Select.Trigger>
-						<Select.Value placeholder={$table.status.value} />
+						<Select.Value placeholder={$t('table_status')} />
 					</Select.Trigger>
 					<Select.Content>
 						<Select.Item value="all">{$bookings.admin_all_statuses.value}</Select.Item>
-						<Select.Item value="pending">{$status.pending.value}</Select.Item>
+						<Select.Item value="pending">{$t('status_pending')}</Select.Item>
 						<Select.Item value="viewed">{$bookings.status_viewed.value}</Select.Item>
 						<Select.Item value="accepted">{$my_bookings.status_accepted.value}</Select.Item>
-						<Select.Item value="completed">{$status.completed.value}</Select.Item>
+						<Select.Item value="completed">{$t('status_completed')}</Select.Item>
 						<Select.Item value="rejected">{$my_bookings.status_rejected.value}</Select.Item>
 					</Select.Content>
 				</Select.Root>
 			</div>
-			<Button onclick={applyFilters} class="mt-4">{$button.apply_filters.value}</Button>
+			<Button onclick={applyFilters} class="mt-4">{$t('button_apply_filters')}</Button>
 		</CardContent>
 	</Card>
 
 	<p class="text-sm text-muted-foreground">
-		{m.admin_showing_of({ count: data.bookings.length, total: data.pagination.total })} {$admin.bookings.value.toLowerCase()}
+		{m.admin_showing_of({ count: data.bookings.length, total: data.pagination.total })} {$t('admin_bookings').toLowerCase()}
 	</p>
 
 	<!-- Bookings Table -->
@@ -94,14 +88,14 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>{$table.id.value}</Table.Head>
-						<Table.Head>{$table.client.value}</Table.Head>
-						<Table.Head>{$table.instructor.value}</Table.Head>
+						<Table.Head>{$t('table_id')}</Table.Head>
+						<Table.Head>{$t('table_client')}</Table.Head>
+						<Table.Head>{$t('table_instructor')}</Table.Head>
 						<Table.Head>{$bookings.table_resort_sport.value}</Table.Head>
-						<Table.Head>{$table.date.value}</Table.Head>
-						<Table.Head>{$table.students.value}</Table.Head>
-						<Table.Head>{$table.price.value}</Table.Head>
-						<Table.Head>{$table.status.value}</Table.Head>
+						<Table.Head>{$t('table_date')}</Table.Head>
+						<Table.Head>{$t('table_students')}</Table.Head>
+						<Table.Head>{$t('table_price')}</Table.Head>
+						<Table.Head>{$t('table_status')}</Table.Head>
 						<Table.Head>{$bookings.table_created.value}</Table.Head>
 					</Table.Row>
 				</Table.Header>
@@ -148,13 +142,13 @@
 		<div class="flex items-center justify-center gap-2">
 			{#if data.pagination.page > 1}
 				<Button href="/admin/bookings?page={data.pagination.page - 1}" variant="outline" size="sm">
-					{$button.previous.value}
+					{$t('button_previous')}
 				</Button>
 			{/if}
 			<span class="text-sm">{m.admin_page_of({ page: data.pagination.page, total: data.pagination.totalPages })}</span>
 			{#if data.pagination.page < data.pagination.totalPages}
 				<Button href="/admin/bookings?page={data.pagination.page + 1}" variant="outline" size="sm">
-					{$button.next.value}
+					{$t('button_next')}
 				</Button>
 			{/if}
 		</div>

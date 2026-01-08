@@ -3,16 +3,13 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
-	import { useIntlayer } from 'svelte-intlayer';
-
-	const status = useIntlayer('status');
-
+	import { t } from '$lib/i18n/i18n';
 	let { data } = $props();
 	const { booking } = data;
 
 	function getStatusBadge(status: string) {
 		const variants: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline', class: string, label: string }> = {
-			'pending': { variant: 'outline', class: 'border-yellow-500 text-yellow-700', label: $status.pending.value },
+			'pending': { variant: 'outline', class: 'border-yellow-500 text-yellow-700', label: $t('status_pending') },
 			'viewed': { variant: 'outline', class: 'border-blue-500 text-blue-700', label: $my_bookings.client_status_viewed.value },
 			'accepted': { variant: 'default', class: 'bg-green-600', label: $my_bookings.status_accepted.value },
 			'rejected': { variant: 'destructive', class: '', label: $my_bookings.status_rejected.value },

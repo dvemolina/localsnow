@@ -3,13 +3,8 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
-	import { useIntlayer } from 'svelte-intlayer';
+	import { t } from '$lib/i18n/i18n';
 	import { enhance } from '$app/forms';
-
-	const admin = useIntlayer('admin');
-	const label = useIntlayer('label');
-	const button = useIntlayer('button');
-
 	let { form } = $props();
 
 	let submitting = $state(false);
@@ -19,10 +14,10 @@
 	<div class="mb-8">
 		<div class="mb-4">
 			<Button href="/admin/sports" variant="outline" size="sm">
-				← {$admin.back_to_sports.value}
+				← {$t('admin_back_to_sports')}
 			</Button>
 		</div>
-		<h1 class="title2 mb-2">{$admin.create_sport.value}</h1>
+		<h1 class="title2 mb-2">{$t('admin_create_sport')}</h1>
 		<p class="text-muted-foreground">{$create.admin_create_sport_desc.value}</p>
 	</div>
 
@@ -38,7 +33,7 @@
 	>
 		<Card>
 			<CardHeader>
-				<CardTitle>{$admin.sport_details.value}</CardTitle>
+				<CardTitle>{$t('admin_sport_details')}</CardTitle>
 			</CardHeader>
 			<CardContent class="space-y-6">
 				{#if form?.error}
@@ -50,13 +45,13 @@
 				<div class="space-y-4">
 					<!-- Sport Name -->
 					<div class="space-y-2">
-						<Label for="sport">{$label.sport_name.value} *</Label>
+						<Label for="sport">{$t('label_sport_name')} *</Label>
 						<Input id="sport" name="sport" required placeholder="Snowboard" />
 					</div>
 
 					<!-- Slug -->
 					<div class="space-y-2">
-						<Label for="sportSlug">{$label.slug.value} *</Label>
+						<Label for="sportSlug">{$t('label_slug')} *</Label>
 						<Input
 							id="sportSlug"
 							name="sportSlug"
@@ -65,7 +60,7 @@
 							pattern="[a-z0-9-]+"
 						/>
 						<p class="text-xs text-muted-foreground">
-							{$label.slug_hint.value}
+							{$t('label_slug_hint')}
 						</p>
 					</div>
 				</div>
@@ -73,13 +68,13 @@
 				<div class="flex gap-2 pt-4">
 					<Button type="submit" disabled={submitting}>
 						{#if submitting}
-							{$button.creating.value}
+							{$t('button_creating')}
 						{:else}
-							{$button.create.value}
+							{$t('button_create')}
 						{/if}
 					</Button>
 					<Button href="/admin/sports" variant="outline" type="button">
-						{$button.cancel.value}
+						{$t('button_cancel')}
 					</Button>
 				</div>
 			</CardContent>

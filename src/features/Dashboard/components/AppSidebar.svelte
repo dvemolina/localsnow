@@ -3,26 +3,23 @@
 	import { isMobile } from '$src/lib/hooks/is-mobile.svelte';
 	import { get } from 'svelte/store';
 	import { route } from '$lib/i18n/routeHelpers';
-	import { useIntlayer } from 'svelte-intlayer';
+	import { t } from '$lib/i18n/i18n';
 	import LanguageSwitch from '$lib/components/shared/LanguageSwitch.svelte';
-
-	const sidebarContent = useIntlayer('sidebar');
-
 	let { user } = $props()
 
 	const userItems = $derived([
 		{
-			title: $sidebarContent.home.value,
+			title: $t('sidebar_home'),
 			url: '/dashboard',
 			icon: '/icons/home.svg'
 		},
 		{
-			title: $sidebarContent.profile.value,
+			title: $t('sidebar_profile'),
 			url: '/dashboard/profile',
 			icon: '/icons/ski-resort.svg'
 		},
 		{
-			title: $sidebarContent.bookings.value,
+			title: $t('sidebar_bookings'),
 			url: '/dashboard/my-bookings',
 			icon: '/icons/notebook.svg'
 		}
@@ -30,27 +27,27 @@
 
 	const instructorItems = $derived([
 		{
-			title: $sidebarContent.home.value,
+			title: $t('sidebar_home'),
 			url: '/dashboard',
 			icon: '/icons/home.svg'
 		},
 		{
-			title: $sidebarContent.profile.value,
+			title: $t('sidebar_profile'),
 			url: '/dashboard/profile',
 			icon: '/icons/ski-resort.svg'
 		},
 		{
-			title: $sidebarContent.lessons.value,
+			title: $t('sidebar_lessons'),
 			url: '/dashboard/lessons',
 			icon: '/icons/service.svg'
 		},
 		{
-			title: $sidebarContent.bookings.value,
+			title: $t('sidebar_bookings'),
 			url: '/dashboard/bookings',
 			icon: '/icons/notebook.svg'
 		},
 		{
-			title: $sidebarContent.availability.value,
+			title: $t('sidebar_availability'),
 			url: '/dashboard/availability',
 			icon: '/icons/calendar.svg'
 		}
@@ -58,22 +55,22 @@
 
 	const instructorSchoolItems = $derived([
 		{
-			title: $sidebarContent.home.value,
+			title: $t('sidebar_home'),
 			url: '/dashboard',
 			icon: '/icons/home.svg'
 		},
 		{
-			title: $sidebarContent.profile.value,
+			title: $t('sidebar_profile'),
 			url: '/dashboard/profile',
 			icon: '/icons/ski-resort.svg'
 		},
 		{
-			title: $sidebarContent.bookings.value,
+			title: $t('sidebar_bookings'),
 			url: '/dashboard/bookings',
 			icon: '/icons/notebook.svg'
 		},
 		{
-			title: $sidebarContent.schools.value,
+			title: $t('sidebar_schools'),
 			url: '/dashboard/schools',
 			icon: '/icons/service.svg'
 		},
@@ -86,27 +83,27 @@
 
 	const schoolAdminItems = $derived([
 		{
-			title: $sidebarContent.school_home.value,
+			title: $t('sidebar_school_home'),
 			url: '/dashboard/school',
 			icon: '/icons/home.svg'
 		},
 		{
-			title: $sidebarContent.school_profile.value,
+			title: $t('sidebar_school_profile'),
 			url: '/dashboard/school/profile',
 			icon: '/icons/ski-resort.svg'
 		},
 		{
-			title: $sidebarContent.school_instructors.value,
+			title: $t('sidebar_school_instructors'),
 			url: '/dashboard/school/instructors',
 			icon: '/icons/service.svg'
 		},
 		{
-			title: $sidebarContent.school_lessons.value,
+			title: $t('sidebar_school_lessons'),
 			url: '/dashboard/school/lessons',
 			icon: '/icons/service.svg'
 		},
 		{
-			title: $sidebarContent.school_bookings.value,
+			title: $t('sidebar_school_bookings'),
 			url: '/dashboard/school/bookings',
 			icon: '/icons/notebook.svg'
 		}
@@ -203,7 +200,7 @@
 	</Sidebar.Content>
 	<Sidebar.Footer class="bg-white p-4">
 		<div class="flex items-center justify-between">
-			<span class="text-sm text-muted-foreground">{$sidebarContent.language.value}</span>
+			<span class="text-sm text-muted-foreground">{$t('sidebar_language')}</span>
 			<LanguageSwitch />
 		</div>
 	</Sidebar.Footer>

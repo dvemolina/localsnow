@@ -3,10 +3,7 @@
 	import { Button } from '$src/lib/components/ui/button';
 	import * as Card from '$src/lib/components/ui/card';
 	import { formatDate } from '$src/lib/utils/generics';
-	import { useIntlayer } from 'svelte-intlayer';
-
-	const status = useIntlayer('status');
-
+	import { t } from '$lib/i18n/i18n';
 	let {
 		booking,
 		onViewDetails
@@ -17,7 +14,7 @@
 
 	const statusConfig = $derived({
 		pending: {
-			label: $status.pending_review.value,
+			label: $t('status_pending_review'),
 			variant: 'secondary' as const,
 			color: 'bg-yellow-100 text-yellow-800 border-yellow-200'
 		},
@@ -27,7 +24,7 @@
 			color: 'bg-green-100 text-green-800 border-green-200'
 		},
 		viewed: {  // Instructor unlocked but not accepted yet
-			label: $status.unlocked.value,
+			label: $t('status_unlocked'),
 			variant: 'default' as const,
 			color: 'bg-blue-100 text-blue-800 border-blue-200'
 		},
@@ -37,7 +34,7 @@
 			color: 'bg-red-100 text-red-800 border-red-200'
 		},
 		cancelled: {
-			label: $status.cancelled.value,
+			label: $t('status_cancelled'),
 			variant: 'outline' as const,
 			color: 'bg-gray-100 text-gray-800 border-gray-200'
 		},

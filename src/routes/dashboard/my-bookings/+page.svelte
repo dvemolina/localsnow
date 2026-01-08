@@ -4,14 +4,8 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Table from '$lib/components/ui/table';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
-	import { useIntlayer } from 'svelte-intlayer';
+	import { t } from '$lib/i18n/i18n';
 	import { enhance } from '$app/forms';
-
-	const status = useIntlayer('status');
-	const table = useIntlayer('table');
-	const button = useIntlayer('button');
-	const client = useIntlayer('client');
-
 
 	let { data, form } = $props();
 
@@ -29,12 +23,12 @@
 
 	// Status labels extracted at top level
 	const statusLabels = $derived({
-		pending: $status.pending.value,
-		viewed: $client.status_viewed.value,
-		accepted: $status.accepted.value,
-		rejected: $status.rejected.value,
-		cancelled: $client.status_cancelled.value,
-		expired: $status.expired.value
+		pending: $t('status_pending'),
+		viewed: $t('client_status_viewed'),
+		accepted: $t('status_accepted'),
+		rejected: $t('status_rejected'),
+		cancelled: $t('client_status_cancelled'),
+		expired: $t('status_expired')
 	});
 
 	function getStatusBadge(statusValue: string) {
@@ -76,7 +70,7 @@
 
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8">
-		<h1 class="title2 mb-2">{$client.my_bookings.value}</h1>
+		<h1 class="title2 mb-2">{$t('client_my_bookings')}</h1>
 		<p class="text-muted-foreground">{$my_bookings.client_my_bookings_desc.value}</p>
 	</div>
 
@@ -134,13 +128,13 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>{$table.id.value}</Table.Head>
+						<Table.Head>{$t('table_id')}</Table.Head>
 						<Table.Head>{$my_bookings.client_table_instructor.value}</Table.Head>
 						<Table.Head>{$my_bookings.table_dates.value}</Table.Head>
 						<Table.Head>{$my_bookings.client_table_students.value}</Table.Head>
 						<Table.Head>{$my_bookings.client_table_sports.value}</Table.Head>
-						<Table.Head>{$table.status.value}</Table.Head>
-						<Table.Head>{$table.actions.value}</Table.Head>
+						<Table.Head>{$t('table_status')}</Table.Head>
+						<Table.Head>{$t('table_actions')}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -203,7 +197,7 @@
 											size="sm"
 											variant="outline"
 										>
-											{$button.view.value}
+											{$t('button_view')}
 										</Button>
 										{#if ['pending', 'viewed'].includes(booking.status)}
 											<Button
@@ -211,7 +205,7 @@
 												variant="destructive"
 												onclick={() => openCancelDialog(booking.id)}
 											>
-												{$button.cancel.value}
+												{$t('button_cancel')}
 											</Button>
 										{/if}
 									</div>

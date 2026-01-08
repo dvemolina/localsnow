@@ -18,13 +18,7 @@
 	import { onDestroy, onMount } from 'svelte';
 	import CountryCodeSelect from '$src/lib/components/shared/CountryCodeSelect.svelte';
 	import { toast } from 'svelte-sonner';
-	import { useIntlayer } from 'svelte-intlayer';
-
-	const toast = useIntlayer('toast');
-	const instructor = useIntlayer('instructor');
-	const formContent = useIntlayer('form');
-	const button = useIntlayer('button');
-
+	import { t } from '$lib/i18n/i18n';
 	let {
 		instructorForm,
 		currentProfileImageUrl
@@ -38,11 +32,11 @@
 		dataType: 'json',
 		onUpdate({ form }) {
 			if (form.valid) {
-				toast.success($toast.instructor_profile_updated.value);
+				toast.success($t('toast_instructor_profile_updated'));
 			}
 		},
 		onError({ result }) {
-			toast.error($toast.instructor_profile_error.value);
+			toast.error($t('toast_instructor_profile_error'));
 		}
 	});
 
@@ -103,16 +97,16 @@
 		<!-- Basic Information -->
 		<Accordion.Item value="basic">
 			<Accordion.Trigger class="text-base font-semibold">
-				{$instructor.form_basic_info.value}
+				{$t('instructor_form_basic_info')}
 			</Accordion.Trigger>
 			<Accordion.Content class="space-y-4 pt-4">
 				<!-- Profile Image -->
 				<Form.Field {form} name="profileImage" class="w-full">
 					<Form.Control>
 						{#snippet children({ props })}
-							<Form.Label>{$instructor.form_profile_image.value}</Form.Label>
+							<Form.Label>{$t('instructor_form_profile_image')}</Form.Label>
 							<Form.Description class="text-xs">
-								{$instructor.form_profile_image_desc.value}
+								{$t('instructor_form_profile_image_desc')}
 							</Form.Description>
 
 							<!-- Current/Preview Image Display -->
@@ -126,10 +120,10 @@
 								</div>
 								<div class="flex flex-col gap-1">
 									<p class="text-sm font-medium">
-										{profilePreviewUrl ? $instructor.form_new_image.value : currentProfileImageUrl ? $instructor.form_current_image.value : $instructor.form_default_image.value}
+										{profilePreviewUrl ? $t('instructor_form_new_image') : currentProfileImageUrl ? $t('instructor_form_current_image') : $t('instructor_form_default_image')}
 									</p>
 									<p class="text-xs text-muted-foreground">
-										{$instructor.form_upload_to_replace.value}
+										{$t('instructor_form_upload_to_replace')}
 									</p>
 								</div>
 							</div>
@@ -153,18 +147,18 @@
 						{#snippet children({ props })}
 							<Form.Label>{$instructors.form_label_bio.value}</Form.Label>
 							<Form.Description class="text-xs">
-								{$instructor.form_bio_desc.value}
+								{$t('instructor_form_bio_desc')}
 							</Form.Description>
 							<Textarea
 								bind:value={$formData.bio}
 								disabled={$delayed}
-								placeholder={$instructor.form_bio_placeholder.value}
+								placeholder={$t('instructor_form_bio_placeholder')}
 								rows={4}
 								maxlength={500}
 							/>
 							{#if $formData.bio}
 								<p class="text-xs text-muted-foreground text-right">
-									{$formData.bio.length}/500 {$formContent.characters.value}
+									{$formData.bio.length}/500 {$t('form_characters')}
 								</p>
 							{/if}
 						{/snippet}
@@ -177,11 +171,11 @@
 		<!-- Location & Teaching Details -->
 		<Accordion.Item value="location">
 			<Accordion.Trigger class="text-base font-semibold">
-				{$instructor.form_location_details.value}
+				{$t('instructor_form_location_details')}
 			</Accordion.Trigger>
 			<Accordion.Content class="space-y-4 pt-4">
 				<!-- Resort -->
-				<SearchResort {form} name="resort" label={$instructor.form_primary_resort.value} />
+				<SearchResort {form} name="resort" label={$t('instructor_form_primary_resort')} />
 
 				<!-- Sports -->
 				<SportsCheckboxes {form} name="sports" />
@@ -194,16 +188,16 @@
 		<!-- Credentials & Verification -->
 		<Accordion.Item value="credentials">
 			<Accordion.Trigger class="text-base font-semibold">
-				{$instructor.form_credentials.value}
+				{$t('instructor_form_credentials')}
 			</Accordion.Trigger>
 			<Accordion.Content class="space-y-4 pt-4">
 				<!-- Qualification Upload -->
 				<Form.Field {form} name="qualification" class="w-full">
 					<Form.Control>
 						{#snippet children({ props })}
-							<Form.Label>{$instructor.form_qualification.value}</Form.Label>
+							<Form.Label>{$t('instructor_form_qualification')}</Form.Label>
 							<Form.Description class="text-xs">
-								{$instructor.form_qualification_desc.value}
+								{$t('instructor_form_qualification_desc')}
 							</Form.Description>
 							<Input
 								{...props}
@@ -218,7 +212,7 @@
 									<svg class="h-5 w-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
 										<path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" />
 									</svg>
-									<span class="text-sm">{$instructor.form_new_pdf.value}</span>
+									<span class="text-sm">{$t('instructor_form_new_pdf')}</span>
 								</div>
 							{/if}
 						{/snippet}
@@ -241,7 +235,7 @@
 									placeholder="123 456 7890"
 								/>
 								<Form.Description class="text-xs">
-									{$instructor.form_phone_desc.value}
+									{$t('instructor_form_phone_desc')}
 								</Form.Description>
 							{/snippet}
 						</Form.Control>
@@ -261,10 +255,10 @@
 						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
 						<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
 					</svg>
-					{$button.saving.value}
+					{$t('button_saving')}
 				</span>
 			{:else}
-				{$button.save_instructor_profile.value}
+				{$t('button_save_instructor_profile')}
 			{/if}
 		</Button>
 	</div>

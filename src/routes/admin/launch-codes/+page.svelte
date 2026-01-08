@@ -3,14 +3,8 @@
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import * as Table from '$lib/components/ui/table';
 	import { Badge } from '$lib/components/ui/badge';
-	import { useIntlayer } from 'svelte-intlayer';
+	import { t } from '$lib/i18n/i18n';
 	import { enhance } from '$app/forms';
-
-	const status = useIntlayer('status');
-	const admin = useIntlayer('admin');
-	const table = useIntlayer('table');
-	const button = useIntlayer('button');
-
 	let { data } = $props();
 
 	function formatDate(date: Date | string) {
@@ -37,7 +31,7 @@
 		if (code.maxUses && code.totalUsage >= code.maxUses) {
 			return { variant: 'secondary' as const, text: $launch_codes.status_max_uses_reached.value };
 		}
-		return { variant: 'default' as const, text: $status.active.value };
+		return { variant: 'default' as const, text: $t('status_active') };
 	}
 </script>
 
@@ -49,7 +43,7 @@
 			<p class="text-muted-foreground">{$launch_codes.admin_launch_codes_desc.value}</p>
 		</div>
 		<Button href="/admin/launch-codes/create" class="bg-primary text-white">
-			{$admin.create_launch_code.value}
+			{$t('admin_create_launch_code')}
 		</Button>
 	</div>
 
@@ -71,8 +65,8 @@
 							<Table.Head>{$launch_codes.table_description.value}</Table.Head>
 							<Table.Head>{$launch_codes.table_valid_until.value}</Table.Head>
 							<Table.Head>{$launch_codes.table_usage.value}</Table.Head>
-							<Table.Head>{$table.status.value}</Table.Head>
-							<Table.Head>{$table.actions.value}</Table.Head>
+							<Table.Head>{$t('table_status')}</Table.Head>
+							<Table.Head>{$t('table_actions')}</Table.Head>
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
@@ -121,7 +115,7 @@
 											variant="outline"
 											size="sm"
 										>
-											{$button.edit.value}
+											{$t('button_edit')}
 										</Button>
 
 										<form method="POST" action="?/toggle" use:enhance>
@@ -152,7 +146,7 @@
 												variant="destructive"
 												size="sm"
 											>
-												{$button.delete.value}
+												{$t('button_delete')}
 											</Button>
 										</form>
 									</div>
@@ -174,7 +168,7 @@
 			<CardContent>
 				<div class="text-2xl font-bold">{data.codes.length}</div>
 				<p class="text-xs text-muted-foreground">
-					{data.codes.filter(c => c.isActive).length} {$status.active.value.toLowerCase()}
+					{data.codes.filter(c => c.isActive).length} {$t('status_active').toLowerCase()}
 				</p>
 			</CardContent>
 		</Card>

@@ -3,11 +3,8 @@
 	let user = $state(data.user);
 
 	import { buttonVariants } from "$src/lib/components/ui/button";
-	import { useIntlayer } from 'svelte-intlayer';
+	import { t } from '$lib/i18n/i18n';
 	import { route } from '$lib/i18n/routeHelpers';
-
-	const role = useIntlayer('role');
-
 </script>
 
 	<!-- Role Selection Screen -->
@@ -27,7 +24,7 @@
                 <div class="flex flex-col gap-2 items-center justify-center">
                     <a href={route('/dashboard/choose-role/default-user')} class=" w-full {buttonVariants({ variant: "default" })}" >{$choose_role.role_student.value}</a>
                     <a href={route('/dashboard/choose-role/instructor')} class="w-full {buttonVariants({ variant: "default" })}">{$choose_role.role_instructor.value}</a>
-                    <a href={route('/dashboard/choose-role/school-admin')} class="w-full {buttonVariants({ variant: "default" })}"> {$role.school_admin.value}</a>
+                    <a href={route('/dashboard/choose-role/school-admin')} class="w-full {buttonVariants({ variant: "default" })}"> {$t('role_school_admin')}</a>
             </div>
 			</div>
 

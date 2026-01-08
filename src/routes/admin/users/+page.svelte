@@ -6,14 +6,7 @@
 	import * as Table from '$lib/components/ui/table';
 	import * as Select from '$lib/components/ui/select';
 	import { goto } from '$app/navigation';
-	import { useIntlayer } from 'svelte-intlayer';
-
-	const admin = useIntlayer('admin');
-	const role = useIntlayer('role');
-	const button = useIntlayer('button');
-	const table = useIntlayer('table');
-	const status = useIntlayer('status');
-
+	import { t } from '$lib/i18n/i18n';
 	let { data } = $props();
 
 	let searchValue = $state(data.filters.search || '');
@@ -43,7 +36,7 @@
 				<div class="col-span-2">
 					<Input
 						bind:value={searchValue}
-						placeholder={$admin.search_name_email.value}
+						placeholder={$t('admin_search_name_email')}
 						onkeydown={(e) => e.key === 'Enter' && applyFilters()}
 					/>
 				</div>
@@ -57,12 +50,12 @@
 						<Select.Item value="client">{$users.role_client.value}</Select.Item>
 						<Select.Item value="instructor-independent">{$users.role_instructor_independent.value}</Select.Item>
 						<Select.Item value="instructor-school">{$users.role_instructor_school.value}</Select.Item>
-						<Select.Item value="school-admin">{$role.school_admin.value}</Select.Item>
-						<Select.Item value="admin">{$role.admin.value}</Select.Item>
+						<Select.Item value="school-admin">{$t('role_school_admin')}</Select.Item>
+						<Select.Item value="admin">{$t('role_admin')}</Select.Item>
 					</Select.Content>
 				</Select.Root>
 			</div>
-			<Button onclick={applyFilters} class="mt-4">{$button.apply.value}</Button>
+			<Button onclick={applyFilters} class="mt-4">{$t('button_apply')}</Button>
 		</CardContent>
 	</Card>
 
@@ -73,11 +66,11 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>{$table.id.value}</Table.Head>
-						<Table.Head>{$table.name.value}</Table.Head>
-						<Table.Head>{$table.email.value}</Table.Head>
+						<Table.Head>{$t('table_id')}</Table.Head>
+						<Table.Head>{$t('table_name')}</Table.Head>
+						<Table.Head>{$t('table_email')}</Table.Head>
 						<Table.Head>{$users.table_role.value}</Table.Head>
-						<Table.Head>{$table.status.value}</Table.Head>
+						<Table.Head>{$t('table_status')}</Table.Head>
 						<Table.Head>{$instructors.table_joined.value}</Table.Head>
 					</Table.Row>
 				</Table.Header>
@@ -87,12 +80,12 @@
 							<Table.Cell class="font-mono text-xs text-muted-foreground">#{user.id}</Table.Cell>
 							<Table.Cell class="font-medium">{user.name} {user.lastName}</Table.Cell>
 							<Table.Cell>{user.email}</Table.Cell>
-							<Table.Cell><Badge variant="outline">{user.role || $admin.no_role.value}</Badge></Table.Cell>
+							<Table.Cell><Badge variant="outline">{user.role || $t('admin_no_role')}</Badge></Table.Cell>
 							<Table.Cell>
 								{#if user.isSuspended}
 									<Badge variant="destructive">{$instructors.status_suspended.value}</Badge>
 								{:else}
-									<Badge class="bg-green-100 text-green-800">{$status.active.value}</Badge>
+									<Badge class="bg-green-100 text-green-800">{$t('status_active')}</Badge>
 								{/if}
 							</Table.Cell>
 							<Table.Cell>{formatDate(user.createdAt)}</Table.Cell>
@@ -106,11 +99,11 @@
 	{#if data.pagination.totalPages > 1}
 		<div class="flex items-center justify-center gap-2">
 			{#if data.pagination.page > 1}
-				<Button href="/admin/users?page={data.pagination.page - 1}" variant="outline" size="sm">{$button.previous.value}</Button>
+				<Button href="/admin/users?page={data.pagination.page - 1}" variant="outline" size="sm">{$t('button_previous')}</Button>
 			{/if}
 			<span class="text-sm">{m.admin_page_of({ page: data.pagination.page, total: data.pagination.totalPages })}</span>
 			{#if data.pagination.page < data.pagination.totalPages}
-				<Button href="/admin/users?page={data.pagination.page + 1}" variant="outline" size="sm">{$button.next.value}</Button>
+				<Button href="/admin/users?page={data.pagination.page + 1}" variant="outline" size="sm">{$t('button_next')}</Button>
 			{/if}
 		</div>
 	{/if}

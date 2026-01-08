@@ -16,11 +16,7 @@
 	import { Label } from '$src/lib/components/ui/label';
 	import * as Dialog from '$src/lib/components/ui/dialog';
 	import { Badge } from '$src/lib/components/ui/badge';
-	import { useIntlayer } from 'svelte-intlayer';
-
-	const seo = useIntlayer('seo');
-	const instructors = useIntlayer('instructors');
-
+	import { t } from '$lib/i18n/i18n';
 	let { data } = $props();
 
 	// Comprehensive filter schema for the search form
@@ -198,21 +194,21 @@
 </script>
 
 <svelte:head>
-	<title>{$seo.meta_instructors_title.value}</title>
+	<title>{$t('seo_meta_instructors_title')}</title>
 	<meta
 		name="description"
-		content={$seo.meta_instructors_description.value}
+		content={$t('seo_meta_instructors_description')}
 	/>
 
 	<!-- Open Graph -->
-	<meta property="og:title" content={$seo.meta_instructors_title.value} />
-	<meta property="og:description" content={$seo.meta_instructors_description.value} />
+	<meta property="og:title" content={$t('seo_meta_instructors_title')} />
+	<meta property="og:description" content={$t('seo_meta_instructors_description')} />
 	<meta property="og:url" content="https://localsnow.org/instructors" />
 	<meta property="og:image" content="https://localsnow.org/ski-instructor-turn.webp" />
 
 	<!-- Twitter Card -->
-	<meta name="twitter:title" content={$seo.meta_instructors_title.value} />
-	<meta name="twitter:description" content={$seo.meta_instructors_description.value} />
+	<meta name="twitter:title" content={$t('seo_meta_instructors_title')} />
+	<meta name="twitter:description" content={$t('seo_meta_instructors_description')} />
 	<meta name="twitter:image" content="https://localsnow.org/ski-instructor-turn.webp" />
 
 	<!-- Structured Data -->
@@ -232,19 +228,19 @@
 <section class="w-full">
 	<!-- Header -->
 	<div class="mb-6 text-center">
-		<h1 class="title2 mb-2">{$instructors.page_title.value}</h1>
+		<h1 class="title2 mb-2">{$t('instructors_page_title')}</h1>
 		<p class="text-muted-foreground text-sm">
-			{$instructors.page_subtitle.value}
+			{$t('instructors_page_subtitle')}
 		</p>
 	</div>
 
 	<!-- Filters Section -->
 	<div class="mb-6 rounded-lg border border-border bg-card p-4 shadow-sm overflow-visible">
 		<div class="mb-4 flex items-center justify-between">
-			<h2 class="text-base font-semibold">{$instructors.page_filter_sort.value}</h2>
+			<h2 class="text-base font-semibold">{$t('instructors_page_filter_sort')}</h2>
 			{#if hasActiveFilters}
 				<Button type="button" variant="ghost" size="sm" onclick={clearFilters}>
-					{$instructors.page_clear_all.value}
+					{$t('instructors_page_clear_all')}
 				</Button>
 			{/if}
 		</div>
@@ -276,7 +272,7 @@
 							d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
 						/>
 					</svg>
-					{$instructors.page_more_filters.value}
+					{$t('instructors_page_more_filters')}
 					{#if hasAdvancedFilters}
 						<span
 							class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white"
@@ -292,16 +288,16 @@
 				</Dialog.Trigger>
 				<Dialog.Content class="max-w-lg">
 					<Dialog.Header>
-						<Dialog.Title>{$instructors.page_advanced_filters.value}</Dialog.Title>
+						<Dialog.Title>{$t('instructors_page_advanced_filters')}</Dialog.Title>
 						<Dialog.Description>
-							{$instructors.page_refine_search.value}
+							{$t('instructors_page_refine_search')}
 						</Dialog.Description>
 					</Dialog.Header>
 
 					<div class="space-y-4 py-4">
 						<!-- Price Range -->
 						<div class="space-y-2">
-							<Label class="text-sm font-medium">{$instructors.page_price_range.value}</Label>
+							<Label class="text-sm font-medium">{$t('instructors_page_price_range')}</Label>
 							<div class="grid grid-cols-2 gap-3">
 								<div>
 									<Input
@@ -333,14 +329,14 @@
 						<div class="flex items-center space-x-2">
 							<Checkbox id="verified" bind:checked={verifiedOnly} />
 							<Label for="verified" class="text-sm font-medium leading-none cursor-pointer">
-								{$instructors.page_verified_only.value}
+								{$t('instructors_page_verified_only')}
 							</Label>
 						</div>
 					</div>
 
 					<Dialog.Footer>
-						<Button type="button" variant="outline" onclick={clearFilters}>{$instructors.page_clear_all.value}</Button>
-						<Button type="button" onclick={applyFilters}>{$instructors.page_apply_filters.value}</Button>
+						<Button type="button" variant="outline" onclick={clearFilters}>{$t('instructors_page_clear_all')}</Button>
+						<Button type="button" onclick={applyFilters}>{$t('instructors_page_apply_filters')}</Button>
 					</Dialog.Footer>
 				</Dialog.Content>
 			</Dialog.Root>
@@ -369,7 +365,7 @@
 	<!-- Active Filters Chips -->
 	{#if hasActiveFilters}
 		<div class="mb-4 flex flex-wrap items-center gap-2">
-			<span class="text-muted-foreground text-sm">{$instructors.page_active_filters.value}</span>
+			<span class="text-muted-foreground text-sm">{$t('instructors_page_active_filters')}</span>
 			{#if $formData.resort}
 				<Badge variant="secondary" class="gap-1">
 					{getResortName($formData.resort)}
@@ -444,7 +440,7 @@
 			{/if}
 			{#if verifiedOnly}
 				<Badge variant="secondary" class="gap-1">
-					{$instructors.page_verified_only.value}
+					{$t('instructors_page_verified_only')}
 					<button
 						type="button"
 						onclick={() => removeFilter('verifiedOnly')}
@@ -455,7 +451,7 @@
 				</Badge>
 			{/if}
 			<Button variant="ghost" size="sm" onclick={clearFilters} class="h-6 px-2 text-xs">
-				{$instructors.page_clear_all.value}
+				{$t('instructors_page_clear_all')}
 			</Button>
 		</div>
 	{/if}
@@ -464,11 +460,11 @@
 	<div class="mb-4 flex items-center justify-between">
 		<p class="text-muted-foreground text-sm">
 			{#if data.instructors.length === 0}
-				{$instructors.page_results_none.value}
+				{$t('instructors_page_results_none')}
 			{:else if data.instructors.length === 1}
-				{$instructors.page_results_one.value}
+				{$t('instructors_page_results_one')}
 			{:else}
-				{data.instructors.length} {$instructors.page_results_many.value}
+				{data.instructors.length} {$t('instructors_page_results_many')}
 			{/if}
 		</p>
 	</div>
@@ -490,9 +486,9 @@
 					d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
 				/>
 			</svg>
-			<h3 class="mb-2 text-lg font-semibold">{$instructors.page_empty_title.value}</h3>
-			<p class="text-muted-foreground mb-4">{$instructors.page_empty_subtitle.value}</p>
-			<Button onclick={clearFilters} variant="outline">{$instructors.page_empty_clear_filters.value}</Button>
+			<h3 class="mb-2 text-lg font-semibold">{$t('instructors_page_empty_title')}</h3>
+			<p class="text-muted-foreground mb-4">{$t('instructors_page_empty_subtitle')}</p>
+			<Button onclick={clearFilters} variant="outline">{$t('instructors_page_empty_clear_filters')}</Button>
 		</div>
 	{:else}
 		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">

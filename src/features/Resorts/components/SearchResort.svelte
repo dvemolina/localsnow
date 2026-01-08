@@ -2,10 +2,7 @@
   import { Label } from '$src/lib/components/ui/label';
   import * as Form from '$src/lib/components/ui/form';
   import { onMount } from 'svelte';
-  import { useIntlayer } from 'svelte-intlayer';
-
-	const filter = useIntlayer('filter');
-
+  import { t } from '$lib/i18n/i18n';
   let {
     form,
     name,
@@ -23,8 +20,8 @@
   } = $props();
 
   // Use translated label if not provided
-  const displayLabel = $derived(label ?? $filter.choose_resort.value);
-  const placeholder = $derived($filter.search_resorts_placeholder.value);
+  const displayLabel = $derived(label ?? $t('filter_choose_resort'));
+  const placeholder = $derived($t('filter_search_resorts_placeholder'));
 
   type Resort = {
     id: number;

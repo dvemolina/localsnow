@@ -2,10 +2,7 @@
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Table from '$lib/components/ui/table';
-	import { useIntlayer } from 'svelte-intlayer';
-
-	const table = useIntlayer('table');
-
+	import { t } from '$lib/i18n/i18n';
 	let { data } = $props();
 
 	const totalDepositRevenue = Number(data.stats.deposits.total || 0);
@@ -75,12 +72,12 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>{$table.id.value}</Table.Head>
-						<Table.Head>{$table.client.value}</Table.Head>
+						<Table.Head>{$t('table_id')}</Table.Head>
+						<Table.Head>{$t('table_client')}</Table.Head>
 						<Table.Head>{$payments.table_amount.value}</Table.Head>
-						<Table.Head>{$table.status.value}</Table.Head>
+						<Table.Head>{$t('table_status')}</Table.Head>
 						<Table.Head>{$payments.admin_stripe_id.value}</Table.Head>
-						<Table.Head>{$table.date.value}</Table.Head>
+						<Table.Head>{$t('table_date')}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -128,12 +125,12 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>{$table.id.value}</Table.Head>
-						<Table.Head>{$table.instructor.value}</Table.Head>
-						<Table.Head>{$table.client.value}</Table.Head>
+						<Table.Head>{$t('table_id')}</Table.Head>
+						<Table.Head>{$t('table_instructor')}</Table.Head>
+						<Table.Head>{$t('table_client')}</Table.Head>
 						<Table.Head>{$payments.table_amount.value}</Table.Head>
-						<Table.Head>{$table.status.value}</Table.Head>
-						<Table.Head>{$table.date.value}</Table.Head>
+						<Table.Head>{$t('table_status')}</Table.Head>
+						<Table.Head>{$t('table_date')}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>

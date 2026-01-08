@@ -12,12 +12,7 @@
 	import SearchResort from '$src/features/Resorts/components/SearchResort.svelte';
 	import { onDestroy } from 'svelte';
 	import { route } from '$lib/i18n/routeHelpers';
-	import { useIntlayer } from 'svelte-intlayer';
-
-	const formContent = useIntlayer('form');
-	const button = useIntlayer('button');
-	const common = useIntlayer('common');
-
+	import { t } from '$lib/i18n/i18n';
 	let { data }: { data: { form: SuperValidated<Infer<SchoolSignupSchema>> } } = $props();
 
 	const form = superForm(data.form, {
@@ -57,7 +52,7 @@
 	<Form.Field {form} name="name" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>{$formContent.label_school_name.value}</Form.Label>
+				<Form.Label>{$t('form_label_school_name')}</Form.Label>
 				<Input {...props} bind:value={$formData.name} />
 			{/snippet}
 		</Form.Control>
@@ -67,9 +62,9 @@
 	<Form.Field {form} name="logo" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>{$formContent.label_school_logo.value}</Form.Label>
+				<Form.Label>{$t('form_label_school_logo')}</Form.Label>
 				<Form.Description class="text-xs"
-					>{$formContent.description_school_logo.value}</Form.Description
+					>{$t('form_description_school_logo')}</Form.Description
 				>
 				<!-- File input -->
 				<Input
@@ -99,8 +94,8 @@
 	<Form.Field {form} name="schoolEmail" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>{$formContent.label_school_email.value}</Form.Label>
-				<Form.Description class="text-xs">{$formContent.description_school_email.value}</Form.Description>
+				<Form.Label>{$t('form_label_school_email')}</Form.Label>
+				<Form.Description class="text-xs">{$t('form_description_school_email')}</Form.Description>
 				<Input {...props} bind:value={$formData.schoolEmail} type="email" />
 			{/snippet}
 		</Form.Control>
@@ -113,7 +108,7 @@
 		<Form.Field {form} name="schoolPhone" class="w-full">
 			<Form.Control>
 				{#snippet children({ props })}
-					<Form.Label>{$formContent.label_school_phone.value}</Form.Label>
+					<Form.Label>{$t('form_label_school_phone')}</Form.Label>
 					<Input {...props} bind:value={$formData.schoolPhone} type="tel" />
 				{/snippet}
 			</Form.Control>
@@ -124,8 +119,8 @@
 	<Form.Field {form} name="bio" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>{$formContent.label_biography.value}</Form.Label>
-				<Form.Description class="text-xs">{$formContent.description_school_bio.value}</Form.Description>
+				<Form.Label>{$t('form_label_biography')}</Form.Label>
+				<Form.Description class="text-xs">{$t('form_description_school_bio')}</Form.Description>
 				<Textarea name="bio" bind:value={$formData.bio} />
 			{/snippet}
 		</Form.Control>
@@ -155,8 +150,8 @@
 	</Form.Field> -->
 
 	<div class="mt-6 flex w-full flex-row items-center justify-center gap-2">
-		<a href={route('/dashboard')} class="text-sm {buttonVariants({ variant: 'outline' })}">{$button.go_back.value}</a>
-		<Form.Button type="submit">{$common.submit.value}</Form.Button>
+		<a href={route('/dashboard')} class="text-sm {buttonVariants({ variant: 'outline' })}">{$t('button_go_back')}</a>
+		<Form.Button type="submit">{$t('common_submit')}</Form.Button>
 	</div>
 </form>
 

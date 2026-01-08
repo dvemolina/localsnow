@@ -7,12 +7,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import * as Select from '$lib/components/ui/select';
 	import * as Table from '$lib/components/ui/table';
-	import { useIntlayer } from 'svelte-intlayer';
-
-	const admin = useIntlayer('admin');
-	const button = useIntlayer('button');
-	const table = useIntlayer('table');
-
+	import { t } from '$lib/i18n/i18n';
 	let { data } = $props();
 
 	// 🔹 Svelte 5 state
@@ -70,7 +65,7 @@
 			</p>
 		</div>
 		<Button href="/admin/resorts/create">
-			{$admin.create_resort.value}
+			{$t('admin_create_resort')}
 		</Button>
 	</div>
 
@@ -103,7 +98,7 @@
 						<Select.Trigger>
 							{countryValue
 								? data.countries.find((c) => c.id.toString() === countryValue)?.country
-								: $admin.filter_country.value}
+								: $t('admin_filter_country')}
 						</Select.Trigger>
 						<Select.Content>
 							<Select.Item value="">
@@ -129,7 +124,7 @@
 						<Select.Trigger>
 							{regionValue
 								? data.regions.find((r) => r.id.toString() === regionValue)?.region
-								: $admin.filter_region.value}
+								: $t('admin_filter_region')}
 						</Select.Trigger>
 						<Select.Content>
 							<Select.Item value="">
@@ -144,10 +139,10 @@
 					</Select.Root>
 				</div>
 
-				<Button type="submit">{$button.apply.value}</Button>
+				<Button type="submit">{$t('button_apply')}</Button>
 				{#if data.filters.search || data.filters.country || data.filters.region}
 					<Button type="button" variant="outline" onclick={clearFilters}>
-						{$button.clear.value}
+						{$t('button_clear')}
 					</Button>
 				{/if}
 			</form>
@@ -160,12 +155,12 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>{$table.id.value}</Table.Head>
-						<Table.Head>{$table.name.value}</Table.Head>
+						<Table.Head>{$t('table_id')}</Table.Head>
+						<Table.Head>{$t('table_name')}</Table.Head>
 						<Table.Head>{$resorts.table_region.value}</Table.Head>
 						<Table.Head>{$resorts.table_country.value}</Table.Head>
 						<Table.Head>{$resorts.table_image.value}</Table.Head>
-						<Table.Head>{$table.actions.value}</Table.Head>
+						<Table.Head>{$t('table_actions')}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -203,13 +198,13 @@
 											<span class="text-xs text-muted-foreground">{$resorts.admin_set.value}</span>
 										</div>
 									{:else}
-										<span class="text-xs text-muted-foreground">{$admin.no_image.value}</span>
+										<span class="text-xs text-muted-foreground">{$t('admin_no_image')}</span>
 									{/if}
 								</Table.Cell>
 								<Table.Cell>
 									<div class="flex gap-2">
 										<Button href="/admin/resorts/{resort.id}/edit" size="sm" variant="outline">
-											{$button.edit.value}
+											{$t('button_edit')}
 										</Button>
 									</div>
 								</Table.Cell>
@@ -238,7 +233,7 @@
 					disabled={data.pagination.page === 1}
 					onclick={() => goToPage(data.pagination.page - 1)}
 				>
-					{$button.previous.value}
+					{$t('button_previous')}
 				</Button>
 				<div class="flex items-center gap-1">
 					{#if data.pagination.page > 3}
@@ -272,7 +267,7 @@
 					disabled={data.pagination.page === data.pagination.totalPages}
 					onclick={() => goToPage(data.pagination.page + 1)}
 				>
-					{$button.next.value}
+					{$t('button_next')}
 				</Button>
 			</div>
 		</div>

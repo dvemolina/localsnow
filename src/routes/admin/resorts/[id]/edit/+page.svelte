@@ -6,14 +6,9 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Select from '$lib/components/ui/select';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
-	import { useIntlayer } from 'svelte-intlayer';
+	import { t } from '$lib/i18n/i18n';
 	import { enhance } from '$app/forms';
 	import { Textarea } from '$src/lib/components/ui/textarea/index.js';
-
-	const admin = useIntlayer('admin');
-	const label = useIntlayer('label');
-	const button = useIntlayer('button');
-
 	let { data, form } = $props();
 	const { resort } = data;
 
@@ -69,7 +64,7 @@
 	<div class="mb-8">
 		<div class="mb-4">
 			<Button href="/admin/resorts" variant="outline" size="sm">
-				← {$admin.back_to_resorts.value}
+				← {$t('admin_back_to_resorts')}
 			</Button>
 		</div>
 		<h1 class="title2 mb-2">{$edit.admin_edit_resort.value}: {resort.name}</h1>
@@ -90,7 +85,7 @@
 	>
 		<Card>
 			<CardHeader>
-				<CardTitle>{$admin.resort_details.value}</CardTitle>
+				<CardTitle>{$t('admin_resort_details')}</CardTitle>
 			</CardHeader>
 			<CardContent class="space-y-6">
 				{#if form?.error}
@@ -108,7 +103,7 @@
 				<div class="grid gap-6 md:grid-cols-2">
 					<!-- ID -->
 					<div class="space-y-2">
-						<Label>{$label.id.value}</Label>
+						<Label>{$t('label_id')}</Label>
 						<p class="text-muted-foreground">#{resort.id}</p>
 					</div>
 
@@ -120,13 +115,13 @@
 
 					<!-- Name -->
 					<div class="space-y-2">
-						<Label for="name">{$label.resort_name.value} *</Label>
+						<Label for="name">{$t('label_resort_name')} *</Label>
 						<Input id="name" name="name" required value={resort.name} />
 					</div>
 
 					<!-- Slug -->
 					<div class="space-y-2">
-						<Label for="slug">{$label.slug.value} *</Label>
+						<Label for="slug">{$t('label_slug')} *</Label>
 						<Input
 							id="slug"
 							name="slug"
@@ -138,13 +133,13 @@
 
 					<!-- Label -->
 					<div class="space-y-2">
-						<Label for="label">{$label.display_label.value}</Label>
+						<Label for="label">{$t('label_display_label')}</Label>
 						<Input id="label" name="label" value={resort.label || ''} />
 					</div>
 
 					<!-- Country -->
 					<div class="space-y-2">
-						<Label for="countryId">{$label.country.value} *</Label>
+						<Label for="countryId">{$t('label_country')} *</Label>
 						<input type="hidden" name="countryId" value={selectedCountryId} />
 						<Select.Root
 							type="single"
@@ -154,7 +149,7 @@
 							<Select.Trigger>
 								{selectedCountryId
 								? data.countries.find((c) => c.id.toString() === selectedCountryId)?.country
-								: $admin.filter_country.value}
+								: $t('admin_filter_country')}
 							</Select.Trigger>
 							<Select.Content>
 								{#each data.countries as country}
@@ -169,7 +164,7 @@
 
 					<!-- Region -->
 					<div class="space-y-2">
-						<Label for="regionId">{$label.region.value}</Label>
+						<Label for="regionId">{$t('label_region')}</Label>
 						<input type="hidden" name="regionId" value={selectedRegionId} />
 						<Select.Root
 							type="single"
@@ -179,11 +174,11 @@
 							<Select.Trigger>
 								{selectedRegionId
 								? data.regions.find((r) => r.id.toString() === selectedRegionId)?.region
-								: $admin.filter_region.value}
+								: $t('admin_filter_region')}
 							</Select.Trigger>
 							<Select.Content>
 								<Select.Item value="">
-									{$admin.no_region.value}
+									{$t('admin_no_region')}
 								</Select.Item>
 								{#each filteredRegions as region}
 									<Select.Item value={region.id.toString()}>
@@ -197,7 +192,7 @@
 
 					<!-- Min Elevation -->
 					<div class="space-y-2">
-						<Label for="minElevation">{$label.min_elevation.value}</Label>
+						<Label for="minElevation">{$t('label_min_elevation')}</Label>
 						<Input
 							id="minElevation"
 							name="minElevation"
@@ -208,7 +203,7 @@
 
 					<!-- Max Elevation -->
 					<div class="space-y-2">
-						<Label for="maxElevation">{$label.max_elevation.value}</Label>
+						<Label for="maxElevation">{$t('label_max_elevation')}</Label>
 						<Input
 							id="maxElevation"
 							name="maxElevation"
@@ -219,19 +214,19 @@
 
 					<!-- Latitude -->
 					<div class="space-y-2">
-						<Label for="lat">{$label.latitude.value}</Label>
+						<Label for="lat">{$t('label_latitude')}</Label>
 						<Input id="lat" name="lat" type="text" value={resort.lat || ''} />
 					</div>
 
 					<!-- Longitude -->
 					<div class="space-y-2">
-						<Label for="lon">{$label.longitude.value}</Label>
+						<Label for="lon">{$t('label_longitude')}</Label>
 						<Input id="lon" name="lon" type="text" value={resort.lon || ''} />
 					</div>
 
 					<!-- Website -->
 					<div class="col-span-2 space-y-2">
-						<Label for="website">{$label.website.value}</Label>
+						<Label for="website">{$t('label_website')}</Label>
 						<Input id="website" name="website" type="url" value={resort.website || ''} />
 					</div>
 
@@ -250,9 +245,9 @@
 				<div class="flex gap-2 pt-4">
 					<Button type="submit" disabled={submitting}>
 						{#if submitting}
-							{$button.updating.value}
+							{$t('button_updating')}
 						{:else}
-							{$button.update.value}
+							{$t('button_update')}
 						{/if}
 					</Button>
 				</div>
@@ -282,7 +277,7 @@
 					<div
 						class="flex h-64 items-center justify-center rounded-lg border-2 border-dashed border-border bg-muted"
 					>
-						<p class="text-muted-foreground">{$admin.no_image.value}</p>
+						<p class="text-muted-foreground">{$t('admin_no_image')}</p>
 					</div>
 				{/if}
 			</div>
@@ -334,7 +329,7 @@
 					</Button>
 					{#if selectedFile}
 						<Button type="button" variant="outline" onclick={clearSelection}>
-							{$button.cancel.value}
+							{$t('button_cancel')}
 						</Button>
 					{/if}
 				</div>
@@ -345,7 +340,7 @@
 	<!-- Danger Zone -->
 	<Card class="border-destructive">
 		<CardHeader>
-			<CardTitle class="text-destructive">{$admin.danger_zone.value}</CardTitle>
+			<CardTitle class="text-destructive">{$t('admin_danger_zone')}</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<p class="mb-4 text-sm text-muted-foreground">
@@ -368,7 +363,7 @@
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
-			<AlertDialog.Cancel>{$button.cancel.value}</AlertDialog.Cancel>
+			<AlertDialog.Cancel>{$t('button_cancel')}</AlertDialog.Cancel>
 			<form
 				method="POST"
 				action="?/delete"
@@ -388,9 +383,9 @@
 						disabled={deleting}
 					>
 						{#if deleting}
-							{$button.deleting.value}
+							{$t('button_deleting')}
 						{:else}
-							{$button.delete.value}
+							{$t('button_delete')}
 						{/if}
 					</Button>
 				</AlertDialog.Action>

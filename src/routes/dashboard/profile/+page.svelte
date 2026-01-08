@@ -5,10 +5,7 @@
 	import SchoolProfileForm from '$src/features/Schools/components/SchoolProfileForm.svelte';
 	import { Badge } from '$src/lib/components/ui/badge';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import { useIntlayer } from 'svelte-intlayer';
-
-	const status = useIntlayer('status');
-
+	import { t } from '$lib/i18n/i18n';
 	let { data } = $props();
 
 	const isInstructor = data.user.role === 'instructor-independent' || data.user.role === 'instructor-school';
@@ -38,7 +35,7 @@
 				</Badge>
 			{:else}
 				<Badge variant="outline">
-					{$status.pending_verification.value}
+					{$t('status_pending_verification')}
 				</Badge>
 			{/if}
 		</div>
