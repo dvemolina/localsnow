@@ -495,14 +495,14 @@
 	<div class="rounded-lg border border-border bg-card p-6 mt-8">
 			{#if instructor.bio}
 				<div>
-					<h2 class="title4 mb-3">{$t('instructor_about_heading', { values: { name: instructor.name } })}</h2>
+					<h2 class="title4 mb-3">{$t('instructor_about_heading') , instructor.name }</h2>
 					<p class="hyphens-auto text-sm leading-relaxed text-muted-foreground">
 						{instructor.bio}
 					</p>
 				</div>
 			{:else}
 				<div>
-					<h2 class="title4 mb-3">{$t('instructor_about_heading', { values: { name: instructor.name } })}</h2>
+					<h2 class="title4 mb-3">{$t('instructor_about_heading'), instructor.name }</h2>
 					<p class="hyphens-auto text-sm leading-relaxed text-muted-foreground">
 						{$t('instructor_default_bio')}
 					</p>
