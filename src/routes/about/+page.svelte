@@ -27,78 +27,78 @@
 	<section class="my-6">
 		<h2 class="title3">{$t('about_who_built_title')}</h2>
 		<p>
-			{$t('about_about_who_built_p1')}
+			{$t('about_who_built_p1')}
 		</p>
 	</section>
 
 	<section class="my-6">
 		<h2 class="title3">{$t('about_economic_title')}</h2>
 		<p>
-			{$t('about_about_economic_p1')}
+			{$t('about_economic_p1')}
 		</p>
 		<p>
-			{$t('about_about_economic_p2')}
+			{$t('about_economic_p2')}
 		</p>
 		<p>
-			{$t('about_about_economic_p3')}
+			{$t('about_economic_p3')}
 		</p>
 	</section>
 
 	<section class="my-6">
 		<h2 class="title3">{$t('about_visibility_title')}</h2>
 		<p>
-			{$t('about_about_visibility_p1')}
+			{$t('about_visibility_p1')}
 		</p>
 		<p>
-			{$t('about_about_visibility_p2')}
+			{$t('about_visibility_p2')}
 		</p>
 	</section>
 
 	<section class="my-6">
 		<h2 class="title3">{$t('about_risk_title')}</h2>
 		<p>
-			{$t('about_about_risk_p1')}
+			{$t('about_risk_p1')}
 		</p>
 		<p>
-			{$t('about_about_risk_p2')}
+			{$t('about_risk_p2')}
 		</p>
 	</section>
 
 	<section class="my-6">
 		<h2 class="title3">{$t('about_what_is_title')}</h2>
 		<p>
-			{$t('about_about_what_is_p1')}
+			{$t('about_what_is_p1')}
 		</p>
 		<p>
-			{$t('about_about_what_is_p2')}
+			{$t('about_what_is_p2')}
 		</p>
-		<p>{$t('about_about_what_is_p3')}</p>
+		<p>{$t('about_what_is_p3')}</p>
 	</section>
 
 	<section class="my-6">
 		<h2 class="title3">{$t('about_verification_title')}</h2>
 		<p>
-			{$t('about_about_verification_p1')}
+			{$t('about_verification_p1')}
 		</p>
 		<p>
-			{$t('about_about_verification_p2')}
+			{$t('about_verification_p2')}
 		</p>
 	</section>
 
 	<section class="my-6">
 		<h2 class="title3">{$t('about_spain_title')}</h2>
 		<p>
-			{$t('about_about_spain_p1')}
+			{$t('about_spain_p1')}
 		</p>
 	</section>
 
 	<section class="my-6">
 		<h2 class="title3">{$t('about_goal_title')}</h2>
 		<p>
-			{$t('about_about_goal_p1')}
+			{$t('about_goal_p1')}
 		</p>
 		<p>
-			{$t('about_about_goal_p2')}
+			{$t('about_goal_p2')}
 		</p>
 	</section>
 
@@ -112,6 +112,6 @@
 				}
 			})}
 		</p>
-		<p>{$t('about_about_contact_p2')}</p>
+		<p>{$t('about_contact_p2')}</p>
 	</section>
 </article>

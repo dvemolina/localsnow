@@ -48,9 +48,9 @@
 <div class="container mx-auto max-w-7xl">
 	<!-- Header -->
 	<div class="mb-6">
-		<h1 class="title2 mb-2">{$t('bookings_bookings_page_title')}</h1>
+		<h1 class="title2 mb-2">{$t('bookings_page_title')}</h1>
 		<p class="text-muted-foreground">
-			{$t('bookings_bookings_page_subtitle')}
+			{$t('bookings_page_subtitle')}
 		</p>
 	</div>
 
@@ -101,16 +101,16 @@
 					/>
 				</svg>
 			</div>
-			<h3 class="mb-2 font-semibold text-lg">{$t('bookings_bookings_empty_state_title')}</h3>
+			<h3 class="mb-2 font-semibold text-lg">{$t('bookings_empty_state_title')}</h3>
 			<p class="text-muted-foreground">
 				{#if data.currentFilter === 'all'}
-					{$t('bookings_bookings_empty_state_all')}
+					{$t('bookings_empty_state_all')}
 				{:else if data.currentFilter === 'pending'}
-					{$t('bookings_bookings_empty_state_pending')}
+					{$t('bookings_empty_state_pending')}
 				{:else if data.currentFilter === 'unlocked'}
-					{$t('bookings_bookings_empty_state_unlocked')}
+					{$t('bookings_empty_state_unlocked')}
 				{:else}
-					{$t('bookings_bookings_empty_state_rejected')}
+					{$t('bookings_empty_state_rejected')}
 				{/if}
 			</p>
 		</div>
@@ -138,9 +138,9 @@
 					/>
 				</svg>
 				<div class="text-sm text-blue-800">
-					<p class="font-medium">💡 {$t('bookings_bookings_how_it_works_title')}</p>
+					<p class="font-medium">💡 {$t('bookings_how_it_works_title')}</p>
 					<p class="mt-1">
-						{$t('bookings_bookings_unlock_info')}
+						{$t('bookings_unlock_info')}
 					</p>
 				</div>
 			</div>

@@ -84,9 +84,9 @@
 <div class="container mx-auto max-w-4xl py-6">
 	<!-- Header -->
 	<div class="mb-6">
-		<h1 class="title2 mb-2">{$t('availability_availability_page_title')}</h1>
+		<h1 class="title2 mb-2">{$t('availability_page_title')}</h1>
 		<p class="text-muted-foreground">
-			{$t('availability_availability_page_subtitle')}
+			{$t('availability_page_subtitle')}
 		</p>
 	</div>
 
@@ -104,7 +104,7 @@
 								d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
 							/>
 						</svg>
-						{$t('availability_availability_google_calendar_title')}
+						{$t('availability_google_calendar_title')}
 						{#if data.connected}
 							<Badge variant="default" class="bg-green-600">{$t('availability_status_connected')}</Badge>
 						{:else}
@@ -112,7 +112,7 @@
 						{/if}
 					</Card.Title>
 					<Card.Description class="mt-1">
-						{$t('availability_availability_google_calendar_desc')}
+						{$t('availability_google_calendar_desc')}
 					</Card.Description>
 				</div>
 			</div>
@@ -134,13 +134,13 @@
 							/>
 						</svg>
 						<div class="text-sm text-green-800">
-							<p class="font-medium">{$t('availability_availability_calendar_connected_title')}</p>
+							<p class="font-medium">{$t('availability_calendar_connected_title')}</p>
 							<p class="mt-1">
-								{$t('availability_availability_calendar_connected_message')}
+								{$t('availability_calendar_connected_message')}
 							</p>
 							{#if data.syncDetails.lastSyncAt}
 								<p class="mt-2 text-xs">
-									{$t('availability_availability_last_synced')} {new Date(data.syncDetails.lastSyncAt).toLocaleString()}
+									{$t('availability_last_synced')} {new Date(data.syncDetails.lastSyncAt).toLocaleString()}
 								</p>
 							{/if}
 						</div>
@@ -212,9 +212,9 @@
 							/>
 						</svg>
 					</div>
-					<h3 class="mb-2 font-semibold text-lg">{$t('availability_availability_connect_calendar_heading')}</h3>
+					<h3 class="mb-2 font-semibold text-lg">{$t('availability_connect_calendar_heading')}</h3>
 					<p class="mb-4 text-muted-foreground">
-						{$t('availability_availability_connect_calendar_desc')}
+						{$t('availability_connect_calendar_desc')}
 					</p>
 					<Button onclick={connectCalendar} class="mx-auto">
 						<svg class="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -250,15 +250,15 @@
 							/>
 						</svg>
 						<div class="text-sm text-blue-800">
-							<p class="font-medium">{$t('availability_availability_why_connect_title')}</p>
+							<p class="font-medium">{$t('availability_why_connect_title')}</p>
 							<ul class="mt-2 space-y-1 text-sm">
-								<li>• {$t('availability_availability_benefit1')}</li>
-								<li>• {$t('availability_availability_benefit2')}</li>
-								<li>• {$t('availability_availability_benefit3')}</li>
-								<li>• {$t('availability_availability_benefit4')}</li>
+								<li>• {$t('availability_benefit1')}</li>
+								<li>• {$t('availability_benefit2')}</li>
+								<li>• {$t('availability_benefit3')}</li>
+								<li>• {$t('availability_benefit4')}</li>
 							</ul>
 							<p class="mt-2 text-xs">
-								{$t('availability_availability_calendar_disclaimer')}
+								{$t('availability_calendar_disclaimer')}
 							</p>
 						</div>
 					</div>
@@ -279,7 +279,7 @@
 						d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
 					/>
 				</svg>
-				{$t('availability_availability_working_hours_title')}
+				{$t('availability_working_hours_title')}
 				{#if data.workingHoursConfigured}
 					<Badge variant="default" class="bg-green-600">{$t('availability_status_configured')}</Badge>
 				{:else}
@@ -287,7 +287,7 @@
 				{/if}
 			</Card.Title>
 			<Card.Description>
-				{$t('availability_availability_working_hours_desc')}
+				{$t('availability_working_hours_desc')}
 			</Card.Description>
 		</Card.Header>
 		<Card.Content class="space-y-4">
@@ -306,9 +306,9 @@
 							/>
 						</svg>
 						<div class="text-sm text-green-800">
-							<p class="font-medium">{$t('availability_availability_working_hours_set')}</p>
+							<p class="font-medium">{$t('availability_working_hours_set')}</p>
 							<p class="mt-1">
-								{$t('availability_availability_working_hours_configured_message')}
+								{$t('availability_working_hours_configured_message')}
 							</p>
 						</div>
 					</div>
@@ -327,9 +327,9 @@
 							/>
 						</svg>
 					</div>
-					<h3 class="mb-2 font-semibold text-lg">{$t('availability_availability_set_working_hours_heading')}</h3>
+					<h3 class="mb-2 font-semibold text-lg">{$t('availability_set_working_hours_heading')}</h3>
 					<p class="mb-4 text-muted-foreground">
-						{$t('availability_availability_set_working_hours_desc')}
+						{$t('availability_set_working_hours_desc')}
 					</p>
 				</div>
 			{/if}

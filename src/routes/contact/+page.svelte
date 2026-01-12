@@ -104,7 +104,7 @@
 							d="M5 13l4 4L19 7"
 						/>
 					</svg>
-					<span class="text-sm text-muted-foreground">{$t('contact_contact_page_benefit_1')}</span>
+					<span class="text-sm text-muted-foreground">{$t('contact_page_benefit_1')}</span>
 				</li>
 				<li class="flex items-start gap-2">
 					<svg
@@ -121,7 +121,7 @@
 							d="M5 13l4 4L19 7"
 						/>
 					</svg>
-					<span class="text-sm text-muted-foreground">{$t('contact_contact_page_benefit_2')}</span>
+					<span class="text-sm text-muted-foreground">{$t('contact_page_benefit_2')}</span>
 				</li>
 				<li class="flex items-start gap-2">
 					<svg
@@ -138,7 +138,7 @@
 							d="M5 13l4 4L19 7"
 						/>
 					</svg>
-					<span class="text-sm text-muted-foreground">{$t('contact_contact_page_benefit_3')}</span>
+					<span class="text-sm text-muted-foreground">{$t('contact_page_benefit_3')}</span>
 				</li>
 				<li class="flex items-start gap-2">
 					<svg
@@ -155,7 +155,7 @@
 							d="M5 13l4 4L19 7"
 						/>
 					</svg>
-					<span class="text-sm text-muted-foreground">{$t('contact_contact_page_benefit_4')}</span>
+					<span class="text-sm text-muted-foreground">{$t('contact_page_benefit_4')}</span>
 				</li>
 			</ul>
 		</div>

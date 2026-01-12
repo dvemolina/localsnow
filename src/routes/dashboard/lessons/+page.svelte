@@ -56,9 +56,9 @@
 <div class="container mx-auto max-w-4xl py-6">
 	<!-- Header -->
 	<div class="mb-6">
-		<h1 class="title2 mb-2">{$t('lessons_lessons_page_title')}</h1>
+		<h1 class="title2 mb-2">{$t('lessons_page_title')}</h1>
 		<p class="text-muted-foreground">
-			{$t('lessons_lessons_page_subtitle')}
+			{$t('lessons_page_subtitle')}
 		</p>
 	</div>
 
@@ -204,8 +204,8 @@
 								<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
 							</svg>
 							<div class="text-sm text-yellow-800 ">
-								<p class="font-medium">{$t('lessons_lessons_about_base_lesson')}</p>
-								<p class="mt-1">{$t('lessons_lessons_about_base_lesson_text')}</p>
+								<p class="font-medium">{$t('lessons_about_base_lesson')}</p>
+								<p class="mt-1">{$t('lessons_about_base_lesson_text')}</p>
 							</div>
 						</div>
 					</div>
@@ -244,28 +244,28 @@
 	<!-- Additional Info Section -->
 	<Card.Root class="mt-6">
 		<Card.Header>
-			<Card.Title class="text-base">{$t('lessons_lessons_multi_sport_title')}</Card.Title>
+			<Card.Title class="text-base">{$t('lessons_multi_sport_title')}</Card.Title>
 		</Card.Header>
 		<Card.Content class="space-y-3 text-sm text-muted-foreground">
 			<p>
-				{$t('lessons_lessons_multi_sport_desc')}
+				{$t('lessons_multi_sport_desc')}
 			</p>
 			<ul class="space-y-2">
 				<li class="flex gap-2">
 					<span class="text-primary">✓</span>
-					<span>{$t('lessons_lessons_multi_sport_bullet1')}</span>
+					<span>{$t('lessons_multi_sport_bullet1')}</span>
 				</li>
 				<li class="flex gap-2">
 					<span class="text-primary">✓</span>
-					<span>{$t('lessons_lessons_multi_sport_bullet2')}</span>
+					<span>{$t('lessons_multi_sport_bullet2')}</span>
 				</li>
 				<li class="flex gap-2">
 					<span class="text-primary">✓</span>
-					<span>{$t('lessons_lessons_multi_sport_bullet3')}</span>
+					<span>{$t('lessons_multi_sport_bullet3')}</span>
 				</li>
 			</ul>
 			<p class="text-xs italic">
-				{$t('lessons_lessons_multi_sport_tip')}
+				{$t('lessons_multi_sport_tip')}
 			</p>
 		</Card.Content>
 	</Card.Root>

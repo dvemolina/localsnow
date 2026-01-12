@@ -10,42 +10,42 @@
 		mainEntity: [
 			{
 				'@type': 'Question',
-				name: get(t)('how_it_works_how_it_works_page_faq_deposit_q'),
+				name: get(t)('how_it_works_page_faq_deposit_q'),
 				acceptedAnswer: {
 					'@type': 'Answer',
-					text: get(t)('how_it_works_how_it_works_page_faq_deposit_a')
+					text: get(t)('how_it_works_page_faq_deposit_a')
 				}
 			},
 			{
 				'@type': 'Question',
-				name: get(t)('how_it_works_how_it_works_page_faq_lead_fee_q'),
+				name: get(t)('how_it_works_page_faq_lead_fee_q'),
 				acceptedAnswer: {
 					'@type': 'Answer',
-					text: get(t)('how_it_works_how_it_works_page_faq_lead_fee_a')
+					text: get(t)('how_it_works_page_faq_lead_fee_a')
 				}
 			},
 			{
 				'@type': 'Question',
-				name: get(t)('how_it_works_how_it_works_page_faq_no_response_q'),
+				name: get(t)('how_it_works_page_faq_no_response_q'),
 				acceptedAnswer: {
 					'@type': 'Answer',
-					text: get(t)('how_it_works_how_it_works_page_faq_no_response_a')
+					text: get(t)('how_it_works_page_faq_no_response_a')
 				}
 			},
 			{
 				'@type': 'Question',
-				name: get(t)('how_it_works_how_it_works_page_faq_payments_q'),
+				name: get(t)('how_it_works_page_faq_payments_q'),
 				acceptedAnswer: {
 					'@type': 'Answer',
-					text: get(t)('how_it_works_how_it_works_page_faq_payments_a')
+					text: get(t)('how_it_works_page_faq_payments_a')
 				}
 			},
 			{
 				'@type': 'Question',
-				name: get(t)('how_it_works_how_it_works_page_faq_contact_q'),
+				name: get(t)('how_it_works_page_faq_contact_q'),
 				acceptedAnswer: {
 					'@type': 'Answer',
-					text: get(t)('how_it_works_how_it_works_page_faq_contact_a')
+					text: get(t)('how_it_works_page_faq_contact_a')
 				}
 			}
 		]
@@ -87,10 +87,10 @@
 </svelte:head>
 
 <article class="prose prose-sm mx-auto max-w-3xl">
-	<h1 class="title2">{$t('how_it_works_how_it_works_page_title')}</h1>
+	<h1 class="title2">{$t('how_it_works_page_title')}</h1>
 
 	<p class="text-lg text-muted-foreground">
-		{$t('how_it_works_how_it_works_page_intro')}
+		{$t('how_it_works_page_intro')}
 	</p>
 
 	<!-- Free Highlight -->
@@ -111,16 +111,16 @@
 				class="text-green-600"
 				><polyline points="20 6 9 17 4 12"></polyline></svg
 			>
-			<h3 class="text-xl font-bold text-green-900 m-0">{$t('how_it_works_how_works_free_forever_badge')}</h3>
+			<h3 class="text-xl font-bold text-green-900 m-0">{$t('how_works_free_forever_badge')}</h3>
 		</div>
 		<p class="text-gray-700 m-0">
-			{$t('how_it_works_how_works_free_forever_desc')}
+			{$t('how_works_free_forever_desc')}
 		</p>
 	</div>
 
 	<!-- For Students Section -->
 	<section class="mt-12 rounded-lg border border-border bg-card p-6 shadow-sm not-prose">
-		<h2 class="title3 mb-6">{$t('how_it_works_how_it_works_page_clients_title')}</h2>
+		<h2 class="title3 mb-6">{$t('how_it_works_page_clients_title')}</h2>
 
 		<div class="space-y-6">
 			<div class="flex gap-4">
@@ -130,9 +130,9 @@
 					1
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{$t('how_it_works_how_it_works_page_clients_step1_title')}</h3>
+					<h3 class="title4 mb-2">{$t('how_it_works_page_clients_step1_title')}</h3>
 					<p class="text-sm text-gray-600">
-						{$t('how_it_works_how_it_works_page_clients_step1_desc')}
+						{$t('how_it_works_page_clients_step1_desc')}
 					</p>
 				</div>
 			</div>
@@ -144,9 +144,9 @@
 					2
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{$t('how_it_works_how_it_works_page_clients_step2_title')}</h3>
+					<h3 class="title4 mb-2">{$t('how_it_works_page_clients_step2_title')}</h3>
 					<p class="text-sm text-gray-600">
-						{$t('how_it_works_how_it_works_page_clients_step2_desc')}
+						{$t('how_it_works_page_clients_step2_desc')}
 					</p>
 				</div>
 			</div>
@@ -158,12 +158,12 @@
 					3
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{$t('how_it_works_how_it_works_page_clients_step3_title')}</h3>
+					<h3 class="title4 mb-2">{$t('how_it_works_page_clients_step3_title')}</h3>
 					<p class="text-sm text-gray-600">
-						{$t('how_it_works_how_it_works_page_clients_step3_desc')}
+						{$t('how_it_works_page_clients_step3_desc')}
 					</p>
 					<p class="text-xs text-gray-500 mt-2 italic">
-						{$t('how_it_works_how_it_works_page_clients_step3_note')}
+						{$t('how_it_works_page_clients_step3_note')}
 					</p>
 				</div>
 			</div>
@@ -175,9 +175,9 @@
 					4
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{$t('how_it_works_how_it_works_page_clients_step4_title')}</h3>
+					<h3 class="title4 mb-2">{$t('how_it_works_page_clients_step4_title')}</h3>
 					<p class="text-sm text-gray-600">
-						{$t('how_it_works_how_it_works_page_clients_step4_desc')}
+						{$t('how_it_works_page_clients_step4_desc')}
 					</p>
 				</div>
 			</div>
@@ -189,9 +189,9 @@
 					5
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{$t('how_it_works_how_it_works_page_clients_step5_title')}</h3>
+					<h3 class="title4 mb-2">{$t('how_it_works_page_clients_step5_title')}</h3>
 					<p class="text-sm text-gray-600">
-						{$t('how_it_works_how_it_works_page_clients_step5_desc')}
+						{$t('how_it_works_page_clients_step5_desc')}
 					</p>
 				</div>
 			</div>
@@ -203,27 +203,27 @@
 					6
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{$t('how_it_works_how_it_works_page_clients_step6_title')}</h3>
+					<h3 class="title4 mb-2">{$t('how_it_works_page_clients_step6_title')}</h3>
 					<p class="text-sm text-gray-600">
-						{$t('how_it_works_how_it_works_page_clients_step6_desc')}
+						{$t('how_it_works_page_clients_step6_desc')}
 					</p>
 				</div>
 			</div>
 		</div>
 
 		<div class="mt-6 rounded-md bg-green-50 border border-green-200 p-4">
-			<h4 class="font-semibold text-green-900 mb-2">{$t('how_it_works_how_it_works_page_clients_cost_title')}</h4>
+			<h4 class="font-semibold text-green-900 mb-2">{$t('how_it_works_page_clients_cost_title')}</h4>
 			<ul class="space-y-1 text-sm text-green-800 mb-0">
-				<li>✅ {$t('how_it_works_how_it_works_page_clients_cost_no_fees')}</li>
-				<li>✅ {$t('how_it_works_how_it_works_page_clients_cost_deposit')}</li>
-				<li>✅ {$t('how_it_works_how_it_works_page_clients_cost_unlimited')}</li>
+				<li>✅ {$t('how_it_works_page_clients_cost_no_fees')}</li>
+				<li>✅ {$t('how_it_works_page_clients_cost_deposit')}</li>
+				<li>✅ {$t('how_it_works_page_clients_cost_unlimited')}</li>
 			</ul>
 		</div>
 	</section>
 
 	<!-- For Instructors Section -->
 	<section class="mt-12 rounded-lg border border-border bg-card p-6 shadow-sm not-prose">
-		<h2 class="title3 mb-6">{$t('how_it_works_how_it_works_page_instructors_title')}</h2>
+		<h2 class="title3 mb-6">{$t('how_it_works_page_instructors_title')}</h2>
 
 		<div class="space-y-6">
 			<div class="flex gap-4">
@@ -233,12 +233,12 @@
 					1
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{$t('how_it_works_how_it_works_page_instructors_step1_title')}</h3>
+					<h3 class="title4 mb-2">{$t('how_it_works_page_instructors_step1_title')}</h3>
 					<p class="text-sm text-gray-600">
-						{$t('how_it_works_how_it_works_page_instructors_step1_desc')}
+						{$t('how_it_works_page_instructors_step1_desc')}
 					</p>
 					<p class="text-xs text-gray-500 mt-2 italic">
-						{$t('how_it_works_how_it_works_page_instructors_step1_note')}
+						{$t('how_it_works_page_instructors_step1_note')}
 					</p>
 				</div>
 			</div>
@@ -250,9 +250,9 @@
 					2
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{$t('how_it_works_how_it_works_page_instructors_step2_title')}</h3>
+					<h3 class="title4 mb-2">{$t('how_it_works_page_instructors_step2_title')}</h3>
 					<p class="text-sm text-gray-600">
-						{$t('how_it_works_how_it_works_page_instructors_step2_desc')}
+						{$t('how_it_works_page_instructors_step2_desc')}
 					</p>
 				</div>
 			</div>
@@ -264,9 +264,9 @@
 					3
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{$t('how_it_works_how_it_works_page_instructors_step3_title')}</h3>
+					<h3 class="title4 mb-2">{$t('how_it_works_page_instructors_step3_title')}</h3>
 					<p class="text-sm text-gray-600">
-						{$t('how_it_works_how_it_works_page_instructors_step3_desc')}
+						{$t('how_it_works_page_instructors_step3_desc')}
 					</p>
 				</div>
 			</div>
@@ -278,12 +278,12 @@
 					4
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{$t('how_it_works_how_it_works_page_instructors_step4_title')}</h3>
+					<h3 class="title4 mb-2">{$t('how_it_works_page_instructors_step4_title')}</h3>
 					<p class="text-sm text-gray-600">
-						{$t('how_it_works_how_it_works_page_instructors_step4_desc')}
+						{$t('how_it_works_page_instructors_step4_desc')}
 					</p>
 					<p class="text-xs text-gray-500 mt-2 italic">
-						{$t('how_it_works_how_it_works_page_instructors_step4_note')}
+						{$t('how_it_works_page_instructors_step4_note')}
 					</p>
 				</div>
 			</div>
@@ -295,9 +295,9 @@
 					5
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{$t('how_it_works_how_it_works_page_instructors_step5_title')}</h3>
+					<h3 class="title4 mb-2">{$t('how_it_works_page_instructors_step5_title')}</h3>
 					<p class="text-sm text-gray-600">
-						{$t('how_it_works_how_it_works_page_instructors_step5_desc')}
+						{$t('how_it_works_page_instructors_step5_desc')}
 					</p>
 				</div>
 			</div>
@@ -309,65 +309,65 @@
 					6
 				</div>
 				<div>
-					<h3 class="title4 mb-2">{$t('how_it_works_how_it_works_page_instructors_step6_title')}</h3>
+					<h3 class="title4 mb-2">{$t('how_it_works_page_instructors_step6_title')}</h3>
 					<p class="text-sm text-gray-600">
-						{$t('how_it_works_how_it_works_page_instructors_step6_desc')}
+						{$t('how_it_works_page_instructors_step6_desc')}
 					</p>
 					<p class="text-xs text-gray-500 mt-2 italic">
-						{$t('how_it_works_how_it_works_page_instructors_step6_note')}
+						{$t('how_it_works_page_instructors_step6_note')}
 					</p>
 				</div>
 			</div>
 		</div>
 
 		<div class="mt-6 rounded-md bg-green-50 border border-green-200 p-4">
-			<h4 class="font-semibold text-green-900 mb-2">{$t('how_it_works_how_it_works_page_instructors_cost_title')}</h4>
+			<h4 class="font-semibold text-green-900 mb-2">{$t('how_it_works_page_instructors_cost_title')}</h4>
 			<ul class="space-y-1 text-sm text-green-800 mb-0">
-				<li>✅ {$t('how_it_works_how_it_works_page_instructors_cost_free')}</li>
-				<li>✅ {$t('how_it_works_how_it_works_page_instructors_cost_lead')}</li>
-				<li>✅ {$t('how_it_works_how_it_works_page_instructors_cost_no_commission')}</li>
-				<li>✅ {$t('how_it_works_how_it_works_page_instructors_cost_no_monthly')}</li>
+				<li>✅ {$t('how_it_works_page_instructors_cost_free')}</li>
+				<li>✅ {$t('how_it_works_page_instructors_cost_lead')}</li>
+				<li>✅ {$t('how_it_works_page_instructors_cost_no_commission')}</li>
+				<li>✅ {$t('how_it_works_page_instructors_cost_no_monthly')}</li>
 			</ul>
 		</div>
 	</section>
 
 	<!-- FAQ Section -->
 	<section class="mt-12 not-prose">
-		<h2 class="title3">{$t('how_it_works_how_it_works_page_faq_title')}</h2>
+		<h2 class="title3">{$t('how_it_works_page_faq_title')}</h2>
 
 		<div class="space-y-6 mt-6">
 			<div class="rounded-lg border border-border p-5">
-				<h3 class="title4 mb-2">{$t('how_it_works_how_it_works_page_faq_deposit_q')}</h3>
+				<h3 class="title4 mb-2">{$t('how_it_works_page_faq_deposit_q')}</h3>
 				<p class="text-sm text-gray-600 mb-0">
-					{$t('how_it_works_how_it_works_page_faq_deposit_a')}
+					{$t('how_it_works_page_faq_deposit_a')}
 				</p>
 			</div>
 
 			<div class="rounded-lg border border-border p-5">
-				<h3 class="title4 mb-2">{$t('how_it_works_how_it_works_page_faq_lead_fee_q')}</h3>
+				<h3 class="title4 mb-2">{$t('how_it_works_page_faq_lead_fee_q')}</h3>
 				<p class="text-sm text-gray-600 mb-0">
-					{$t('how_it_works_how_it_works_page_faq_lead_fee_a')}
+					{$t('how_it_works_page_faq_lead_fee_a')}
 				</p>
 			</div>
 
 			<div class="rounded-lg border border-border p-5">
-				<h3 class="title4 mb-2">{$t('how_it_works_how_it_works_page_faq_no_response_q')}</h3>
+				<h3 class="title4 mb-2">{$t('how_it_works_page_faq_no_response_q')}</h3>
 				<p class="text-sm text-gray-600 mb-0">
-					{$t('how_it_works_how_it_works_page_faq_no_response_a')}
+					{$t('how_it_works_page_faq_no_response_a')}
 				</p>
 			</div>
 
 			<div class="rounded-lg border border-border p-5">
-				<h3 class="title4 mb-2">{$t('how_it_works_how_it_works_page_faq_payments_q')}</h3>
+				<h3 class="title4 mb-2">{$t('how_it_works_page_faq_payments_q')}</h3>
 				<p class="text-sm text-gray-600 mb-0">
-					{$t('how_it_works_how_it_works_page_faq_payments_a')}
+					{$t('how_it_works_page_faq_payments_a')}
 				</p>
 			</div>
 
 			<div class="rounded-lg border border-border p-5">
-				<h3 class="title4 mb-2">{$t('how_it_works_how_it_works_page_faq_contact_q')}</h3>
+				<h3 class="title4 mb-2">{$t('how_it_works_page_faq_contact_q')}</h3>
 				<p class="text-sm text-gray-600 mb-0">
-					{$t('how_it_works_how_it_works_page_faq_contact_a')}
+					{$t('how_it_works_page_faq_contact_a')}
 				</p>
 			</div>
 		</div>
@@ -418,19 +418,19 @@
 
 	<!-- CTA Section -->
 	<section class="mt-12 text-center not-prose">
-		<h2 class="title3 mb-6">{$t('how_it_works_how_it_works_page_cta_title')}</h2>
+		<h2 class="title3 mb-6">{$t('how_it_works_page_cta_title')}</h2>
 		<div class="flex flex-col gap-4 sm:flex-row sm:justify-center">
 			<a
 				href={route('/')}
 				class="bg-primary inline-block rounded-md px-6 py-3 font-medium text-white"
 			>
-				{$t('how_it_works_how_it_works_page_cta_find_instructor')}
+				{$t('how_it_works_page_cta_find_instructor')}
 			</a>
 			<a
 				href={route('/signup')}
 				class="inline-block rounded-md border border-border bg-card px-6 py-3 font-medium"
 			>
-				{$t('how_it_works_how_it_works_page_cta_list_instructor')}
+				{$t('how_it_works_page_cta_list_instructor')}
 			</a>
 		</div>
 	</section>
