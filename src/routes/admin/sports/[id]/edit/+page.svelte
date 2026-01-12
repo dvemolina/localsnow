@@ -21,8 +21,8 @@
 				← {$t('admin_back_to_sports')}
 			</Button>
 		</div>
-		<h1 class="title2 mb-2">{$edit.admin_edit_sport.value}: {sport.sport}</h1>
-		<p class="text-muted-foreground">{$edit.admin_edit_sport_desc.value}</p>
+		<h1 class="title2 mb-2">{$t('edit_admin_edit_sport')}: {sport.sport}</h1>
+		<p class="text-muted-foreground">{$t('edit_admin_edit_sport_desc')}</p>
 	</div>
 
 	<!-- Edit Form -->
@@ -103,10 +103,10 @@
 		</CardHeader>
 		<CardContent>
 			<p class="mb-4 text-sm text-muted-foreground">
-				{$edit.admin_delete_sport_warning.value}
+				{$t('edit_admin_delete_sport_warning')}
 			</p>
 			<Button variant="destructive" onclick={() => (showDeleteDialog = true)}>
-				{$edit.button_delete_sport.value}
+				{$t('edit_button_delete_sport')}
 			</Button>
 		</CardContent>
 	</Card>
@@ -116,9 +116,9 @@
 <AlertDialog.Root bind:open={showDeleteDialog}>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
-			<AlertDialog.Title>{$edit.admin_confirm_delete_sport.value}</AlertDialog.Title>
+			<AlertDialog.Title>{$t('edit_admin_confirm_delete_sport')}</AlertDialog.Title>
 			<AlertDialog.Description>
-				{m["admin.sports.edit.admin_delete_sport_confirmation"]({ name: sport.sport })}
+				{$t('sports_admin_delete_sport_confirmation')}
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>

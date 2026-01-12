@@ -10,8 +10,8 @@
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8 flex items-center justify-between">
 		<div>
-			<h1 class="title2 mb-2">{$sports.admin_sport_management.value}</h1>
-			<p class="text-muted-foreground">{$sports.admin_sport_management_desc.value}</p>
+			<h1 class="title2 mb-2">{$t('sports_admin_sport_management')}</h1>
+			<p class="text-muted-foreground">{$t('sports_admin_sport_management_desc')}</p>
 		</div>
 		<Button href="/admin/sports/create">
 			{$t('admin_create_sport')}
@@ -24,9 +24,9 @@
 				<Table.Header>
 					<Table.Row>
 						<Table.Head>{$t('table_id')}</Table.Head>
-						<Table.Head>{$sports.table_sport.value}</Table.Head>
-						<Table.Head>{$sports.table_slug.value}</Table.Head>
-						<Table.Head>{$sports.admin_instructors_teaching.value}</Table.Head>
+						<Table.Head>{$t('sports_table_sport')}</Table.Head>
+						<Table.Head>{$t('sports_table_slug')}</Table.Head>
+						<Table.Head>{$t('sports_admin_instructors_teaching')}</Table.Head>
 						<Table.Head>{$t('table_actions')}</Table.Head>
 					</Table.Row>
 				</Table.Header>
@@ -34,7 +34,7 @@
 					{#if data.sports.length === 0}
 						<Table.Row>
 							<Table.Cell colspan={5} class="text-center text-muted-foreground">
-								{$sports.admin_no_sports_found.value}
+								{$t('sports_admin_no_sports_found')}
 							</Table.Cell>
 						</Table.Row>
 					{:else}

@@ -51,9 +51,9 @@
 			<p class="text-muted-foreground">{data.instructor.email}</p>
 			<div class="mt-2 flex gap-2">
 				{#if data.instructor.isSuspended}
-					<Badge variant="destructive">{$instructors.status_suspended.value}</Badge>
+					<Badge variant="destructive">{$t('instructors_status_suspended')}</Badge>
 				{:else if data.instructor.isVerified}
-					<Badge class="bg-green-100 text-green-800">{$instructors.status_verified.value}</Badge>
+					<Badge class="bg-green-100 text-green-800">{$t('instructors_status_verified')}</Badge>
 				{:else}
 					<Badge class="bg-yellow-100 text-yellow-800">{$t('status_pending_verification')}</Badge>
 				{/if}
@@ -66,23 +66,23 @@
 			{#if !data.instructor.isVerified && data.instructor.qualificationUrl}
 				<form method="POST" action="?/verify" use:enhance>
 					<Button type="submit" class="bg-green-600 hover:bg-green-700">
-						{$instructors.button_verify_instructor.value}
+						{$t('instructors_button_verify_instructor')}
 					</Button>
 				</form>
 				<Button variant="destructive" onclick={() => (showRejectDialog = true)}>
-					{$instructors.button_reject.value}
+					{$t('instructors_button_reject')}
 				</Button>
 			{/if}
 
 			{#if data.instructor.isSuspended}
 				<form method="POST" action="?/unsuspend" use:enhance>
 					<Button type="submit" variant="outline">
-						{$instructors.button_unsuspend.value}
+						{$t('instructors_button_unsuspend')}
 					</Button>
 				</form>
 			{:else}
 				<Button variant="destructive" onclick={() => (showSuspendDialog = true)}>
-					{$instructors.button_suspend.value}
+					{$t('instructors_button_suspend')}
 				</Button>
 			{/if}
 		</div>
@@ -93,23 +93,23 @@
 		<!-- Basic Information -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{$instructors.admin_basic_information.value}</CardTitle>
+				<CardTitle>{$t('instructors_admin_basic_information')}</CardTitle>
 			</CardHeader>
 			<CardContent class="space-y-2">
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{$instructors.form_label_phone.value}</p>
-					<p>{data.instructor.phone || $instructors.admin_not_provided.value}</p>
+					<p class="text-sm font-medium text-muted-foreground">{$t('instructors_form_label_phone')}</p>
+					<p>{data.instructor.phone || $t('instructors_admin_not_provided')}</p>
 				</div>
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{$instructors.form_label_professional_phone.value}</p>
-					<p>{data.instructor.professionalPhone || $instructors.admin_not_provided.value}</p>
+					<p class="text-sm font-medium text-muted-foreground">{$t('instructors_form_label_professional_phone')}</p>
+					<p>{data.instructor.professionalPhone || $t('instructors_admin_not_provided')}</p>
 				</div>
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{$instructors.form_label_bio.value}</p>
-					<p class="text-sm">{data.instructor.bio || $instructors.admin_no_bio.value}</p>
+					<p class="text-sm font-medium text-muted-foreground">{$t('instructors_form_label_bio')}</p>
+					<p class="text-sm">{data.instructor.bio || $t('instructors_admin_no_bio')}</p>
 				</div>
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{$instructors.table_joined.value}</p>
+					<p class="text-sm font-medium text-muted-foreground">{$t('instructors_table_joined')}</p>
 					<p>{formatDate(data.instructor.createdAt)}</p>
 				</div>
 			</CardContent>
@@ -118,13 +118,13 @@
 		<!-- Certification -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{$instructors.admin_certification.value}</CardTitle>
+				<CardTitle>{$t('instructors_admin_certification')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				{#if data.instructor.qualificationUrl}
 					<div class="space-y-2">
 						<p class="text-sm text-muted-foreground">
-							{$instructors.admin_certification_uploaded.value}
+							{$t('instructors_admin_certification_uploaded')}
 						</p>
 						<a
 							href={data.instructor.qualificationUrl}
@@ -132,13 +132,13 @@
 							class="inline-block"
 						>
 							<Button variant="outline" size="sm">
-								{$instructors.button_view_certificate.value} →
+								{$t('instructors_button_view_certificate')} →
 							</Button>
 						</a>
 					</div>
 				{:else}
 					<p class="text-sm text-muted-foreground">
-						{$instructors.admin_no_certification.value}
+						{$t('instructors_admin_no_certification')}
 					</p>
 				{/if}
 			</CardContent>
@@ -147,7 +147,7 @@
 		<!-- Resorts -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{$instructors.table_resorts.value}</CardTitle>
+				<CardTitle>{$t('instructors_table_resorts')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="flex flex-wrap gap-2">
@@ -159,7 +159,7 @@
 							</span>
 						</Badge>
 					{:else}
-						<p class="text-sm text-muted-foreground">{$instructors.admin_no_resorts.value}</p>
+						<p class="text-sm text-muted-foreground">{$t('instructors_admin_no_resorts')}</p>
 					{/each}
 				</div>
 			</CardContent>
@@ -168,14 +168,14 @@
 		<!-- Sports -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{$instructors.table_sports.value}</CardTitle>
+				<CardTitle>{$t('instructors_table_sports')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="flex flex-wrap gap-2">
 					{#each data.instructor.sports as { sport }}
 						<Badge>{sport.sport}</Badge>
 					{:else}
-						<p class="text-sm text-muted-foreground">{$instructors.admin_no_sports.value}</p>
+						<p class="text-sm text-muted-foreground">{$t('instructors_admin_no_sports')}</p>
 					{/each}
 				</div>
 			</CardContent>
@@ -186,7 +186,7 @@
 	{#if data.instructor.isSuspended}
 		<Card class="border-red-200 bg-red-50">
 			<CardHeader>
-				<CardTitle class="text-red-900">{$instructors.admin_suspension_details.value}</CardTitle>
+				<CardTitle class="text-red-900">{$t('instructors_admin_suspension_details')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="space-y-2">
@@ -195,7 +195,7 @@
 						<p class="text-sm">{data.instructor.suspensionReason}</p>
 					</div>
 					<div>
-						<p class="text-sm font-medium">{$instructors.admin_suspended_at.value}:</p>
+						<p class="text-sm font-medium">{$t('instructors_admin_suspended_at')}:</p>
 						<p class="text-sm">{formatDate(data.instructor.suspendedAt)}</p>
 					</div>
 				</div>
@@ -206,7 +206,7 @@
 	<!-- Bookings -->
 	<Card>
 		<CardHeader>
-			<CardTitle>{$instructors.admin_booking_history.value} ({data.bookings.length})</CardTitle>
+			<CardTitle>{$t('instructors_admin_booking_history')} ({data.bookings.length})</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<Table.Root>
@@ -235,7 +235,7 @@
 					{:else}
 						<Table.Row>
 							<Table.Cell colspan={5} class="text-center text-muted-foreground">
-								{$instructors.admin_no_bookings.value}
+								{$t('instructors_admin_no_bookings')}
 							</Table.Cell>
 						</Table.Row>
 					{/each}
@@ -265,13 +265,13 @@
 								</div>
 								<p class="mt-1 text-sm">{review.comment || $t('admin_no_comment')}</p>
 								<p class="mt-1 text-xs text-muted-foreground">
-									{$instructors.admin_by.value} {review.clientEmail}
+									{$t('instructors_admin_by')} {review.clientEmail}
 								</p>
 							</div>
 						</div>
 					</div>
 				{:else}
-					<p class="text-sm text-muted-foreground">{$instructors.admin_no_reviews.value}</p>
+					<p class="text-sm text-muted-foreground">{$t('instructors_admin_no_reviews')}</p>
 				{/each}
 			</div>
 		</CardContent>
@@ -280,15 +280,15 @@
 	<!-- Audit Log -->
 	<Card>
 		<CardHeader>
-			<CardTitle>{$instructors.admin_actions_history.value}</CardTitle>
+			<CardTitle>{$t('instructors_admin_actions_history')}</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>{$instructors.table_action.value}</Table.Head>
+						<Table.Head>{$t('instructors_table_action')}</Table.Head>
 						<Table.Head>{$t('role_admin')}</Table.Head>
-						<Table.Head>{$instructors.table_details.value}</Table.Head>
+						<Table.Head>{$t('instructors_table_details')}</Table.Head>
 						<Table.Head>{$t('table_date')}</Table.Head>
 					</Table.Row>
 				</Table.Header>
@@ -296,7 +296,7 @@
 					{#each data.auditLogs as log}
 						<Table.Row>
 							<Table.Cell class="font-medium">{log.action}</Table.Cell>
-							<Table.Cell>{log.admin?.name || $instructors.admin_system.value}</Table.Cell>
+							<Table.Cell>{log.admin?.name || $t('instructors_admin_system')}</Table.Cell>
 							<Table.Cell>
 								<code class="text-xs">
 									{log.details ? JSON.parse(log.details).reason || '-' : '-'}
@@ -307,7 +307,7 @@
 					{:else}
 						<Table.Row>
 							<Table.Cell colspan={4} class="text-center text-muted-foreground">
-								{$instructors.admin_no_actions.value}
+								{$t('instructors_admin_no_actions')}
 							</Table.Cell>
 						</Table.Row>
 					{/each}
@@ -321,9 +321,9 @@
 <Dialog.Root bind:open={showSuspendDialog}>
 	<Dialog.Content>
 		<Dialog.Header>
-			<Dialog.Title>{$instructors.admin_suspend_instructor.value}</Dialog.Title>
+			<Dialog.Title>{$t('instructors_admin_suspend_instructor')}</Dialog.Title>
 			<Dialog.Description>
-				{$instructors.admin_suspend_description.value}
+				{$t('instructors_admin_suspend_description')}
 			</Dialog.Description>
 		</Dialog.Header>
 		<form method="POST" action="?/suspend" use:enhance>
@@ -331,7 +331,7 @@
 				<Textarea
 					name="reason"
 					bind:value={suspendReason}
-					placeholder={$instructors.admin_reason_placeholder.value}
+					placeholder={$t('instructors_admin_reason_placeholder')}
 					required
 				/>
 				<div class="flex justify-end gap-2">
@@ -339,7 +339,7 @@
 						{$t('button_cancel')}
 					</Button>
 					<Button type="submit" variant="destructive">
-						{$instructors.button_suspend.value}
+						{$t('instructors_button_suspend')}
 					</Button>
 				</div>
 			</div>
@@ -351,9 +351,9 @@
 <Dialog.Root bind:open={showRejectDialog}>
 	<Dialog.Content>
 		<Dialog.Header>
-			<Dialog.Title>{$instructors.admin_reject_verification.value}</Dialog.Title>
+			<Dialog.Title>{$t('instructors_admin_reject_verification')}</Dialog.Title>
 			<Dialog.Description>
-				{$instructors.admin_reject_description.value}
+				{$t('instructors_admin_reject_description')}
 			</Dialog.Description>
 		</Dialog.Header>
 		<form method="POST" action="?/reject" use:enhance>
@@ -361,7 +361,7 @@
 				<Textarea
 					name="reason"
 					bind:value={rejectReason}
-					placeholder={$instructors.admin_rejection_reason_placeholder.value}
+					placeholder={$t('instructors_admin_rejection_reason_placeholder')}
 					required
 				/>
 				<div class="flex justify-end gap-2">
@@ -369,7 +369,7 @@
 						{$t('button_cancel')}
 					</Button>
 					<Button type="submit" variant="destructive">
-						{$instructors.button_reject.value}
+						{$t('instructors_button_reject')}
 					</Button>
 				</div>
 			</div>

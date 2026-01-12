@@ -12,13 +12,13 @@
 	let { data } = $props();
 
 	const daysOfWeek = $derived([
-		{ value: 0, label: $working_hours.day_sunday.value },
-		{ value: 1, label: $working_hours.day_monday.value },
-		{ value: 2, label: $working_hours.day_tuesday.value },
-		{ value: 3, label: $working_hours.day_wednesday.value },
-		{ value: 4, label: $working_hours.day_thursday.value },
-		{ value: 5, label: $working_hours.day_friday.value },
-		{ value: 6, label: $working_hours.day_saturday.value }
+		{ value: 0, label: $t('working_hours_day_sunday') },
+		{ value: 1, label: $t('working_hours_day_monday') },
+		{ value: 2, label: $t('working_hours_day_tuesday') },
+		{ value: 3, label: $t('working_hours_day_wednesday') },
+		{ value: 4, label: $t('working_hours_day_thursday') },
+		{ value: 5, label: $t('working_hours_day_friday') },
+		{ value: 6, label: $t('working_hours_day_saturday') }
 	]);
 
 	type WorkingDay = {

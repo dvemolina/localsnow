@@ -138,7 +138,7 @@
 	</Sidebar.Header>
 	<Sidebar.Content class="px-3 bg-white">
 		<Sidebar.Group />
-		<Sidebar.GroupLabel>{$sidebar.application.value}</Sidebar.GroupLabel>
+		<Sidebar.GroupLabel>{$t('sidebar_application')}</Sidebar.GroupLabel>
 		<Sidebar.GroupContent>
 			<Sidebar.Menu>
 				{#if user.role === "client"}

@@ -15,23 +15,23 @@
 <div class="container mx-auto max-w-4xl py-6">
 	<!-- Header -->
 	<div class="mb-6">
-		<h1 class="title2 mb-2">{$profile.profile_page_title.value}</h1>
+		<h1 class="title2 mb-2">{$t('profile_profile_page_title')}</h1>
 		<p class="text-muted-foreground">
-			{$profile.profile_page_subtitle.value}
+			{$t('profile_profile_page_subtitle')}
 		</p>
 		<div class="mt-3 flex items-center gap-2">
 			<Badge variant="secondary">
 				{#if isInstructor}
-					{$profile.role_instructor_account.value}
+					{$t('profile_role_instructor_account')}
 				{:else if isSchoolAdmin}
-					{$profile.role_school_admin_account.value}
+					{$t('profile_role_school_admin_account')}
 				{:else}
-					{$profile.role_client_account.value}
+					{$t('profile_role_client_account')}
 				{/if}
 			</Badge>
 			{#if data.user.isVerified}
 				<Badge variant="default" class="bg-green-600">
-					✓ {$instructors.status_verified.value}
+					✓ {$t('instructors_status_verified')}
 				</Badge>
 			{:else}
 				<Badge variant="outline">
@@ -44,11 +44,11 @@
 	<!-- Tabs for different profile sections -->
 	<Tabs.Root value="personal" class="w-full">
 		<Tabs.List class="grid w-full {isInstructor || isSchoolAdmin ? 'grid-cols-2' : 'grid-cols-1'}">
-			<Tabs.Trigger value="personal">{$profile.profile_tab_personal.value}</Tabs.Trigger>
+			<Tabs.Trigger value="personal">{$t('profile_profile_tab_personal')}</Tabs.Trigger>
 			{#if isInstructor}
-				<Tabs.Trigger value="professional">{$profile.profile_tab_professional.value}</Tabs.Trigger>
+				<Tabs.Trigger value="professional">{$t('profile_profile_tab_professional')}</Tabs.Trigger>
 			{:else if isSchoolAdmin}
-				<Tabs.Trigger value="school">{$profile.profile_tab_school.value}</Tabs.Trigger>
+				<Tabs.Trigger value="school">{$t('profile_profile_tab_school')}</Tabs.Trigger>
 			{/if}
 		</Tabs.List>
 
@@ -56,9 +56,9 @@
 		<Tabs.Content value="personal" class="mt-6">
 			<div class="rounded-lg border border-border bg-card p-6 shadow-sm">
 				<div class="mb-4">
-					<h2 class="title4 mb-1">{$profile.profile_section_personal.value}</h2>
+					<h2 class="title4 mb-1">{$t('profile_profile_section_personal')}</h2>
 					<p class="text-sm text-muted-foreground">
-						{$profile.profile_section_personal_desc.value}
+						{$t('profile_profile_section_personal_desc')}
 					</p>
 				</div>
 				<UserProfileForm userForm={data.userForm} />
@@ -71,15 +71,15 @@
 				<div class="rounded-lg border border-border bg-card p-6 shadow-sm">
 					<div class="mb-4">
 						<h2 class="title4 mb-1">
-							{data.user.role === 'instructor-independent' ? $profile.profile_section_instructor.value : $profile.profile_section_school_instructor.value}
+							{data.user.role === 'instructor-independent' ? $t('profile_profile_section_instructor') : $t('profile_profile_section_school_instructor')}
 						</h2>
 						<p class="text-sm text-muted-foreground">
-							{$profile.profile_section_instructor_desc.value}
+							{$t('profile_profile_section_instructor_desc')}
 						</p>
 						{#if !data.user.isVerified}
 							<div class="mt-3 rounded-md bg-yellow-50 p-3">
 								<p class="text-sm text-yellow-800">
-									⚠️ {$profile.profile_verification_pending_notice.value}
+									⚠️ {$t('profile_profile_verification_pending_notice')}
 								</p>
 							</div>
 						{/if}
@@ -97,14 +97,14 @@
 			<Tabs.Content value="school" class="mt-6">
 				<div class="rounded-lg border border-border bg-card p-6 shadow-sm">
 					<div class="mb-4">
-						<h2 class="title4 mb-1">{$profile.profile_section_school.value}</h2>
+						<h2 class="title4 mb-1">{$t('profile_profile_section_school')}</h2>
 						<p class="text-sm text-muted-foreground">
-							{$profile.profile_section_school_desc.value}
+							{$t('profile_profile_section_school_desc')}
 						</p>
 						{#if !data.user.isVerified}
 							<div class="mt-3 rounded-md bg-yellow-50 p-3">
 								<p class="text-sm text-yellow-800">
-									⚠️ {$profile.profile_verification_pending_notice_school.value}
+									⚠️ {$t('profile_profile_verification_pending_notice_school')}
 								</p>
 							</div>
 						{/if}
@@ -115,7 +115,7 @@
 							currentLogoUrl={null}
 						/>
 					{:else}
-						<p class="text-muted-foreground">{$profile.profile_school_coming_soon.value}</p>
+						<p class="text-muted-foreground">{$t('profile_profile_school_coming_soon')}</p>
 					{/if}
 				</div>
 			</Tabs.Content>

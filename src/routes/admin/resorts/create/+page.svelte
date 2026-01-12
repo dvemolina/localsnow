@@ -33,7 +33,7 @@
 			</Button>
 		</div>
 		<h1 class="title2 mb-2">{$t('admin_create_resort')}</h1>
-		<p class="text-muted-foreground">{$create.admin_create_resort_desc.value}</p>
+		<p class="text-muted-foreground">{$t('create_admin_create_resort_desc')}</p>
 	</div>
 
 	<form
@@ -97,7 +97,7 @@
 							onSelectedChange={(v) => handleCountryChange(v?.value)}
 						>
 							<Select.Trigger>
-								<Select.Value placeholder={$create.admin_select_country.value} />
+								<Select.Value placeholder={$t('create_admin_select_country')} />
 							</Select.Trigger>
 							<Select.Content>
 								{#each data.countries as country}
@@ -122,7 +122,7 @@
 							disabled={!selectedCountryId}
 						>
 							<Select.Trigger>
-								<Select.Value placeholder={$create.admin_select_region.value} />
+								<Select.Value placeholder={$t('create_admin_select_region')} />
 							</Select.Trigger>
 							<Select.Content>
 								<Select.Item value="">

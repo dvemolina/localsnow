@@ -86,7 +86,7 @@
 				<Card.Content>
 					<div class="flex items-center justify-between">
 						<Badge variant={user.isVerified ? 'default' : 'secondary'} class={user.isVerified ? 'bg-green-600' : ''}>
-							{user.isVerified ? `✓ ${$instructors.status_verified.value}` : $t('status_pending')}
+							{user.isVerified ? `✓ ${$t('instructors_status_verified')}` : $t('status_pending')}
 						</Badge>
 						{#if !user.isVerified}
 							<span class="text-xs text-muted-foreground">

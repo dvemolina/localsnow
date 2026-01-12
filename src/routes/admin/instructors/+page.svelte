@@ -42,19 +42,19 @@
 <div class="container mx-auto max-w-7xl space-y-6">
 	<!-- Page Header -->
 	<div class="mb-8">
-		<h1 class="title2 mb-2">{$instructors.admin_instructor_management.value}</h1>
-		<p class="text-muted-foreground">{$instructors.admin_instructor_management_desc.value}</p>
+		<h1 class="title2 mb-2">{$t('instructors_admin_instructor_management')}</h1>
+		<p class="text-muted-foreground">{$t('instructors_admin_instructor_management_desc')}</p>
 	</div>
 
 	<!-- Filters -->
 	<Card>
 		<CardHeader>
-			<CardTitle>{$instructors.admin_filters.value}</CardTitle>
+			<CardTitle>{$t('instructors_admin_filters')}</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<div class="grid gap-4 md:grid-cols-4">
 				<div class="col-span-2">
-					<label for="search" class="text-sm font-medium">{$instructors.form_label_search.value}</label>
+					<label for="search" class="text-sm font-medium">{$t('instructors_form_label_search')}</label>
 					<Input
 						id="search"
 						bind:value={searchValue}
@@ -64,35 +64,35 @@
 				</div>
 
 				<div>
-					<label for="verified" class="text-sm font-medium">{$instructors.admin_verification_status.value}</label>
+					<label for="verified" class="text-sm font-medium">{$t('instructors_admin_verification_status')}</label>
 					<Select.Root
 						selected={{ value: verifiedFilter }}
 						onSelectedChange={(v) => verifiedFilter = v?.value || 'all'}
 					>
 						<Select.Trigger id="verified">
-							<Select.Value placeholder={$instructors.filter_all.value} />
+							<Select.Value placeholder={$t('instructors_filter_all')} />
 						</Select.Trigger>
 						<Select.Content>
-							<Select.Item value="all">{$instructors.filter_all.value}</Select.Item>
-							<Select.Item value="true">{$instructors.status_verified.value}</Select.Item>
+							<Select.Item value="all">{$t('instructors_filter_all')}</Select.Item>
+							<Select.Item value="true">{$t('instructors_status_verified')}</Select.Item>
 							<Select.Item value="false">{$t('status_pending')}</Select.Item>
 						</Select.Content>
 					</Select.Root>
 				</div>
 
 				<div>
-					<label for="suspended" class="text-sm font-medium">{$instructors.admin_account_status.value}</label>
+					<label for="suspended" class="text-sm font-medium">{$t('instructors_admin_account_status')}</label>
 					<Select.Root
 						selected={{ value: suspendedFilter }}
 						onSelectedChange={(v) => suspendedFilter = v?.value || 'all'}
 					>
 						<Select.Trigger id="suspended">
-							<Select.Value placeholder={$instructors.filter_all.value} />
+							<Select.Value placeholder={$t('instructors_filter_all')} />
 						</Select.Trigger>
 						<Select.Content>
-							<Select.Item value="all">{$instructors.filter_all.value}</Select.Item>
+							<Select.Item value="all">{$t('instructors_filter_all')}</Select.Item>
 							<Select.Item value="false">{$t('status_active')}</Select.Item>
-							<Select.Item value="true">{$instructors.status_suspended.value}</Select.Item>
+							<Select.Item value="true">{$t('instructors_status_suspended')}</Select.Item>
 						</Select.Content>
 					</Select.Root>
 				</div>
@@ -124,12 +124,12 @@
 						<Table.Head>{$t('table_id')}</Table.Head>
 						<Table.Head>{$t('table_name')}</Table.Head>
 						<Table.Head>{$t('table_email')}</Table.Head>
-						<Table.Head>{$instructors.table_resorts.value}</Table.Head>
-						<Table.Head>{$instructors.table_sports.value}</Table.Head>
+						<Table.Head>{$t('instructors_table_resorts')}</Table.Head>
+						<Table.Head>{$t('instructors_table_sports')}</Table.Head>
 						<Table.Head>{$t('admin_bookings')}</Table.Head>
 						<Table.Head>{$t('table_rating')}</Table.Head>
 						<Table.Head>{$t('table_status')}</Table.Head>
-						<Table.Head>{$instructors.table_joined.value}</Table.Head>
+						<Table.Head>{$t('instructors_table_joined')}</Table.Head>
 						<Table.Head>{$t('table_actions')}</Table.Head>
 					</Table.Row>
 				</Table.Header>
@@ -177,15 +177,15 @@
 										</span>
 									</div>
 								{:else}
-									<span class="text-muted-foreground">{$instructors.admin_no_reviews.value}</span>
+									<span class="text-muted-foreground">{$t('instructors_admin_no_reviews')}</span>
 								{/if}
 							</Table.Cell>
 							<Table.Cell>
 								<div class="flex flex-col gap-1">
 									{#if instructor.isSuspended}
-										<Badge variant="destructive">{$instructors.status_suspended.value}</Badge>
+										<Badge variant="destructive">{$t('instructors_status_suspended')}</Badge>
 									{:else if instructor.isVerified}
-										<Badge class="bg-green-100 text-green-800">{$instructors.status_verified.value}</Badge>
+										<Badge class="bg-green-100 text-green-800">{$t('instructors_status_verified')}</Badge>
 									{:else}
 										<Badge class="bg-yellow-100 text-yellow-800">{$t('status_pending')}</Badge>
 									{/if}

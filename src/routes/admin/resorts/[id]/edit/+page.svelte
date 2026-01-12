@@ -67,8 +67,8 @@
 				← {$t('admin_back_to_resorts')}
 			</Button>
 		</div>
-		<h1 class="title2 mb-2">{$edit.admin_edit_resort.value}: {resort.name}</h1>
-		<p class="text-muted-foreground">{$edit.admin_edit_resort_desc.value}</p>
+		<h1 class="title2 mb-2">{$t('edit_admin_edit_resort')}: {resort.name}</h1>
+		<p class="text-muted-foreground">{$t('edit_admin_edit_resort_desc')}</p>
 	</div>
 
 	<!-- Resort Details Form -->
@@ -109,7 +109,7 @@
 
 					<!-- UUID -->
 					<div class="space-y-2">
-						<Label>{$edit.label_uuid.value}</Label>
+						<Label>{$t('edit_label_uuid')}</Label>
 						<p class="font-mono text-sm text-muted-foreground">{resort.uuid}</p>
 					</div>
 
@@ -258,19 +258,19 @@
 	<!-- Image Upload Card -->
 	<Card>
 		<CardHeader>
-			<CardTitle>{$edit.admin_resort_image.value}</CardTitle>
+			<CardTitle>{$t('edit_admin_resort_image')}</CardTitle>
 		</CardHeader>
 		<CardContent class="space-y-6">
 			<!-- Current/Preview Image -->
 			<div>
-				<p class="mb-3 text-sm font-medium">{$edit.admin_current_image.value}</p>
+				<p class="mb-3 text-sm font-medium">{$t('edit_admin_current_image')}</p>
 				{#if previewUrl}
 					<div class="relative overflow-hidden rounded-lg border border-border">
 						<img src={previewUrl} alt={resort.name} class="h-64 w-full object-cover" />
 						<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
 						<div class="absolute bottom-4 left-4 text-white">
 							<p class="font-semibold">{resort.name}</p>
-							<p class="text-sm text-white/80">{$edit.admin_preview.value}</p>
+							<p class="text-sm text-white/80">{$t('edit_admin_preview')}</p>
 						</div>
 					</div>
 				{:else}
@@ -302,7 +302,7 @@
 			>
 				<div>
 					<label for="image" class="mb-2 block text-sm font-medium">
-						{$edit.admin_upload_new_image.value}
+						{$t('edit_admin_upload_new_image')}
 					</label>
 					<Input
 						id="image"
@@ -315,16 +315,16 @@
 						class="cursor-pointer"
 					/>
 					<p class="mt-1 text-xs text-muted-foreground">
-						{$edit.admin_image_guidelines.value}
+						{$t('edit_admin_image_guidelines')}
 					</p>
 				</div>
 
 				<div class="flex gap-2">
 					<Button type="submit" disabled={uploading || !selectedFile}>
 						{#if uploading}
-							{$edit.button_uploading.value}
+							{$t('edit_button_uploading')}
 						{:else}
-							{$edit.button_upload_image.value}
+							{$t('edit_button_upload_image')}
 						{/if}
 					</Button>
 					{#if selectedFile}
@@ -344,10 +344,10 @@
 		</CardHeader>
 		<CardContent>
 			<p class="mb-4 text-sm text-muted-foreground">
-				{$edit.admin_delete_resort_warning.value}
+				{$t('edit_admin_delete_resort_warning')}
 			</p>
 			<Button variant="destructive" onclick={() => (showDeleteDialog = true)}>
-				{$edit.button_delete_resort.value}
+				{$t('edit_button_delete_resort')}
 			</Button>
 		</CardContent>
 	</Card>
@@ -357,9 +357,9 @@
 <AlertDialog.Root bind:open={showDeleteDialog}>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
-			<AlertDialog.Title>{$edit.admin_confirm_delete_resort.value}</AlertDialog.Title>
+			<AlertDialog.Title>{$t('edit_admin_confirm_delete_resort')}</AlertDialog.Title>
 			<AlertDialog.Description>
-				{m["admin.resorts.edit.admin_delete_resort_confirmation"]({ name: resort.name })}
+				{$t('resorts_admin_delete_resort_confirmation')}
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>

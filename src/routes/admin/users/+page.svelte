@@ -26,8 +26,8 @@
 
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8">
-		<h1 class="title2 mb-2">{$users.admin_user_management.value}</h1>
-		<p class="text-muted-foreground">{$users.admin_user_management_desc.value}</p>
+		<h1 class="title2 mb-2">{$t('users_admin_user_management')}</h1>
+		<p class="text-muted-foreground">{$t('users_admin_user_management_desc')}</p>
 	</div>
 
 	<Card>
@@ -44,12 +44,12 @@
 					selected={{ value: roleFilter }}
 					onSelectedChange={(v) => roleFilter = v?.value || 'all'}
 				>
-					<Select.Trigger><Select.Value placeholder={$users.table_role.value} /></Select.Trigger>
+					<Select.Trigger><Select.Value placeholder={$t('users_table_role')} /></Select.Trigger>
 					<Select.Content>
-						<Select.Item value="all">{$users.admin_all_roles.value}</Select.Item>
-						<Select.Item value="client">{$users.role_client.value}</Select.Item>
-						<Select.Item value="instructor-independent">{$users.role_instructor_independent.value}</Select.Item>
-						<Select.Item value="instructor-school">{$users.role_instructor_school.value}</Select.Item>
+						<Select.Item value="all">{$t('users_admin_all_roles')}</Select.Item>
+						<Select.Item value="client">{$t('users_role_client')}</Select.Item>
+						<Select.Item value="instructor-independent">{$t('users_role_instructor_independent')}</Select.Item>
+						<Select.Item value="instructor-school">{$t('users_role_instructor_school')}</Select.Item>
 						<Select.Item value="school-admin">{$t('role_school_admin')}</Select.Item>
 						<Select.Item value="admin">{$t('role_admin')}</Select.Item>
 					</Select.Content>
@@ -59,7 +59,7 @@
 		</CardContent>
 	</Card>
 
-	<p class="text-sm text-muted-foreground">{m.admin_showing_of({ count: data.users.length, total: data.pagination.total })} {$users.admin_users.value.toLowerCase()}</p>
+	<p class="text-sm text-muted-foreground">{m.admin_showing_of({ count: data.users.length, total: data.pagination.total })} {$t('users_admin_users').toLowerCase()}</p>
 
 	<Card>
 		<CardContent class="p-0">
@@ -69,9 +69,9 @@
 						<Table.Head>{$t('table_id')}</Table.Head>
 						<Table.Head>{$t('table_name')}</Table.Head>
 						<Table.Head>{$t('table_email')}</Table.Head>
-						<Table.Head>{$users.table_role.value}</Table.Head>
+						<Table.Head>{$t('users_table_role')}</Table.Head>
 						<Table.Head>{$t('table_status')}</Table.Head>
-						<Table.Head>{$instructors.table_joined.value}</Table.Head>
+						<Table.Head>{$t('instructors_table_joined')}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -83,7 +83,7 @@
 							<Table.Cell><Badge variant="outline">{user.role || $t('admin_no_role')}</Badge></Table.Cell>
 							<Table.Cell>
 								{#if user.isSuspended}
-									<Badge variant="destructive">{$instructors.status_suspended.value}</Badge>
+									<Badge variant="destructive">{$t('instructors_status_suspended')}</Badge>
 								{:else}
 									<Badge class="bg-green-100 text-green-800">{$t('status_active')}</Badge>
 								{/if}

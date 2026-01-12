@@ -10,11 +10,11 @@
 	function getStatusBadge(status: string) {
 		const variants: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline', class: string, label: string }> = {
 			'pending': { variant: 'outline', class: 'border-yellow-500 text-yellow-700', label: $t('status_pending') },
-			'viewed': { variant: 'outline', class: 'border-blue-500 text-blue-700', label: $my_bookings.client_status_viewed.value },
-			'accepted': { variant: 'default', class: 'bg-green-600', label: $my_bookings.status_accepted.value },
-			'rejected': { variant: 'destructive', class: '', label: $my_bookings.status_rejected.value },
-			'cancelled': { variant: 'secondary', class: '', label: $my_bookings.client_status_cancelled.value },
-			'expired': { variant: 'secondary', class: '', label: $my_bookings.status_expired.value }
+			'viewed': { variant: 'outline', class: 'border-blue-500 text-blue-700', label: $t('my_bookings_client_status_viewed') },
+			'accepted': { variant: 'default', class: 'bg-green-600', label: $t('my_bookings_status_accepted') },
+			'rejected': { variant: 'destructive', class: '', label: $t('my_bookings_status_rejected') },
+			'cancelled': { variant: 'secondary', class: '', label: $t('my_bookings_client_status_cancelled') },
+			'expired': { variant: 'secondary', class: '', label: $t('my_bookings_status_expired') }
 		};
 
 		return variants[status] || { variant: 'outline' as const, class: '', label: status };
@@ -42,14 +42,14 @@
 	<div class="mb-8">
 		<div class="mb-4">
 			<Button href="/dashboard/my-bookings" variant="outline" size="sm">
-				← {$my_bookings.client_back_to_bookings.value}
+				← {$t('my_bookings_client_back_to_bookings')}
 			</Button>
 		</div>
 		<div class="flex items-start justify-between">
 			<div>
-				<h1 class="title2 mb-2">{$my_bookings.client_booking_request.value} #{booking.id}</h1>
+				<h1 class="title2 mb-2">{$t('my_bookings_client_booking_request')} #{booking.id}</h1>
 				<p class="text-muted-foreground">
-					{m["dashboard.my-bookings.client_created_on"]({ date: new Date(booking.createdAt).toLocaleDateString() })}
+					{$t('my_bookings_client_created_on')}
 				</p>
 				<p class="text-xs text-muted-foreground mt-1">
 					{new Date(booking.createdAt).toLocaleString()}
@@ -64,25 +64,25 @@
 	<!-- Instructor Information -->
 	<Card>
 		<CardHeader>
-			<CardTitle>{$my_bookings.client_instructor_info.value}</CardTitle>
+			<CardTitle>{$t('my_bookings_client_instructor_info')}</CardTitle>
 		</CardHeader>
 		<CardContent class="space-y-4">
 			<div class="grid gap-4 md:grid-cols-2">
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{$my_bookings.label_name.value}</p>
+					<p class="text-sm font-medium text-muted-foreground">{$t('my_bookings_label_name')}</p>
 					<p class="text-base">
 						{booking.instructor?.name} {booking.instructor?.lastName}
 					</p>
 				</div>
 				{#if booking.contactInfoUnlocked}
 					<div>
-						<p class="text-sm font-medium text-muted-foreground">{$my_bookings.label_email.value}</p>
+						<p class="text-sm font-medium text-muted-foreground">{$t('my_bookings_label_email')}</p>
 						<p class="text-base">{booking.instructor?.email}</p>
 					</div>
 				{:else}
 					<div class="rounded-md bg-yellow-50 p-3 text-sm text-yellow-800">
-						<p class="font-medium">{$my_bookings.client_contact_locked_title.value}</p>
-						<p class="text-xs">{$my_bookings.client_contact_locked_desc.value}</p>
+						<p class="font-medium">{$t('my_bookings_client_contact_locked_title')}</p>
+						<p class="text-xs">{$t('my_bookings_client_contact_locked_desc')}</p>
 					</div>
 				{/if}
 			</div>
@@ -92,34 +92,34 @@
 	<!-- Booking Details -->
 	<Card>
 		<CardHeader>
-			<CardTitle>{$my_bookings.client_booking_details.value}</CardTitle>
+			<CardTitle>{$t('my_bookings_client_booking_details')}</CardTitle>
 		</CardHeader>
 		<CardContent class="space-y-4">
 			<div class="grid gap-4 md:grid-cols-2">
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{$my_bookings.label_start_date.value}</p>
+					<p class="text-sm font-medium text-muted-foreground">{$t('my_bookings_label_start_date')}</p>
 					<p class="text-base">{new Date(booking.startDate).toLocaleDateString()}</p>
 				</div>
 				{#if booking.endDate && booking.endDate !== booking.startDate}
 					<div>
-						<p class="text-sm font-medium text-muted-foreground">{$my_bookings.label_end_date.value}</p>
+						<p class="text-sm font-medium text-muted-foreground">{$t('my_bookings_label_end_date')}</p>
 						<p class="text-base">{new Date(booking.endDate).toLocaleDateString()}</p>
 					</div>
 				{/if}
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{$my_bookings.label_number_of_students.value}</p>
+					<p class="text-sm font-medium text-muted-foreground">{$t('my_bookings_label_number_of_students')}</p>
 					<p class="text-base">{booking.numberOfStudents}</p>
 				</div>
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{$my_bookings.label_hours_per_day.value}</p>
+					<p class="text-sm font-medium text-muted-foreground">{$t('my_bookings_label_hours_per_day')}</p>
 					<p class="text-base">{booking.hoursPerDay}</p>
 				</div>
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{$my_bookings.label_skill_level.value}</p>
+					<p class="text-sm font-medium text-muted-foreground">{$t('my_bookings_label_skill_level')}</p>
 					<p class="text-base capitalize">{booking.skillLevel}</p>
 				</div>
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{$my_bookings.label_sports.value}</p>
+					<p class="text-sm font-medium text-muted-foreground">{$t('my_bookings_label_sports')}</p>
 					<div class="flex flex-wrap gap-1">
 						{#each booking.sports as sport}
 							<Badge variant="outline">{sport.sportName}</Badge>
@@ -131,7 +131,7 @@
 			{#if timeSlots.length > 0}
 				<Separator />
 				<div>
-					<p class="mb-2 text-sm font-medium text-muted-foreground">{$my_bookings.client_requested_times.value}</p>
+					<p class="mb-2 text-sm font-medium text-muted-foreground">{$t('my_bookings_client_requested_times')}</p>
 					<div class="flex flex-wrap gap-2">
 						{#each timeSlots as slot}
 							<Badge variant="secondary">{slot}</Badge>
@@ -143,7 +143,7 @@
 			{#if booking.message}
 				<Separator />
 				<div>
-					<p class="mb-2 text-sm font-medium text-muted-foreground">{$my_bookings.label_message.value}</p>
+					<p class="mb-2 text-sm font-medium text-muted-foreground">{$t('my_bookings_label_message')}</p>
 					<p class="text-base">{booking.message}</p>
 				</div>
 			{/if}
@@ -151,7 +151,7 @@
 			{#if booking.estimatedPrice}
 				<Separator />
 				<div>
-					<p class="mb-2 text-sm font-medium text-muted-foreground">{$my_bookings.label_estimated_price.value}</p>
+					<p class="mb-2 text-sm font-medium text-muted-foreground">{$t('my_bookings_label_estimated_price')}</p>
 					<p class="text-2xl font-bold">
 						{booking.estimatedPrice} {booking.currency || 'EUR'}
 					</p>
@@ -161,9 +161,9 @@
 			{#if booking.usedLaunchCode}
 				<Separator />
 				<div class="rounded-md bg-blue-50 p-3">
-					<p class="text-sm font-medium text-blue-900">{$my_bookings.client_beta_access_used.value}</p>
+					<p class="text-sm font-medium text-blue-900">{$t('my_bookings_client_beta_access_used')}</p>
 					<p class="text-xs text-blue-800">
-						{$my_bookings.client_beta_code.value}: <code class="font-mono">{booking.usedLaunchCode}</code>
+						{$t('my_bookings_client_beta_code')}: <code class="font-mono">{booking.usedLaunchCode}</code>
 					</p>
 				</div>
 			{/if}
@@ -173,38 +173,38 @@
 	<!-- Status Information -->
 	<Card>
 		<CardHeader>
-			<CardTitle>{$my_bookings.client_status_info.value}</CardTitle>
+			<CardTitle>{$t('my_bookings_client_status_info')}</CardTitle>
 		</CardHeader>
 		<CardContent class="space-y-3">
 			{#if booking.status === 'pending'}
 				<p class="text-sm">
-					{$my_bookings.client_status_pending_desc.value}
+					{$t('my_bookings_client_status_pending_desc')}
 				</p>
 			{:else if booking.status === 'viewed'}
 				<p class="text-sm">
-					{$my_bookings.client_status_viewed_desc.value}
+					{$t('my_bookings_client_status_viewed_desc')}
 				</p>
 			{:else if booking.status === 'accepted'}
 				<div class="rounded-md bg-green-50 p-4">
-					<p class="font-medium text-green-900">{$my_bookings.client_status_accepted_title.value}</p>
+					<p class="font-medium text-green-900">{$t('my_bookings_client_status_accepted_title')}</p>
 					<p class="text-sm text-green-800">
-						{$my_bookings.client_status_accepted_desc.value}
+						{$t('my_bookings_client_status_accepted_desc')}
 					</p>
 				</div>
 			{:else if booking.status === 'rejected'}
 				<div class="rounded-md bg-red-50 p-4">
-					<p class="font-medium text-red-900">{$my_bookings.client_status_rejected_title.value}</p>
+					<p class="font-medium text-red-900">{$t('my_bookings_client_status_rejected_title')}</p>
 					<p class="text-sm text-red-800">
-						{$my_bookings.client_status_rejected_desc.value}
+						{$t('my_bookings_client_status_rejected_desc')}
 					</p>
 				</div>
 			{:else if booking.status === 'cancelled'}
 				<p class="text-sm text-muted-foreground">
-					{$my_bookings.client_status_cancelled_desc.value}
+					{$t('my_bookings_client_status_cancelled_desc')}
 				</p>
 			{:else if booking.status === 'expired'}
 				<p class="text-sm text-muted-foreground">
-					{$my_bookings.client_status_expired_desc.value}
+					{$t('my_bookings_client_status_expired_desc')}
 				</p>
 			{/if}
 		</CardContent>

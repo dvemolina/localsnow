@@ -18,7 +18,7 @@
 			</Button>
 		</div>
 		<h1 class="title2 mb-2">{$t('admin_create_sport')}</h1>
-		<p class="text-muted-foreground">{$create.admin_create_sport_desc.value}</p>
+		<p class="text-muted-foreground">{$t('create_admin_create_sport_desc')}</p>
 	</div>
 
 	<form

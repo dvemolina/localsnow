@@ -7,16 +7,16 @@
 
 	const errorMessages = $derived({
 		no_session: {
-			title: $booking_error.error_no_session_title.value,
-			description: $booking_error.error_no_session_desc.value
+			title: $t('booking_error_error_no_session_title'),
+			description: $t('booking_error_error_no_session_desc')
 		},
 		payment_failed: {
-			title: $booking_error.error_payment_failed_title.value,
-			description: $booking_error.error_payment_failed_desc.value
+			title: $t('booking_error_error_payment_failed_title'),
+			description: $t('booking_error_error_payment_failed_desc')
 		},
 		processing_error: {
-			title: $booking_error.error_processing_title.value,
-			description: $booking_error.error_processing_desc.value
+			title: $t('booking_error_error_processing_title'),
+			description: $t('booking_error_error_processing_desc')
 		}
 	});
 
@@ -24,7 +24,7 @@
 </script>
 
 <svelte:head>
-	<title>{$booking_error.booking_error_page_title.value} - Local Snow</title>
+	<title>{$t('booking_error_booking_error_page_title')} - Local Snow</title>
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
@@ -45,19 +45,19 @@
 
 		<!-- Support Info -->
 		<div class="mb-6 rounded-lg bg-muted/50 p-4 text-left text-sm">
-			<p class="font-semibold mb-2">{$booking_error.error_need_help.value}</p>
+			<p class="font-semibold mb-2">{$t('booking_error_error_need_help')}</p>
 			<p class="text-muted-foreground">
-				{$booking_error.error_support_message.value}
+				{$t('booking_error_error_support_message')}
 			</p>
 		</div>
 
 		<!-- Actions -->
 		<div class="flex flex-col gap-3 sm:flex-row sm:justify-center">
 			<Button onclick={() => window.history.back()} variant="default">
-				{$booking_error.button_try_again.value}
+				{$t('booking_error_button_try_again')}
 			</Button>
 			<Button onclick={() => window.location.href = '/instructors'} variant="outline">
-				{$booking_error.button_browse_instructors.value}
+				{$t('booking_error_button_browse_instructors')}
 			</Button>
 		</div>
 	</div>

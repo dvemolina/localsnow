@@ -42,8 +42,8 @@
 
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8">
-		<h1 class="title2 mb-2">{$bookings.admin_booking_management.value}</h1>
-		<p class="text-muted-foreground">{$bookings.admin_booking_management_desc.value}</p>
+		<h1 class="title2 mb-2">{$t('bookings_admin_booking_management')}</h1>
+		<p class="text-muted-foreground">{$t('bookings_admin_booking_management_desc')}</p>
 	</div>
 
 	<!-- Filters -->
@@ -53,7 +53,7 @@
 				<div class="col-span-2">
 					<Input
 						bind:value={searchValue}
-						placeholder={$bookings.admin_search_client_placeholder.value}
+						placeholder={$t('bookings_admin_search_client_placeholder')}
 						onkeydown={(e) => e.key === 'Enter' && applyFilters()}
 					/>
 				</div>
@@ -65,12 +65,12 @@
 						<Select.Value placeholder={$t('table_status')} />
 					</Select.Trigger>
 					<Select.Content>
-						<Select.Item value="all">{$bookings.admin_all_statuses.value}</Select.Item>
+						<Select.Item value="all">{$t('bookings_admin_all_statuses')}</Select.Item>
 						<Select.Item value="pending">{$t('status_pending')}</Select.Item>
-						<Select.Item value="viewed">{$bookings.status_viewed.value}</Select.Item>
-						<Select.Item value="accepted">{$my_bookings.status_accepted.value}</Select.Item>
+						<Select.Item value="viewed">{$t('bookings_status_viewed')}</Select.Item>
+						<Select.Item value="accepted">{$t('my_bookings_status_accepted')}</Select.Item>
 						<Select.Item value="completed">{$t('status_completed')}</Select.Item>
-						<Select.Item value="rejected">{$my_bookings.status_rejected.value}</Select.Item>
+						<Select.Item value="rejected">{$t('my_bookings_status_rejected')}</Select.Item>
 					</Select.Content>
 				</Select.Root>
 			</div>
@@ -91,12 +91,12 @@
 						<Table.Head>{$t('table_id')}</Table.Head>
 						<Table.Head>{$t('table_client')}</Table.Head>
 						<Table.Head>{$t('table_instructor')}</Table.Head>
-						<Table.Head>{$bookings.table_resort_sport.value}</Table.Head>
+						<Table.Head>{$t('bookings_table_resort_sport')}</Table.Head>
 						<Table.Head>{$t('table_date')}</Table.Head>
 						<Table.Head>{$t('table_students')}</Table.Head>
 						<Table.Head>{$t('table_price')}</Table.Head>
 						<Table.Head>{$t('table_status')}</Table.Head>
-						<Table.Head>{$bookings.table_created.value}</Table.Head>
+						<Table.Head>{$t('bookings_table_created')}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>

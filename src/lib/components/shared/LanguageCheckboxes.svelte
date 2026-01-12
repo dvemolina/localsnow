@@ -26,4 +26,4 @@
     let { form, name } = $props();
 </script>
 
-<GroupCheckboxes {form} {name} options={languages} legend={$languages.spoken.value} />
+<GroupCheckboxes {form} {name} options={languages} legend={$t('languages_spoken')} />

@@ -44,20 +44,20 @@
 <div class="container mx-auto max-w-7xl space-y-6">
 	<!-- Page Header -->
 	<div class="mb-8">
-		<h1 class="title2 mb-2">{$dashboard.admin_platform_overview.value}</h1>
-		<p class="text-muted-foreground">{$dashboard.admin_platform_overview_desc.value}</p>
+		<h1 class="title2 mb-2">{$t('dashboard_admin_platform_overview')}</h1>
+		<p class="text-muted-foreground">{$t('dashboard_admin_platform_overview_desc')}</p>
 	</div>
 
 	<!-- Key Metrics Cards -->
 	<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
 		<Card>
 			<CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-				<CardTitle class="text-sm font-medium">{$dashboard.admin_total_users.value}</CardTitle>
+				<CardTitle class="text-sm font-medium">{$t('dashboard_admin_total_users')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">{totalUsers}</div>
 				<p class="text-xs text-muted-foreground">
-					+{data.stats.recentActivity.users} {$dashboard.admin_in_last_30_days.value}
+					+{data.stats.recentActivity.users} {$t('dashboard_admin_in_last_30_days')}
 				</p>
 			</CardContent>
 		</Card>
@@ -69,7 +69,7 @@
 			<CardContent>
 				<div class="text-2xl font-bold">{verifiedInstructors}/{totalInstructors}</div>
 				<p class="text-xs text-muted-foreground">
-					{pendingInstructors} {$dashboard.admin_pending_verification.value}
+					{pendingInstructors} {$t('dashboard_admin_pending_verification')}
 				</p>
 			</CardContent>
 		</Card>
@@ -88,12 +88,12 @@
 
 		<Card>
 			<CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-				<CardTitle class="text-sm font-medium">{$dashboard.admin_revenue.value}</CardTitle>
+				<CardTitle class="text-sm font-medium">{$t('dashboard_admin_revenue')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">€{totalRevenue.toFixed(2)}</div>
 				<p class="text-xs text-muted-foreground">
-					{data.stats.reviewStats.total} {$dashboard.admin_reviews_submitted.value}
+					{data.stats.reviewStats.total} {$t('dashboard_admin_reviews_submitted')}
 				</p>
 			</CardContent>
 		</Card>
@@ -105,7 +105,7 @@
 			<CardHeader>
 				<CardTitle class="flex items-center gap-2 text-yellow-900">
 					<span class="text-xl">⚠️</span>
-					{data.pendingVerifications.length} {$dashboard.admin_instructors_pending_verification.value}
+					{data.pendingVerifications.length} {$t('dashboard_admin_instructors_pending_verification')}
 				</CardTitle>
 			</CardHeader>
 			<CardContent>
@@ -116,11 +116,11 @@
 								<p class="font-medium">{instructor.name} {instructor.lastName}</p>
 								<p class="text-sm text-muted-foreground">{instructor.email}</p>
 								<p class="text-xs text-muted-foreground">
-									{$dashboard.admin_registered.value}: {formatDate(instructor.createdAt)}
+									{$t('dashboard_admin_registered')}: {formatDate(instructor.createdAt)}
 								</p>
 							</div>
 							<Button href="/admin/instructors/{instructor.id}" size="sm">
-								{$dashboard.button_review.value}
+								{$t('dashboard_button_review')}
 							</Button>
 						</div>
 					{/each}
@@ -135,7 +135,7 @@
 			<CardHeader>
 				<CardTitle class="flex items-center gap-2 text-red-900">
 					<span class="text-xl">🚫</span>
-					{data.suspendedUsers.length} {$dashboard.admin_suspended_users.value}
+					{data.suspendedUsers.length} {$t('dashboard_admin_suspended_users')}
 				</CardTitle>
 			</CardHeader>
 			<CardContent>
@@ -160,7 +160,7 @@
 		<!-- Recent Bookings -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{$dashboard.admin_recent_bookings.value}</CardTitle>
+				<CardTitle>{$t('dashboard_admin_recent_bookings')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<Table.Root>
@@ -191,7 +191,7 @@
 				</Table.Root>
 				<div class="mt-4 text-center">
 					<Button href="/admin/bookings" variant="outline" size="sm">
-						{$dashboard.button_view_all_bookings.value}
+						{$t('dashboard_button_view_all_bookings')}
 					</Button>
 				</div>
 			</CardContent>
@@ -200,7 +200,7 @@
 		<!-- Recent Reviews -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{$dashboard.admin_recent_reviews.value}</CardTitle>
+				<CardTitle>{$t('dashboard_admin_recent_reviews')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="space-y-3">
@@ -229,7 +229,7 @@
 				</div>
 				<div class="mt-4 text-center">
 					<Button href="/admin/reviews" variant="outline" size="sm">
-						{$dashboard.button_view_all_reviews.value}
+						{$t('dashboard_button_view_all_reviews')}
 					</Button>
 				</div>
 			</CardContent>
@@ -241,7 +241,7 @@
 		<!-- User Distribution -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{$dashboard.admin_users_by_role.value}</CardTitle>
+				<CardTitle>{$t('dashboard_admin_users_by_role')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="space-y-2">
@@ -258,7 +258,7 @@
 		<!-- Booking Status Distribution -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{$dashboard.admin_bookings_by_status.value}</CardTitle>
+				<CardTitle>{$t('dashboard_admin_bookings_by_status')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="space-y-2">
@@ -275,16 +275,16 @@
 		<!-- Review Statistics -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{$dashboard.admin_review_metrics.value}</CardTitle>
+				<CardTitle>{$t('dashboard_admin_review_metrics')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="space-y-3">
 					<div>
-						<p class="text-sm text-muted-foreground">{$dashboard.admin_total_reviews.value}</p>
+						<p class="text-sm text-muted-foreground">{$t('dashboard_admin_total_reviews')}</p>
 						<p class="text-2xl font-bold">{data.stats.reviewStats.total}</p>
 					</div>
 					<div>
-						<p class="text-sm text-muted-foreground">{$dashboard.admin_average_rating.value}</p>
+						<p class="text-sm text-muted-foreground">{$t('dashboard_admin_average_rating')}</p>
 						<div class="flex items-center gap-2">
 							<p class="text-2xl font-bold">
 								{Number(data.stats.reviewStats.avgRating || 0).toFixed(1)}

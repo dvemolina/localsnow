@@ -22,7 +22,7 @@
 			← {$t('admin_back_to_launch_codes')}
 		</a>
 		<h1 class="title2 mb-2 mt-4">{$t('admin_create_launch_code')}</h1>
-		<p class="text-muted-foreground">{$create.admin_create_launch_code_desc.value}</p>
+		<p class="text-muted-foreground">{$t('create_admin_create_launch_code_desc')}</p>
 	</div>
 
 	<!-- Error Message -->
@@ -103,7 +103,7 @@
 				<div class="flex items-center space-x-2">
 					<Checkbox id="isActive" name="isActive" checked={true} />
 					<Label for="isActive" class="font-normal">
-						{$create.admin_activate_immediately.value}
+						{$t('create_admin_activate_immediately')}
 					</Label>
 				</div>
 			</CardContent>
@@ -112,7 +112,7 @@
 		<!-- Actions -->
 		<div class="mt-6 flex items-center gap-4">
 			<Button type="submit" class="bg-primary text-white">
-				{$create.admin_create_code.value}
+				{$t('create_admin_create_code')}
 			</Button>
 			<Button type="button" variant="outline" href="/admin/launch-codes">
 				{$t('button_cancel')}

@@ -17,8 +17,8 @@
 
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8">
-		<h1 class="title2 mb-2">{$reviews.admin_review_management.value}</h1>
-		<p class="text-muted-foreground">{$reviews.admin_review_management_desc.value}</p>
+		<h1 class="title2 mb-2">{$t('reviews_admin_review_management')}</h1>
+		<p class="text-muted-foreground">{$t('reviews_admin_review_management_desc')}</p>
 	</div>
 
 	<p class="text-sm text-muted-foreground">
@@ -33,7 +33,7 @@
 						<Table.Head>{$t('table_id')}</Table.Head>
 						<Table.Head>{$t('table_instructor')}</Table.Head>
 						<Table.Head>{$t('table_rating')}</Table.Head>
-						<Table.Head>{$reviews.table_comment.value}</Table.Head>
+						<Table.Head>{$t('reviews_table_comment')}</Table.Head>
 						<Table.Head>{$t('table_client')}</Table.Head>
 						<Table.Head>{$t('table_date')}</Table.Head>
 					</Table.Row>

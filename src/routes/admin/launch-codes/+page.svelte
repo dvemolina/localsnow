@@ -23,13 +23,13 @@
 
 	function getStatusBadge(code: any) {
 		if (isExpired(code.validUntil)) {
-			return { variant: 'destructive' as const, text: $my_bookings.status_expired.value };
+			return { variant: 'destructive' as const, text: $t('my_bookings_status_expired') };
 		}
 		if (!code.isActive) {
-			return { variant: 'secondary' as const, text: $launch_codes.status_inactive.value };
+			return { variant: 'secondary' as const, text: $t('launch_codes_status_inactive') };
 		}
 		if (code.maxUses && code.totalUsage >= code.maxUses) {
-			return { variant: 'secondary' as const, text: $launch_codes.status_max_uses_reached.value };
+			return { variant: 'secondary' as const, text: $t('launch_codes_status_max_uses_reached') };
 		}
 		return { variant: 'default' as const, text: $t('status_active') };
 	}
@@ -39,8 +39,8 @@
 	<!-- Page Header -->
 	<div class="mb-8 flex items-center justify-between">
 		<div>
-			<h1 class="title2 mb-2">{$launch_codes.admin_launch_codes_title.value}</h1>
-			<p class="text-muted-foreground">{$launch_codes.admin_launch_codes_desc.value}</p>
+			<h1 class="title2 mb-2">{$t('launch_codes_admin_launch_codes_title')}</h1>
+			<p class="text-muted-foreground">{$t('launch_codes_admin_launch_codes_desc')}</p>
 		</div>
 		<Button href="/admin/launch-codes/create" class="bg-primary text-white">
 			{$t('admin_create_launch_code')}
@@ -50,21 +50,21 @@
 	<!-- Launch Codes Table -->
 	<Card>
 		<CardHeader>
-			<CardTitle>{$launch_codes.admin_all_launch_codes.value} ({data.codes.length})</CardTitle>
+			<CardTitle>{$t('launch_codes_admin_all_launch_codes')} ({data.codes.length})</CardTitle>
 		</CardHeader>
 		<CardContent>
 			{#if data.codes.length === 0}
 				<p class="text-center text-muted-foreground py-8">
-					{$launch_codes.admin_no_launch_codes.value}
+					{$t('launch_codes_admin_no_launch_codes')}
 				</p>
 			{:else}
 				<Table.Root>
 					<Table.Header>
 						<Table.Row>
-							<Table.Head>{$launch_codes.table_code.value}</Table.Head>
-							<Table.Head>{$launch_codes.table_description.value}</Table.Head>
-							<Table.Head>{$launch_codes.table_valid_until.value}</Table.Head>
-							<Table.Head>{$launch_codes.table_usage.value}</Table.Head>
+							<Table.Head>{$t('launch_codes_table_code')}</Table.Head>
+							<Table.Head>{$t('launch_codes_table_description')}</Table.Head>
+							<Table.Head>{$t('launch_codes_table_valid_until')}</Table.Head>
+							<Table.Head>{$t('launch_codes_table_usage')}</Table.Head>
 							<Table.Head>{$t('table_status')}</Table.Head>
 							<Table.Head>{$t('table_actions')}</Table.Head>
 						</Table.Row>
@@ -77,7 +77,7 @@
 								</Table.Cell>
 								<Table.Cell>
 									<div class="max-w-md">
-										{code.description || $launch_codes.admin_no_description.value}
+										{code.description || $t('launch_codes_admin_no_description')}
 									</div>
 								</Table.Cell>
 								<Table.Cell>
@@ -94,11 +94,11 @@
 											{:else}
 												/ ∞
 											{/if}
-											{$launch_codes.admin_total_uses.value}
+											{$t('launch_codes_admin_total_uses')}
 										</div>
 										<div class="text-xs text-muted-foreground">
-											{code.bookingUsage} {$launch_codes.admin_bookings_lowercase.value} •
-											{code.leadUsage} {$launch_codes.admin_leads_lowercase.value}
+											{code.bookingUsage} {$t('launch_codes_admin_bookings_lowercase')} •
+											{code.leadUsage} {$t('launch_codes_admin_leads_lowercase')}
 										</div>
 									</div>
 								</Table.Cell>
@@ -125,7 +125,7 @@
 												variant="outline"
 												size="sm"
 											>
-												{code.isActive ? $launch_codes.button_deactivate.value : $launch_codes.button_activate.value}
+												{code.isActive ? $t('launch_codes_button_deactivate') : $t('launch_codes_button_activate')}
 											</Button>
 										</form>
 
@@ -134,7 +134,7 @@
 											action="?/delete"
 											use:enhance={() => {
 												return ({ update }) => {
-													if (confirm($launch_codes.admin_confirm_delete_code.value)) {
+													if (confirm($t('launch_codes_admin_confirm_delete_code'))) {
 														update();
 													}
 												};
@@ -163,7 +163,7 @@
 	<div class="grid gap-4 md:grid-cols-3">
 		<Card>
 			<CardHeader>
-				<CardTitle class="text-sm font-medium">{$launch_codes.admin_total_codes.value}</CardTitle>
+				<CardTitle class="text-sm font-medium">{$t('launch_codes_admin_total_codes')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">{data.codes.length}</div>
@@ -175,28 +175,28 @@
 
 		<Card>
 			<CardHeader>
-				<CardTitle class="text-sm font-medium">{$launch_codes.admin_total_code_uses.value}</CardTitle>
+				<CardTitle class="text-sm font-medium">{$t('launch_codes_admin_total_code_uses')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">
 					{data.codes.reduce((sum, code) => sum + code.totalUsage, 0)}
 				</div>
 				<p class="text-xs text-muted-foreground">
-					{$launch_codes.admin_across_all_codes.value}
+					{$t('launch_codes_admin_across_all_codes')}
 				</p>
 			</CardContent>
 		</Card>
 
 		<Card>
 			<CardHeader>
-				<CardTitle class="text-sm font-medium">{$launch_codes.admin_expired_codes.value}</CardTitle>
+				<CardTitle class="text-sm font-medium">{$t('launch_codes_admin_expired_codes')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">
 					{data.codes.filter(c => isExpired(c.validUntil)).length}
 				</div>
 				<p class="text-xs text-muted-foreground">
-					{$launch_codes.admin_need_renewal.value}
+					{$t('launch_codes_admin_need_renewal')}
 				</p>
 			</CardContent>
 		</Card>

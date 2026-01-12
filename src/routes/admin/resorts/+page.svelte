@@ -59,9 +59,9 @@
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8 flex items-center justify-between">
 		<div>
-			<h1 class="title2 mb-2">{$resorts.admin_resort_management.value}</h1>
+			<h1 class="title2 mb-2">{$t('resorts_admin_resort_management')}</h1>
 			<p class="text-muted-foreground">
-				{m["admin.resorts.admin_resort_management_desc"]({ count: data.pagination.totalCount })}
+				{$t('resorts_admin_resort_management_desc')}
 			</p>
 		</div>
 		<Button href="/admin/resorts/create">
@@ -83,7 +83,7 @@
 				<div class="flex-1">
 					<Input
 						type="text"
-						placeholder={$resorts.admin_search_resorts.value}
+						placeholder={$t('resorts_admin_search_resorts')}
 						bind:value={searchValue}
 					/>
 				</div>
@@ -102,7 +102,7 @@
 						</Select.Trigger>
 						<Select.Content>
 							<Select.Item value="">
-								{$resorts.admin_all_countries.value}
+								{$t('resorts_admin_all_countries')}
 							</Select.Item>
 							{#each data.countries as country}
 								<Select.Item value={country.id.toString()}>
@@ -128,7 +128,7 @@
 						</Select.Trigger>
 						<Select.Content>
 							<Select.Item value="">
-								{$resorts.admin_all_regions.value}
+								{$t('resorts_admin_all_regions')}
 							</Select.Item>
 							{#each data.regions as region}
 								<Select.Item value={region.id.toString()}>
@@ -157,9 +157,9 @@
 					<Table.Row>
 						<Table.Head>{$t('table_id')}</Table.Head>
 						<Table.Head>{$t('table_name')}</Table.Head>
-						<Table.Head>{$resorts.table_region.value}</Table.Head>
-						<Table.Head>{$resorts.table_country.value}</Table.Head>
-						<Table.Head>{$resorts.table_image.value}</Table.Head>
+						<Table.Head>{$t('resorts_table_region')}</Table.Head>
+						<Table.Head>{$t('resorts_table_country')}</Table.Head>
+						<Table.Head>{$t('resorts_table_image')}</Table.Head>
 						<Table.Head>{$t('table_actions')}</Table.Head>
 					</Table.Row>
 				</Table.Header>
@@ -167,7 +167,7 @@
 					{#if data.resorts.length === 0}
 						<Table.Row>
 							<Table.Cell colspan={6} class="text-center text-muted-foreground">
-								{$resorts.admin_no_resorts_found.value}
+								{$t('resorts_admin_no_resorts_found')}
 							</Table.Cell>
 						</Table.Row>
 					{:else}
@@ -195,7 +195,7 @@
 												alt={resort.name}
 												class="h-8 w-12 rounded object-cover"
 											/>
-											<span class="text-xs text-muted-foreground">{$resorts.admin_set.value}</span>
+											<span class="text-xs text-muted-foreground">{$t('resorts_admin_set')}</span>
 										</div>
 									{:else}
 										<span class="text-xs text-muted-foreground">{$t('admin_no_image')}</span>

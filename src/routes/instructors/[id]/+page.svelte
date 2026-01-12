@@ -530,7 +530,7 @@
 							d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
 						/>
 					</svg>
-					{$instructor.what_to_expect.value}
+					{$t('instructor_what_to_expect')}
 				</h2>
 				<ul class="space-y-2.5 text-sm text-muted-foreground">
 					<li class="flex items-start gap-2">
@@ -606,19 +606,19 @@
 
 		<!-- Booking Info -->
 		<div class="rounded-lg border border-border bg-card p-6">
-			<h2 class="title4 mb-4">{$instructor.booking_information.value}</h2>
+			<h2 class="title4 mb-4">{$t('instructor_booking_information')}</h2>
 			<div class="space-y-3 text-sm text-muted-foreground">
 				<p>
-					{$instructor.lesson_types.value}
+					{$t('instructor_lesson_types')}
 				</p>
 				<p>
-					{$instructor.lesson_duration.value}
+					{$t('instructor_lesson_duration')}
 				</p>
 				<p>
-					{$instructor.booking_process.value}
+					{$t('instructor_booking_process')}
 				</p>
 				<p class="text-xs italic">
-					{$instructor.booking_note.value}
+					{$t('instructor_booking_note')}
 				</p>
 			</div>
 		</div>
