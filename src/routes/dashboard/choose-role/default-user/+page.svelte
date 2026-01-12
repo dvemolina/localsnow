@@ -1,7 +1,5 @@
 <script>
-	import { buttonVariants } from "$src/lib/components/ui/button";
-	import { useIntlayer } from 'svelte-intlayer';
-	import { enhance } from '$app/forms';
+	import { buttonVariants } from "$src/lib/components/ui/button";	import { enhance } from '$app/forms';
 
 	let { data } = $props();
 	let submitting = $state(false);

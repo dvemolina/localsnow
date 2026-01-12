@@ -1,6 +1,4 @@
-<script lang="ts">
-	import { useIntlayer } from 'svelte-intlayer';
-	import * as Card from '$lib/components/ui/card';
+<script lang="ts">	import * as Card from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import SchoolProfileForm from '$src/features/Schools/components/SchoolProfileForm.svelte';
 	import type { PageData } from './$types';

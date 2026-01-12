@@ -3,9 +3,7 @@
 	import * as Card from '$src/lib/components/ui/card';
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { toast } from 'svelte-sonner';
-	import { invalidateAll } from '$app/navigation';
-	import { useIntlayer } from 'svelte-intlayer';
-	import { route } from '$lib/i18n/routeHelpers';
+	import { invalidateAll } from '$app/navigation';	import { route } from '$lib/i18n/routeHelpers';
 
 	let { data } = $props();
 

@@ -1,6 +1,4 @@
-<script lang="ts">
-	import { useIntlayer } from 'svelte-intlayer';
-	import * as Card from '$lib/components/ui/card';
+<script lang="ts">	import * as Card from '$lib/components/ui/card';
 	import * as Table from '$lib/components/ui/table';
 	import { Badge } from '$lib/components/ui/badge';
 	import type { PageData } from './$types';
