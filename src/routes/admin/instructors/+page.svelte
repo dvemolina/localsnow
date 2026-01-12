@@ -108,10 +108,10 @@
 	<!-- Results Summary -->
 	<div class="flex items-center justify-between">
 		<p class="text-sm text-muted-foreground">
-			{m.admin_showing_of({ count: data.instructors.length, total: data.pagination.total })} {$t('admin_instructors').toLowerCase()}
+			{$t('admin_showing_of', { values: { count: data.instructors.length, total: data.pagination.total } })} {$t('admin_instructors').toLowerCase()}
 		</p>
 		<div class="text-sm text-muted-foreground">
-			{m.admin_page_of({ page: data.pagination.page, total: data.pagination.totalPages })}
+			{$t('admin_page_of', { values: { page: data.pagination.page, total: data.pagination.totalPages } })}
 		</div>
 	</div>
 
@@ -220,7 +220,7 @@
 			{/if}
 
 			<span class="text-sm">
-				{m.admin_page_of({ page: data.pagination.page, total: data.pagination.totalPages })}
+				{$t('admin_page_of', { values: { page: data.pagination.page, total: data.pagination.totalPages } })}
 			</span>
 
 			{#if data.pagination.page < data.pagination.totalPages}

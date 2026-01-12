@@ -186,7 +186,11 @@
 	<section class="my-8 rounded-lg border border-border bg-card p-6 shadow-sm">
 		<h2 class="title3 mb-3">{$t('contact_page_support_title')}</h2>
 		<p class="text-muted-foreground">
-			{@html m.contact_page_support_desc({ email: `<a href="mailto:${contactEmail}" class="text-primary hover:underline">${contactEmail}</a>` })}
+			{@html $t('contact_page_support_desc', {
+				values: {
+					email: `<a href="mailto:${contactEmail}" class="text-primary hover:underline">${contactEmail}</a>`
+				}
+			})}
 		</p>
 	</section>
 

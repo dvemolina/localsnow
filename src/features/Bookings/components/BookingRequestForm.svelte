@@ -83,14 +83,14 @@
 <div class="rounded-lg border border-border bg-card p-6 shadow-md">
 	<h2 class="title4 mb-2">{$t('booking_form_title')}</h2>
 	<p class="mb-6 text-sm text-muted-foreground">
-		{m.booking_form_subtitle({ name: instructorName })}
+		{$t('booking_form_subtitle', { values: { name: instructorName } })}
 	</p>
 
 	{#if submitSuccess}
 		<div class="mb-6 rounded-lg bg-green-50 p-4 text-green-800 dark:bg-green-900/20 dark:text-green-200">
 			<p class="font-medium">{$t('booking_form_success')} ✓</p>
 			<p class="mt-1 text-sm">
-				{m.booking_form_success_message({ name: instructorName })}
+				{$t('booking_form_success_message', { values: { name: instructorName } })}
 			</p>
 		</div>
 	{/if}

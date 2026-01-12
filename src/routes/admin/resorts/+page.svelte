@@ -220,11 +220,11 @@
 	{#if data.pagination.totalPages > 1}
 		<div class="flex items-center justify-between">
 			<p class="text-sm text-muted-foreground">
-				{m.admin_showing_results({
+				{$t('admin_showing_results', { values: {
 					start: (data.pagination.page - 1) * data.pagination.perPage + 1,
 					end: Math.min(data.pagination.page * data.pagination.perPage, data.pagination.totalCount),
 					total: data.pagination.totalCount
-				})}
+				} })}
 			</p>
 			<div class="flex gap-2">
 				<Button

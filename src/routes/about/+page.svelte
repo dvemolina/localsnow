@@ -105,9 +105,11 @@
 	<section class="my-6">
 		<h2 class="title3">{$t('about_contact_title')}</h2>
 		<p>
-			{@html m.about_contact_p1({
-				createProfile: `<a href="/signup">${$t('about_contact_create_profile')}</a>`,
-				email: `<strong>${$t('about_contact_email')}</strong>`
+			{@html $t('about_contact_p1', {
+				values: {
+					createProfile: `<a href="/signup">${$t('about_contact_create_profile')}</a>`,
+					email: `<strong>${$t('about_contact_email')}</strong>`
+				}
 			})}
 		</p>
 		<p>{$t('about_about_contact_p2')}</p>

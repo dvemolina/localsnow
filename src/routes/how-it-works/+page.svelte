@@ -1,48 +1,51 @@
-<script lang="ts">	import { route } from '$lib/i18n/routeHelpers';
+<script lang="ts">
+	import { t } from '$lib/i18n/i18n';
+	import { get } from 'svelte/store';
+	import { route } from '$lib/i18n/routeHelpers';
 
-	// FAQ Schema for SEO - using message functions
+	// FAQ Schema for SEO - using get(t) for non-reactive context
 	const faqSchema = {
 		'@context': 'https://schema.org',
 		'@type': 'FAQPage',
 		mainEntity: [
 			{
 				'@type': 'Question',
-				name: $t('how_it_works_how_it_works_page_faq_deposit_q'),
+				name: get(t)('how_it_works_how_it_works_page_faq_deposit_q'),
 				acceptedAnswer: {
 					'@type': 'Answer',
-					text: $t('how_it_works_how_it_works_page_faq_deposit_a')
+					text: get(t)('how_it_works_how_it_works_page_faq_deposit_a')
 				}
 			},
 			{
 				'@type': 'Question',
-				name: $t('how_it_works_how_it_works_page_faq_lead_fee_q'),
+				name: get(t)('how_it_works_how_it_works_page_faq_lead_fee_q'),
 				acceptedAnswer: {
 					'@type': 'Answer',
-					text: $t('how_it_works_how_it_works_page_faq_lead_fee_a')
+					text: get(t)('how_it_works_how_it_works_page_faq_lead_fee_a')
 				}
 			},
 			{
 				'@type': 'Question',
-				name: $t('how_it_works_how_it_works_page_faq_no_response_q'),
+				name: get(t)('how_it_works_how_it_works_page_faq_no_response_q'),
 				acceptedAnswer: {
 					'@type': 'Answer',
-					text: $t('how_it_works_how_it_works_page_faq_no_response_a')
+					text: get(t)('how_it_works_how_it_works_page_faq_no_response_a')
 				}
 			},
 			{
 				'@type': 'Question',
-				name: $t('how_it_works_how_it_works_page_faq_payments_q'),
+				name: get(t)('how_it_works_how_it_works_page_faq_payments_q'),
 				acceptedAnswer: {
 					'@type': 'Answer',
-					text: $t('how_it_works_how_it_works_page_faq_payments_a')
+					text: get(t)('how_it_works_how_it_works_page_faq_payments_a')
 				}
 			},
 			{
 				'@type': 'Question',
-				name: $t('how_it_works_how_it_works_page_faq_contact_q'),
+				name: get(t)('how_it_works_how_it_works_page_faq_contact_q'),
 				acceptedAnswer: {
 					'@type': 'Answer',
-					text: $t('how_it_works_how_it_works_page_faq_contact_a')
+					text: get(t)('how_it_works_how_it_works_page_faq_contact_a')
 				}
 			}
 		]

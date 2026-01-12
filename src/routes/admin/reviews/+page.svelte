@@ -22,7 +22,7 @@
 	</div>
 
 	<p class="text-sm text-muted-foreground">
-		{m.admin_showing_of({ count: data.reviews.length, total: data.pagination.total })} {$t('admin_reviews').toLowerCase()}
+		{$t('admin_showing_of', { values: { count: data.reviews.length, total: data.pagination.total } })} {$t('admin_reviews').toLowerCase()}
 	</p>
 
 	<Card>
@@ -76,7 +76,7 @@
 					{$t('button_previous')}
 				</Button>
 			{/if}
-			<span class="text-sm">{m.admin_page_of({ page: data.pagination.page, total: data.pagination.totalPages })}</span>
+			<span class="text-sm">{$t('admin_page_of', { values: { page: data.pagination.page, total: data.pagination.totalPages } })}</span>
 			{#if data.pagination.page < data.pagination.totalPages}
 				<Button href="/admin/reviews?page={data.pagination.page + 1}" variant="outline" size="sm">
 					{$t('button_next')}

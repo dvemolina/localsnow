@@ -58,7 +58,7 @@
 
 {#if !user.role}
 	<div class="flex flex-col items-center justify-center">
-		<p class="title3">{m.dashboard_choose_role_greeting({ name: user.name })}</p>
+		<p class="title3">{$t('dashboard_choose_role_greeting')}, {user.name}!</p>
 		<Button onclick={() => goto('/dashboard/choose-role')} class="w-full">
 			{$t('dashboard_choose_role_button')}
 		</Button>
