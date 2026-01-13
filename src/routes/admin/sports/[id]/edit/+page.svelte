@@ -106,7 +106,7 @@
 				{$t('edit_admin_delete_sport_warning')}
 			</p>
 			<Button variant="destructive" onclick={() => (showDeleteDialog = true)}>
-				{$t('edit_button_delete_sport')}
+				{$t('button_delete_sport')}
 			</Button>
 		</CardContent>
 	</Card>

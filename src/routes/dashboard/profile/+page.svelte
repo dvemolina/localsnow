@@ -24,9 +24,9 @@
 				{#if isInstructor}
 					{$t('profile_role_instructor_account')}
 				{:else if isSchoolAdmin}
-					{$t('profile_role_school_admin_account')}
+					{$t('role_school_admin_account')}
 				{:else}
-					{$t('profile_role_client_account')}
+					{$t('role_client_account')}
 				{/if}
 			</Badge>
 			{#if data.user.isVerified}

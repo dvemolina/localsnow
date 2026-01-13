@@ -116,7 +116,7 @@
 					{$t('button_saving')}
 				</span>
 			{:else}
-				{$t('edit_button_save_changes')}
+				{$t('button_save_changes')}
 			{/if}
 		</Button>
 	</div>

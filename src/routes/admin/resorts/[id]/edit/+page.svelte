@@ -322,9 +322,9 @@
 				<div class="flex gap-2">
 					<Button type="submit" disabled={uploading || !selectedFile}>
 						{#if uploading}
-							{$t('edit_button_uploading')}
+							{$t('button_uploading')}
 						{:else}
-							{$t('edit_button_upload_image')}
+							{$t('button_upload_image')}
 						{/if}
 					</Button>
 					{#if selectedFile}
@@ -347,7 +347,7 @@
 				{$t('edit_admin_delete_resort_warning')}
 			</p>
 			<Button variant="destructive" onclick={() => (showDeleteDialog = true)}>
-				{$t('edit_button_delete_resort')}
+				{$t('button_delete_resort')}
 			</Button>
 		</CardContent>
 	</Card>
