@@ -33,6 +33,7 @@ export const users = pgTable('users', {
 	qualificationUrl: varchar('qualification_url', { length: 255 }),
 	spokenLanguages: text('spoken_languages').array(),
     isVerified: boolean('is_verified').default(false),
+	isPublished: boolean('is_published').default(false),
 	acceptedTerms: boolean('accepted_terms').notNull().default(false),
 	isSuspended: boolean('is_suspended').default(false),
 	suspensionReason: text('suspension_reason'),
