@@ -95,6 +95,17 @@ export class InstructorService {
         }
     }
 
+    async updateInstructorPublishStatus(instructorId: number, isPublished: boolean): Promise<User | null> {
+        try {
+            return await this.instructorRepository.updateInstructor(instructorId, {
+                isPublished
+            });
+        } catch (error) {
+            console.error('Error updating instructor publish status:', error);
+            throw new Error('Failed to update publish status');
+        }
+    }
+
     async deleteInstructor(instructorId: number): Promise<boolean> {
         try {
             return await this.instructorRepository.deleteInstructor(instructorId);

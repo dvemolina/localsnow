@@ -19,6 +19,7 @@ export interface InstructorData {
     spokenLanguages?: string[];
     basePrice?: number;
     currency?: string;
+    isPublished?: boolean;
 }
 
 export class InstructorRepository {
@@ -113,6 +114,7 @@ export class InstructorRepository {
             if (updateData.professionalPhone) userUpdateFields.professionalPhone = updateData.professionalPhone;
             if (updateData.bio !== undefined) userUpdateFields.bio = updateData.bio;
             if (updateData.spokenLanguages !== undefined) userUpdateFields.spokenLanguages = updateData.spokenLanguages;
+            if (updateData.isPublished !== undefined) userUpdateFields.isPublished = updateData.isPublished;
 
             userUpdateFields.updatedAt = new Date();
 
