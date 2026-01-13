@@ -10,9 +10,8 @@
 	 */
 
 	import { page } from '$app/stores';
-	import { getLocale } from '$lib/paraglide/runtime';
 	import { getAlternateUrls, getCanonicalUrl } from '$lib/i18n/routeHelpers';
-	import type { Locale } from '$lib/i18n/routes';
+	import { extractLocale, type Locale } from '$lib/i18n/routes';
 
 	interface Props {
 		title?: string;
@@ -25,7 +24,7 @@
 
 	let { title, description, keywords, image, noindex = false, canonical }: Props = $props();
 
-	const currentLocale = $derived(getLocale() as Locale);
+	const currentLocale = $derived((extractLocale($page.url.pathname).locale || 'en') as Locale);
 	const currentUrl = $derived($page.url);
 	const canonicalUrl = $derived(canonical || getCanonicalUrl(currentUrl, currentLocale));
 	const alternateUrls = $derived(getAlternateUrls($page.url.pathname));

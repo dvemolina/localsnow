@@ -7,18 +7,16 @@
 	import { toast } from 'svelte-sonner';
 	import { invalidateAll } from '$app/navigation';
 	import { route } from '$lib/i18n/routeHelpers';
-	import * as m from '$lib/paraglide/messages';
-
 	let { data } = $props();
 
 	const daysOfWeek = $derived([
-		{ value: 0, label: m["dashboard.availability.working-hours.day_sunday"]() },
-		{ value: 1, label: m["dashboard.availability.working-hours.day_monday"]() },
-		{ value: 2, label: m["dashboard.availability.working-hours.day_tuesday"]() },
-		{ value: 3, label: m["dashboard.availability.working-hours.day_wednesday"]() },
-		{ value: 4, label: m["dashboard.availability.working-hours.day_thursday"]() },
-		{ value: 5, label: m["dashboard.availability.working-hours.day_friday"]() },
-		{ value: 6, label: m["dashboard.availability.working-hours.day_saturday"]() }
+		{ value: 0, label: $t('working_hours_day_sunday') },
+		{ value: 1, label: $t('working_hours_day_monday') },
+		{ value: 2, label: $t('working_hours_day_tuesday') },
+		{ value: 3, label: $t('working_hours_day_wednesday') },
+		{ value: 4, label: $t('working_hours_day_thursday') },
+		{ value: 5, label: $t('working_hours_day_friday') },
+		{ value: 6, label: $t('working_hours_day_saturday') }
 	]);
 
 	type WorkingDay = {

@@ -3,7 +3,11 @@ import { superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 import { redirect, type Actions } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
-import { baseLocale, isLocale } from '$lib/paraglide/runtime';
+import type { Locale } from '$lib/i18n/routes';
+
+const locales: Locale[] = ['en', 'es'];
+const baseLocale: Locale = 'en';
+const isLocale = (locale: string): locale is Locale => locales.includes(locale as Locale);
 
 
 export const load: PageServerLoad = async () => {

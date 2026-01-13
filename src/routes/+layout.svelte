@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { locales } from '$lib/paraglide/runtime';
 	import { getCanonicalUrl, getAlternateUrls, isRoute } from '$lib/i18n/routeHelpers';
 	import type { Locale } from '$lib/i18n/routes';
 	import Header from '$src/lib/components/shared/Header.svelte';

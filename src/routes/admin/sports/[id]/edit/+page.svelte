@@ -4,9 +4,8 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
-	import * as m from '$lib/paraglide/messages';
+	import { t } from '$lib/i18n/i18n';
 	import { enhance } from '$app/forms';
-
 	let { data, form } = $props();
 	const { sport } = data;
 
@@ -19,11 +18,11 @@
 	<div class="mb-8">
 		<div class="mb-4">
 			<Button href="/admin/sports" variant="outline" size="sm">
-				← {m.admin_back_to_sports()}
+				← {$t('admin_back_to_sports')}
 			</Button>
 		</div>
-		<h1 class="title2 mb-2">{m["admin.sports.edit.admin_edit_sport"]()}: {sport.sport}</h1>
-		<p class="text-muted-foreground">{m["admin.sports.edit.admin_edit_sport_desc"]()}</p>
+		<h1 class="title2 mb-2">{$t('edit_admin_edit_sport')}: {sport.sport}</h1>
+		<p class="text-muted-foreground">{$t('edit_admin_edit_sport_desc')}</p>
 	</div>
 
 	<!-- Edit Form -->
@@ -40,7 +39,7 @@
 	>
 		<Card>
 			<CardHeader>
-				<CardTitle>{m.admin_sport_details()}</CardTitle>
+				<CardTitle>{$t('admin_sport_details')}</CardTitle>
 			</CardHeader>
 			<CardContent class="space-y-6">
 				{#if form?.error}
@@ -58,19 +57,19 @@
 				<div class="space-y-4">
 					<!-- ID -->
 					<div class="space-y-2">
-						<Label>{m.label_id()}</Label>
+						<Label>{$t('label_id')}</Label>
 						<p class="text-muted-foreground">#{sport.id}</p>
 					</div>
 
 					<!-- Sport Name -->
 					<div class="space-y-2">
-						<Label for="sport">{m.label_sport_name()} *</Label>
+						<Label for="sport">{$t('label_sport_name')} *</Label>
 						<Input id="sport" name="sport" required value={sport.sport} />
 					</div>
 
 					<!-- Slug -->
 					<div class="space-y-2">
-						<Label for="sportSlug">{m.label_slug()} *</Label>
+						<Label for="sportSlug">{$t('label_slug')} *</Label>
 						<Input
 							id="sportSlug"
 							name="sportSlug"
@@ -79,7 +78,7 @@
 							pattern="[a-z0-9-]+"
 						/>
 						<p class="text-xs text-muted-foreground">
-							{m.label_slug_hint()}
+							{$t('label_slug_hint')}
 						</p>
 					</div>
 				</div>
@@ -87,9 +86,9 @@
 				<div class="flex gap-2 pt-4">
 					<Button type="submit" disabled={submitting}>
 						{#if submitting}
-							{m.button_updating()}
+							{$t('button_updating')}
 						{:else}
-							{m.button_update()}
+							{$t('button_update')}
 						{/if}
 					</Button>
 				</div>
@@ -100,14 +99,14 @@
 	<!-- Danger Zone -->
 	<Card class="border-destructive">
 		<CardHeader>
-			<CardTitle class="text-destructive">{m.admin_danger_zone()}</CardTitle>
+			<CardTitle class="text-destructive">{$t('admin_danger_zone')}</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<p class="mb-4 text-sm text-muted-foreground">
-				{m["admin.sports.edit.admin_delete_sport_warning"]()}
+				{$t('edit_admin_delete_sport_warning')}
 			</p>
 			<Button variant="destructive" onclick={() => (showDeleteDialog = true)}>
-				{m["admin.sports.edit.button_delete_sport"]()}
+				{$t('edit_button_delete_sport')}
 			</Button>
 		</CardContent>
 	</Card>
@@ -117,13 +116,13 @@
 <AlertDialog.Root bind:open={showDeleteDialog}>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
-			<AlertDialog.Title>{m["admin.sports.edit.admin_confirm_delete_sport"]()}</AlertDialog.Title>
+			<AlertDialog.Title>{$t('edit_admin_confirm_delete_sport')}</AlertDialog.Title>
 			<AlertDialog.Description>
-				{m["admin.sports.edit.admin_delete_sport_confirmation"]({ name: sport.sport })}
+				{$t('sports_admin_delete_sport_confirmation')}
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
-			<AlertDialog.Cancel>{m.button_cancel()}</AlertDialog.Cancel>
+			<AlertDialog.Cancel>{$t('button_cancel')}</AlertDialog.Cancel>
 			<form
 				method="POST"
 				action="?/delete"
@@ -143,9 +142,9 @@
 						disabled={deleting}
 					>
 						{#if deleting}
-							{m.button_deleting()}
+							{$t('button_deleting')}
 						{:else}
-							{m.button_delete()}
+							{$t('button_delete')}
 						{/if}
 					</Button>
 				</AlertDialog.Action>

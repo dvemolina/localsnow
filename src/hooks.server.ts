@@ -1,7 +1,6 @@
 import * as Sentry from '@sentry/sveltekit';
 import { sequence } from '@sveltejs/kit/hooks';
 import type { Handle } from '@sveltejs/kit';
-import { paraglideMiddleware } from '$lib/paraglide/server';
 import { getCanonicalUrl } from '$lib/i18n/routeHelpers';
 import * as auth from '$src/lib/server/session.js';
 import { RefillingTokenBucket } from './lib/server/rate-limit';
@@ -103,32 +102,20 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 	return resolve(event);
 };
 
-const paraglideHandle: Handle = async ({ event, resolve }) => {
+const i18nHandle: Handle = async ({ event, resolve }) => {
 	// Extract locale from our translated URL (already set by languageHandle)
 	const { locale: detectedLocale } = extractLocale(event.url.pathname);
-	const currentLocale = (detectedLocale || 'en') as string;
+	const currentLocale = (detectedLocale || 'en') as Locale;
 
-	// Create a standardized URL for Paraglide with /<locale>/<path> format
-	// Paraglide expects this pattern to detect the language
-	const originalPathname = event.url.pathname;
-	const modifiedUrl = new URL(event.request.url);
+	// Store locale in event.locals for use in load functions
+	event.locals.locale = currentLocale;
 
-	// If we don't have a locale prefix yet, add it
-	if (!detectedLocale) {
-		modifiedUrl.pathname = `/${currentLocale}${originalPathname}`;
-	}
-
-	const modifiedRequest = new Request(modifiedUrl, event.request);
-
-	return paraglideMiddleware(modifiedRequest, ({ request: localizedRequest, locale }) => {
-		event.request = localizedRequest;
-		return resolve(event, {
-			transformPageChunk: ({ html }) => {
-				return html
-					.replace('%lang%', locale)
-					.replace('%canonical%', getCanonicalUrl(event.url, locale as Locale));
-			}
-		});
+	return resolve(event, {
+		transformPageChunk: ({ html }) => {
+			return html
+				.replace('%lang%', currentLocale)
+				.replace('%canonical%', getCanonicalUrl(event.url, currentLocale));
+		}
 	});
 };
 
@@ -143,6 +130,6 @@ if (process.env.NODE_ENV === 'production') {
 
 export const handle: Handle = sequence(
 	Sentry.sentryHandle(),
-	sequence(rateLimitHandle, languageHandle, paraglideHandle, handleAuth)
+	sequence(rateLimitHandle, languageHandle, i18nHandle, handleAuth)
 );
 export const handleError = Sentry.handleErrorWithSentry();

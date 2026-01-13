@@ -6,10 +6,9 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Select from '$lib/components/ui/select';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
-	import * as m from '$lib/paraglide/messages';
+	import { t } from '$lib/i18n/i18n';
 	import { enhance } from '$app/forms';
 	import { Textarea } from '$src/lib/components/ui/textarea/index.js';
-
 	let { data, form } = $props();
 	const { resort } = data;
 
@@ -65,11 +64,11 @@
 	<div class="mb-8">
 		<div class="mb-4">
 			<Button href="/admin/resorts" variant="outline" size="sm">
-				← {m.admin_back_to_resorts()}
+				← {$t('admin_back_to_resorts')}
 			</Button>
 		</div>
-		<h1 class="title2 mb-2">{m["admin.resorts.edit.admin_edit_resort"]()}: {resort.name}</h1>
-		<p class="text-muted-foreground">{m["admin.resorts.edit.admin_edit_resort_desc"]()}</p>
+		<h1 class="title2 mb-2">{$t('edit_admin_edit_resort')}: {resort.name}</h1>
+		<p class="text-muted-foreground">{$t('edit_admin_edit_resort_desc')}</p>
 	</div>
 
 	<!-- Resort Details Form -->
@@ -86,7 +85,7 @@
 	>
 		<Card>
 			<CardHeader>
-				<CardTitle>{m.admin_resort_details()}</CardTitle>
+				<CardTitle>{$t('admin_resort_details')}</CardTitle>
 			</CardHeader>
 			<CardContent class="space-y-6">
 				{#if form?.error}
@@ -104,25 +103,25 @@
 				<div class="grid gap-6 md:grid-cols-2">
 					<!-- ID -->
 					<div class="space-y-2">
-						<Label>{m.label_id()}</Label>
+						<Label>{$t('label_id')}</Label>
 						<p class="text-muted-foreground">#{resort.id}</p>
 					</div>
 
 					<!-- UUID -->
 					<div class="space-y-2">
-						<Label>{m["admin.resorts.edit.label_uuid"]()}</Label>
+						<Label>{$t('edit_label_uuid')}</Label>
 						<p class="font-mono text-sm text-muted-foreground">{resort.uuid}</p>
 					</div>
 
 					<!-- Name -->
 					<div class="space-y-2">
-						<Label for="name">{m.label_resort_name()} *</Label>
+						<Label for="name">{$t('label_resort_name')} *</Label>
 						<Input id="name" name="name" required value={resort.name} />
 					</div>
 
 					<!-- Slug -->
 					<div class="space-y-2">
-						<Label for="slug">{m.label_slug()} *</Label>
+						<Label for="slug">{$t('label_slug')} *</Label>
 						<Input
 							id="slug"
 							name="slug"
@@ -134,13 +133,13 @@
 
 					<!-- Label -->
 					<div class="space-y-2">
-						<Label for="label">{m.label_display_label()}</Label>
+						<Label for="label">{$t('label_display_label')}</Label>
 						<Input id="label" name="label" value={resort.label || ''} />
 					</div>
 
 					<!-- Country -->
 					<div class="space-y-2">
-						<Label for="countryId">{m.label_country()} *</Label>
+						<Label for="countryId">{$t('label_country')} *</Label>
 						<input type="hidden" name="countryId" value={selectedCountryId} />
 						<Select.Root
 							type="single"
@@ -150,7 +149,7 @@
 							<Select.Trigger>
 								{selectedCountryId
 								? data.countries.find((c) => c.id.toString() === selectedCountryId)?.country
-								: m.admin_filter_country()}
+								: $t('admin_filter_country')}
 							</Select.Trigger>
 							<Select.Content>
 								{#each data.countries as country}
@@ -165,7 +164,7 @@
 
 					<!-- Region -->
 					<div class="space-y-2">
-						<Label for="regionId">{m.label_region()}</Label>
+						<Label for="regionId">{$t('label_region')}</Label>
 						<input type="hidden" name="regionId" value={selectedRegionId} />
 						<Select.Root
 							type="single"
@@ -175,11 +174,11 @@
 							<Select.Trigger>
 								{selectedRegionId
 								? data.regions.find((r) => r.id.toString() === selectedRegionId)?.region
-								: m.admin_filter_region()}
+								: $t('admin_filter_region')}
 							</Select.Trigger>
 							<Select.Content>
 								<Select.Item value="">
-									{m.admin_no_region()}
+									{$t('admin_no_region')}
 								</Select.Item>
 								{#each filteredRegions as region}
 									<Select.Item value={region.id.toString()}>
@@ -193,7 +192,7 @@
 
 					<!-- Min Elevation -->
 					<div class="space-y-2">
-						<Label for="minElevation">{m.label_min_elevation()}</Label>
+						<Label for="minElevation">{$t('label_min_elevation')}</Label>
 						<Input
 							id="minElevation"
 							name="minElevation"
@@ -204,7 +203,7 @@
 
 					<!-- Max Elevation -->
 					<div class="space-y-2">
-						<Label for="maxElevation">{m.label_max_elevation()}</Label>
+						<Label for="maxElevation">{$t('label_max_elevation')}</Label>
 						<Input
 							id="maxElevation"
 							name="maxElevation"
@@ -215,19 +214,19 @@
 
 					<!-- Latitude -->
 					<div class="space-y-2">
-						<Label for="lat">{m.label_latitude()}</Label>
+						<Label for="lat">{$t('label_latitude')}</Label>
 						<Input id="lat" name="lat" type="text" value={resort.lat || ''} />
 					</div>
 
 					<!-- Longitude -->
 					<div class="space-y-2">
-						<Label for="lon">{m.label_longitude()}</Label>
+						<Label for="lon">{$t('label_longitude')}</Label>
 						<Input id="lon" name="lon" type="text" value={resort.lon || ''} />
 					</div>
 
 					<!-- Website -->
 					<div class="col-span-2 space-y-2">
-						<Label for="website">{m.label_website()}</Label>
+						<Label for="website">{$t('label_website')}</Label>
 						<Input id="website" name="website" type="url" value={resort.website || ''} />
 					</div>
 
@@ -246,9 +245,9 @@
 				<div class="flex gap-2 pt-4">
 					<Button type="submit" disabled={submitting}>
 						{#if submitting}
-							{m.button_updating()}
+							{$t('button_updating')}
 						{:else}
-							{m.button_update()}
+							{$t('button_update')}
 						{/if}
 					</Button>
 				</div>
@@ -259,26 +258,26 @@
 	<!-- Image Upload Card -->
 	<Card>
 		<CardHeader>
-			<CardTitle>{m["admin.resorts.edit.admin_resort_image"]()}</CardTitle>
+			<CardTitle>{$t('edit_admin_resort_image')}</CardTitle>
 		</CardHeader>
 		<CardContent class="space-y-6">
 			<!-- Current/Preview Image -->
 			<div>
-				<p class="mb-3 text-sm font-medium">{m["admin.resorts.edit.admin_current_image"]()}</p>
+				<p class="mb-3 text-sm font-medium">{$t('edit_admin_current_image')}</p>
 				{#if previewUrl}
 					<div class="relative overflow-hidden rounded-lg border border-border">
 						<img src={previewUrl} alt={resort.name} class="h-64 w-full object-cover" />
 						<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
 						<div class="absolute bottom-4 left-4 text-white">
 							<p class="font-semibold">{resort.name}</p>
-							<p class="text-sm text-white/80">{m["admin.resorts.edit.admin_preview"]()}</p>
+							<p class="text-sm text-white/80">{$t('edit_admin_preview')}</p>
 						</div>
 					</div>
 				{:else}
 					<div
 						class="flex h-64 items-center justify-center rounded-lg border-2 border-dashed border-border bg-muted"
 					>
-						<p class="text-muted-foreground">{m.admin_no_image()}</p>
+						<p class="text-muted-foreground">{$t('admin_no_image')}</p>
 					</div>
 				{/if}
 			</div>
@@ -303,7 +302,7 @@
 			>
 				<div>
 					<label for="image" class="mb-2 block text-sm font-medium">
-						{m["admin.resorts.edit.admin_upload_new_image"]()}
+						{$t('edit_admin_upload_new_image')}
 					</label>
 					<Input
 						id="image"
@@ -316,21 +315,21 @@
 						class="cursor-pointer"
 					/>
 					<p class="mt-1 text-xs text-muted-foreground">
-						{m["admin.resorts.edit.admin_image_guidelines"]()}
+						{$t('edit_admin_image_guidelines')}
 					</p>
 				</div>
 
 				<div class="flex gap-2">
 					<Button type="submit" disabled={uploading || !selectedFile}>
 						{#if uploading}
-							{m["admin.resorts.edit.button_uploading"]()}
+							{$t('edit_button_uploading')}
 						{:else}
-							{m["admin.resorts.edit.button_upload_image"]()}
+							{$t('edit_button_upload_image')}
 						{/if}
 					</Button>
 					{#if selectedFile}
 						<Button type="button" variant="outline" onclick={clearSelection}>
-							{m.button_cancel()}
+							{$t('button_cancel')}
 						</Button>
 					{/if}
 				</div>
@@ -341,14 +340,14 @@
 	<!-- Danger Zone -->
 	<Card class="border-destructive">
 		<CardHeader>
-			<CardTitle class="text-destructive">{m.admin_danger_zone()}</CardTitle>
+			<CardTitle class="text-destructive">{$t('admin_danger_zone')}</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<p class="mb-4 text-sm text-muted-foreground">
-				{m["admin.resorts.edit.admin_delete_resort_warning"]()}
+				{$t('edit_admin_delete_resort_warning')}
 			</p>
 			<Button variant="destructive" onclick={() => (showDeleteDialog = true)}>
-				{m["admin.resorts.edit.button_delete_resort"]()}
+				{$t('edit_button_delete_resort')}
 			</Button>
 		</CardContent>
 	</Card>
@@ -358,13 +357,13 @@
 <AlertDialog.Root bind:open={showDeleteDialog}>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
-			<AlertDialog.Title>{m["admin.resorts.edit.admin_confirm_delete_resort"]()}</AlertDialog.Title>
+			<AlertDialog.Title>{$t('edit_admin_confirm_delete_resort')}</AlertDialog.Title>
 			<AlertDialog.Description>
-				{m["admin.resorts.edit.admin_delete_resort_confirmation"]({ name: resort.name })}
+				{$t('resorts_admin_delete_resort_confirmation')}
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
-			<AlertDialog.Cancel>{m.button_cancel()}</AlertDialog.Cancel>
+			<AlertDialog.Cancel>{$t('button_cancel')}</AlertDialog.Cancel>
 			<form
 				method="POST"
 				action="?/delete"
@@ -384,9 +383,9 @@
 						disabled={deleting}
 					>
 						{#if deleting}
-							{m.button_deleting()}
+							{$t('button_deleting')}
 						{:else}
-							{m.button_delete()}
+							{$t('button_delete')}
 						{/if}
 					</Button>
 				</AlertDialog.Action>

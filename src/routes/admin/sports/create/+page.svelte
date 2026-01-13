@@ -3,9 +3,8 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
-	import * as m from '$lib/paraglide/messages';
+	import { t } from '$lib/i18n/i18n';
 	import { enhance } from '$app/forms';
-
 	let { form } = $props();
 
 	let submitting = $state(false);
@@ -15,11 +14,11 @@
 	<div class="mb-8">
 		<div class="mb-4">
 			<Button href="/admin/sports" variant="outline" size="sm">
-				← {m.admin_back_to_sports()}
+				← {$t('admin_back_to_sports')}
 			</Button>
 		</div>
-		<h1 class="title2 mb-2">{m.admin_create_sport()}</h1>
-		<p class="text-muted-foreground">{m["admin.sports.create.admin_create_sport_desc"]()}</p>
+		<h1 class="title2 mb-2">{$t('admin_create_sport')}</h1>
+		<p class="text-muted-foreground">{$t('create_admin_create_sport_desc')}</p>
 	</div>
 
 	<form
@@ -34,7 +33,7 @@
 	>
 		<Card>
 			<CardHeader>
-				<CardTitle>{m.admin_sport_details()}</CardTitle>
+				<CardTitle>{$t('admin_sport_details')}</CardTitle>
 			</CardHeader>
 			<CardContent class="space-y-6">
 				{#if form?.error}
@@ -46,13 +45,13 @@
 				<div class="space-y-4">
 					<!-- Sport Name -->
 					<div class="space-y-2">
-						<Label for="sport">{m.label_sport_name()} *</Label>
+						<Label for="sport">{$t('label_sport_name')} *</Label>
 						<Input id="sport" name="sport" required placeholder="Snowboard" />
 					</div>
 
 					<!-- Slug -->
 					<div class="space-y-2">
-						<Label for="sportSlug">{m.label_slug()} *</Label>
+						<Label for="sportSlug">{$t('label_slug')} *</Label>
 						<Input
 							id="sportSlug"
 							name="sportSlug"
@@ -61,7 +60,7 @@
 							pattern="[a-z0-9-]+"
 						/>
 						<p class="text-xs text-muted-foreground">
-							{m.label_slug_hint()}
+							{$t('label_slug_hint')}
 						</p>
 					</div>
 				</div>
@@ -69,13 +68,13 @@
 				<div class="flex gap-2 pt-4">
 					<Button type="submit" disabled={submitting}>
 						{#if submitting}
-							{m.button_creating()}
+							{$t('button_creating')}
 						{:else}
-							{m.button_create()}
+							{$t('button_create')}
 						{/if}
 					</Button>
 					<Button href="/admin/sports" variant="outline" type="button">
-						{m.button_cancel()}
+						{$t('button_cancel')}
 					</Button>
 				</div>
 			</CardContent>

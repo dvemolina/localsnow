@@ -1,6 +1,4 @@
-<script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import * as Card from '$lib/components/ui/card';
+<script lang="ts">	import * as Card from '$lib/components/ui/card';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { Button } from '$lib/components/ui/button';
 	import { Badge } from '$lib/components/ui/badge';

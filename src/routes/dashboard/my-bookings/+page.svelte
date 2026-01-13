@@ -4,9 +4,8 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Table from '$lib/components/ui/table';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
-	import * as m from '$lib/paraglide/messages';
+	import { t } from '$lib/i18n/i18n';
 	import { enhance } from '$app/forms';
-
 
 	let { data, form } = $props();
 
@@ -22,17 +21,27 @@
 		return data.bookingRequests;
 	});
 
-	function getStatusBadge(status: string) {
+	// Status labels extracted at top level
+	const statusLabels = $derived({
+		pending: $t('status_pending'),
+		viewed: $t('client_status_viewed'),
+		accepted: $t('status_accepted'),
+		rejected: $t('status_rejected'),
+		cancelled: $t('client_status_cancelled'),
+		expired: $t('status_expired')
+	});
+
+	function getStatusBadge(statusValue: string) {
 		const variants: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline', class: string, label: string }> = {
-			'pending': { variant: 'outline', class: 'border-yellow-500 text-yellow-700', label: m.status_pending() },
-			'viewed': { variant: 'outline', class: 'border-blue-500 text-blue-700', label: m["dashboard.my-bookings.client_status_viewed"]() },
-			'accepted': { variant: 'default', class: 'bg-green-600', label: m["dashboard.my-bookings.status_accepted"]() },
-			'rejected': { variant: 'destructive', class: '', label: m["dashboard.my-bookings.status_rejected"]() },
-			'cancelled': { variant: 'secondary', class: '', label: m["dashboard.my-bookings.client_status_cancelled"]() },
-			'expired': { variant: 'secondary', class: '', label: m["dashboard.my-bookings.status_expired"]() }
+			'pending': { variant: 'outline', class: 'border-yellow-500 text-yellow-700', label: statusLabels.pending },
+			'viewed': { variant: 'outline', class: 'border-blue-500 text-blue-700', label: statusLabels.viewed },
+			'accepted': { variant: 'default', class: 'bg-green-600', label: statusLabels.accepted },
+			'rejected': { variant: 'destructive', class: '', label: statusLabels.rejected },
+			'cancelled': { variant: 'secondary', class: '', label: statusLabels.cancelled },
+			'expired': { variant: 'secondary', class: '', label: statusLabels.expired }
 		};
 
-		const config = variants[status] || { variant: 'outline' as const, class: '', label: status };
+		const config = variants[statusValue] || { variant: 'outline' as const, class: '', label: statusValue };
 		return config;
 	}
 
@@ -61,8 +70,8 @@
 
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8">
-		<h1 class="title2 mb-2">{m["dashboard.my-bookings.client_my_bookings"]()}</h1>
-		<p class="text-muted-foreground">{m["dashboard.my-bookings.client_my_bookings_desc"]()}</p>
+		<h1 class="title2 mb-2">{$t('client_my_bookings')}</h1>
+		<p class="text-muted-foreground">{$t('my_bookings_client_my_bookings_desc')}</p>
 	</div>
 
 	<!-- Filter Tabs -->
@@ -74,28 +83,28 @@
 					size="sm"
 					onclick={() => (filter = 'all')}
 				>
-					{m["dashboard.my-bookings.client_filter_all"]()} ({data.counts.all})
+					{$t('my_bookings_client_filter_all')} ({data.counts.all})
 				</Button>
 				<Button
 					variant={filter === 'active' ? 'default' : 'outline'}
 					size="sm"
 					onclick={() => (filter = 'active')}
 				>
-					{m["dashboard.my-bookings.client_filter_active"]()} ({data.counts.active})
+					{$t('my_bookings_client_filter_active')} ({data.counts.active})
 				</Button>
 				<Button
 					variant={filter === 'completed' ? 'default' : 'outline'}
 					size="sm"
 					onclick={() => (filter = 'completed')}
 				>
-					{m["dashboard.my-bookings.client_filter_completed"]()} ({data.counts.completed})
+					{$t('my_bookings_client_filter_completed')} ({data.counts.completed})
 				</Button>
 				<Button
 					variant={filter === 'cancelled' ? 'default' : 'outline'}
 					size="sm"
 					onclick={() => (filter = 'cancelled')}
 				>
-					{m["dashboard.my-bookings.client_filter_cancelled"]()} ({data.counts.cancelled})
+					{$t('my_bookings_client_filter_cancelled')} ({data.counts.cancelled})
 				</Button>
 			</div>
 		</CardContent>
@@ -119,20 +128,20 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>{m.table_id()}</Table.Head>
-						<Table.Head>{m["dashboard.my-bookings.client_table_instructor"]()}</Table.Head>
-						<Table.Head>{m["dashboard.my-bookings.table_dates"]()}</Table.Head>
-						<Table.Head>{m["dashboard.my-bookings.client_table_students"]()}</Table.Head>
-						<Table.Head>{m["dashboard.my-bookings.client_table_sports"]()}</Table.Head>
-						<Table.Head>{m.table_status()}</Table.Head>
-						<Table.Head>{m.table_actions()}</Table.Head>
+						<Table.Head>{$t('table_id')}</Table.Head>
+						<Table.Head>{$t('my_bookings_client_table_instructor')}</Table.Head>
+						<Table.Head>{$t('my_bookings_table_dates')}</Table.Head>
+						<Table.Head>{$t('my_bookings_client_table_students')}</Table.Head>
+						<Table.Head>{$t('my_bookings_client_table_sports')}</Table.Head>
+						<Table.Head>{$t('table_status')}</Table.Head>
+						<Table.Head>{$t('table_actions')}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
 					{#if filteredBookings().length === 0}
 						<Table.Row>
 							<Table.Cell colspan={7} class="text-center text-muted-foreground">
-								{m["dashboard.my-bookings.client_no_bookings_found"]()}
+								{$t('my_bookings_client_no_bookings_found')}
 							</Table.Cell>
 						</Table.Row>
 					{:else}
@@ -188,7 +197,7 @@
 											size="sm"
 											variant="outline"
 										>
-											{m.button_view()}
+											{$t('button_view')}
 										</Button>
 										{#if ['pending', 'viewed'].includes(booking.status)}
 											<Button
@@ -196,7 +205,7 @@
 												variant="destructive"
 												onclick={() => openCancelDialog(booking.id)}
 											>
-												{m.button_cancel()}
+												{$t('button_cancel')}
 											</Button>
 										{/if}
 									</div>
@@ -216,12 +225,12 @@
 				<svg class="mb-4 h-12 w-12 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
 				</svg>
-				<h3 class="mb-2 text-lg font-semibold">{m["dashboard.my-bookings.client_no_bookings_title"]()}</h3>
+				<h3 class="mb-2 text-lg font-semibold">{$t('my_bookings_client_no_bookings_title')}</h3>
 				<p class="mb-4 text-center text-sm text-muted-foreground">
-					{m["dashboard.my-bookings.client_no_bookings_subtitle"]()}
+					{$t('my_bookings_client_no_bookings_subtitle')}
 				</p>
 				<Button href="/instructors">
-					{m["dashboard.my-bookings.client_find_instructors"]()}
+					{$t('my_bookings_client_find_instructors')}
 				</Button>
 			</CardContent>
 		</Card>
@@ -232,13 +241,13 @@
 <AlertDialog.Root bind:open={showCancelDialog}>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
-			<AlertDialog.Title>{m["dashboard.my-bookings.client_cancel_booking_title"]()}</AlertDialog.Title>
+			<AlertDialog.Title>{$t('my_bookings_client_cancel_booking_title')}</AlertDialog.Title>
 			<AlertDialog.Description>
-				{m["dashboard.my-bookings.client_cancel_booking_desc"]()}
+				{$t('my_bookings_client_cancel_booking_desc')}
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
-			<AlertDialog.Cancel onclick={closeCancelDialog}>{m["dashboard.my-bookings.button_cancel_action"]()}</AlertDialog.Cancel>
+			<AlertDialog.Cancel onclick={closeCancelDialog}>{$t('my_bookings_button_cancel_action')}</AlertDialog.Cancel>
 			<form
 				method="POST"
 				action="?/cancel"
@@ -252,7 +261,7 @@
 				<input type="hidden" name="bookingRequestId" value={cancellingId || ''} />
 				<AlertDialog.Action asChild let:builder>
 					<Button {...builder} type="submit" variant="destructive">
-						{m["dashboard.my-bookings.button_confirm_cancel"]()}
+						{$t('my_bookings_button_confirm_cancel')}
 					</Button>
 				</AlertDialog.Action>
 			</form>

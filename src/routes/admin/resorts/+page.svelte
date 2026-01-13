@@ -7,8 +7,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import * as Select from '$lib/components/ui/select';
 	import * as Table from '$lib/components/ui/table';
-	import * as m from '$lib/paraglide/messages';
-
+	import { t } from '$lib/i18n/i18n';
 	let { data } = $props();
 
 	// 🔹 Svelte 5 state
@@ -60,13 +59,13 @@
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8 flex items-center justify-between">
 		<div>
-			<h1 class="title2 mb-2">{m["admin.resorts.admin_resort_management"]()}</h1>
+			<h1 class="title2 mb-2">{$t('resorts_admin_resort_management')}</h1>
 			<p class="text-muted-foreground">
-				{m["admin.resorts.admin_resort_management_desc"]({ count: data.pagination.totalCount })}
+				{$t('resorts_admin_resort_management_desc')}
 			</p>
 		</div>
 		<Button href="/admin/resorts/create">
-			{m.admin_create_resort()}
+			{$t('admin_create_resort')}
 		</Button>
 	</div>
 
@@ -84,7 +83,7 @@
 				<div class="flex-1">
 					<Input
 						type="text"
-						placeholder={m["admin.resorts.admin_search_resorts"]()}
+						placeholder={$t('resorts_admin_search_resorts')}
 						bind:value={searchValue}
 					/>
 				</div>
@@ -99,11 +98,11 @@
 						<Select.Trigger>
 							{countryValue
 								? data.countries.find((c) => c.id.toString() === countryValue)?.country
-								: m.admin_filter_country()}
+								: $t('admin_filter_country')}
 						</Select.Trigger>
 						<Select.Content>
 							<Select.Item value="">
-								{m["admin.resorts.admin_all_countries"]()}
+								{$t('resorts_admin_all_countries')}
 							</Select.Item>
 							{#each data.countries as country}
 								<Select.Item value={country.id.toString()}>
@@ -125,11 +124,11 @@
 						<Select.Trigger>
 							{regionValue
 								? data.regions.find((r) => r.id.toString() === regionValue)?.region
-								: m.admin_filter_region()}
+								: $t('admin_filter_region')}
 						</Select.Trigger>
 						<Select.Content>
 							<Select.Item value="">
-								{m["admin.resorts.admin_all_regions"]()}
+								{$t('resorts_admin_all_regions')}
 							</Select.Item>
 							{#each data.regions as region}
 								<Select.Item value={region.id.toString()}>
@@ -140,10 +139,10 @@
 					</Select.Root>
 				</div>
 
-				<Button type="submit">{m.button_apply()}</Button>
+				<Button type="submit">{$t('button_apply')}</Button>
 				{#if data.filters.search || data.filters.country || data.filters.region}
 					<Button type="button" variant="outline" onclick={clearFilters}>
-						{m.button_clear()}
+						{$t('button_clear')}
 					</Button>
 				{/if}
 			</form>
@@ -156,19 +155,19 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>{m.table_id()}</Table.Head>
-						<Table.Head>{m.table_name()}</Table.Head>
-						<Table.Head>{m["admin.resorts.table_region"]()}</Table.Head>
-						<Table.Head>{m["admin.resorts.table_country"]()}</Table.Head>
-						<Table.Head>{m["admin.resorts.table_image"]()}</Table.Head>
-						<Table.Head>{m.table_actions()}</Table.Head>
+						<Table.Head>{$t('table_id')}</Table.Head>
+						<Table.Head>{$t('table_name')}</Table.Head>
+						<Table.Head>{$t('resorts_table_region')}</Table.Head>
+						<Table.Head>{$t('resorts_table_country')}</Table.Head>
+						<Table.Head>{$t('resorts_table_image')}</Table.Head>
+						<Table.Head>{$t('table_actions')}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
 					{#if data.resorts.length === 0}
 						<Table.Row>
 							<Table.Cell colspan={6} class="text-center text-muted-foreground">
-								{m["admin.resorts.admin_no_resorts_found"]()}
+								{$t('resorts_admin_no_resorts_found')}
 							</Table.Cell>
 						</Table.Row>
 					{:else}
@@ -196,16 +195,16 @@
 												alt={resort.name}
 												class="h-8 w-12 rounded object-cover"
 											/>
-											<span class="text-xs text-muted-foreground">{m["admin.resorts.admin_set"]()}</span>
+											<span class="text-xs text-muted-foreground">{$t('resorts_admin_set')}</span>
 										</div>
 									{:else}
-										<span class="text-xs text-muted-foreground">{m.admin_no_image()}</span>
+										<span class="text-xs text-muted-foreground">{$t('admin_no_image')}</span>
 									{/if}
 								</Table.Cell>
 								<Table.Cell>
 									<div class="flex gap-2">
 										<Button href="/admin/resorts/{resort.id}/edit" size="sm" variant="outline">
-											{m.button_edit()}
+											{$t('button_edit')}
 										</Button>
 									</div>
 								</Table.Cell>
@@ -221,11 +220,11 @@
 	{#if data.pagination.totalPages > 1}
 		<div class="flex items-center justify-between">
 			<p class="text-sm text-muted-foreground">
-				{m.admin_showing_results({
+				{$t('admin_showing_results', { values: {
 					start: (data.pagination.page - 1) * data.pagination.perPage + 1,
 					end: Math.min(data.pagination.page * data.pagination.perPage, data.pagination.totalCount),
 					total: data.pagination.totalCount
-				})}
+				} })}
 			</p>
 			<div class="flex gap-2">
 				<Button
@@ -234,7 +233,7 @@
 					disabled={data.pagination.page === 1}
 					onclick={() => goToPage(data.pagination.page - 1)}
 				>
-					{m.button_previous()}
+					{$t('button_previous')}
 				</Button>
 				<div class="flex items-center gap-1">
 					{#if data.pagination.page > 3}
@@ -268,7 +267,7 @@
 					disabled={data.pagination.page === data.pagination.totalPages}
 					onclick={() => goToPage(data.pagination.page + 1)}
 				>
-					{m.button_next()}
+					{$t('button_next')}
 				</Button>
 			</div>
 		</div>

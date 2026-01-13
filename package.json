@@ -34,7 +34,6 @@
 		"@eslint/compat": "^1.2.5",
 		"@eslint/js": "^9.18.0",
 		"@inlang/cli": "^3.0.0",
-		"@inlang/paraglide-js": "2.0.8",
 		"@inlang/plugin-m-function-matcher": "^2.1.0",
 		"@inlang/plugin-message-format": "^4.0.0",
 		"@internationalized/date": "^3.10.0",
@@ -92,6 +91,7 @@
 		"bcryptjs": "^3.0.2",
 		"dotenv": "^16.4.7",
 		"drizzle-orm": "^0.38.4",
+		"glob": "^13.0.0",
 		"googleapis": "^164.1.0",
 		"mode-watcher": "^0.5.1",
 		"paneforge": "1.0.0-next.5",
@@ -100,6 +100,7 @@
 		"sharp": "^0.34.1",
 		"stripe": "^19.2.0",
 		"svelte-sonner": "^1.0.2",
+		"sveltekit-i18n": "^2.4.2",
 		"vaul-svelte": "1.0.0-next.7"
 	},
 	"packageManager": "pnpm@10.23.0+sha512.21c4e5698002ade97e4efe8b8b4a89a8de3c85a37919f957e7a0f30f38fbc5bbdd05980ffe29179b2fb6e6e691242e098d945d1601772cad0fef5fb6411e2a4b"

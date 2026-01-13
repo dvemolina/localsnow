@@ -8,8 +8,7 @@
 	import { Button } from '$src/lib/components/ui/button';
 	import CountryCodeSelect from '$src/lib/components/shared/CountryCodeSelect.svelte';
 	import { toast } from 'svelte-sonner';
-	import * as m from '$lib/paraglide/messages';
-
+	import { t } from '$lib/i18n/i18n';
 	let { userForm }: { userForm: SuperValidated<Infer<UserProfileSchema>> } = $props();
 
 	const form = superForm(userForm, {
@@ -34,12 +33,12 @@
 		<Form.Field {form} name="name" class="w-full">
 			<Form.Control>
 				{#snippet children({ props })}
-					<Form.Label>{m.form_label_first_name()} <span class="text-red-500">*</span></Form.Label>
+					<Form.Label>{$t('form_label_first_name')} <span class="text-red-500">*</span></Form.Label>
 					<Input
 						{...props}
 						bind:value={$formData.name}
 						disabled={$delayed}
-						placeholder={m.form_placeholder_first_name()}
+						placeholder={$t('form_placeholder_first_name')}
 					/>
 				{/snippet}
 			</Form.Control>
@@ -49,12 +48,12 @@
 		<Form.Field {form} name="lastName" class="w-full">
 			<Form.Control>
 				{#snippet children({ props })}
-					<Form.Label>{m.form_label_last_name()} <span class="text-red-500">*</span></Form.Label>
+					<Form.Label>{$t('form_label_last_name')} <span class="text-red-500">*</span></Form.Label>
 					<Input
 						{...props}
 						bind:value={$formData.lastName}
 						disabled={$delayed}
-						placeholder={m.form_placeholder_last_name()}
+						placeholder={$t('form_placeholder_last_name')}
 					/>
 				{/snippet}
 			</Form.Control>
@@ -66,16 +65,16 @@
 	<Form.Field {form} name="email" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>{m.form_label_email_address()} <span class="text-red-500">*</span></Form.Label>
+				<Form.Label>{$t('form_label_email_address')} <span class="text-red-500">*</span></Form.Label>
 				<Input
 					{...props}
 					bind:value={$formData.email}
 					type="email"
 					disabled={$delayed}
-					placeholder={m.form_placeholder_email()}
+					placeholder={$t('form_placeholder_email')}
 				/>
 				<Form.Description class="text-xs">
-					{m.form_help_email()}
+					{$t('form_help_email')}
 				</Form.Description>
 			{/snippet}
 		</Form.Control>
@@ -88,16 +87,16 @@
 		<Form.Field {form} name="phone" class="w-full">
 			<Form.Control>
 				{#snippet children({ props })}
-					<Form.Label>{m.form_label_phone_number()}</Form.Label>
+					<Form.Label>{$t('form_label_phone_number')}</Form.Label>
 					<Input
 						{...props}
 						bind:value={$formData.phone}
 						type="tel"
 						disabled={$delayed}
-						placeholder={m.form_placeholder_phone()}
+						placeholder={$t('form_placeholder_phone')}
 					/>
 					<Form.Description class="text-xs">
-						{m.form_help_phone()}
+						{$t('form_help_phone')}
 					</Form.Description>
 				{/snippet}
 			</Form.Control>
@@ -114,10 +113,10 @@
 						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
 						<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
 					</svg>
-					{m.button_saving()}
+					{$t('button_saving')}
 				</span>
 			{:else}
-				{m["admin.launch-codes.edit.button_save_changes"]()}
+				{$t('edit_button_save_changes')}
 			{/if}
 		</Button>
 	</div>

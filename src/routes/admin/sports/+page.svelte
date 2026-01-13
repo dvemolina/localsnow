@@ -3,19 +3,18 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Table from '$lib/components/ui/table';
-	import * as m from '$lib/paraglide/messages';
-
+	import { t } from '$lib/i18n/i18n';
 	let { data } = $props();
 </script>
 
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8 flex items-center justify-between">
 		<div>
-			<h1 class="title2 mb-2">{m["admin.sports.admin_sport_management"]()}</h1>
-			<p class="text-muted-foreground">{m["admin.sports.admin_sport_management_desc"]()}</p>
+			<h1 class="title2 mb-2">{$t('sports_admin_sport_management')}</h1>
+			<p class="text-muted-foreground">{$t('sports_admin_sport_management_desc')}</p>
 		</div>
 		<Button href="/admin/sports/create">
-			{m.admin_create_sport()}
+			{$t('admin_create_sport')}
 		</Button>
 	</div>
 
@@ -24,18 +23,18 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>{m.table_id()}</Table.Head>
-						<Table.Head>{m["admin.sports.table_sport"]()}</Table.Head>
-						<Table.Head>{m["admin.sports.table_slug"]()}</Table.Head>
-						<Table.Head>{m["admin.sports.admin_instructors_teaching"]()}</Table.Head>
-						<Table.Head>{m.table_actions()}</Table.Head>
+						<Table.Head>{$t('table_id')}</Table.Head>
+						<Table.Head>{$t('sports_table_sport')}</Table.Head>
+						<Table.Head>{$t('sports_table_slug')}</Table.Head>
+						<Table.Head>{$t('sports_admin_instructors_teaching')}</Table.Head>
+						<Table.Head>{$t('table_actions')}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
 					{#if data.sports.length === 0}
 						<Table.Row>
 							<Table.Cell colspan={5} class="text-center text-muted-foreground">
-								{m["admin.sports.admin_no_sports_found"]()}
+								{$t('sports_admin_no_sports_found')}
 							</Table.Cell>
 						</Table.Row>
 					{:else}
@@ -49,11 +48,11 @@
 									<Badge variant="outline">{sport.sportSlug}</Badge>
 								</Table.Cell>
 								<Table.Cell>
-									<Badge>{sport.instructorCount} {m.admin_instructors().toLowerCase()}</Badge>
+									<Badge>{sport.instructorCount} {$t('admin_instructors').toLowerCase()}</Badge>
 								</Table.Cell>
 								<Table.Cell>
 									<Button href="/admin/sports/{sport.id}/edit" size="sm" variant="outline">
-										{m.button_edit()}
+										{$t('button_edit')}
 									</Button>
 								</Table.Cell>
 							</Table.Row>

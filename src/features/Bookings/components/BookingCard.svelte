@@ -3,8 +3,7 @@
 	import { Button } from '$src/lib/components/ui/button';
 	import * as Card from '$src/lib/components/ui/card';
 	import { formatDate } from '$src/lib/utils/generics';
-	import * as m from '$lib/paraglide/messages';
-
+	import { t } from '$lib/i18n/i18n';
 	let {
 		booking,
 		onViewDetails
@@ -15,32 +14,32 @@
 
 	const statusConfig = $derived({
 		pending: {
-			label: m.status_pending_review(),
+			label: $t('status_pending_review'),
 			variant: 'secondary' as const,
 			color: 'bg-yellow-100 text-yellow-800 border-yellow-200'
 		},
 		accepted: {  // Combined unlocked + accepted
-			label: m["dashboard.my-bookings.status_accepted"](),
+			label: $t('my_bookings_status_accepted'),
 			variant: 'default' as const,
 			color: 'bg-green-100 text-green-800 border-green-200'
 		},
 		viewed: {  // Instructor unlocked but not accepted yet
-			label: m.status_unlocked ? m.status_unlocked() : 'Unlocked',
+			label: $t('status_unlocked'),
 			variant: 'default' as const,
 			color: 'bg-blue-100 text-blue-800 border-blue-200'
 		},
 		rejected: {
-			label: m["dashboard.my-bookings.status_rejected"](),
+			label: $t('my_bookings_status_rejected'),
 			variant: 'outline' as const,
 			color: 'bg-red-100 text-red-800 border-red-200'
 		},
 		cancelled: {
-			label: m.status_cancelled ? m.status_cancelled() : 'Cancelled',
+			label: $t('status_cancelled'),
 			variant: 'outline' as const,
 			color: 'bg-gray-100 text-gray-800 border-gray-200'
 		},
 		expired: {
-			label: m.status_expired ? m["dashboard.my-bookings.status_expired"]() : 'Expired',
+			label: true ? $t('my_bookings_status_expired') : 'Expired',
 			variant: 'outline' as const,
 			color: 'bg-gray-100 text-gray-800 border-gray-200'
 		}

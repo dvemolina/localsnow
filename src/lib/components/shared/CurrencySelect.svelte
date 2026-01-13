@@ -1,8 +1,7 @@
 <script lang="ts">
 	import * as Select from '$lib/components/ui/select/index.js';
 	import * as Form from '$lib/components/ui/form';
-	import * as m from '$lib/paraglide/messages';
-
+	import { t } from '$lib/i18n/i18n';
 	let props = $props();
 
 	let form = props.form;
@@ -32,10 +31,10 @@
 <Form.Field {form} {name}>
 	<Form.Control>
 		{#snippet children({ props })}
-			<Form.Label>{m.form_label_currency()}</Form.Label>
+			<Form.Label>{$t('form_label_currency')}</Form.Label>
 			<Select.Root type="single" bind:value={$formStore[name]} name={props.name}>
 				<Select.Trigger {...props}>
-					{$formStore[name] ? $formStore[name] : m.form_placeholder_select_currency()}
+					{$formStore[name] ? $formStore[name] : $t('form_placeholder_select_currency')}
 				</Select.Trigger>
 				<Select.Content>
 					{#each currencies as { label, value }}

@@ -9,8 +9,7 @@
 	import ReviewList from '$src/features/Reviews/components/ReviewList.svelte';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
-	import * as m from '$lib/paraglide/messages';
-
+	import { t } from '$lib/i18n/i18n';
 	let { data } = $props();
 	let showBookingDialog = $state(false);
 
@@ -215,7 +214,7 @@
 					d="M15 19l-7-7 7-7"
 				/>
 			</svg>
-			{m.button_back_to_instructors()}
+			{$t('button_back_to_instructors')}
 		</a>
 	</div>
 
@@ -247,12 +246,12 @@
 								<StarScore score={reviewStats.averageRating} />
 							</div>
 							<span class="text-xs text-muted-foreground">
-								{reviewStats.totalReviews} {reviewStats.totalReviews === 1 ? m.instructor_review() : m.instructor_reviews()}
+								{reviewStats.totalReviews} {reviewStats.totalReviews === 1 ? $t('instructor_review') : $t('instructor_reviews')}
 							</span>
 						</div>
 					{:else}
 						<div class="flex justify-center">
-							<span class="text-xs text-muted-foreground">{m.instructor_no_reviews_yet()}</span>
+							<span class="text-xs text-muted-foreground">{$t('instructor_no_reviews_yet')}</span>
 						</div>
 					{/if}
 				</div>
@@ -260,9 +259,9 @@
 				<!-- Instructor Type Badge -->
 				<div class="mt-4">
 					{#if isIndependent}
-						<Badge variant="secondary" class="text-sm">{m.badge_independent_instructor()}</Badge>
+						<Badge variant="secondary" class="text-sm">{$t('badge_independent_instructor')}</Badge>
 					{:else}
-						<Badge variant="secondary" class="text-sm">{m.badge_school_instructor()}</Badge>
+						<Badge variant="secondary" class="text-sm">{$t('badge_school_instructor')}</Badge>
 					{/if}
 				</div>
 			</div>
@@ -287,14 +286,14 @@
 						d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
 					/>
 				</svg>
-				{m.button_request_lesson()}
+				{$t('button_request_lesson')}
 			</Button>
 
 			<!-- Quick Info Box -->
 			<div class="mt-4 w-full space-y-3 rounded-lg bg-muted p-4">
 				<div class="flex items-center gap-2">
 					<img src="/icons/certificate.svg" alt="Certification" class="size-5" />
-					<span class="text-sm font-medium">{m.instructor_verified_badge()}</span>
+					<span class="text-sm font-medium">{$t('instructor_verified_badge')}</span>
 				</div>
 				<div class="flex items-center gap-2">
 					<svg
@@ -311,7 +310,7 @@
 							d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
 						/>
 					</svg>
-					<span class="text-sm">{m.instructor_response_time()}</span>
+					<span class="text-sm">{$t('instructor_response_time')}</span>
 				</div>
 			</div>
 		</div>
@@ -323,15 +322,15 @@
 			{#if data.baseLesson && !data.groupTiers?.length && !data.durationPackages?.length }
 				<div class="w-full rounded-lg border border-primary/20 bg-card p-4">
 					<div class="mb-2 flex items-center justify-between">
-						<span class="text-sm font-medium">{m.lessons_hourly_rate_label()}</span>
-						<Badge variant="secondary" class="text-xs">{m.badge_from()}</Badge>
+						<span class="text-sm font-medium">{$t('lessons_hourly_rate_label')}</span>
+						<Badge variant="secondary" class="text-xs">{$t('badge_from')}</Badge>
 					</div>
 					<div class="flex items-baseline gap-2">
 						<span class="text-2xl font-bold text-primary">{data.baseLesson.basePrice}</span>
 						<span class="text-sm text-muted-foreground">{data.baseLesson.currency}/h</span>
 					</div>
 					<p class="mt-2 text-xs text-muted-foreground">
-						{m.instructor_base_rate_help()}
+						{$t('instructor_base_rate_help')}
 					</p>
 				</div>
 			{/if}
@@ -361,7 +360,7 @@
 								d="M13 10V3L4 14h7v7l9-11h-7z"
 							/>
 						</svg>
-						{m.instructor_sports_offered()}
+						{$t('instructor_sports_offered')}
 					</h2>
 					<div class="flex flex-wrap gap-2">
 						{#each sports as sport}
@@ -395,7 +394,7 @@
 								d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
 							/>
 						</svg>
-						{m.instructor_teaching_location()}
+						{$t('instructor_teaching_location')}
 					</h2>
 					<div class="flex flex-wrap gap-2">
 						{#if resorts.length > 0}
@@ -406,7 +405,7 @@
 							{/each}
 						{:else}
 							<span class="text-sm text-muted-foreground">
-								{m.instructor_multiple_locations()}
+								{$t('instructor_multiple_locations')}
 							</span>
 						{/if}
 					</div>
@@ -430,7 +429,7 @@
 									d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
 								/>
 							</svg>
-							{m.instructor_languages()}
+							{$t('instructor_languages')}
 						</h2>
 						<div class="flex flex-wrap gap-2">
 							{#each instructor.spokenLanguages as language}
@@ -496,16 +495,16 @@
 	<div class="rounded-lg border border-border bg-card p-6 mt-8">
 			{#if instructor.bio}
 				<div>
-					<h2 class="title4 mb-3">{m.instructor_about_heading({ name: instructor.name })}</h2>
+					<h2 class="title4 mb-3">{$t('instructor_about_heading') , instructor.name }</h2>
 					<p class="hyphens-auto text-sm leading-relaxed text-muted-foreground">
 						{instructor.bio}
 					</p>
 				</div>
 			{:else}
 				<div>
-					<h2 class="title4 mb-3">{m.instructor_about_heading({ name: instructor.name })}</h2>
+					<h2 class="title4 mb-3">{$t('instructor_about_heading'), instructor.name }</h2>
 					<p class="hyphens-auto text-sm leading-relaxed text-muted-foreground">
-						{m.instructor_default_bio()}
+						{$t('instructor_default_bio')}
 					</p>
 				</div>
 			{/if}
@@ -531,7 +530,7 @@
 							d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
 						/>
 					</svg>
-					{m.instructor_what_to_expect()}
+					{$t('instructor_what_to_expect')}
 				</h2>
 				<ul class="space-y-2.5 text-sm text-muted-foreground">
 					<li class="flex items-start gap-2">
@@ -549,7 +548,7 @@
 								d="M5 13l4 4L19 7"
 							/>
 						</svg>
-						<span>{m["instructors.instructor_benefit1"]()}</span>
+						<span>{$t('instructors_instructor_benefit1')}</span>
 					</li>
 					<li class="flex items-start gap-2">
 						<svg
@@ -566,7 +565,7 @@
 								d="M5 13l4 4L19 7"
 							/>
 						</svg>
-						<span>{m["instructors.instructor_benefit2"]()}</span>
+						<span>{$t('instructors_instructor_benefit2')}</span>
 					</li>
 					<li class="flex items-start gap-2">
 						<svg
@@ -583,7 +582,7 @@
 								d="M5 13l4 4L19 7"
 							/>
 						</svg>
-						<span>{m["instructors.instructor_benefit3"]()}</span>
+						<span>{$t('instructors_instructor_benefit3')}</span>
 					</li>
 					<li class="flex items-start gap-2">
 						<svg
@@ -600,26 +599,26 @@
 								d="M5 13l4 4L19 7"
 							/>
 						</svg>
-						<span>{m["instructors.instructor_benefit4"]()}</span>
+						<span>{$t('instructors_instructor_benefit4')}</span>
 					</li>
 				</ul>
 			</div>
 
 		<!-- Booking Info -->
 		<div class="rounded-lg border border-border bg-card p-6">
-			<h2 class="title4 mb-4">{m.instructor_booking_information()}</h2>
+			<h2 class="title4 mb-4">{$t('instructor_booking_information')}</h2>
 			<div class="space-y-3 text-sm text-muted-foreground">
 				<p>
-					{m.instructor_lesson_types()}
+					{$t('instructor_lesson_types')}
 				</p>
 				<p>
-					{m.instructor_lesson_duration()}
+					{$t('instructor_lesson_duration')}
 				</p>
 				<p>
-					{m.instructor_booking_process()}
+					{$t('instructor_booking_process')}
 				</p>
 				<p class="text-xs italic">
-					{m.instructor_booking_note()}
+					{$t('instructor_booking_note')}
 				</p>
 			</div>
 		</div>
@@ -654,7 +653,7 @@
 				d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
 			/>
 		</svg>
-		{m.button_request_lesson()}
+		{$t('button_request_lesson')}
 	</Button>
 </section>
 <BookingRequestDialog 

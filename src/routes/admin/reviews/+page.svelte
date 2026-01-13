@@ -3,8 +3,7 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Table from '$lib/components/ui/table';
-	import * as m from '$lib/paraglide/messages';
-
+	import { t } from '$lib/i18n/i18n';
 	let { data } = $props();
 
 	function formatDate(date: Date | string) {
@@ -18,12 +17,12 @@
 
 <div class="container mx-auto max-w-7xl space-y-6">
 	<div class="mb-8">
-		<h1 class="title2 mb-2">{m["admin.reviews.admin_review_management"]()}</h1>
-		<p class="text-muted-foreground">{m["admin.reviews.admin_review_management_desc"]()}</p>
+		<h1 class="title2 mb-2">{$t('reviews_admin_review_management')}</h1>
+		<p class="text-muted-foreground">{$t('reviews_admin_review_management_desc')}</p>
 	</div>
 
 	<p class="text-sm text-muted-foreground">
-		{m.admin_showing_of({ count: data.reviews.length, total: data.pagination.total })} {m.admin_reviews().toLowerCase()}
+		{$t('admin_showing_of', { values: { count: data.reviews.length, total: data.pagination.total } })} {$t('admin_reviews').toLowerCase()}
 	</p>
 
 	<Card>
@@ -31,12 +30,12 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head>{m.table_id()}</Table.Head>
-						<Table.Head>{m.table_instructor()}</Table.Head>
-						<Table.Head>{m.table_rating()}</Table.Head>
-						<Table.Head>{m["admin.reviews.table_comment"]()}</Table.Head>
-						<Table.Head>{m.table_client()}</Table.Head>
-						<Table.Head>{m.table_date()}</Table.Head>
+						<Table.Head>{$t('table_id')}</Table.Head>
+						<Table.Head>{$t('table_instructor')}</Table.Head>
+						<Table.Head>{$t('table_rating')}</Table.Head>
+						<Table.Head>{$t('reviews_table_comment')}</Table.Head>
+						<Table.Head>{$t('table_client')}</Table.Head>
+						<Table.Head>{$t('table_date')}</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -56,7 +55,7 @@
 							</Table.Cell>
 							<Table.Cell class="max-w-md">
 								<p class="truncate text-sm">
-									{review.comment || m.admin_no_comment()}
+									{review.comment || $t('admin_no_comment')}
 								</p>
 							</Table.Cell>
 							<Table.Cell class="text-sm text-muted-foreground">
@@ -74,13 +73,13 @@
 		<div class="flex items-center justify-center gap-2">
 			{#if data.pagination.page > 1}
 				<Button href="/admin/reviews?page={data.pagination.page - 1}" variant="outline" size="sm">
-					{m.button_previous()}
+					{$t('button_previous')}
 				</Button>
 			{/if}
-			<span class="text-sm">{m.admin_page_of({ page: data.pagination.page, total: data.pagination.totalPages })}</span>
+			<span class="text-sm">{$t('admin_page_of', { values: { page: data.pagination.page, total: data.pagination.totalPages } })}</span>
 			{#if data.pagination.page < data.pagination.totalPages}
 				<Button href="/admin/reviews?page={data.pagination.page + 1}" variant="outline" size="sm">
-					{m.button_next()}
+					{$t('button_next')}
 				</Button>
 			{/if}
 		</div>

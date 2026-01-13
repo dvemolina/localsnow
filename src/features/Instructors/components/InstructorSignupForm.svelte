@@ -19,8 +19,7 @@
 	import CountryCodeSelect from '$src/lib/components/shared/CountryCodeSelect.svelte';
 	import InstructorTypeSelect from '$src/lib/components/shared/InstructorTypeSelect.svelte';
 	import { route } from '$lib/i18n/routeHelpers';
-	import * as m from '$lib/paraglide/messages';
-
+	import { t } from '$lib/i18n/i18n';
 	let { data }: { data: { form: SuperValidated<Infer<InstructorSignupSchema>> } } = $props();
 
 	const form = superForm(data.form, {
@@ -82,9 +81,9 @@
 	<Form.Field {form} name="profileImage" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>{m.form_label_profile_image()}</Form.Label>
+				<Form.Label>{$t('form_label_profile_image')}</Form.Label>
 				<Form.Description class="text-xs"
-					>{m.form_description_profile_image()}</Form.Description
+					>{$t('form_description_profile_image')}</Form.Description
 				>
 				<Input
 					{...props}
@@ -112,9 +111,9 @@
 	<Form.Field {form} name="qualification" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>{m.form_label_qualification()}</Form.Label>
+				<Form.Label>{$t('form_label_qualification')}</Form.Label>
 				<Form.Description class="text-xs"
-					>{m.form_description_qualification()}</Form.Description
+					>{$t('form_description_qualification')}</Form.Description
 				>
 				<Input
 					{...props}
@@ -142,9 +141,9 @@
 		<Form.Field {form} name="professionalPhone" class="w-full">
 			<Form.Control>
 				{#snippet children({ props })}
-					<Form.Label>{m.form_label_contact_phone()}</Form.Label>
+					<Form.Label>{$t('form_label_contact_phone')}</Form.Label>
 					<Form.Description class="text-xs">
-						{m.form_description_contact_phone()}
+						{$t('form_description_contact_phone')}
 					</Form.Description>
 					<Input {...props} bind:value={$formData.professionalPhone} type="tel" />
 				{/snippet}
@@ -156,9 +155,9 @@
 	<Form.Field {form} name="bio" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>{m.form_label_biography()}</Form.Label>
+				<Form.Label>{$t('form_label_biography')}</Form.Label>
 				<Form.Description class="text-xs"
-					>{m.form_description_biography()}</Form.Description
+					>{$t('form_description_biography')}</Form.Description
 				>
 				<Textarea name="bio" bind:value={$formData.bio} />
 			{/snippet}
@@ -174,10 +173,10 @@
 		<Form.Field {form} name="basePrice" class="w-full">
 			<Form.Control>
 				{#snippet children({ props })}
-					<Form.Label>{m.form_label_base_price()}</Form.Label>
+					<Form.Label>{$t('form_label_base_price')}</Form.Label>
 					<Input {...props} bind:value={$formData.basePrice} type="number" min="0" />
 					<Form.Description class="text-xs"
-						>{m.form_description_base_price()}</Form.Description
+						>{$t('form_description_base_price')}</Form.Description
 					>
 				{/snippet}
 			</Form.Control>
@@ -187,8 +186,8 @@
 	</div>
 
 	<div class="mt-6 flex w-full flex-row items-center justify-center gap-2">
-		<a href={route('/dashboard')} class="text-sm {buttonVariants({ variant: 'outline' })}">{m.button_go_back()}</a>
-		<Form.Button type="submit">{m.common_submit()}</Form.Button>
+		<a href={route('/dashboard')} class="text-sm {buttonVariants({ variant: 'outline' })}">{$t('button_go_back')}</a>
+		<Form.Button type="submit">{$t('common_submit')}</Form.Button>
 	</div>
 </form>
 

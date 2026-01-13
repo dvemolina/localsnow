@@ -5,8 +5,6 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { goto } from '$app/navigation';
 	import { isMobile } from '$src/lib/hooks/is-mobile.svelte.js';
-	import * as m from '$lib/paraglide/messages';
-
 	let { data } = $props();
 
 	let selectedBooking = $state<any>(null);
@@ -50,9 +48,9 @@
 <div class="container mx-auto max-w-7xl">
 	<!-- Header -->
 	<div class="mb-6">
-		<h1 class="title2 mb-2">{m["dashboard.bookings.bookings_page_title"]()}</h1>
+		<h1 class="title2 mb-2">{$t('bookings_page_title')}</h1>
 		<p class="text-muted-foreground">
-			{m["dashboard.bookings.bookings_page_subtitle"]()}
+			{$t('bookings_page_subtitle')}
 		</p>
 	</div>
 
@@ -60,13 +58,13 @@
 	<Tabs.Root value={data.currentFilter} class="mb-6" orientation={ isMobile ? 'vertical' : 'horizontal' }>
 		<Tabs.List class="grid w-full h-full grid-cols-2 md:grid-cols-4">
 			<Tabs.Trigger value="all" onclick={() => changeFilter('all')}>
-				{m["admin.instructors.filter_all"]()}
+				{$t('instructors_filter_all')}
 				{#if counts.all > 0}
 					<Badge variant="secondary" class="ml-2">{counts.all}</Badge>
 				{/if}
 			</Tabs.Trigger>
 			<Tabs.Trigger value="pending" onclick={() => changeFilter('pending')}>
-				{m["dashboard.bookings.filter_pending"]()}
+				{$t('bookings_filter_pending')}
 				{#if counts.pending > 0}
 					<Badge variant="secondary" class="ml-2 bg-yellow-100 text-yellow-800">
 						{counts.pending}
@@ -74,7 +72,7 @@
 				{/if}
 			</Tabs.Trigger>
 			<Tabs.Trigger value="unlocked" onclick={() => changeFilter('unlocked')}>
-				{m["dashboard.bookings.filter_unlocked"]()}
+				{$t('bookings_filter_unlocked')}
 				{#if counts.unlocked > 0}
 					<Badge variant="secondary" class="ml-2 bg-blue-100 text-blue-800">
 						{counts.unlocked}
@@ -82,7 +80,7 @@
 				{/if}
 			</Tabs.Trigger>
 			<Tabs.Trigger value="rejected" onclick={() => changeFilter('rejected')}>
-				{m["dashboard.bookings.filter_rejected"]()}
+				{$t('bookings_filter_rejected')}
 				{#if counts.rejected > 0}
 					<Badge variant="secondary" class="ml-2">{counts.rejected}</Badge>
 				{/if}
@@ -103,16 +101,16 @@
 					/>
 				</svg>
 			</div>
-			<h3 class="mb-2 font-semibold text-lg">{m["dashboard.bookings.bookings_empty_state_title"]()}</h3>
+			<h3 class="mb-2 font-semibold text-lg">{$t('bookings_empty_state_title')}</h3>
 			<p class="text-muted-foreground">
 				{#if data.currentFilter === 'all'}
-					{m["dashboard.bookings.bookings_empty_state_all"]()}
+					{$t('bookings_empty_state_all')}
 				{:else if data.currentFilter === 'pending'}
-					{m["dashboard.bookings.bookings_empty_state_pending"]()}
+					{$t('bookings_empty_state_pending')}
 				{:else if data.currentFilter === 'unlocked'}
-					{m["dashboard.bookings.bookings_empty_state_unlocked"]()}
+					{$t('bookings_empty_state_unlocked')}
 				{:else}
-					{m["dashboard.bookings.bookings_empty_state_rejected"]()}
+					{$t('bookings_empty_state_rejected')}
 				{/if}
 			</p>
 		</div>
@@ -140,9 +138,9 @@
 					/>
 				</svg>
 				<div class="text-sm text-blue-800">
-					<p class="font-medium">💡 {m["dashboard.bookings.bookings_how_it_works_title"]()}</p>
+					<p class="font-medium">💡 {$t('bookings_how_it_works_title')}</p>
 					<p class="mt-1">
-						{m["dashboard.bookings.bookings_unlock_info"]()}
+						{$t('bookings_unlock_info')}
 					</p>
 				</div>
 			</div>

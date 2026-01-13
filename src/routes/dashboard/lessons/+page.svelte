@@ -11,8 +11,7 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { lessonSchema } from '$src/features/Lessons/lib/lessonSchema';
 	import { toast } from 'svelte-sonner';
-	import * as m from '$lib/paraglide/messages';
-
+	import { t } from '$lib/i18n/i18n';
 	let { data } = $props();
 
 	const form = superForm(data.lessonForm, {
@@ -46,9 +45,9 @@
 	// Helper to get sport name from ID
 	const getSportName = (sportId: number) => {
 		const sportNames: Record<number, string> = {
-			1: m.sports_ski(),
-			2: m.sports_snowboard(),
-			3: m.sports_telemark()
+			1: $t('sports_ski'),
+			2: $t('sports_snowboard'),
+			3: $t('sports_telemark')
 		};
 		return sportNames[sportId] || 'Unknown';
 	};
@@ -57,9 +56,9 @@
 <div class="container mx-auto max-w-4xl py-6">
 	<!-- Header -->
 	<div class="mb-6">
-		<h1 class="title2 mb-2">{m["dashboard.lessons.lessons_page_title"]()}</h1>
+		<h1 class="title2 mb-2">{$t('lessons_page_title')}</h1>
 		<p class="text-muted-foreground">
-			{m["dashboard.lessons.lessons_page_subtitle"]()}
+			{$t('lessons_page_subtitle')}
 		</p>
 	</div>
 
@@ -70,11 +69,11 @@
 			<div class="flex items-start justify-between">
 				<div>
 					<Card.Title class="flex items-center gap-2">
-						{m.lessons_base_lesson_config()}
-						<Badge variant="secondary" class="text-xs">{m.status_active()}</Badge>
+						{$t('lessons_base_lesson_config')}
+						<Badge variant="secondary" class="text-xs">{$t('status_active')}</Badge>
 					</Card.Title>
 					<Card.Description class="mt-1">
-						{m.lessons_base_lesson_config_desc()}
+						{$t('lessons_base_lesson_config_desc')}
 					</Card.Description>
 				</div>
 				<Button
@@ -85,7 +84,7 @@
 					<svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
 					</svg>
-					{m.button_edit()}
+					{$t('button_edit')}
 				</Button>
 			</div>
 		</Card.Header>
@@ -96,14 +95,14 @@
 					<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
 					</svg>
-					{m.lessons_hourly_rate_label()}
+					{$t('lessons_hourly_rate_label')}
 				</h3>
 				<div class="rounded-lg bg-muted p-4">
 					<div class="flex items-baseline gap-2">
 						<span class="text-3xl font-bold">{baseLesson?.basePrice}</span>
-						<span class="text-lg text-muted-foreground">{baseLesson?.currency}/{m.form_label_hours().toLowerCase()}</span>
+						<span class="text-lg text-muted-foreground">{baseLesson?.currency}/{$t('form_label_hours').toLowerCase()}</span>
 					</div>
-					<p class="mt-1 text-sm text-muted-foreground">{m.lessons_rate_help_text()}</p>
+					<p class="mt-1 text-sm text-muted-foreground">{$t('lessons_rate_help_text')}</p>
 				</div>
 			</div>
 
@@ -113,7 +112,7 @@
 					<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
 					</svg>
-					{m.lessons_available_sports()}
+					{$t('lessons_available_sports')}
 				</h3>
 				<div class="flex flex-wrap gap-2">
 					{#each baseLesson?.sports as sportId}
@@ -127,7 +126,7 @@
 			<!-- Info Box -->
 			<div class="rounded-md bg-blue-50 p-3">
 				<p class="text-sm text-blue-800">
-					<strong>💡 {m.lessons_flexible_pricing_info()}</strong>
+					<strong>💡 {$t('lessons_flexible_pricing_info')}</strong>
 				</p>
 			</div>
 		</Card.Content>
@@ -136,9 +135,9 @@
 	<!-- Pricing Manager - Advanced Options -->
 	<div class="mt-6">
 		<div class="mb-4">
-			<h2 class="title3 mb-1">{m.lessons_advanced_pricing()}</h2>
+			<h2 class="title3 mb-1">{$t('lessons_advanced_pricing')}</h2>
 			<p class="text-sm text-muted-foreground">
-				{m.lessons_advanced_pricing_desc()}
+				{$t('lessons_advanced_pricing_desc')}
 			</p>
 		</div>
 		<LessonPricingManager
@@ -153,10 +152,10 @@
 		<Card.Root>
 			<Card.Header>
 				<Card.Title>
-					{hasBaseLesson ? m.lessons_edit_base_lesson() : m.lessons_create_base_lesson()}
+					{hasBaseLesson ? $t('lessons_edit_base_lesson') : $t('lessons_create_base_lesson')}
 				</Card.Title>
 				<Card.Description>
-					{m.lessons_form_description()}
+					{$t('lessons_form_description')}
 				</Card.Description>
 			</Card.Header>
 			<Card.Content>
@@ -164,11 +163,11 @@
 					<!-- Sports Selection -->
 					<div>
 						<label class="text-sm font-medium mb-2 block">
-							{m.lessons_sports_label()} <span class="text-red-500">*</span>
+							{$t('lessons_sports_label')} <span class="text-red-500">*</span>
 						</label>
 						<SportsCheckboxes {form} name="sports" />
 						<p class="text-xs text-muted-foreground mt-2">
-							{m.lessons_sports_help()}
+							{$t('lessons_sports_help')}
 						</p>
 					</div>
 
@@ -177,7 +176,7 @@
 						<Form.Field {form} name="basePrice" class="sm:col-span-2">
 							<Form.Control>
 								{#snippet children({ props })}
-									<Form.Label>{m.lessons_hourly_rate_label()} <span class="text-red-500">*</span></Form.Label>
+									<Form.Label>{$t('lessons_hourly_rate_label')} <span class="text-red-500">*</span></Form.Label>
 									<Input
 										{...props}
 										bind:value={$formData.basePrice}
@@ -188,7 +187,7 @@
 										placeholder="50"
 									/>
 									<Form.Description class="text-xs">
-										{m.lessons_hourly_rate_help()}
+										{$t('lessons_hourly_rate_help')}
 									</Form.Description>
 								{/snippet}
 							</Form.Control>
@@ -205,8 +204,8 @@
 								<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
 							</svg>
 							<div class="text-sm text-yellow-800 ">
-								<p class="font-medium">{m["dashboard.lessons.lessons_about_base_lesson"]()}</p>
-								<p class="mt-1">{m["dashboard.lessons.lessons_about_base_lesson_text"]()}</p>
+								<p class="font-medium">{$t('lessons_about_base_lesson')}</p>
+								<p class="mt-1">{$t('lessons_about_base_lesson_text')}</p>
 							</div>
 						</div>
 					</div>
@@ -220,7 +219,7 @@
 								onclick={() => isEditing = false}
 								disabled={$delayed}
 							>
-								{m.button_cancel()}
+								{$t('button_cancel')}
 							</Button>
 						{/if}
 						<Button type="submit" disabled={$delayed} class="flex-1">
@@ -230,10 +229,10 @@
 										<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
 										<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
 									</svg>
-									{m.button_saving()}
+									{$t('button_saving')}
 								</span>
 							{:else}
-								{hasBaseLesson ? m.lessons_button_update() : m.lessons_button_save()}
+								{hasBaseLesson ? $t('lessons_button_update') : $t('lessons_button_save')}
 							{/if}
 						</Button>
 					</div>
@@ -245,28 +244,28 @@
 	<!-- Additional Info Section -->
 	<Card.Root class="mt-6">
 		<Card.Header>
-			<Card.Title class="text-base">{m["dashboard.lessons.lessons_multi_sport_title"]()}</Card.Title>
+			<Card.Title class="text-base">{$t('lessons_multi_sport_title')}</Card.Title>
 		</Card.Header>
 		<Card.Content class="space-y-3 text-sm text-muted-foreground">
 			<p>
-				{m["dashboard.lessons.lessons_multi_sport_desc"]()}
+				{$t('lessons_multi_sport_desc')}
 			</p>
 			<ul class="space-y-2">
 				<li class="flex gap-2">
 					<span class="text-primary">✓</span>
-					<span>{m["dashboard.lessons.lessons_multi_sport_bullet1"]()}</span>
+					<span>{$t('lessons_multi_sport_bullet1')}</span>
 				</li>
 				<li class="flex gap-2">
 					<span class="text-primary">✓</span>
-					<span>{m["dashboard.lessons.lessons_multi_sport_bullet2"]()}</span>
+					<span>{$t('lessons_multi_sport_bullet2')}</span>
 				</li>
 				<li class="flex gap-2">
 					<span class="text-primary">✓</span>
-					<span>{m["dashboard.lessons.lessons_multi_sport_bullet3"]()}</span>
+					<span>{$t('lessons_multi_sport_bullet3')}</span>
 				</li>
 			</ul>
 			<p class="text-xs italic">
-				{m["dashboard.lessons.lessons_multi_sport_tip"]()}
+				{$t('lessons_multi_sport_tip')}
 			</p>
 		</Card.Content>
 	</Card.Root>

@@ -3,8 +3,7 @@
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { Button } from '$src/lib/components/ui/button';
 	import * as Table from '$src/lib/components/ui/table';
-	import * as m from '$lib/paraglide/messages';
-
+	import { t } from '$lib/i18n/i18n';
 	let { data } = $props();
 
 	// Calculate totals from stats
@@ -45,56 +44,56 @@
 <div class="container mx-auto max-w-7xl space-y-6">
 	<!-- Page Header -->
 	<div class="mb-8">
-		<h1 class="title2 mb-2">{m["admin.dashboard.admin_platform_overview"]()}</h1>
-		<p class="text-muted-foreground">{m["admin.dashboard.admin_platform_overview_desc"]()}</p>
+		<h1 class="title2 mb-2">{$t('dashboard_admin_platform_overview')}</h1>
+		<p class="text-muted-foreground">{$t('dashboard_admin_platform_overview_desc')}</p>
 	</div>
 
 	<!-- Key Metrics Cards -->
 	<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
 		<Card>
 			<CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-				<CardTitle class="text-sm font-medium">{m["admin.dashboard.admin_total_users"]()}</CardTitle>
+				<CardTitle class="text-sm font-medium">{$t('dashboard_admin_total_users')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">{totalUsers}</div>
 				<p class="text-xs text-muted-foreground">
-					+{data.stats.recentActivity.users} {m["admin.dashboard.admin_in_last_30_days"]()}
+					+{data.stats.recentActivity.users} {$t('dashboard_admin_in_last_30_days')}
 				</p>
 			</CardContent>
 		</Card>
 
 		<Card>
 			<CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-				<CardTitle class="text-sm font-medium">{m.admin_instructors()}</CardTitle>
+				<CardTitle class="text-sm font-medium">{$t('admin_instructors')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">{verifiedInstructors}/{totalInstructors}</div>
 				<p class="text-xs text-muted-foreground">
-					{pendingInstructors} {m["admin.dashboard.admin_pending_verification"]()}
+					{pendingInstructors} {$t('dashboard_admin_pending_verification')}
 				</p>
 			</CardContent>
 		</Card>
 
 		<Card>
 			<CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-				<CardTitle class="text-sm font-medium">{m.admin_bookings()}</CardTitle>
+				<CardTitle class="text-sm font-medium">{$t('admin_bookings')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">{totalBookings}</div>
 				<p class="text-xs text-muted-foreground">
-					{completedBookings} {m.status_completed()}, {pendingBookings} {m.status_pending()}
+					{completedBookings} {$t('status_completed')}, {pendingBookings} {$t('status_pending')}
 				</p>
 			</CardContent>
 		</Card>
 
 		<Card>
 			<CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-				<CardTitle class="text-sm font-medium">{m["admin.dashboard.admin_revenue"]()}</CardTitle>
+				<CardTitle class="text-sm font-medium">{$t('dashboard_admin_revenue')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">€{totalRevenue.toFixed(2)}</div>
 				<p class="text-xs text-muted-foreground">
-					{data.stats.reviewStats.total} {m["admin.dashboard.admin_reviews_submitted"]()}
+					{data.stats.reviewStats.total} {$t('dashboard_admin_reviews_submitted')}
 				</p>
 			</CardContent>
 		</Card>
@@ -106,7 +105,7 @@
 			<CardHeader>
 				<CardTitle class="flex items-center gap-2 text-yellow-900">
 					<span class="text-xl">⚠️</span>
-					{data.pendingVerifications.length} {m["admin.dashboard.admin_instructors_pending_verification"]()}
+					{data.pendingVerifications.length} {$t('dashboard_admin_instructors_pending_verification')}
 				</CardTitle>
 			</CardHeader>
 			<CardContent>
@@ -117,11 +116,11 @@
 								<p class="font-medium">{instructor.name} {instructor.lastName}</p>
 								<p class="text-sm text-muted-foreground">{instructor.email}</p>
 								<p class="text-xs text-muted-foreground">
-									{m["admin.dashboard.admin_registered"]()}: {formatDate(instructor.createdAt)}
+									{$t('dashboard_admin_registered')}: {formatDate(instructor.createdAt)}
 								</p>
 							</div>
 							<Button href="/admin/instructors/{instructor.id}" size="sm">
-								{m["admin.dashboard.button_review"]()}
+								{$t('dashboard_button_review')}
 							</Button>
 						</div>
 					{/each}
@@ -136,7 +135,7 @@
 			<CardHeader>
 				<CardTitle class="flex items-center gap-2 text-red-900">
 					<span class="text-xl">🚫</span>
-					{data.suspendedUsers.length} {m["admin.dashboard.admin_suspended_users"]()}
+					{data.suspendedUsers.length} {$t('dashboard_admin_suspended_users')}
 				</CardTitle>
 			</CardHeader>
 			<CardContent>
@@ -146,7 +145,7 @@
 							<div>
 								<p class="font-medium">{user.name} {user.lastName}</p>
 								<p class="text-sm text-muted-foreground">{user.email}</p>
-								<p class="text-xs text-red-600">{m.admin_reason()}: {user.suspensionReason}</p>
+								<p class="text-xs text-red-600">{$t('admin_reason')}: {user.suspensionReason}</p>
 							</div>
 							<Badge variant="destructive">{user.role}</Badge>
 						</div>
@@ -161,16 +160,16 @@
 		<!-- Recent Bookings -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{m["admin.dashboard.admin_recent_bookings"]()}</CardTitle>
+				<CardTitle>{$t('dashboard_admin_recent_bookings')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<Table.Root>
 					<Table.Header>
 						<Table.Row>
-							<Table.Head>{m.table_client()}</Table.Head>
-							<Table.Head>{m.table_instructor()}</Table.Head>
-							<Table.Head>{m.table_date()}</Table.Head>
-							<Table.Head>{m.table_status()}</Table.Head>
+							<Table.Head>{$t('table_client')}</Table.Head>
+							<Table.Head>{$t('table_instructor')}</Table.Head>
+							<Table.Head>{$t('table_date')}</Table.Head>
+							<Table.Head>{$t('table_status')}</Table.Head>
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
@@ -192,7 +191,7 @@
 				</Table.Root>
 				<div class="mt-4 text-center">
 					<Button href="/admin/bookings" variant="outline" size="sm">
-						{m["admin.dashboard.button_view_all_bookings"]()}
+						{$t('dashboard_button_view_all_bookings')}
 					</Button>
 				</div>
 			</CardContent>
@@ -201,7 +200,7 @@
 		<!-- Recent Reviews -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{m["admin.dashboard.admin_recent_reviews"]()}</CardTitle>
+				<CardTitle>{$t('dashboard_admin_recent_reviews')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="space-y-3">
@@ -230,7 +229,7 @@
 				</div>
 				<div class="mt-4 text-center">
 					<Button href="/admin/reviews" variant="outline" size="sm">
-						{m["admin.dashboard.button_view_all_reviews"]()}
+						{$t('dashboard_button_view_all_reviews')}
 					</Button>
 				</div>
 			</CardContent>
@@ -242,13 +241,13 @@
 		<!-- User Distribution -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{m["admin.dashboard.admin_users_by_role"]()}</CardTitle>
+				<CardTitle>{$t('dashboard_admin_users_by_role')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="space-y-2">
 					{#each data.stats.userStats as stat}
 						<div class="flex items-center justify-between">
-							<span class="text-sm capitalize">{stat.role || m.admin_no_role()}</span>
+							<span class="text-sm capitalize">{stat.role || $t('admin_no_role')}</span>
 							<Badge variant="secondary">{stat.count}</Badge>
 						</div>
 					{/each}
@@ -259,7 +258,7 @@
 		<!-- Booking Status Distribution -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{m["admin.dashboard.admin_bookings_by_status"]()}</CardTitle>
+				<CardTitle>{$t('dashboard_admin_bookings_by_status')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="space-y-2">
@@ -276,16 +275,16 @@
 		<!-- Review Statistics -->
 		<Card>
 			<CardHeader>
-				<CardTitle>{m["admin.dashboard.admin_review_metrics"]()}</CardTitle>
+				<CardTitle>{$t('dashboard_admin_review_metrics')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="space-y-3">
 					<div>
-						<p class="text-sm text-muted-foreground">{m["admin.dashboard.admin_total_reviews"]()}</p>
+						<p class="text-sm text-muted-foreground">{$t('dashboard_admin_total_reviews')}</p>
 						<p class="text-2xl font-bold">{data.stats.reviewStats.total}</p>
 					</div>
 					<div>
-						<p class="text-sm text-muted-foreground">{m["admin.dashboard.admin_average_rating"]()}</p>
+						<p class="text-sm text-muted-foreground">{$t('dashboard_admin_average_rating')}</p>
 						<div class="flex items-center gap-2">
 							<p class="text-2xl font-bold">
 								{Number(data.stats.reviewStats.avgRating || 0).toFixed(1)}

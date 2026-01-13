@@ -1,6 +1,4 @@
-<script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import * as Card from '$lib/components/ui/card';
+<script lang="ts">	import * as Card from '$lib/components/ui/card';
 	import { Button } from '$lib/components/ui/button';
 	import { route } from '$lib/i18n/routeHelpers';
 	import type { PageData } from './$types';

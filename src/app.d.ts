@@ -5,6 +5,7 @@ declare global {
 		interface Locals {
 			user: import('$src/lib/server/session').SessionValidationResult['user'];
 			session: import('$src/lib/server/session').SessionValidationResult['session'];
+			locale: import('$lib/i18n/routes').Locale;
 		}
 	}
 }

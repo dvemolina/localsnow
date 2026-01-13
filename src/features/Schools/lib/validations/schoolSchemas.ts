@@ -20,24 +20,6 @@ export const schoolSignupSchema = z.object({
 
 export type SchoolSignupSchema = typeof schoolSignupSchema
 
-// School profile update schema
-export const schoolProfileSchema = z.object({
-    name: z.string().min(1, "School name is required"),
-    bio: z.string().optional(),
-    countryCode: z.number().min(1, 'Choose Country Phone Prefix'),
-    schoolPhone: z.string().min(1, "School contact phone is required"),
-    schoolEmail: z.string().email("Valid email required"),
-    resort: z.coerce.number().min(1, "Choose the Resort where your School is"),
-    logo: z.instanceof(File).optional()
-        .refine((file) => !file || file.size === 0 || file.size <= 5 * 1024 * 1024, 'Max 5MB upload size.')
-        .refine(
-            (file) => !file || file.size === 0 || ['image/jpeg', 'image/png'].includes(file.type),
-            'Only JPEG or PNG images are allowed.'
-        )
-});
-
-export type SchoolProfileSchema = typeof schoolProfileSchema
-
 //Form submission Data type:
 export interface SchoolSignupData {
     ownerUserId: number;

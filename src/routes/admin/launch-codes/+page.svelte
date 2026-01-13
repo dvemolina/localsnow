@@ -3,9 +3,8 @@
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import * as Table from '$lib/components/ui/table';
 	import { Badge } from '$lib/components/ui/badge';
-	import * as m from '$lib/paraglide/messages';
+	import { t } from '$lib/i18n/i18n';
 	import { enhance } from '$app/forms';
-
 	let { data } = $props();
 
 	function formatDate(date: Date | string) {
@@ -24,15 +23,15 @@
 
 	function getStatusBadge(code: any) {
 		if (isExpired(code.validUntil)) {
-			return { variant: 'destructive' as const, text: m["dashboard.my-bookings.status_expired"]() };
+			return { variant: 'destructive' as const, text: $t('my_bookings_status_expired') };
 		}
 		if (!code.isActive) {
-			return { variant: 'secondary' as const, text: m["admin.launch-codes.status_inactive"]() };
+			return { variant: 'secondary' as const, text: $t('launch_codes_status_inactive') };
 		}
 		if (code.maxUses && code.totalUsage >= code.maxUses) {
-			return { variant: 'secondary' as const, text: m["admin.launch-codes.status_max_uses_reached"]() };
+			return { variant: 'secondary' as const, text: $t('launch_codes_status_max_uses_reached') };
 		}
-		return { variant: 'default' as const, text: m.status_active() };
+		return { variant: 'default' as const, text: $t('status_active') };
 	}
 </script>
 
@@ -40,34 +39,34 @@
 	<!-- Page Header -->
 	<div class="mb-8 flex items-center justify-between">
 		<div>
-			<h1 class="title2 mb-2">{m["admin.launch-codes.admin_launch_codes_title"]()}</h1>
-			<p class="text-muted-foreground">{m["admin.launch-codes.admin_launch_codes_desc"]()}</p>
+			<h1 class="title2 mb-2">{$t('launch_codes_admin_launch_codes_title')}</h1>
+			<p class="text-muted-foreground">{$t('launch_codes_admin_launch_codes_desc')}</p>
 		</div>
 		<Button href="/admin/launch-codes/create" class="bg-primary text-white">
-			{m.admin_create_launch_code()}
+			{$t('admin_create_launch_code')}
 		</Button>
 	</div>
 
 	<!-- Launch Codes Table -->
 	<Card>
 		<CardHeader>
-			<CardTitle>{m["admin.launch-codes.admin_all_launch_codes"]()} ({data.codes.length})</CardTitle>
+			<CardTitle>{$t('launch_codes_admin_all_launch_codes')} ({data.codes.length})</CardTitle>
 		</CardHeader>
 		<CardContent>
 			{#if data.codes.length === 0}
 				<p class="text-center text-muted-foreground py-8">
-					{m["admin.launch-codes.admin_no_launch_codes"]()}
+					{$t('launch_codes_admin_no_launch_codes')}
 				</p>
 			{:else}
 				<Table.Root>
 					<Table.Header>
 						<Table.Row>
-							<Table.Head>{m["admin.launch-codes.table_code"]()}</Table.Head>
-							<Table.Head>{m["admin.launch-codes.table_description"]()}</Table.Head>
-							<Table.Head>{m["admin.launch-codes.table_valid_until"]()}</Table.Head>
-							<Table.Head>{m["admin.launch-codes.table_usage"]()}</Table.Head>
-							<Table.Head>{m.table_status()}</Table.Head>
-							<Table.Head>{m.table_actions()}</Table.Head>
+							<Table.Head>{$t('launch_codes_table_code')}</Table.Head>
+							<Table.Head>{$t('launch_codes_table_description')}</Table.Head>
+							<Table.Head>{$t('launch_codes_table_valid_until')}</Table.Head>
+							<Table.Head>{$t('launch_codes_table_usage')}</Table.Head>
+							<Table.Head>{$t('table_status')}</Table.Head>
+							<Table.Head>{$t('table_actions')}</Table.Head>
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
@@ -78,7 +77,7 @@
 								</Table.Cell>
 								<Table.Cell>
 									<div class="max-w-md">
-										{code.description || m["admin.launch-codes.admin_no_description"]()}
+										{code.description || $t('launch_codes_admin_no_description')}
 									</div>
 								</Table.Cell>
 								<Table.Cell>
@@ -95,11 +94,11 @@
 											{:else}
 												/ ∞
 											{/if}
-											{m["admin.launch-codes.admin_total_uses"]()}
+											{$t('launch_codes_admin_total_uses')}
 										</div>
 										<div class="text-xs text-muted-foreground">
-											{code.bookingUsage} {m["admin.launch-codes.admin_bookings_lowercase"]()} •
-											{code.leadUsage} {m["admin.launch-codes.admin_leads_lowercase"]()}
+											{code.bookingUsage} {$t('launch_codes_admin_bookings_lowercase')} •
+											{code.leadUsage} {$t('launch_codes_admin_leads_lowercase')}
 										</div>
 									</div>
 								</Table.Cell>
@@ -116,7 +115,7 @@
 											variant="outline"
 											size="sm"
 										>
-											{m.button_edit()}
+											{$t('button_edit')}
 										</Button>
 
 										<form method="POST" action="?/toggle" use:enhance>
@@ -126,7 +125,7 @@
 												variant="outline"
 												size="sm"
 											>
-												{code.isActive ? m["admin.launch-codes.button_deactivate"]() : m["admin.launch-codes.button_activate"]()}
+												{code.isActive ? $t('launch_codes_button_deactivate') : $t('launch_codes_button_activate')}
 											</Button>
 										</form>
 
@@ -135,7 +134,7 @@
 											action="?/delete"
 											use:enhance={() => {
 												return ({ update }) => {
-													if (confirm(m["admin.launch-codes.admin_confirm_delete_code"]())) {
+													if (confirm($t('launch_codes_admin_confirm_delete_code'))) {
 														update();
 													}
 												};
@@ -147,7 +146,7 @@
 												variant="destructive"
 												size="sm"
 											>
-												{m.button_delete()}
+												{$t('button_delete')}
 											</Button>
 										</form>
 									</div>
@@ -164,40 +163,40 @@
 	<div class="grid gap-4 md:grid-cols-3">
 		<Card>
 			<CardHeader>
-				<CardTitle class="text-sm font-medium">{m["admin.launch-codes.admin_total_codes"]()}</CardTitle>
+				<CardTitle class="text-sm font-medium">{$t('launch_codes_admin_total_codes')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">{data.codes.length}</div>
 				<p class="text-xs text-muted-foreground">
-					{data.codes.filter(c => c.isActive).length} {m.status_active().toLowerCase()}
+					{data.codes.filter(c => c.isActive).length} {$t('status_active').toLowerCase()}
 				</p>
 			</CardContent>
 		</Card>
 
 		<Card>
 			<CardHeader>
-				<CardTitle class="text-sm font-medium">{m["admin.launch-codes.admin_total_code_uses"]()}</CardTitle>
+				<CardTitle class="text-sm font-medium">{$t('launch_codes_admin_total_code_uses')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">
 					{data.codes.reduce((sum, code) => sum + code.totalUsage, 0)}
 				</div>
 				<p class="text-xs text-muted-foreground">
-					{m["admin.launch-codes.admin_across_all_codes"]()}
+					{$t('launch_codes_admin_across_all_codes')}
 				</p>
 			</CardContent>
 		</Card>
 
 		<Card>
 			<CardHeader>
-				<CardTitle class="text-sm font-medium">{m["admin.launch-codes.admin_expired_codes"]()}</CardTitle>
+				<CardTitle class="text-sm font-medium">{$t('launch_codes_admin_expired_codes')}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">
 					{data.codes.filter(c => isExpired(c.validUntil)).length}
 				</div>
 				<p class="text-xs text-muted-foreground">
-					{m["admin.launch-codes.admin_need_renewal"]()}
+					{$t('launch_codes_admin_need_renewal')}
 				</p>
 			</CardContent>
 		</Card>

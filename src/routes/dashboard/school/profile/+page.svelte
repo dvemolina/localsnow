@@ -1,6 +1,4 @@
-<script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import * as Card from '$lib/components/ui/card';
+<script lang="ts">	import * as Card from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import SchoolProfileForm from '$src/features/Schools/components/SchoolProfileForm.svelte';
 	import type { PageData } from './$types';

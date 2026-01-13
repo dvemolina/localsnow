@@ -3,24 +3,23 @@
 	import { isMobile } from '$src/lib/hooks/is-mobile.svelte';
 	import { get } from 'svelte/store';
 	import { route } from '$lib/i18n/routeHelpers';
-	import * as m from '$lib/paraglide/messages';
+	import { t } from '$lib/i18n/i18n';
 	import LanguageSwitch from '$lib/components/shared/LanguageSwitch.svelte';
-
 	let { user } = $props()
 
 	const userItems = $derived([
 		{
-			title: m.sidebar_home(),
+			title: $t('sidebar_home'),
 			url: '/dashboard',
 			icon: '/icons/home.svg'
 		},
 		{
-			title: m.sidebar_profile(),
+			title: $t('sidebar_profile'),
 			url: '/dashboard/profile',
 			icon: '/icons/ski-resort.svg'
 		},
 		{
-			title: m.sidebar_bookings(),
+			title: $t('sidebar_bookings'),
 			url: '/dashboard/my-bookings',
 			icon: '/icons/notebook.svg'
 		}
@@ -28,27 +27,27 @@
 
 	const instructorItems = $derived([
 		{
-			title: m.sidebar_home(),
+			title: $t('sidebar_home'),
 			url: '/dashboard',
 			icon: '/icons/home.svg'
 		},
 		{
-			title: m.sidebar_profile(),
+			title: $t('sidebar_profile'),
 			url: '/dashboard/profile',
 			icon: '/icons/ski-resort.svg'
 		},
 		{
-			title: m.sidebar_lessons(),
+			title: $t('sidebar_lessons'),
 			url: '/dashboard/lessons',
 			icon: '/icons/service.svg'
 		},
 		{
-			title: m.sidebar_bookings(),
+			title: $t('sidebar_bookings'),
 			url: '/dashboard/bookings',
 			icon: '/icons/notebook.svg'
 		},
 		{
-			title: m.sidebar_availability(),
+			title: $t('sidebar_availability'),
 			url: '/dashboard/availability',
 			icon: '/icons/calendar.svg'
 		}
@@ -56,22 +55,22 @@
 
 	const instructorSchoolItems = $derived([
 		{
-			title: m.sidebar_home(),
+			title: $t('sidebar_home'),
 			url: '/dashboard',
 			icon: '/icons/home.svg'
 		},
 		{
-			title: m.sidebar_profile(),
+			title: $t('sidebar_profile'),
 			url: '/dashboard/profile',
 			icon: '/icons/ski-resort.svg'
 		},
 		{
-			title: m.sidebar_bookings(),
+			title: $t('sidebar_bookings'),
 			url: '/dashboard/bookings',
 			icon: '/icons/notebook.svg'
 		},
 		{
-			title: m.sidebar_schools(),
+			title: $t('sidebar_schools'),
 			url: '/dashboard/schools',
 			icon: '/icons/service.svg'
 		},
@@ -84,27 +83,27 @@
 
 	const schoolAdminItems = $derived([
 		{
-			title: m.sidebar_school_home(),
+			title: $t('sidebar_school_home'),
 			url: '/dashboard/school',
 			icon: '/icons/home.svg'
 		},
 		{
-			title: m.sidebar_school_profile(),
+			title: $t('sidebar_school_profile'),
 			url: '/dashboard/school/profile',
 			icon: '/icons/ski-resort.svg'
 		},
 		{
-			title: m.sidebar_school_instructors(),
+			title: $t('sidebar_school_instructors'),
 			url: '/dashboard/school/instructors',
 			icon: '/icons/service.svg'
 		},
 		{
-			title: m.sidebar_school_lessons(),
+			title: $t('sidebar_school_lessons'),
 			url: '/dashboard/school/lessons',
 			icon: '/icons/service.svg'
 		},
 		{
-			title: m.sidebar_school_bookings(),
+			title: $t('sidebar_school_bookings'),
 			url: '/dashboard/school/bookings',
 			icon: '/icons/notebook.svg'
 		}
@@ -139,7 +138,7 @@
 	</Sidebar.Header>
 	<Sidebar.Content class="px-3 bg-white">
 		<Sidebar.Group />
-		<Sidebar.GroupLabel>{m.sidebar_application()}</Sidebar.GroupLabel>
+		<Sidebar.GroupLabel>{$t('sidebar_application')}</Sidebar.GroupLabel>
 		<Sidebar.GroupContent>
 			<Sidebar.Menu>
 				{#if user.role === "client"}
@@ -201,7 +200,7 @@
 	</Sidebar.Content>
 	<Sidebar.Footer class="bg-white p-4">
 		<div class="flex items-center justify-between">
-			<span class="text-sm text-muted-foreground">{m.sidebar_language()}</span>
+			<span class="text-sm text-muted-foreground">{$t('sidebar_language')}</span>
 			<LanguageSwitch />
 		</div>
 	</Sidebar.Footer>

@@ -5,9 +5,8 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Checkbox } from '$lib/components/ui/checkbox';
-	import * as m from '$lib/paraglide/messages';
+	import { t } from '$lib/i18n/i18n';
 	import { enhance } from '$app/forms';
-
 	let { form } = $props();
 
 	// Default to one year from now
@@ -20,10 +19,10 @@
 	<!-- Page Header -->
 	<div class="mb-8">
 		<a href="/admin/launch-codes" class="text-sm text-muted-foreground hover:text-foreground">
-			← {m.admin_back_to_launch_codes()}
+			← {$t('admin_back_to_launch_codes')}
 		</a>
-		<h1 class="title2 mb-2 mt-4">{m.admin_create_launch_code()}</h1>
-		<p class="text-muted-foreground">{m["admin.launch-codes.create.admin_create_launch_code_desc"]()}</p>
+		<h1 class="title2 mb-2 mt-4">{$t('admin_create_launch_code')}</h1>
+		<p class="text-muted-foreground">{$t('create_admin_create_launch_code_desc')}</p>
 	</div>
 
 	<!-- Error Message -->
@@ -37,12 +36,12 @@
 	<form method="POST" use:enhance>
 		<Card>
 			<CardHeader>
-				<CardTitle>{m.admin_code_details()}</CardTitle>
+				<CardTitle>{$t('admin_code_details')}</CardTitle>
 			</CardHeader>
 			<CardContent class="space-y-6">
 				<!-- Code -->
 				<div class="space-y-2">
-					<Label for="code">{m.form_label_code()} *</Label>
+					<Label for="code">{$t('form_label_code')} *</Label>
 					<Input
 						type="text"
 						id="code"
@@ -54,25 +53,25 @@
 						maxlength="50"
 					/>
 					<p class="text-xs text-muted-foreground">
-						{m.admin_code_help()}
+						{$t('admin_code_help')}
 					</p>
 				</div>
 
 				<!-- Description -->
 				<div class="space-y-2">
-					<Label for="description">{m.form_label_description()}</Label>
+					<Label for="description">{$t('form_label_description')}</Label>
 					<Textarea
 						id="description"
 						name="description"
 						value={form?.description || ''}
-						placeholder={m.admin_description_placeholder()}
+						placeholder={$t('admin_description_placeholder')}
 						rows="3"
 					/>
 				</div>
 
 				<!-- Valid Until -->
 				<div class="space-y-2">
-					<Label for="validUntil">{m.form_label_valid_until()} *</Label>
+					<Label for="validUntil">{$t('form_label_valid_until')} *</Label>
 					<Input
 						type="datetime-local"
 						id="validUntil"
@@ -81,22 +80,22 @@
 						required
 					/>
 					<p class="text-xs text-muted-foreground">
-						{m.admin_valid_until_help()}
+						{$t('admin_valid_until_help')}
 					</p>
 				</div>
 
 				<!-- Max Uses -->
 				<div class="space-y-2">
-					<Label for="maxUses">{m.form_label_max_uses()}</Label>
+					<Label for="maxUses">{$t('form_label_max_uses')}</Label>
 					<Input
 						type="number"
 						id="maxUses"
 						name="maxUses"
-						placeholder={m.admin_unlimited()}
+						placeholder={$t('admin_unlimited')}
 						min="1"
 					/>
 					<p class="text-xs text-muted-foreground">
-						{m.admin_max_uses_help()}
+						{$t('admin_max_uses_help')}
 					</p>
 				</div>
 
@@ -104,7 +103,7 @@
 				<div class="flex items-center space-x-2">
 					<Checkbox id="isActive" name="isActive" checked={true} />
 					<Label for="isActive" class="font-normal">
-						{m["admin.launch-codes.create.admin_activate_immediately"]()}
+						{$t('create_admin_activate_immediately')}
 					</Label>
 				</div>
 			</CardContent>
@@ -113,10 +112,10 @@
 		<!-- Actions -->
 		<div class="mt-6 flex items-center gap-4">
 			<Button type="submit" class="bg-primary text-white">
-				{m["admin.launch-codes.create.admin_create_code"]()}
+				{$t('create_admin_create_code')}
 			</Button>
 			<Button type="button" variant="outline" href="/admin/launch-codes">
-				{m.button_cancel()}
+				{$t('button_cancel')}
 			</Button>
 		</div>
 	</form>

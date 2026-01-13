@@ -3,9 +3,7 @@
 	import * as Card from '$src/lib/components/ui/card';
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { toast } from 'svelte-sonner';
-	import { invalidateAll } from '$app/navigation';
-	import * as m from '$lib/paraglide/messages';
-	import { route } from '$lib/i18n/routeHelpers';
+	import { invalidateAll } from '$app/navigation';	import { route } from '$lib/i18n/routeHelpers';
 
 	let { data } = $props();
 
@@ -86,9 +84,9 @@
 <div class="container mx-auto max-w-4xl py-6">
 	<!-- Header -->
 	<div class="mb-6">
-		<h1 class="title2 mb-2">{m["dashboard.availability.availability_page_title"]()}</h1>
+		<h1 class="title2 mb-2">{$t('availability_page_title')}</h1>
 		<p class="text-muted-foreground">
-			{m["dashboard.availability.availability_page_subtitle"]()}
+			{$t('availability_page_subtitle')}
 		</p>
 	</div>
 
@@ -106,15 +104,15 @@
 								d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
 							/>
 						</svg>
-						{m["dashboard.availability.availability_google_calendar_title"]()}
+						{$t('availability_google_calendar_title')}
 						{#if data.connected}
-							<Badge variant="default" class="bg-green-600">{m["dashboard.availability.status_connected"]()}</Badge>
+							<Badge variant="default" class="bg-green-600">{$t('availability_status_connected')}</Badge>
 						{:else}
-							<Badge variant="secondary">{m["dashboard.availability.status_not_connected"]()}</Badge>
+							<Badge variant="secondary">{$t('availability_status_not_connected')}</Badge>
 						{/if}
 					</Card.Title>
 					<Card.Description class="mt-1">
-						{m["dashboard.availability.availability_google_calendar_desc"]()}
+						{$t('availability_google_calendar_desc')}
 					</Card.Description>
 				</div>
 			</div>
@@ -136,13 +134,13 @@
 							/>
 						</svg>
 						<div class="text-sm text-green-800">
-							<p class="font-medium">{m["dashboard.availability.availability_calendar_connected_title"]()}</p>
+							<p class="font-medium">{$t('availability_calendar_connected_title')}</p>
 							<p class="mt-1">
-								{m["dashboard.availability.availability_calendar_connected_message"]()}
+								{$t('availability_calendar_connected_message')}
 							</p>
 							{#if data.syncDetails.lastSyncAt}
 								<p class="mt-2 text-xs">
-									{m["dashboard.availability.availability_last_synced"]()} {new Date(data.syncDetails.lastSyncAt).toLocaleString()}
+									{$t('availability_last_synced')} {new Date(data.syncDetails.lastSyncAt).toLocaleString()}
 								</p>
 							{/if}
 						</div>
@@ -173,7 +171,7 @@
 									d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
 								></path>
 							</svg>
-							{m["dashboard.availability.button_syncing"]()}
+							{$t('availability_button_syncing')}
 						{:else}
 							<svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path
@@ -183,7 +181,7 @@
 									d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
 								/>
 							</svg>
-							{m["dashboard.availability.button_sync_now"]()}
+							{$t('availability_button_sync_now')}
 						{/if}
 					</Button>
 					<Button
@@ -195,7 +193,7 @@
 						{#if disconnecting}
 							Disconnecting...
 						{:else}
-							{m["dashboard.availability.button_disconnect_calendar"]()}
+							{$t('availability_button_disconnect_calendar')}
 						{/if}
 					</Button>
 				</div>
@@ -214,9 +212,9 @@
 							/>
 						</svg>
 					</div>
-					<h3 class="mb-2 font-semibold text-lg">{m["dashboard.availability.availability_connect_calendar_heading"]()}</h3>
+					<h3 class="mb-2 font-semibold text-lg">{$t('availability_connect_calendar_heading')}</h3>
 					<p class="mb-4 text-muted-foreground">
-						{m["dashboard.availability.availability_connect_calendar_desc"]()}
+						{$t('availability_connect_calendar_desc')}
 					</p>
 					<Button onclick={connectCalendar} class="mx-auto">
 						<svg class="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -233,7 +231,7 @@
 								d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
 							/>
 						</svg>
-						{m["dashboard.availability.button_connect_google_calendar"]()}
+						{$t('availability_button_connect_google_calendar')}
 					</Button>
 				</div>
 
@@ -252,15 +250,15 @@
 							/>
 						</svg>
 						<div class="text-sm text-blue-800">
-							<p class="font-medium">{m["dashboard.availability.availability_why_connect_title"]()}</p>
+							<p class="font-medium">{$t('availability_why_connect_title')}</p>
 							<ul class="mt-2 space-y-1 text-sm">
-								<li>• {m["dashboard.availability.availability_benefit1"]()}</li>
-								<li>• {m["dashboard.availability.availability_benefit2"]()}</li>
-								<li>• {m["dashboard.availability.availability_benefit3"]()}</li>
-								<li>• {m["dashboard.availability.availability_benefit4"]()}</li>
+								<li>• {$t('availability_benefit1')}</li>
+								<li>• {$t('availability_benefit2')}</li>
+								<li>• {$t('availability_benefit3')}</li>
+								<li>• {$t('availability_benefit4')}</li>
 							</ul>
 							<p class="mt-2 text-xs">
-								{m["dashboard.availability.availability_calendar_disclaimer"]()}
+								{$t('availability_calendar_disclaimer')}
 							</p>
 						</div>
 					</div>
@@ -281,15 +279,15 @@
 						d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
 					/>
 				</svg>
-				{m["dashboard.availability.availability_working_hours_title"]()}
+				{$t('availability_working_hours_title')}
 				{#if data.workingHoursConfigured}
-					<Badge variant="default" class="bg-green-600">{m["dashboard.availability.status_configured"]()}</Badge>
+					<Badge variant="default" class="bg-green-600">{$t('availability_status_configured')}</Badge>
 				{:else}
-					<Badge variant="secondary">{m["dashboard.availability.status_not_set"]()}</Badge>
+					<Badge variant="secondary">{$t('availability_status_not_set')}</Badge>
 				{/if}
 			</Card.Title>
 			<Card.Description>
-				{m["dashboard.availability.availability_working_hours_desc"]()}
+				{$t('availability_working_hours_desc')}
 			</Card.Description>
 		</Card.Header>
 		<Card.Content class="space-y-4">
@@ -308,9 +306,9 @@
 							/>
 						</svg>
 						<div class="text-sm text-green-800">
-							<p class="font-medium">{m["dashboard.availability.availability_working_hours_set"]()}</p>
+							<p class="font-medium">{$t('availability_working_hours_set')}</p>
 							<p class="mt-1">
-								{m["dashboard.availability.availability_working_hours_configured_message"]()}
+								{$t('availability_working_hours_configured_message')}
 							</p>
 						</div>
 					</div>
@@ -329,16 +327,16 @@
 							/>
 						</svg>
 					</div>
-					<h3 class="mb-2 font-semibold text-lg">{m["dashboard.availability.availability_set_working_hours_heading"]()}</h3>
+					<h3 class="mb-2 font-semibold text-lg">{$t('availability_set_working_hours_heading')}</h3>
 					<p class="mb-4 text-muted-foreground">
-						{m["dashboard.availability.availability_set_working_hours_desc"]()}
+						{$t('availability_set_working_hours_desc')}
 					</p>
 				</div>
 			{/if}
 		</Card.Content>
 		<Card.Footer>
 			<Button href={route('/dashboard/availability/working-hours')} class="w-full">
-				{data.workingHoursConfigured ? m["dashboard.availability.button_edit_working_hours"]() : m["dashboard.availability.button_set_working_hours"]()}
+				{data.workingHoursConfigured ? $t('availability_button_edit_working_hours') : $t('availability_button_set_working_hours')}
 			</Button>
 		</Card.Footer>
 	</Card.Root>

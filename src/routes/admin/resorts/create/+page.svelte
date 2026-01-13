@@ -4,9 +4,8 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import * as Select from '$lib/components/ui/select';
-	import * as m from '$lib/paraglide/messages';
+	import { t } from '$lib/i18n/i18n';
 	import { enhance } from '$app/forms';
-
 	let { data, form } = $props();
 
 	let submitting = $state(false);
@@ -30,11 +29,11 @@
 	<div class="mb-8">
 		<div class="mb-4">
 			<Button href="/admin/resorts" variant="outline" size="sm">
-				← {m.admin_back_to_resorts()}
+				← {$t('admin_back_to_resorts')}
 			</Button>
 		</div>
-		<h1 class="title2 mb-2">{m.admin_create_resort()}</h1>
-		<p class="text-muted-foreground">{m["admin.resorts.create.admin_create_resort_desc"]()}</p>
+		<h1 class="title2 mb-2">{$t('admin_create_resort')}</h1>
+		<p class="text-muted-foreground">{$t('create_admin_create_resort_desc')}</p>
 	</div>
 
 	<form
@@ -49,7 +48,7 @@
 	>
 		<Card>
 			<CardHeader>
-				<CardTitle>{m.admin_resort_details()}</CardTitle>
+				<CardTitle>{$t('admin_resort_details')}</CardTitle>
 			</CardHeader>
 			<CardContent class="space-y-6">
 				{#if form?.error}
@@ -61,13 +60,13 @@
 				<div class="grid gap-6 md:grid-cols-2">
 					<!-- Name -->
 					<div class="space-y-2">
-						<Label for="name">{m.label_resort_name()} *</Label>
+						<Label for="name">{$t('label_resort_name')} *</Label>
 						<Input id="name" name="name" required placeholder="Val d'Isère" />
 					</div>
 
 					<!-- Slug -->
 					<div class="space-y-2">
-						<Label for="slug">{m.label_slug()} *</Label>
+						<Label for="slug">{$t('label_slug')} *</Label>
 						<Input
 							id="slug"
 							name="slug"
@@ -76,19 +75,19 @@
 							pattern="[a-z0-9-]+"
 						/>
 						<p class="text-xs text-muted-foreground">
-							{m.label_slug_hint()}
+							{$t('label_slug_hint')}
 						</p>
 					</div>
 
 					<!-- Label -->
 					<div class="space-y-2">
-						<Label for="label">{m.label_display_label()}</Label>
+						<Label for="label">{$t('label_display_label')}</Label>
 						<Input id="label" name="label" placeholder="Val d'Isère - Tignes" />
 					</div>
 
 					<!-- Country -->
 					<div class="space-y-2">
-						<Label for="countryId">{m.label_country()} *</Label>
+						<Label for="countryId">{$t('label_country')} *</Label>
 						<input type="hidden" name="countryId" value={selectedCountryId} />
 						<Select.Root
 							selected={selectedCountryId ? {
@@ -98,7 +97,7 @@
 							onSelectedChange={(v) => handleCountryChange(v?.value)}
 						>
 							<Select.Trigger>
-								<Select.Value placeholder={m["admin.resorts.create.admin_select_country"]()} />
+								<Select.Value placeholder={$t('create_admin_select_country')} />
 							</Select.Trigger>
 							<Select.Content>
 								{#each data.countries as country}
@@ -112,7 +111,7 @@
 
 					<!-- Region -->
 					<div class="space-y-2">
-						<Label for="regionId">{m.label_region()}</Label>
+						<Label for="regionId">{$t('label_region')}</Label>
 						<input type="hidden" name="regionId" value={selectedRegionId} />
 						<Select.Root
 							selected={selectedRegionId ? {
@@ -123,11 +122,11 @@
 							disabled={!selectedCountryId}
 						>
 							<Select.Trigger>
-								<Select.Value placeholder={m["admin.resorts.create.admin_select_region"]()} />
+								<Select.Value placeholder={$t('create_admin_select_region')} />
 							</Select.Trigger>
 							<Select.Content>
 								<Select.Item value="">
-									{m.admin_no_region()}
+									{$t('admin_no_region')}
 								</Select.Item>
 								{#each filteredRegions as region}
 									<Select.Item value={region.id.toString()}>
@@ -140,7 +139,7 @@
 
 					<!-- Min Elevation -->
 					<div class="space-y-2">
-						<Label for="minElevation">{m.label_min_elevation()}</Label>
+						<Label for="minElevation">{$t('label_min_elevation')}</Label>
 						<Input
 							id="minElevation"
 							name="minElevation"
@@ -151,7 +150,7 @@
 
 					<!-- Max Elevation -->
 					<div class="space-y-2">
-						<Label for="maxElevation">{m.label_max_elevation()}</Label>
+						<Label for="maxElevation">{$t('label_max_elevation')}</Label>
 						<Input
 							id="maxElevation"
 							name="maxElevation"
@@ -162,7 +161,7 @@
 
 					<!-- Latitude -->
 					<div class="space-y-2">
-						<Label for="lat">{m.label_latitude()}</Label>
+						<Label for="lat">{$t('label_latitude')}</Label>
 						<Input
 							id="lat"
 							name="lat"
@@ -174,7 +173,7 @@
 
 					<!-- Longitude -->
 					<div class="space-y-2">
-						<Label for="lon">{m.label_longitude()}</Label>
+						<Label for="lon">{$t('label_longitude')}</Label>
 						<Input
 							id="lon"
 							name="lon"
@@ -186,7 +185,7 @@
 
 					<!-- Website -->
 					<div class="col-span-2 space-y-2">
-						<Label for="website">{m.label_website()}</Label>
+						<Label for="website">{$t('label_website')}</Label>
 						<Input
 							id="website"
 							name="website"
@@ -199,13 +198,13 @@
 				<div class="flex gap-2 pt-4">
 					<Button type="submit" disabled={submitting}>
 						{#if submitting}
-							{m.button_creating()}
+							{$t('button_creating')}
 						{:else}
-							{m.button_create()}
+							{$t('button_create')}
 						{/if}
 					</Button>
 					<Button href="/admin/resorts" variant="outline" type="button">
-						{m.button_cancel()}
+						{$t('button_cancel')}
 					</Button>
 				</div>
 			</CardContent>
