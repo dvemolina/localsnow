@@ -38,6 +38,13 @@ export const load: PageServerLoad = async (event) => {
             throw error(404, 'Instructor not found');
         }
 
+        // Check if profile is published (only admins or the instructor themselves can view unpublished)
+        const isOwnProfile = event.locals.user?.id === instructorId;
+        const isAdmin = event.locals.user?.role === 'admin';
+        if (!instructorData.instructor.isPublished && !isOwnProfile && !isAdmin) {
+            throw error(404, 'Instructor not found');
+        }
+
         // Get sports, resorts, and reviews in parallel
         const [sportIds, resorts, reviews, reviewStats] = await Promise.all([
             instructorService.getInstructorSports(instructorId),

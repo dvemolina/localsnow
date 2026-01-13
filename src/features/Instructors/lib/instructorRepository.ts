@@ -231,6 +231,9 @@ export class InstructorRepository {
                 );
             }
 
+            // CRITICAL: Only show published profiles in public directory
+            conditions.push(eq(users.isPublished, true));
+
             // Filter by verified status if specified
             if (filters.verifiedOnly) {
                 conditions.push(eq(users.isVerified, true));
