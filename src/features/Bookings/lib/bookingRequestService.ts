@@ -180,9 +180,9 @@ export class BookingRequestService {
         return {
             success: true,
             bookingRequestId,
-            depositRefunded,
-            refundAmount: depositRefunded ? refundAmount : 0,
-            currency,
+            depositRefunded: false,
+            refundAmount: 0,
+            currency: booking.currency || 'EUR',
             usedLaunchCode: !!booking.usedLaunchCode
         };
     }
