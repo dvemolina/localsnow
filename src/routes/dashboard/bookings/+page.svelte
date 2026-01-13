@@ -5,6 +5,7 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { goto } from '$app/navigation';
 	import { isMobile } from '$src/lib/hooks/is-mobile.svelte.js';
+	import { t } from '$lib/i18n/i18n';
 	let { data } = $props();
 
 	let selectedBooking = $state<any>(null);
