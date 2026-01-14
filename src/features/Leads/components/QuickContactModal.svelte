@@ -4,6 +4,7 @@
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
+	import * as Select from '$lib/components/ui/select';
 	import { toast } from 'svelte-sonner';
 	import { t } from '$lib/i18n/i18n';
 
@@ -21,11 +22,16 @@
 		user?: any;
 	} = $props();
 
-	// Form state
+	// Form state - Basic contact info
 	let clientName = $state(isAuthenticated && user ? `${user.name} ${user.lastName || ''}`.trim() : '');
 	let clientEmail = $state(isAuthenticated && user ? user.email : '');
 	let clientPhone = $state(isAuthenticated && user?.phone ? user.phone : '');
 	let message = $state('');
+
+	// Form state - Lesson details (optional)
+	let preferredDates = $state('');
+	let numberOfStudents = $state<number | null>(null);
+	let skillLevel = $state<string>('');
 
 	let isSubmitting = $state(false);
 	let submitSuccess = $state(false);
@@ -39,6 +45,10 @@
 			clientEmail = isAuthenticated && user ? user.email : '';
 			clientPhone = isAuthenticated && user?.phone ? user.phone : '';
 			message = '';
+			// Reset lesson details
+			preferredDates = '';
+			numberOfStudents = null;
+			skillLevel = '';
 		}
 	});
 
@@ -76,7 +86,10 @@
 					clientName: clientName.trim() || undefined,
 					clientEmail: clientEmail.trim(),
 					clientPhone: clientPhone.trim() || undefined,
-					message: message.trim()
+					message: message.trim(),
+					preferredDates: preferredDates.trim() || undefined,
+					numberOfStudents: numberOfStudents || undefined,
+					skillLevel: skillLevel || undefined
 				})
 			});
 
@@ -187,6 +200,74 @@
 						maxlength={20}
 						disabled={isSubmitting}
 					/>
+				</div>
+
+				<!-- Lesson Details Section Header -->
+				<div class="border-t pt-4">
+					<p class="text-sm font-medium text-muted-foreground mb-3">
+						{$t('contact_lesson_details_optional') || 'Lesson Details (Optional)'}
+					</p>
+
+					<div class="space-y-3">
+						<!-- Preferred Dates (Optional) -->
+						<div class="space-y-2">
+							<Label for="preferredDates">
+								{$t('label_preferred_dates') || 'When are you planning to ski?'}
+							</Label>
+							<Input
+								id="preferredDates"
+								type="text"
+								bind:value={preferredDates}
+								placeholder={$t('placeholder_preferred_dates') || 'e.g., January 15-20, 2026'}
+								maxlength={100}
+								disabled={isSubmitting}
+							/>
+						</div>
+
+						<!-- Number of Students (Optional) -->
+						<div class="space-y-2">
+							<Label for="numberOfStudents">
+								{$t('label_number_of_students') || 'Number of students'}
+							</Label>
+							<Select.Root
+								onSelectedChange={(selected) => {
+									numberOfStudents = selected?.value ? parseInt(selected.value) : null;
+								}}
+							>
+								<Select.Trigger disabled={isSubmitting}>
+									<Select.Value placeholder={$t('placeholder_select_number') || 'Select number'} />
+								</Select.Trigger>
+								<Select.Content>
+									<Select.Item value="1">{$t('students_one') || '1 student'}</Select.Item>
+									<Select.Item value="2">{$t('students_two') || '2 students'}</Select.Item>
+									<Select.Item value="3">{$t('students_three') || '3 students'}</Select.Item>
+									<Select.Item value="4">{$t('students_four') || '4 students'}</Select.Item>
+									<Select.Item value="5">{$t('students_five_plus') || '5+ students'}</Select.Item>
+								</Select.Content>
+							</Select.Root>
+						</div>
+
+						<!-- Skill Level (Optional) -->
+						<div class="space-y-2">
+							<Label for="skillLevel">
+								{$t('label_skill_level') || 'Skill level'}
+							</Label>
+							<Select.Root
+								onSelectedChange={(selected) => {
+									skillLevel = selected?.value || '';
+								}}
+							>
+								<Select.Trigger disabled={isSubmitting}>
+									<Select.Value placeholder={$t('placeholder_select_level') || 'Select level'} />
+								</Select.Trigger>
+								<Select.Content>
+									<Select.Item value="beginner">{$t('skill_beginner') || 'Beginner'}</Select.Item>
+									<Select.Item value="intermediate">{$t('skill_intermediate') || 'Intermediate'}</Select.Item>
+									<Select.Item value="advanced">{$t('skill_advanced') || 'Advanced'}</Select.Item>
+								</Select.Content>
+							</Select.Root>
+						</div>
+					</div>
 				</div>
 
 				<!-- Message (Required) -->

@@ -378,6 +378,9 @@ export const instructorLeads = pgTable('instructor_leads', {
 	clientEmail: varchar('client_email', { length: 255 }).notNull(),
 	clientPhone: varchar('client_phone', { length: 20 }),
 	message: text('message').notNull(),
+	preferredDates: text('preferred_dates'), // Optional: when client wants to ski
+	numberOfStudents: integer('number_of_students'), // Optional: group size
+	skillLevel: varchar('skill_level', { length: 20 }), // Optional: beginner, intermediate, advanced
 	status: varchar('status', { length: 20 }).default('new').notNull(), // new, contacted, converted, spam
 	...timestamps
 });

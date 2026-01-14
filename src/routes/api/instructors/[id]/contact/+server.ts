@@ -32,7 +32,7 @@ export const POST: RequestHandler = async (event) => {
 	try {
 		// Parse request body
 		const body = await event.request.json();
-		const { clientName, clientEmail, clientPhone, message } = body;
+		const { clientName, clientEmail, clientPhone, message, preferredDates, numberOfStudents, skillLevel } = body;
 
 		// Validate required fields
 		if (!clientEmail || typeof clientEmail !== 'string') {
@@ -62,7 +62,10 @@ export const POST: RequestHandler = async (event) => {
 			clientName: clientName || undefined,
 			clientEmail,
 			clientPhone: clientPhone || undefined,
-			message
+			message,
+			preferredDates: preferredDates || undefined,
+			numberOfStudents: numberOfStudents || undefined,
+			skillLevel: skillLevel || undefined
 		});
 
 		// Send email notification to instructor

@@ -17,6 +17,9 @@ export class LeadService {
 		clientEmail: string;
 		clientPhone?: string;
 		message: string;
+		preferredDates?: string;
+		numberOfStudents?: number;
+		skillLevel?: string;
 	}): Promise<InstructorLead> {
 		try {
 			// Validate email format (basic check)
@@ -33,12 +36,30 @@ export class LeadService {
 				throw new Error('Message must be less than 1000 characters');
 			}
 
+			// Validate numberOfStudents if provided
+			if (data.numberOfStudents !== undefined && data.numberOfStudents !== null) {
+				if (data.numberOfStudents < 1 || data.numberOfStudents > 20) {
+					throw new Error('Number of students must be between 1 and 20');
+				}
+			}
+
+			// Validate skillLevel if provided
+			if (data.skillLevel) {
+				const validSkillLevels = ['beginner', 'intermediate', 'advanced'];
+				if (!validSkillLevels.includes(data.skillLevel)) {
+					throw new Error('Invalid skill level');
+				}
+			}
+
 			const leadData: InsertInstructorLead = {
 				instructorId: data.instructorId,
 				clientName: data.clientName || null,
 				clientEmail: data.clientEmail.toLowerCase().trim(),
 				clientPhone: data.clientPhone || null,
 				message: data.message.trim(),
+				preferredDates: data.preferredDates?.trim() || null,
+				numberOfStudents: data.numberOfStudents || null,
+				skillLevel: data.skillLevel || null,
 				status: 'new'
 			};
 

@@ -4,7 +4,6 @@
 	import * as Avatar from '$src/lib/components/ui/avatar';
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { Button } from '$src/lib/components/ui/button';
-	import BookingRequestDialog from '$src/features/Bookings/components/BookingRequestDialog.svelte';
 	import QuickContactModal from '$src/features/Leads/components/QuickContactModal.svelte';
 	import SimplePriceDisplay from '$src/features/Pricing/components/SimplePriceDisplay.svelte';
 	import ReviewList from '$src/features/Reviews/components/ReviewList.svelte';
@@ -12,7 +11,6 @@
 	import { goto } from '$app/navigation';
 	import { t } from '$lib/i18n/i18n';
 	let { data } = $props();
-	let showBookingDialog = $state(false);
 	let showContactModal = $state(false);
 
 	const instructor = data.instructor;
@@ -22,24 +20,6 @@
 	const reviewStats = data.reviewStats;
 
 	const isAuthenticated = !!data.user; // Will be true if user exists
-
-	$effect(() => {
-		// Check if we should open the booking dialog
-		const authSuccess = page.url.searchParams.get('auth_success');
-		const openBooking = page.url.searchParams.get('openBooking');
-		
-		// Open dialog if user just authenticated or if openBooking param is present
-		if ((authSuccess === 'true' || openBooking === 'true') && isAuthenticated) {
-			showBookingDialog = true;
-			
-			// Clean up the URL
-			const newUrl = new URL(page.url);
-			newUrl.searchParams.delete('auth_success');
-			newUrl.searchParams.delete('openBooking');
-			goto(newUrl.pathname + newUrl.search, { replaceState: true, noScroll: true });
-		}
-	});
-	
 	const isIndependent = instructor.role === 'instructor-independent';
 
 	// Construct profile URL
@@ -268,55 +248,28 @@
 				</div>
 			</div>
 
-			<!-- Contact Buttons - Primary CTAs -->
-			<div class="mt-4 w-full space-y-2">
-				<!-- Quick Message Button -->
-				<Button
-					onclick={() => (showContactModal = true)}
-					class="w-full"
-					size="lg"
-					variant="outline"
+			<!-- Contact Button - Primary CTA -->
+			<Button
+				onclick={() => (showContactModal = true)}
+				class="mt-4 w-full"
+				size="lg"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="mr-2 size-5"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="mr-2 size-5"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-						/>
-					</svg>
-					{$t('button_send_quick_message') || 'Send Quick Message'}
-				</Button>
-
-				<!-- Request Booking Button -->
-				<Button
-					onclick={() => (showBookingDialog = true)}
-					class="w-full"
-					size="lg"
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="mr-2 size-5"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-						/>
-					</svg>
-					{$t('button_request_lesson')}
-				</Button>
-			</div>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+					/>
+				</svg>
+				{$t('button_contact_instructor') || 'Contact Instructor'}
+			</Button>
 
 			<!-- Quick Info Box -->
 			<div class="mt-4 w-full space-y-3 rounded-lg bg-muted p-4">
@@ -662,65 +615,29 @@
 		/>
 	</div>
 
-	<!-- Contact Buttons - Primary CTAs -->
-	<div class="mt-8 grid gap-3 sm:grid-cols-2">
-		<!-- Quick Message Button -->
-		<Button
-			onclick={() => (showContactModal = true)}
-			class="w-full"
-			size="lg"
-			variant="outline"
+	<!-- Contact Button - Bottom CTA -->
+	<Button
+		onclick={() => (showContactModal = true)}
+		class="mt-8 w-full"
+		size="lg"
+	>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			class="mr-2 size-5"
+			fill="none"
+			viewBox="0 0 24 24"
+			stroke="currentColor"
 		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				class="mr-2 size-5"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke="currentColor"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-				/>
-			</svg>
-			{$t('button_send_quick_message') || 'Send Quick Message'}
-		</Button>
-
-		<!-- Request Booking Button -->
-		<Button
-			onclick={() => (showBookingDialog = true)}
-			class="w-full"
-			size="lg"
-		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				class="mr-2 size-5"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke="currentColor"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-				/>
-			</svg>
-			{$t('button_request_lesson')}
-		</Button>
-	</div>
+			<path
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				stroke-width="2"
+				d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+			/>
+		</svg>
+		{$t('button_contact_instructor') || 'Contact Instructor'}
+	</Button>
 </section>
-<BookingRequestDialog
-	bind:open={showBookingDialog}
-	instructorId={instructor.id}
-	lessonId={data.baseLesson?.id}
-	instructorName={instructor.name}
-	baseLesson={data.baseLesson}
-	isAuthenticated={isAuthenticated}
-	user={data.user}
-/>
 
 <QuickContactModal
 	bind:open={showContactModal}

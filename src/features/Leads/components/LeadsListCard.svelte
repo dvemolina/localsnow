@@ -168,6 +168,30 @@
 								<p class="mt-2 text-sm">
 									{lead.message}
 								</p>
+
+								<!-- Lesson Details (if provided) -->
+								{#if lead.preferredDates || lead.numberOfStudents || lead.skillLevel}
+									<div class="mt-3 rounded-md bg-muted/50 p-3 space-y-1 text-xs">
+										{#if lead.preferredDates}
+											<div class="flex items-center gap-2">
+												<span class="font-medium">{$t('label_preferred_dates') || 'Preferred dates'}:</span>
+												<span>{lead.preferredDates}</span>
+											</div>
+										{/if}
+										{#if lead.numberOfStudents}
+											<div class="flex items-center gap-2">
+												<span class="font-medium">{$t('label_number_of_students') || 'Students'}:</span>
+												<span>{lead.numberOfStudents}</span>
+											</div>
+										{/if}
+										{#if lead.skillLevel}
+											<div class="flex items-center gap-2">
+												<span class="font-medium">{$t('label_skill_level') || 'Skill level'}:</span>
+												<span class="capitalize">{lead.skillLevel}</span>
+											</div>
+										{/if}
+									</div>
+								{/if}
 							</div>
 
 							<!-- Status Actions -->
