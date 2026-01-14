@@ -6,7 +6,7 @@
 	import * as Card from '$src/lib/components/ui/card';
 	import ProfileVisitsCard from '$src/features/Dashboard/components/ProfileVisitsCard.svelte';
 	import LeadStatsCard from '$src/features/Leads/components/LeadStatsCard.svelte';
-	import LeadsListCard from '$src/features/Leads/components/LeadsListCard.svelte';
+	import RequestsCard from '$src/features/Requests/components/RequestsCard.svelte';
 	import { t } from '$lib/i18n/i18n';
 	let { data } = $props();
 	let user = $state(data.user);
@@ -200,7 +200,7 @@
 		<!-- Recent Leads Section (for instructors) -->
 		{#if (user.role === 'instructor-independent' || user.role === 'instructor-school') && data.recentLeads}
 			<div class="mb-8">
-				<LeadsListCard recentLeads={data.recentLeads} instructorId={user.id} />
+				<RequestsCard requests={data.recentLeads} type="lead" instructorId={user.id} />
 			</div>
 		{/if}
 

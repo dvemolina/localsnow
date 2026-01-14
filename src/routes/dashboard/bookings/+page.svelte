@@ -1,11 +1,13 @@
 <script lang="ts">
-	import BookingCard from '$src/features/Bookings/components/BookingCard.svelte';
-	import BookingDetailDialog from '$src/features/Bookings/components/BookingDetailDialog.svelte';
+	import RequestDetailDialog from '$src/features/Requests/components/RequestDetailDialog.svelte';
 	import { Badge } from '$src/lib/components/ui/badge';
+	import { Button } from '$lib/components/ui/button';
+	import * as Card from '$lib/components/ui/card';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { goto } from '$app/navigation';
 	import { isMobile } from '$src/lib/hooks/is-mobile.svelte.js';
 	import { t } from '$src/lib/i18n/i18n.js';
+	import { formatDate } from '$src/lib/utils/generics';
 	let { data } = $props();
 
 	let selectedBooking = $state<any>(null);
@@ -14,6 +16,48 @@
 	const handleViewDetails = (booking: any) => {
 		selectedBooking = booking;
 		dialogOpen = true;
+	};
+
+	const statusConfig = $derived({
+		pending: {
+			label: $t('status_pending_review'),
+			variant: 'secondary' as const,
+			color: 'bg-yellow-100 text-yellow-800 border-yellow-200'
+		},
+		accepted: {
+			label: $t('status_accepted'),
+			variant: 'default' as const,
+			color: 'bg-green-100 text-green-800 border-green-200'
+		},
+		viewed: {
+			label: $t('status_unlocked'),
+			variant: 'default' as const,
+			color: 'bg-blue-100 text-blue-800 border-blue-200'
+		},
+		rejected: {
+			label: $t('status_rejected'),
+			variant: 'outline' as const,
+			color: 'bg-red-100 text-red-800 border-red-200'
+		},
+		cancelled: {
+			label: $t('status_cancelled'),
+			variant: 'outline' as const,
+			color: 'bg-gray-100 text-gray-800 border-gray-200'
+		},
+		expired: {
+			label: $t('status_expired'),
+			variant: 'outline' as const,
+			color: 'bg-gray-100 text-gray-800 border-gray-200'
+		}
+	});
+
+	const getStatus = (booking: any) => {
+		if (booking.status === 'rejected') return 'rejected';
+		if (booking.status === 'cancelled') return 'cancelled';
+		if (booking.status === 'expired') return 'expired';
+		if (booking.status === 'accepted') return 'accepted';
+		if (booking.status === 'viewed' || booking.contactInfoUnlocked) return 'viewed';
+		return 'pending';
 	};
 
 	const changeFilter = (status: string) => {
@@ -118,7 +162,83 @@
 	{:else}
 		<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 			{#each bookingsWithUniqueKeys as booking (booking.uniqueKey)}
-				<BookingCard {booking} onViewDetails={() => handleViewDetails(booking)} />
+				{@const currentStatus = getStatus(booking)}
+				{@const statusInfo = statusConfig[currentStatus]}
+				<Card.Root class="hover:shadow-md transition-shadow">
+					<Card.Content class="p-6">
+						<div class="space-y-4">
+							<!-- Header -->
+							<div class="flex items-start justify-between">
+								<div class="space-y-1">
+									<div class="flex items-center gap-2">
+										<h3 class="font-semibold text-lg">
+											{booking.contactInfoUnlocked ? booking.clientName : 'New Booking Request'}
+										</h3>
+										<Badge class="{statusInfo.color} border">
+											{statusInfo.label}
+										</Badge>
+									</div>
+									<p class="text-sm text-muted-foreground">
+										Requested {formatDate(new Date(booking.createdAt))}
+									</p>
+								</div>
+							</div>
+
+							<!-- Key Details -->
+							<div class="grid grid-cols-2 gap-4 text-sm">
+								<div>
+									<span class="text-muted-foreground">Start Date:</span>
+									<p class="font-medium">{formatDate(new Date(booking.startDate))}</p>
+								</div>
+								{#if booking.endDate}
+									<div>
+										<span class="text-muted-foreground">End Date:</span>
+										<p class="font-medium">{formatDate(new Date(booking.endDate))}</p>
+									</div>
+								{/if}
+								<div>
+									<span class="text-muted-foreground">Students:</span>
+									<p class="font-medium">{booking.numberOfStudents}</p>
+								</div>
+								<div>
+									<span class="text-muted-foreground">Hours/Day:</span>
+									<p class="font-medium">{booking.hoursPerDay}h</p>
+								</div>
+							</div>
+
+							<!-- Sports -->
+							<div>
+								<span class="text-sm text-muted-foreground">Sports:</span>
+								<div class="mt-1 flex flex-wrap gap-1">
+									{#each booking.sports as sport}
+										<Badge variant="outline" class="text-xs">
+											{sport.sportName}
+										</Badge>
+									{/each}
+								</div>
+							</div>
+
+							<!-- Price Estimate -->
+							{#if booking.estimatedPrice}
+								<div class="rounded-md bg-muted/50 p-3">
+									<div class="flex items-center justify-between">
+										<span class="text-sm text-muted-foreground">Estimated Price:</span>
+										<span class="text-lg font-bold">
+											{booking.estimatedPrice}{booking.currency}
+										</span>
+									</div>
+								</div>
+							{/if}
+
+							<!-- Actions -->
+							<div class="flex flex-col gap-2 pt-2">
+								<Button onclick={() => handleViewDetails(booking)} class="flex-1" variant="outline">
+									View Details
+								</Button>
+							</div>
+						</div>
+					</Card.Content>
+				</Card.Root>
 			{/each}
 		</div>
 	{/if}
@@ -151,5 +271,5 @@
 
 <!-- Detail Dialog -->
 {#if selectedBooking}
-	<BookingDetailDialog booking={selectedBooking} bind:open={dialogOpen} />
+	<RequestDetailDialog request={selectedBooking} type="booking" bind:open={dialogOpen} />
 {/if}

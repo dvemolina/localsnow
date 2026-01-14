@@ -49,6 +49,16 @@
 	let isSubmitting = $state(false);
 	let submitSuccess = $state(false);
 
+	// Price estimation state
+	let priceEstimate = $state<{
+		totalPrice: number;
+		pricePerPerson: number;
+		currency: string;
+		numberOfDays: number;
+		breakdown: Array<{ description: string; amount: number; isDiscount: boolean }>;
+	} | null>(null);
+	let isCalculatingPrice = $state(false);
+
 	// Available sports from base lesson
 	let availableSports = $derived(baseLesson?.sports || []);
 
@@ -77,6 +87,50 @@
 		totalHours: number;
 	}) {
 		calendarSelection = selection;
+	}
+
+	// Calculate price estimate when calendar selection or number of students changes
+	$effect(() => {
+		if (calendarSelection && baseLesson && numberOfStudents > 0) {
+			calculatePriceEstimate();
+		} else {
+			priceEstimate = null;
+		}
+	});
+
+	async function calculatePriceEstimate() {
+		if (!calendarSelection || !baseLesson) return;
+
+		isCalculatingPrice = true;
+		try {
+			const response = await fetch('/api/pricing/calculate', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					lessonId: baseLesson.id,
+					basePrice: baseLesson.basePrice,
+					currency: baseLesson.currency,
+					numberOfStudents,
+					hoursPerDay: calendarSelection.timeSlots.length || 2,
+					startDate: calendarSelection.startDate,
+					endDate: calendarSelection.endDate || calendarSelection.startDate
+				})
+			});
+
+			if (response.ok) {
+				priceEstimate = await response.json();
+			} else {
+				console.error('Failed to calculate price estimate');
+				priceEstimate = null;
+			}
+		} catch (error) {
+			console.error('Error calculating price estimate:', error);
+			priceEstimate = null;
+		} finally {
+			isCalculatingPrice = false;
+		}
 	}
 
 	function formatDatesForDisplay(startDate: string, endDate: string): string {
@@ -333,6 +387,70 @@
 									</Badge>
 								{/each}
 							</div>
+						</div>
+					{/if}
+
+					<!-- Price Estimate (if calculated) -->
+					{#if priceEstimate && calendarSelection}
+						<div class="rounded-lg border-2 border-primary/20 bg-primary/5 p-4 space-y-3">
+							<div class="flex items-center justify-between">
+								<div>
+									<p class="text-sm font-medium text-muted-foreground">
+										{$t('label_estimated_price') || 'Estimated Price'}
+									</p>
+									<p class="text-xs text-muted-foreground mt-1">
+										{$t('price_estimate_disclaimer') || 'This is an estimate. Final price may vary.'}
+									</p>
+								</div>
+								<div class="text-right">
+									<p class="text-3xl font-bold text-primary">
+										{priceEstimate.totalPrice}{priceEstimate.currency}
+									</p>
+									{#if numberOfStudents > 1}
+										<p class="text-xs text-muted-foreground">
+											{priceEstimate.pricePerPerson}{priceEstimate.currency} {$t('label_per_person') || 'per person'}
+										</p>
+									{/if}
+								</div>
+							</div>
+
+							<!-- Price Breakdown -->
+							{#if priceEstimate.breakdown && priceEstimate.breakdown.length > 0}
+								<div class="space-y-1 border-t pt-2">
+									{#each priceEstimate.breakdown as item}
+										<div class="flex items-center justify-between text-xs">
+											<span class="text-muted-foreground">{item.description}</span>
+											<span class={item.isDiscount ? 'text-green-600 font-medium' : 'font-medium'}>
+												{item.isDiscount ? '-' : ''}{Math.abs(item.amount)}{priceEstimate.currency}
+											</span>
+										</div>
+									{/each}
+								</div>
+							{/if}
+						</div>
+					{:else if isCalculatingPrice}
+						<div class="rounded-lg border-2 border-primary/20 bg-primary/5 p-4 flex items-center justify-center">
+							<svg
+								class="size-5 animate-spin text-primary mr-2"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+							>
+								<circle
+									class="opacity-25"
+									cx="12"
+									cy="12"
+									r="10"
+									stroke="currentColor"
+									stroke-width="4"
+								></circle>
+								<path
+									class="opacity-75"
+									fill="currentColor"
+									d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+								></path>
+							</svg>
+							<span class="text-sm text-muted-foreground">{$t('label_calculating_price') || 'Calculating price...'}</span>
 						</div>
 					{/if}
 				</div>
