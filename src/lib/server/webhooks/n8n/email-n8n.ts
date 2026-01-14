@@ -359,3 +359,35 @@ export async function sendInstructorDeactivated(data: {
 		console.error('Error sending instructor deactivated notification:', err);
 	}
 }
+
+// Instructor Contact Form Email Notification
+
+export async function sendInstructorContactForm(data: {
+	instructorEmail: string;
+	instructorName: string;
+	clientName: string;
+	clientEmail: string;
+	clientPhone?: string;
+	message: string;
+	instructorProfileUrl: string;
+}) {
+	try {
+		const response = await fetch(`${N8N_BASE_URL}/instructor-contact-form`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'x-n8n-secret': EMAIL_SECRET
+			},
+			body: JSON.stringify({
+				type: 'contact_form',
+				...data
+			})
+		});
+
+		if (!response.ok) {
+			console.error('Failed to send instructor contact form notification', await response.text());
+		}
+	} catch (err) {
+		console.error('Error sending instructor contact form notification:', err);
+	}
+}
