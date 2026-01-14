@@ -194,3 +194,168 @@ export async function sendCancellationConfirmationToClient(data: {
 		console.error('Error sending cancellation confirmation:', err);
 	}
 }
+
+// School Management Email Notifications
+
+export async function sendInstructorInvitation(data: {
+	instructorEmail: string;
+	instructorName: string;
+	schoolName: string;
+	schoolSlug: string;
+	invitationUrl: string;
+}) {
+	try {
+		const response = await fetch(`${N8N_BASE_URL}/school-instructor-invitation`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'x-n8n-secret': EMAIL_SECRET
+			},
+			body: JSON.stringify({
+				type: 'instructor_invitation',
+				...data
+			})
+		});
+
+		if (!response.ok) {
+			console.error('Failed to send instructor invitation', await response.text());
+		}
+	} catch (err) {
+		console.error('Error sending instructor invitation:', err);
+	}
+}
+
+export async function sendSchoolApplication(data: {
+	schoolAdminEmail: string;
+	schoolName: string;
+	instructorName: string;
+	instructorId: number;
+	reviewUrl: string;
+}) {
+	try {
+		const response = await fetch(`${N8N_BASE_URL}/school-application`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'x-n8n-secret': EMAIL_SECRET
+			},
+			body: JSON.stringify({
+				type: 'school_application',
+				...data
+			})
+		});
+
+		if (!response.ok) {
+			console.error('Failed to send school application notification', await response.text());
+		}
+	} catch (err) {
+		console.error('Error sending school application notification:', err);
+	}
+}
+
+export async function sendInstructorAccepted(data: {
+	instructorEmail: string;
+	instructorName: string;
+	schoolName: string;
+	schoolSlug: string;
+	dashboardUrl: string;
+}) {
+	try {
+		const response = await fetch(`${N8N_BASE_URL}/school-instructor-accepted`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'x-n8n-secret': EMAIL_SECRET
+			},
+			body: JSON.stringify({
+				type: 'instructor_accepted',
+				...data
+			})
+		});
+
+		if (!response.ok) {
+			console.error('Failed to send instructor accepted notification', await response.text());
+		}
+	} catch (err) {
+		console.error('Error sending instructor accepted notification:', err);
+	}
+}
+
+export async function sendInstructorRejected(data: {
+	instructorEmail: string;
+	instructorName: string;
+	schoolName: string;
+}) {
+	try {
+		const response = await fetch(`${N8N_BASE_URL}/school-instructor-rejected`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'x-n8n-secret': EMAIL_SECRET
+			},
+			body: JSON.stringify({
+				type: 'instructor_rejected',
+				...data
+			})
+		});
+
+		if (!response.ok) {
+			console.error('Failed to send instructor rejected notification', await response.text());
+		}
+	} catch (err) {
+		console.error('Error sending instructor rejected notification:', err);
+	}
+}
+
+export async function sendInvitationAccepted(data: {
+	schoolAdminEmail: string;
+	schoolName: string;
+	instructorName: string;
+	instructorId: number;
+}) {
+	try {
+		const response = await fetch(`${N8N_BASE_URL}/school-invitation-accepted`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'x-n8n-secret': EMAIL_SECRET
+			},
+			body: JSON.stringify({
+				type: 'invitation_accepted',
+				...data
+			})
+		});
+
+		if (!response.ok) {
+			console.error('Failed to send invitation accepted notification', await response.text());
+		}
+	} catch (err) {
+		console.error('Error sending invitation accepted notification:', err);
+	}
+}
+
+export async function sendInstructorDeactivated(data: {
+	instructorEmail: string;
+	instructorName: string;
+	schoolName: string;
+}) {
+	try {
+		const response = await fetch(`${N8N_BASE_URL}/school-instructor-deactivated`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'x-n8n-secret': EMAIL_SECRET
+			},
+			body: JSON.stringify({
+				type: 'instructor_deactivated',
+				...data
+			})
+		});
+
+		if (!response.ok) {
+			console.error('Failed to send instructor deactivated notification', await response.text());
+		}
+	} catch (err) {
+		console.error('Error sending instructor deactivated notification:', err);
+	}
+}
