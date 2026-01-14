@@ -5,6 +5,7 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { goto } from '$app/navigation';
 	import { isMobile } from '$src/lib/hooks/is-mobile.svelte.js';
+	import { t } from '$src/lib/i18n/i18n.js';
 	let { data } = $props();
 
 	let selectedBooking = $state<any>(null);
@@ -58,13 +59,13 @@
 	<Tabs.Root value={data.currentFilter} class="mb-6" orientation={ isMobile ? 'vertical' : 'horizontal' }>
 		<Tabs.List class="grid w-full h-full grid-cols-2 md:grid-cols-4">
 			<Tabs.Trigger value="all" onclick={() => changeFilter('all')}>
-				{$t('instructors_filter_all')}
+				{$t('filter_all')}
 				{#if counts.all > 0}
 					<Badge variant="secondary" class="ml-2">{counts.all}</Badge>
 				{/if}
 			</Tabs.Trigger>
 			<Tabs.Trigger value="pending" onclick={() => changeFilter('pending')}>
-				{$t('bookings_filter_pending')}
+				{$t('filter_pending')}
 				{#if counts.pending > 0}
 					<Badge variant="secondary" class="ml-2 bg-yellow-100 text-yellow-800">
 						{counts.pending}
@@ -72,7 +73,7 @@
 				{/if}
 			</Tabs.Trigger>
 			<Tabs.Trigger value="unlocked" onclick={() => changeFilter('unlocked')}>
-				{$t('bookings_filter_unlocked')}
+				{$t('filter_unlocked')}
 				{#if counts.unlocked > 0}
 					<Badge variant="secondary" class="ml-2 bg-blue-100 text-blue-800">
 						{counts.unlocked}
@@ -80,7 +81,7 @@
 				{/if}
 			</Tabs.Trigger>
 			<Tabs.Trigger value="rejected" onclick={() => changeFilter('rejected')}>
-				{$t('bookings_filter_rejected')}
+				{$t('filter_rejected')}
 				{#if counts.rejected > 0}
 					<Badge variant="secondary" class="ml-2">{counts.rejected}</Badge>
 				{/if}

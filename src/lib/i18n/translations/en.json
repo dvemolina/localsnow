@@ -441,6 +441,7 @@
 	"role_admin": "Admin",
 	"role_no_role": "No role",
 	"status_verified": "Verified",
+	"status_cancelled": "Cancelled",
 	"status_pending": "Pending",
 	"status_pending_verification": "Pending Verification",
 	"status_completed": "Completed",

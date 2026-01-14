@@ -23,7 +23,7 @@
 
 	function getStatusBadge(code: any) {
 		if (isExpired(code.validUntil)) {
-			return { variant: 'destructive' as const, text: $t('my_bookings_status_expired') };
+			return { variant: 'destructive' as const, text: $t('status_expired') };
 		}
 		if (!code.isActive) {
 			return { variant: 'secondary' as const, text: $t('launch_codes_status_inactive') };

@@ -51,9 +51,9 @@
 			<p class="text-muted-foreground">{data.instructor.email}</p>
 			<div class="mt-2 flex gap-2">
 				{#if data.instructor.isSuspended}
-					<Badge variant="destructive">{$t('instructors_status_suspended')}</Badge>
+					<Badge variant="destructive">{$t('status_suspended')}</Badge>
 				{:else if data.instructor.isVerified}
-					<Badge class="bg-green-100 text-green-800">{$t('instructors_status_verified')}</Badge>
+					<Badge class="bg-green-100 text-green-800">{$t('status_verified')}</Badge>
 				{:else}
 					<Badge class="bg-yellow-100 text-yellow-800">{$t('status_pending_verification')}</Badge>
 				{/if}

@@ -325,6 +325,7 @@
 	"role_admin": "Admin",
 	"role_no_role": "Sin rol",
 	"status_pending": "Pendiente",
+	"status_cancelled": "Cancelled",
 	"status_pending_verification": "Pendiente de Verificación",
 	"status_completed": "Completado",
 	"status_active": "Activo",

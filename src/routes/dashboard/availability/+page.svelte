@@ -4,6 +4,7 @@
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { toast } from 'svelte-sonner';
 	import { invalidateAll } from '$app/navigation';	import { route } from '$lib/i18n/routeHelpers';
+	import { t } from '$src/lib/i18n/i18n.js';
 
 	let { data } = $props();
 
@@ -106,9 +107,9 @@
 						</svg>
 						{$t('availability_google_calendar_title')}
 						{#if data.connected}
-							<Badge variant="default" class="bg-green-600">{$t('availability_status_connected')}</Badge>
+							<Badge variant="default" class="bg-green-600">{$t('status_connected')}</Badge>
 						{:else}
-							<Badge variant="secondary">{$t('availability_status_not_connected')}</Badge>
+							<Badge variant="secondary">{$t('status_not_connected')}</Badge>
 						{/if}
 					</Card.Title>
 					<Card.Description class="mt-1">
@@ -171,7 +172,7 @@
 									d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
 								></path>
 							</svg>
-							{$t('availability_button_syncing')}
+							{$t('button_syncing')}
 						{:else}
 							<svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path
@@ -181,7 +182,7 @@
 									d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
 								/>
 							</svg>
-							{$t('availability_button_sync_now')}
+							{$t('button_sync_now')}
 						{/if}
 					</Button>
 					<Button
@@ -193,7 +194,7 @@
 						{#if disconnecting}
 							Disconnecting...
 						{:else}
-							{$t('availability_button_disconnect_calendar')}
+							{$t('button_disconnect_calendar')}
 						{/if}
 					</Button>
 				</div>
@@ -231,7 +232,7 @@
 								d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
 							/>
 						</svg>
-						{$t('availability_button_connect_google_calendar')}
+						{$t('button_connect_google_calendar')}
 					</Button>
 				</div>
 
@@ -281,9 +282,9 @@
 				</svg>
 				{$t('availability_working_hours_title')}
 				{#if data.workingHoursConfigured}
-					<Badge variant="default" class="bg-green-600">{$t('availability_status_configured')}</Badge>
+					<Badge variant="default" class="bg-green-600">{$t('status_configured')}</Badge>
 				{:else}
-					<Badge variant="secondary">{$t('availability_status_not_set')}</Badge>
+					<Badge variant="secondary">{$t('status_not_set')}</Badge>
 				{/if}
 			</Card.Title>
 			<Card.Description>
@@ -336,7 +337,7 @@
 		</Card.Content>
 		<Card.Footer>
 			<Button href={route('/dashboard/availability/working-hours')} class="w-full">
-				{data.workingHoursConfigured ? $t('availability_button_edit_working_hours') : $t('availability_button_set_working_hours')}
+				{data.workingHoursConfigured ? $t('button_edit_working_hours') : $t('button_set_working_hours')}
 			</Button>
 		</Card.Footer>
 	</Card.Root>

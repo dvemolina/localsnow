@@ -548,7 +548,7 @@
 								d="M5 13l4 4L19 7"
 							/>
 						</svg>
-						<span>{$t('instructors_instructor_benefit1')}</span>
+						<span>{$t('instructor_benefit1')}</span>
 					</li>
 					<li class="flex items-start gap-2">
 						<svg
@@ -565,7 +565,7 @@
 								d="M5 13l4 4L19 7"
 							/>
 						</svg>
-						<span>{$t('instructors_instructor_benefit2')}</span>
+						<span>{$t('instructor_benefit2')}</span>
 					</li>
 					<li class="flex items-start gap-2">
 						<svg
@@ -582,7 +582,7 @@
 								d="M5 13l4 4L19 7"
 							/>
 						</svg>
-						<span>{$t('instructors_instructor_benefit3')}</span>
+						<span>{$t('instructor_benefit3')}</span>
 					</li>
 					<li class="flex items-start gap-2">
 						<svg
@@ -599,7 +599,7 @@
 								d="M5 13l4 4L19 7"
 							/>
 						</svg>
-						<span>{$t('instructors_instructor_benefit4')}</span>
+						<span>{$t('instructor_benefit4')}</span>
 					</li>
 				</ul>
 			</div>

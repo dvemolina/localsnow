@@ -70,11 +70,11 @@
 						onSelectedChange={(v) => verifiedFilter = v?.value || 'all'}
 					>
 						<Select.Trigger id="verified">
-							<Select.Value placeholder={$t('instructors_filter_all')} />
+							<Select.Value placeholder={$t('filter_all')} />
 						</Select.Trigger>
 						<Select.Content>
-							<Select.Item value="all">{$t('instructors_filter_all')}</Select.Item>
-							<Select.Item value="true">{$t('instructors_status_verified')}</Select.Item>
+							<Select.Item value="all">{$t('filter_all')}</Select.Item>
+							<Select.Item value="true">{$t('status_verified')}</Select.Item>
 							<Select.Item value="false">{$t('status_pending')}</Select.Item>
 						</Select.Content>
 					</Select.Root>
@@ -87,12 +87,12 @@
 						onSelectedChange={(v) => suspendedFilter = v?.value || 'all'}
 					>
 						<Select.Trigger id="suspended">
-							<Select.Value placeholder={$t('instructors_filter_all')} />
+							<Select.Value placeholder={$t('filter_all')} />
 						</Select.Trigger>
 						<Select.Content>
-							<Select.Item value="all">{$t('instructors_filter_all')}</Select.Item>
+							<Select.Item value="all">{$t('filter_all')}</Select.Item>
 							<Select.Item value="false">{$t('status_active')}</Select.Item>
-							<Select.Item value="true">{$t('instructors_status_suspended')}</Select.Item>
+							<Select.Item value="true">{$t('status_suspended')}</Select.Item>
 						</Select.Content>
 					</Select.Root>
 				</div>
@@ -183,9 +183,9 @@
 							<Table.Cell>
 								<div class="flex flex-col gap-1">
 									{#if instructor.isSuspended}
-										<Badge variant="destructive">{$t('instructors_status_suspended')}</Badge>
+										<Badge variant="destructive">{$t('status_suspended')}</Badge>
 									{:else if instructor.isVerified}
-										<Badge class="bg-green-100 text-green-800">{$t('instructors_status_verified')}</Badge>
+										<Badge class="bg-green-100 text-green-800">{$t('status_verified')}</Badge>
 									{:else}
 										<Badge class="bg-yellow-100 text-yellow-800">{$t('status_pending')}</Badge>
 									{/if}
