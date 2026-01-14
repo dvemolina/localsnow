@@ -4,7 +4,7 @@
 	import * as Avatar from '$src/lib/components/ui/avatar';
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { Button } from '$src/lib/components/ui/button';
-	import QuickContactModal from '$src/features/Leads/components/QuickContactModal.svelte';
+	import ContactInstructorDialog from '$src/features/Leads/components/ContactInstructorDialog.svelte';
 	import SimplePriceDisplay from '$src/features/Pricing/components/SimplePriceDisplay.svelte';
 	import ReviewList from '$src/features/Reviews/components/ReviewList.svelte';
 	import { page } from '$app/state';
@@ -639,10 +639,11 @@
 	</Button>
 </section>
 
-<QuickContactModal
+<ContactInstructorDialog
 	bind:open={showContactModal}
 	instructorId={instructor.id}
 	instructorName={instructor.name}
+	baseLesson={data.baseLesson}
 	isAuthenticated={isAuthenticated}
 	user={data.user}
 />
