@@ -2,7 +2,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { page } from '$app/state';
 	import { t } from '$src/lib/i18n/i18n';
-	const reason = $page.url.searchParams.get('reason');
+	const reason = page.url.searchParams.get('reason');
 
 	const errorMessages = $derived({
 		no_session: {
