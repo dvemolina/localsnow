@@ -52,9 +52,9 @@ export class LeadService {
 	/**
 	 * Get leads for an instructor
 	 */
-	async getInstructorLeads(instructorId: number, limit: number = 50): Promise<InstructorLead[]> {
+	async getInstructorLeads(instructorId: number, limit: number = 50, offset: number = 0): Promise<InstructorLead[]> {
 		try {
-			return await this.repository.getLeadsByInstructor(instructorId, limit, 0);
+			return await this.repository.getLeadsByInstructor(instructorId, limit, offset);
 		} catch (error) {
 			console.error('Error fetching instructor leads:', error);
 			throw new Error('Failed to fetch leads');

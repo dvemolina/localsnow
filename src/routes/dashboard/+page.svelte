@@ -5,6 +5,8 @@
 	import { Badge } from '$src/lib/components/ui/badge';
 	import * as Card from '$src/lib/components/ui/card';
 	import ProfileVisitsCard from '$src/features/Dashboard/components/ProfileVisitsCard.svelte';
+	import LeadStatsCard from '$src/features/Leads/components/LeadStatsCard.svelte';
+	import LeadsListCard from '$src/features/Leads/components/LeadsListCard.svelte';
 	import { t } from '$lib/i18n/i18n';
 	let { data } = $props();
 	let user = $state(data.user);
@@ -127,6 +129,8 @@
 				</Card.Root>
 
 				<ProfileVisitsCard visits={data.profileVisits || 0} />
+
+				<LeadStatsCard leadStats={data.leadStats} />
 			{:else if user.role === 'school-admin'}
 				<Card.Root>
 					<Card.Header class="pb-2">
@@ -192,6 +196,13 @@
 				{/each}
 			</div>
 		</div>
+
+		<!-- Recent Leads Section (for instructors) -->
+		{#if (user.role === 'instructor-independent' || user.role === 'instructor-school') && data.recentLeads}
+			<div class="mb-8">
+				<LeadsListCard recentLeads={data.recentLeads} instructorId={user.id} />
+			</div>
+		{/if}
 
 		<!-- Getting Started (for unverified users) -->
 		{#if !user.isVerified && (user.role === 'instructor-independent' || user.role === 'instructor-school')}
