@@ -6,7 +6,6 @@
 	import { Label } from '$lib/components/ui/label';
 	import * as Select from '$lib/components/ui/select';
 	import { Badge } from '$lib/components/ui/badge';
-	import CountryCodeSelect from '$lib/components/shared/CountryCodeSelect.svelte';
 	import AvailabilityCalendar from '$src/features/Availability/components/AvailabilityCalendar.svelte';
 	import { toast } from 'svelte-sonner';
 	import { getSportName } from '$src/features/Sports/lib/sportsConstants';
@@ -306,7 +305,31 @@
 							{$t('label_phone') || 'Phone'} <span class="text-xs text-muted-foreground">({$t('label_optional') || 'Optional'})</span>
 						</Label>
 						<div class="flex gap-2">
-							<CountryCodeSelect bind:selectedCode={clientCountryCode} disabled={isSubmitting} />
+							<Select.Root
+								selected={{ value: clientCountryCode, label: `+${clientCountryCode}` }}
+								onSelectedChange={(selected) => {
+									if (selected?.value) clientCountryCode = selected.value;
+								}}
+							>
+								<Select.Trigger class="w-[120px]" disabled={isSubmitting}>
+									<Select.Value placeholder="+34" />
+								</Select.Trigger>
+								<Select.Content>
+									<Select.Item value={1}>+1 (USA/Canada)</Select.Item>
+									<Select.Item value={34}>+34 (Spain)</Select.Item>
+									<Select.Item value={33}>+33 (France)</Select.Item>
+									<Select.Item value={39}>+39 (Italy)</Select.Item>
+									<Select.Item value={49}>+49 (Germany)</Select.Item>
+									<Select.Item value={44}>+44 (UK)</Select.Item>
+									<Select.Item value={41}>+41 (Switzerland)</Select.Item>
+									<Select.Item value={43}>+43 (Austria)</Select.Item>
+									<Select.Item value={351}>+351 (Portugal)</Select.Item>
+									<Select.Item value={32}>+32 (Belgium)</Select.Item>
+									<Select.Item value={31}>+31 (Netherlands)</Select.Item>
+									<Select.Item value={46}>+46 (Sweden)</Select.Item>
+									<Select.Item value={47}>+47 (Norway)</Select.Item>
+								</Select.Content>
+							</Select.Root>
 							<Input
 								id="clientPhone"
 								type="tel"
