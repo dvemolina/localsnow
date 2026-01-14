@@ -145,7 +145,7 @@
 				<Form.Field {form} name="bio" class="w-full">
 					<Form.Control>
 						{#snippet children({ props })}
-							<Form.Label>{$t('instructors_form_label_bio')}</Form.Label>
+							<Form.Label>{$t('form_label_bio')}</Form.Label>
 							<Form.Description class="text-xs">
 								{$t('instructor_form_bio_desc')}
 							</Form.Description>
@@ -226,7 +226,7 @@
 					<Form.Field {form} name="professionalPhone" class="w-full">
 						<Form.Control>
 							{#snippet children({ props })}
-								<Form.Label>{$t('instructors_form_label_professional_phone')} <span class="text-red-500">*</span></Form.Label>
+								<Form.Label>{$t('form_label_professional_phone')} <span class="text-red-500">*</span></Form.Label>
 								<Input
 									{...props}
 									bind:value={$formData.professionalPhone}

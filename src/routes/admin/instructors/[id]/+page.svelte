@@ -97,15 +97,15 @@
 			</CardHeader>
 			<CardContent class="space-y-2">
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{$t('instructors_form_label_phone')}</p>
+					<p class="text-sm font-medium text-muted-foreground">{$t('form_label_phone')}</p>
 					<p>{data.instructor.phone || $t('instructors_admin_not_provided')}</p>
 				</div>
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{$t('instructors_form_label_professional_phone')}</p>
+					<p class="text-sm font-medium text-muted-foreground">{$t('form_label_professional_phone')}</p>
 					<p>{data.instructor.professionalPhone || $t('instructors_admin_not_provided')}</p>
 				</div>
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{$t('instructors_form_label_bio')}</p>
+					<p class="text-sm font-medium text-muted-foreground">{$t('form_label_bio')}</p>
 					<p class="text-sm">{data.instructor.bio || $t('instructors_admin_no_bio')}</p>
 				</div>
 				<div>

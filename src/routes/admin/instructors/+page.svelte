@@ -54,7 +54,7 @@
 		<CardContent>
 			<div class="grid gap-4 md:grid-cols-4">
 				<div class="col-span-2">
-					<label for="search" class="text-sm font-medium">{$t('instructors_form_label_search')}</label>
+					<label for="search" class="text-sm font-medium">{$t('form_label_search')}</label>
 					<Input
 						id="search"
 						bind:value={searchValue}

@@ -129,7 +129,7 @@
 				/>
 			</div>
 			<div>
-				<label for="clientPhone" class="mb-1 block text-sm font-medium">{$t('instructors_form_label_phone')}</label>
+				<label for="clientPhone" class="mb-1 block text-sm font-medium">{$t('form_label_phone')}</label>
 				<Input
 					id="clientPhone"
 					type="tel"
