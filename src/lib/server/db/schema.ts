@@ -369,6 +369,29 @@ export const reviewsRelations = relations(reviews, ({ one }) => ({
 export type Review = typeof reviews.$inferSelect;
 export type InsertReview = typeof reviews.$inferInsert;
 
+// --- Instructor Leads (Contact Form Submissions) ---
+export const instructorLeads = pgTable('instructor_leads', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	uuid: uuid('uuid').defaultRandom().unique().notNull(),
+	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	clientName: varchar('client_name', { length: 100 }),
+	clientEmail: varchar('client_email', { length: 255 }).notNull(),
+	clientPhone: varchar('client_phone', { length: 20 }),
+	message: text('message').notNull(),
+	status: varchar('status', { length: 20 }).default('new').notNull(), // new, contacted, converted, spam
+	...timestamps
+});
+
+export const instructorLeadsRelations = relations(instructorLeads, ({ one }) => ({
+	instructor: one(users, {
+		fields: [instructorLeads.instructorId],
+		references: [users.id]
+	})
+}));
+
+export type InstructorLead = typeof instructorLeads.$inferSelect;
+export type InsertInstructorLead = typeof instructorLeads.$inferInsert;
+
 // --- Availability System Tables ---
 
 // Working Hours (one-time setup per instructor)
