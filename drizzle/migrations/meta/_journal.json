@@ -281,6 +281,13 @@
       "when": 1768414117819,
       "tag": "0039_breezy_stone_men",
       "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "7",
+      "when": 1768429552843,
+      "tag": "0040_aromatic_kabuki",
+      "breakpoints": true
     }
   ]
 }
