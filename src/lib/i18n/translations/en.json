@@ -487,6 +487,7 @@
 	"button_delete": "Delete",
 	"button_activate": "Activate",
 	"button_deactivate": "Deactivate",
+	"button_send_quick_message": "Send Quick Message",
 	"filter_all": "All",
 	"filter_pending": "Pending",
 	"filter_unlocked": "Unlocked",
@@ -789,6 +790,7 @@
 	"form_characters": "characters",
 	"form_label_bio": "Bio",
 	"form_label_professional_phone": "Professional Phone",
+	"button_send_message": "Send Message",
 	"button_sending_request": "Sending Request...",
 	"button_send_lesson_request": "Send Lesson Request",
 	"button_view_certificate": "View Certificate",
@@ -1196,5 +1198,7 @@
 	"how_works_localsnow_4": "Community-driven - directory for discovery",
 	"how_works_localsnow_5": "Simple & transparent - like Páginas Amarillas",
 	"how_works_cta_no_credit_card": "100% free directory. No credit card required. No hidden fees.",
-	"button_update": "Update"
+	"button_update": "Update",
+	"contact_instructor_title": "Contact the Instructor",
+	"contact_instructor_description": "Send a quick message to the instructor asking any question you may have. If you want to book directly use the Request a Lesson button"
 }

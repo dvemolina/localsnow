@@ -622,6 +622,8 @@
 	"form_label_additional_info": "Información Adicional",
 	"form_help_additional_info": "Incluye requisitos especiales, objetivos o preguntas que tengas.",
 	"form_characters": "caracteres",
+	"button_send_message": "Enviar Mensaje",
+	"button_send_quick_message": "Enviar Mensaje Rápido",
 	"button_sending_request": "Enviando Solicitud...",
 	"button_send_lesson_request": "Enviar Solicitud de Clase",
 	"button_view_certificate": "Ver Certificado",
@@ -1575,5 +1577,7 @@
 	"how_works_localsnow_4": "Impulsado por la comunidad - directorio para descubrimiento",
 	"how_works_localsnow_5": "Simple y transparente - como Páginas Amarillas",
 	"how_works_cta_no_credit_card": "Directorio 100% gratuito. No se requiere tarjeta de crédito. Sin tarifas ocultas.",
-	"button_update": "Actualizar"
+	"button_update": "Actualizar",
+	"contact_instructor_title": "Contacta con el Instructor",
+	"contact_instructor_description": "Envia un mensaje rápido con cualquier duda/pregunta que tengas. Si quieres reservar directamente utiliza el boton de Solicitar una Clase"
 }
