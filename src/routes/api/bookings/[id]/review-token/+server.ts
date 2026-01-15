@@ -4,6 +4,10 @@ import { db } from '$lib/server/db';
 import { bookingRequests } from '$lib/server/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { randomBytes } from 'crypto';
+import { ExpiringTokenBucket } from '$lib/server/rate-limit';
+
+// Rate limiting: 100 review token generations per day per instructor
+const reviewTokenBucket = new ExpiringTokenBucket<number>(100, 86400);
 
 export const POST: RequestHandler = async ({ params, locals, url }) => {
 	const user = locals.user;
@@ -16,6 +20,14 @@ export const POST: RequestHandler = async ({ params, locals, url }) => {
 	// Only instructors can generate review links
 	if (user.role !== 'instructor-independent' && user.role !== 'instructor-school') {
 		return json({ error: 'Forbidden: Only instructors can generate review links' }, { status: 403 });
+	}
+
+	// Check rate limit (using user ID as key)
+	if (!reviewTokenBucket.check(user.id, 1)) {
+		return json(
+			{ error: 'Rate limit exceeded. Maximum 100 review tokens per day.' },
+			{ status: 429 }
+		);
 	}
 
 	const bookingId = parseInt(params.id);
@@ -69,6 +81,9 @@ export const POST: RequestHandler = async ({ params, locals, url }) => {
 		const protocol = url.protocol;
 		const host = url.host;
 		const reviewUrl = `${protocol}//${host}/reviews/submit/${reviewToken}`;
+
+		// Consume rate limit token after successful generation
+		reviewTokenBucket.consume(user.id, 1);
 
 		return json({
 			success: true,

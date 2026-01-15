@@ -1,10 +1,30 @@
-import { json } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { db } from '$lib/server/db';
 import { bookingRequests, instructorReviews } from '$lib/server/db/schema';
 import { eq, and, isNull } from 'drizzle-orm';
+import { ExpiringTokenBucket } from '$lib/server/rate-limit';
+import { getClientIP } from '$lib/utils/auth';
 
-export const POST: RequestHandler = async ({ request }) => {
+// Rate limiting: 5 review submissions per hour per IP
+const reviewSubmissionBucket = new ExpiringTokenBucket<string>(5, 3600);
+
+export const POST: RequestHandler = async (event) => {
+	const { request } = event;
+
+	// Get client IP for rate limiting
+	const clientIP = getClientIP(event);
+	if (clientIP === null) {
+		throw error(400, 'Unable to determine client IP');
+	}
+
+	// Check rate limit
+	if (!reviewSubmissionBucket.check(clientIP, 1)) {
+		return json(
+			{ error: 'Rate limit exceeded. Maximum 5 review submissions per hour.' },
+			{ status: 429 }
+		);
+	}
 	try {
 		const body = await request.json();
 
@@ -65,6 +85,9 @@ export const POST: RequestHandler = async ({ request }) => {
 				updatedAt: now
 			})
 			.where(eq(bookingRequests.id, booking.id));
+
+		// Consume rate limit token after successful submission
+		reviewSubmissionBucket.consume(clientIP, 1);
 
 		return json(
 			{

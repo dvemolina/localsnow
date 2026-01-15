@@ -3,6 +3,10 @@ import type { RequestHandler } from './$types';
 import { db } from '$lib/server/db';
 import { bookingRequests } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
+import { ExpiringTokenBucket } from '$lib/server/rate-limit';
+
+// Rate limiting: 50 manual bookings per day per instructor
+const manualBookingBucket = new ExpiringTokenBucket<number>(50, 86400);
 
 export const POST: RequestHandler = async ({ request, locals }) => {
 	const user = locals.user;
@@ -15,6 +19,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	// Only instructors can add manual bookings
 	if (user.role !== 'instructor-independent' && user.role !== 'instructor-school') {
 		return json({ error: 'Forbidden: Only instructors can add manual bookings' }, { status: 403 });
+	}
+
+	// Check rate limit (using user ID as key)
+	if (!manualBookingBucket.check(user.id, 1)) {
+		return json(
+			{ error: 'Rate limit exceeded. Maximum 50 manual bookings per day.' },
+			{ status: 429 }
+		);
 	}
 
 	try {
@@ -72,6 +84,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 				contactInfoUnlocked: true // Manual bookings have contact info visible
 			})
 			.returning();
+
+		// Consume rate limit token after successful creation
+		manualBookingBucket.consume(user.id, 1);
 
 		return json(
 			{
