@@ -2,7 +2,8 @@
 	import * as Select from '$lib/components/ui/select/index.js';
 	import * as Form from '$lib/components/ui/form';
 	import { t } from '$lib/i18n/i18n';
-	let props = $props();
+  
+  let { props, selectedCode = $bindable() } = $props()
 
 	let form = props.form;
 	let name = props.name;
