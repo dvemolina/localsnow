@@ -28,7 +28,7 @@ export const load: PageServerLoad = async (event) => {
             : bookings.filter(b => b.source === sourceFilter);
 
         // Load instructor's lessons for manual booking dialog
-        const instructorLessons = await lessonService.getLessonsForInstructor(user.id);
+        const instructorLessons = await lessonService.listLessonsByInstructor(user.id);
 
         return {
             bookings: filteredBookings,
