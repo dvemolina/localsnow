@@ -7,6 +7,7 @@ export const sportSlugEnum = pgEnum('sport_slug', ['ski', 'snowboard', 'telemark
 export const modalitySlugEnum = pgEnum('modality_slug', ['piste', 'off-piste', 'freeride', 'freestyle', 'touring', 'adaptive']);
 export const pricingModeEnum = pgEnum('pricing_mode', ['per_hour', 'per_session', 'per_day']);
 export const bookingStatusEnum = pgEnum('status', ['pending', 'viewed', 'accepted', 'rejected', 'cancelled', 'expired', 'completed', 'no_show']);
+export const bookingSourceEnum = pgEnum('booking_source', ['platform', 'manual']);
 
 export const timestamps = {
     createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -109,6 +110,7 @@ export const bookingRequests = pgTable('booking_requests', {
     uuid: uuid('uuid').defaultRandom().unique().notNull(),
     instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
 	schoolId: integer('school_id').references(() => schools.id, { onDelete: 'set null' }), // If booked through school
+	lessonId: integer('lesson_id').references(() => lessons.id, { onDelete: 'set null' }), // Reference to lesson for manual bookings
 
     // Client info
     clientUserId: integer('client_user_id').references(() => users.id, { onDelete: 'set null' }), // Authenticated user reference
@@ -133,8 +135,17 @@ export const bookingRequests = pgTable('booking_requests', {
     estimatedPrice: integer('estimated_price'),
     currency: varchar('currency', { length: 50 }),
 
+	// Client management fields
+	source: bookingSourceEnum('source').notNull().default('platform'), // platform or manual
+	manualPrice: integer('manual_price'), // For manual bookings with custom price
+	notes: text('notes'), // Private notes for instructor
+
 	//Lead info after payment
 	contactInfoUnlocked: boolean('contact_info_unlocked').notNull().default(false),
+
+	// Review system
+	reviewToken: varchar('review_token', { length: 255 }),
+	reviewSubmittedAt: timestamp('review_submitted_at'),
 
     // Beta launch tracking
     usedLaunchCode: varchar('used_launch_code', { length: 50 }), // Track if beta code was used
@@ -164,6 +175,34 @@ export const userBookingLimitsRelations = relations(userBookingLimits, ({ one })
 export type UserBookingLimit = typeof userBookingLimits.$inferSelect;
 export type InsertUserBookingLimit = typeof userBookingLimits.$inferInsert;
 
+// --- Instructor Reviews ---
+export const instructorReviews = pgTable('instructor_reviews', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	uuid: uuid('uuid').defaultRandom().unique().notNull(),
+	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	bookingId: integer('booking_id').references(() => bookingRequests.id, { onDelete: 'set null' }),
+	clientName: varchar('client_name', { length: 100 }),
+	clientEmail: varchar('client_email', { length: 255 }),
+	rating: integer('rating').notNull(), // 1-5
+	comment: text('comment'),
+	isVerified: boolean('is_verified').notNull().default(false), // Verified = linked to a real booking
+	isPublished: boolean('is_published').notNull().default(false), // Only published reviews show on profile
+	...timestamps
+});
+
+export const instructorReviewsRelations = relations(instructorReviews, ({ one }) => ({
+	instructor: one(users, {
+		fields: [instructorReviews.instructorId],
+		references: [users.id]
+	}),
+	booking: one(bookingRequests, {
+		fields: [instructorReviews.bookingId],
+		references: [bookingRequests.id]
+	})
+}));
+
+export type InstructorReview = typeof instructorReviews.$inferSelect;
+export type InsertInstructorReview = typeof instructorReviews.$inferInsert;
 
 // --- Lessons ---
 export const lessons = pgTable('lessons', {
