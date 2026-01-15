@@ -5,6 +5,7 @@
 	import SportSelect from '$src/features/Resorts/components/SportSelect.svelte';
 	import LanguageSelect from '$src/lib/components/shared/LanguageSelect.svelte';
 	import InstructorTypeSelect from '$src/lib/components/shared/InstructorTypeSelect.svelte';
+	import SchoolSelect from '$src/lib/components/shared/SchoolSelect.svelte';
 	import SortBySelect from '$src/lib/components/shared/SortBySelect.svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
@@ -27,6 +28,7 @@
 		priceMin: z.number().optional(),
 		priceMax: z.number().optional(),
 		instructorType: z.string().optional(),
+		school: z.number().optional(),
 		sortBy: z.string().optional()
 	});
 
@@ -39,6 +41,7 @@
 			priceMin: data.filters.priceMin,
 			priceMax: data.filters.priceMax,
 			instructorType: data.filters.instructorType,
+			school: data.filters.school,
 			sortBy: data.filters.sortBy
 		},
 		{
@@ -66,6 +69,7 @@
 		if ($formData.priceMin) params.set('priceMin', $formData.priceMin.toString());
 		if ($formData.priceMax) params.set('priceMax', $formData.priceMax.toString());
 		if ($formData.instructorType) params.set('instructorType', $formData.instructorType);
+		if ($formData.school) params.set('school', $formData.school.toString());
 		if ($formData.sortBy) params.set('sortBy', $formData.sortBy);
 		if (verifiedOnly) params.set('verifiedOnly', 'true');
 
@@ -81,6 +85,7 @@
 		$formData.priceMin = undefined;
 		$formData.priceMax = undefined;
 		$formData.instructorType = undefined;
+		$formData.school = undefined;
 		$formData.sortBy = undefined;
 		verifiedOnly = false;
 		goto('/instructors');
@@ -103,6 +108,7 @@
 			!!$formData.priceMin ||
 			!!$formData.priceMax ||
 			!!$formData.instructorType ||
+			!!$formData.school ||
 			verifiedOnly
 	);
 
@@ -111,6 +117,7 @@
 			!!$formData.priceMin ||
 			!!$formData.priceMax ||
 			!!$formData.instructorType ||
+			!!$formData.school ||
 			verifiedOnly
 	);
 
@@ -138,6 +145,10 @@
 			'instructor-school': 'School'
 		};
 		return type ? types[type] || type : '';
+	}
+
+	function getSchoolName(schoolId: number | undefined) {
+		return schoolId ? `School #${schoolId}` : '';
 	}
 
 	// ItemList schema for SEO
@@ -281,6 +292,7 @@
 								$formData.priceMin,
 								$formData.priceMax,
 								$formData.instructorType,
+								$formData.school,
 								verifiedOnly
 							].filter(Boolean).length}
 						</span>
@@ -323,6 +335,11 @@
 						<!-- Instructor Type -->
 						<div>
 							<InstructorTypeSelect {form} name="instructorType" isFilter={true} />
+						</div>
+
+						<!-- School Filter -->
+						<div>
+							<SchoolSelect {form} name="school" label="School" isFilter={true} />
 						</div>
 
 						<!-- Verified Only -->
@@ -432,6 +449,18 @@
 					<button
 						type="button"
 						onclick={() => removeFilter('instructorType')}
+						class="ml-1 hover:text-destructive"
+					>
+						×
+					</button>
+				</Badge>
+			{/if}
+			{#if $formData.school}
+				<Badge variant="secondary" class="gap-1">
+					{getSchoolName($formData.school)}
+					<button
+						type="button"
+						onclick={() => removeFilter('school')}
 						class="ml-1 hover:text-destructive"
 					>
 						×

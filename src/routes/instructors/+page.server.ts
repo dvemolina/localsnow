@@ -15,6 +15,7 @@ export const load: PageServerLoad = async ({ url }) => {
     const priceMax = url.searchParams.get('priceMax');
     const instructorType = url.searchParams.get('instructorType') as 'instructor-independent' | 'instructor-school' | null;
     const verifiedOnly = url.searchParams.get('verifiedOnly') === 'true';
+    const schoolId = url.searchParams.get('school');
     const sortBy = url.searchParams.get('sortBy');
 
     try {
@@ -26,6 +27,7 @@ export const load: PageServerLoad = async ({ url }) => {
             language: language || undefined,
             instructorType: instructorType || undefined,
             verifiedOnly: verifiedOnly || undefined,
+            schoolId: schoolId ? Number(schoolId) : undefined,
             sortBy: sortBy || undefined
         });
 
@@ -89,6 +91,7 @@ export const load: PageServerLoad = async ({ url }) => {
                 priceMax: priceMax,
                 instructorType: instructorType,
                 verifiedOnly: verifiedOnly ? 'true' : null,
+                school: schoolId,
                 sortBy: sortBy
             }
         };
@@ -105,6 +108,7 @@ export const load: PageServerLoad = async ({ url }) => {
                 priceMax: priceMax,
                 instructorType: instructorType,
                 verifiedOnly: verifiedOnly ? 'true' : null,
+                school: schoolId,
                 sortBy: sortBy
             }
         };

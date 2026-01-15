@@ -142,6 +142,7 @@ export class InstructorService {
         priceMax?: number;
         instructorType?: 'instructor-independent' | 'instructor-school';
         verifiedOnly?: boolean;
+        schoolId?: number;
         sortBy?: string;
     }): Promise<unknown[]> {
         try {
