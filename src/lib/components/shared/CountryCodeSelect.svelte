@@ -3,10 +3,7 @@
 	import * as Form from '$lib/components/ui/form';
 	import { t } from '$lib/i18n/i18n';
   
-  let { props, selectedCode = $bindable() } = $props()
-
-	let form = props.form;
-	let name = props.name;
+	let { form, name, selectedCode = $bindable() } = $props();
 
 	const prefixes = [
   { label: '+1 (USA/Canada)', value: 1 },
@@ -119,10 +116,10 @@
 
 <Form.Field {form} {name} class="w-full">
 	<Form.Control>
-		{#snippet children({ props })}
+		{#snippet children({ props: controlProps })}
 			<Form.Label>{$t('form_label_country_prefix')}</Form.Label>
-			<Select.Root type="single" bind:value={$formStore[name]} name={props.name}>
-				<Select.Trigger {...props} class="w-full">
+			<Select.Root type="single" bind:value={$formStore[name]} name={name}>
+				<Select.Trigger {...controlProps} class="w-full">
 					{$formStore[name] ? $formStore[name] : $t('form_placeholder_country_prefix')}
 				</Select.Trigger>
 				<Select.Content>
