@@ -1,77 +1,84 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { ReviewService } from '$src/features/Reviews/lib/reviewService';
-import { submitReviewSchema } from '$src/features/Reviews/lib/reviewSchema';
 import { db } from '$lib/server/db';
-import { bookingRequests } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+import { bookingRequests, instructorReviews } from '$lib/server/db/schema';
+import { eq, and, isNull } from 'drizzle-orm';
 
-const reviewService = new ReviewService();
-
-/**
- * POST /api/reviews/submit
- * Submit a review for a booking
- */
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json();
 
-		// Validate input
-		const validatedData = submitReviewSchema.parse(body);
+		// Validation
+		if (!body.token || typeof body.token !== 'string') {
+			return json({ error: 'Missing or invalid review token' }, { status: 400 });
+		}
 
-		// Verify that the client email matches the booking
+		if (!body.rating || body.rating < 1 || body.rating > 5) {
+			return json({ error: 'Rating must be between 1 and 5' }, { status: 400 });
+		}
+
+		if (body.comment && typeof body.comment === 'string' && body.comment.length > 1000) {
+			return json({ error: 'Comment must be less than 1000 characters' }, { status: 400 });
+		}
+
+		// Find the booking by token
 		const [booking] = await db
-			.select({
-				clientEmail: bookingRequests.clientEmail
-			})
+			.select()
 			.from(bookingRequests)
-			.where(eq(bookingRequests.id, validatedData.bookingRequestId));
+			.where(
+				and(
+					eq(bookingRequests.reviewToken, body.token),
+					eq(bookingRequests.status, 'completed'),
+					isNull(bookingRequests.reviewSubmittedAt)
+				)
+			)
+			.limit(1);
 
 		if (!booking) {
-			return json(
-				{ success: false, error: 'Booking not found' },
-				{ status: 404 }
-			);
+			return json({ error: 'Review link not found, expired, or already used' }, { status: 404 });
 		}
 
-		if (booking.clientEmail.toLowerCase() !== validatedData.clientEmail.toLowerCase()) {
-			return json(
-				{ success: false, error: 'Email does not match the booking' },
-				{ status: 403 }
-			);
-		}
+		// Start transaction to create review and update booking
+		const now = new Date();
 
-		// Submit review
-		const review = await reviewService.submitReview(validatedData);
+		// Create the review
+		const [review] = await db
+			.insert(instructorReviews)
+			.values({
+				instructorId: booking.instructorId,
+				bookingId: booking.id,
+				clientName: booking.clientName,
+				clientEmail: booking.clientEmail,
+				rating: body.rating,
+				comment: body.comment?.trim() || null,
+				isVerified: true, // Verified because it came from a booking link
+				isPublished: false, // Not published yet - instructor/admin can moderate
+				createdAt: now
+			})
+			.returning();
 
-		//UNCOMMENT THIS BUT IMPLEMENT sendThanksForReviewing in email-n8n.ts
-		/*
-		// Optional: Send thank you email to client
-		try {
-			await sendEmail({
-				to: validatedData.clientEmail,
-				subject: 'Thank you for your review!',
-				body: `Thank you for leaving a review for your ski lesson. Your feedback helps us improve and helps other students find great instructors!`,
-				type: 'review-submitted'
-			});
-		} catch (emailError) {
-			console.error('Failed to send review thank you email:', emailError);
-			// Don't fail the review submission if email fails
-		}
-			*/
+		// Update booking with review submission timestamp
+		await db
+			.update(bookingRequests)
+			.set({
+				reviewSubmittedAt: now,
+				updatedAt: now
+			})
+			.where(eq(bookingRequests.id, booking.id));
 
-		return json({
-			success: true,
-			review
-		});
-	} catch (error) {
-		console.error('Error submitting review:', error);
 		return json(
 			{
-				success: false,
-				error: error instanceof Error ? error.message : 'Failed to submit review'
+				success: true,
+				review: {
+					id: review.id,
+					rating: review.rating,
+					isVerified: review.isVerified
+				}
 			},
-			{ status: 400 }
+			{ status: 201 }
 		);
+	} catch (error) {
+		console.error('Error submitting review:', error);
+		return json({ error: 'Failed to submit review' }, { status: 500 });
 	}
 };

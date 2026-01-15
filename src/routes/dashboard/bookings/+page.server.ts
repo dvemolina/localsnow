@@ -2,32 +2,47 @@ import { requireAuth } from "$src/lib/utils/auth";
 import { redirect, fail, type Actions } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { BookingRequestService } from "$src/features/Bookings/lib/bookingRequestService";
+import { LessonService } from "$src/features/Lessons/lib/lessonService";
 
 const bookingService = new BookingRequestService();
+const lessonService = new LessonService();
 
 export const load: PageServerLoad = async (event) => {
     const user = requireAuth(event, 'Login to access bookings');
-    
+
     // Only instructors can access
     if (user.role !== 'instructor-independent' && user.role !== 'instructor-school') {
         redirect(302, '/dashboard');
     }
-    
+
     const statusFilter = event.url.searchParams.get('status') || 'all';
-    
+    const sourceFilter = event.url.searchParams.get('source') || 'all';
+
     try {
         // Delegate to service layer
         const bookings = await bookingService.getBookingsWithDetailsForInstructor(user.id, statusFilter);
-        
+
+        // Filter by source if specified
+        const filteredBookings = sourceFilter === 'all'
+            ? bookings
+            : bookings.filter(b => b.source === sourceFilter);
+
+        // Load instructor's lessons for manual booking dialog
+        const instructorLessons = await lessonService.getLessonsForInstructor(user.id);
+
         return {
-            bookings,
-            currentFilter: statusFilter
+            bookings: filteredBookings,
+            instructorLessons,
+            currentFilter: statusFilter,
+            sourceFilter
         };
     } catch (error) {
         console.error('Error loading bookings:', error);
         return {
             bookings: [],
-            currentFilter: statusFilter
+            instructorLessons: [],
+            currentFilter: statusFilter,
+            sourceFilter
         };
     }
 };

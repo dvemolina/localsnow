@@ -24,6 +24,8 @@
 	let actionResult = $state<{ success?: boolean; message?: string } | null>(null);
 	let showRejectConfirm = $state(false);
 	let updatingStatus = $state(false);
+	let reviewUrl = $state<string | null>(null);
+	let isGeneratingReviewLink = $state(false);
 
 	// Status configuration
 	const statusConfig = $derived(
@@ -104,6 +106,36 @@
 			toast.error($t('error_update_lead_status') || 'Failed to update status');
 		} finally {
 			updatingStatus = false;
+		}
+	}
+
+	// Generate review link for completed bookings
+	async function generateReviewLink() {
+		if (type !== 'booking' || request.status !== 'completed') return;
+
+		isGeneratingReviewLink = true;
+		try {
+			const response = await fetch(`/api/bookings/${request.id}/review-token`, {
+				method: 'POST'
+			});
+
+			if (!response.ok) {
+				const error = await response.json();
+				toast.error(error.error || 'Failed to generate review link');
+				return;
+			}
+
+			const result = await response.json();
+			reviewUrl = result.reviewUrl;
+
+			// Copy to clipboard
+			await navigator.clipboard.writeText(result.reviewUrl);
+			toast.success('Review link copied to clipboard!');
+		} catch (error) {
+			console.error('Error generating review link:', error);
+			toast.error('Failed to generate review link');
+		} finally {
+			isGeneratingReviewLink = false;
 		}
 	}
 </script>
@@ -436,6 +468,96 @@
 							Reject
 						</Button>
 					</div>
+				</div>
+			{:else if request.status === 'completed' && !request.reviewSubmittedAt}
+				<!-- Completed Booking: Generate Review Link -->
+				<div class="rounded-lg border-2 border-green-200 bg-green-50 p-4">
+					<div class="flex items-center gap-2 text-green-800 mb-2">
+						<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+							/>
+						</svg>
+						<span class="font-semibold">Request a Review</span>
+					</div>
+					<p class="text-sm text-green-700 mb-3">
+						This booking is completed! Generate a review link to send to {request.clientName} so they can leave feedback about their experience.
+					</p>
+					<Button
+						onclick={generateReviewLink}
+						disabled={isGeneratingReviewLink}
+						class="w-full"
+					>
+						{#if isGeneratingReviewLink}
+							<svg
+								class="mr-2 size-4 animate-spin"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+							>
+								<circle
+									class="opacity-25"
+									cx="12"
+									cy="12"
+									r="10"
+									stroke="currentColor"
+									stroke-width="4"
+								></circle>
+								<path
+									class="opacity-75"
+									fill="currentColor"
+									d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+								></path>
+							</svg>
+							Generating...
+						{:else}
+							<svg
+								class="mr-2 size-4"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+								/>
+							</svg>
+							Generate Review Link
+						{/if}
+					</Button>
+					{#if reviewUrl}
+						<div class="mt-3 rounded-md bg-white p-3 border">
+							<p class="text-xs font-medium text-muted-foreground mb-1">Review Link (copied to clipboard):</p>
+							<p class="text-xs break-all font-mono">{reviewUrl}</p>
+							<p class="text-xs text-muted-foreground mt-2">
+								Send this link to {request.clientEmail} via email or WhatsApp
+							</p>
+						</div>
+					{/if}
+				</div>
+			{:else if request.status === 'completed' && request.reviewSubmittedAt}
+				<!-- Review Already Submitted -->
+				<div class="rounded-lg border-2 border-gray-200 bg-gray-50 p-4">
+					<div class="flex items-center gap-2 text-gray-700">
+						<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M5 13l4 4L19 7"
+							/>
+						</svg>
+						<span class="font-semibold">Review Submitted</span>
+					</div>
+					<p class="text-sm text-gray-600 mt-2">
+						{request.clientName} submitted a review on {new Date(request.reviewSubmittedAt).toLocaleDateString()}
+					</p>
 				</div>
 			{/if}
 		</div>

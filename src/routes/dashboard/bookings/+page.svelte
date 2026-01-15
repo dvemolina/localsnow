@@ -1,5 +1,6 @@
 <script lang="ts">
 	import RequestDetailDialog from '$src/features/Requests/components/RequestDetailDialog.svelte';
+	import AddManualBookingDialog from '$src/features/Bookings/components/AddManualBookingDialog.svelte';
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
@@ -12,6 +13,7 @@
 
 	let selectedBooking = $state<any>(null);
 	let dialogOpen = $state(false);
+	let addBookingDialogOpen = $state(false);
 
 	const handleViewDetails = (booking: any) => {
 		selectedBooking = booking;
@@ -92,11 +94,30 @@
 
 <div class="container mx-auto max-w-7xl">
 	<!-- Header -->
-	<div class="mb-6">
-		<h1 class="title2 mb-2">{$t('bookings_page_title')}</h1>
-		<p class="text-muted-foreground">
-			{$t('bookings_page_subtitle')}
-		</p>
+	<div class="mb-6 flex items-center justify-between">
+		<div>
+			<h1 class="title2 mb-2">{$t('bookings_page_title') || 'Bookings & Clients'}</h1>
+			<p class="text-muted-foreground">
+				{$t('bookings_page_subtitle') || 'Manage all your bookings and clients in one place'}
+			</p>
+		</div>
+		<Button onclick={() => (addBookingDialogOpen = true)}>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="size-4 mr-2"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M12 4v16m8-8H4"
+				/>
+			</svg>
+			{$t('button_add_booking') || 'Add Booking'}
+		</Button>
 	</div>
 
 	<!-- Filter Tabs -->
@@ -273,3 +294,6 @@
 {#if selectedBooking}
 	<RequestDetailDialog request={selectedBooking} type="booking" bind:open={dialogOpen} />
 {/if}
+
+<!-- Add Manual Booking Dialog -->
+<AddManualBookingDialog bind:open={addBookingDialogOpen} instructorLessons={data.instructorLessons} />
