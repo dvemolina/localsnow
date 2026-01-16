@@ -1,6 +1,6 @@
 // src/features/Admin/lib/adminReviewService.ts
 import { db } from '$lib/server/db';
-import { reviews } from '$lib/server/db/schema';
+import { instructorReviews } from '$lib/server/db/schema';
 import { eq, and, gte, lte, count } from 'drizzle-orm';
 import { adminAuditService } from './adminAuditService';
 
@@ -22,24 +22,24 @@ export const adminReviewService = {
 		const conditions: any[] = [];
 
 		if (filters.instructorId) {
-			conditions.push(eq(reviews.instructorId, filters.instructorId));
+			conditions.push(eq(instructorReviews.instructorId, filters.instructorId));
 		}
 
 		if (filters.rating) {
-			conditions.push(eq(reviews.rating, filters.rating));
+			conditions.push(eq(instructorReviews.rating, filters.rating));
 		}
 
 		if (filters.dateFrom) {
-			conditions.push(gte(reviews.createdAt, filters.dateFrom));
+			conditions.push(gte(instructorReviews.createdAt, filters.dateFrom));
 		}
 
 		if (filters.dateTo) {
-			conditions.push(lte(reviews.createdAt, filters.dateTo));
+			conditions.push(lte(instructorReviews.createdAt, filters.dateTo));
 		}
 
 		const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
-		const allReviews = await db.query.reviews.findMany({
+		const allReviews = await db.query.instructorReviews.findMany({
 			where: whereClause,
 			limit: pageSize,
 			offset,
@@ -53,7 +53,7 @@ export const adminReviewService = {
 						email: true
 					}
 				},
-				bookingRequest: {
+				booking: {
 					columns: {
 						id: true,
 						clientName: true,
@@ -67,7 +67,7 @@ export const adminReviewService = {
 		// Get total count
 		const totalResult = await db
 			.select({ count: count() })
-			.from(reviews)
+			.from(instructorReviews)
 			.where(whereClause);
 
 		const total = totalResult[0]?.count || 0;
@@ -87,11 +87,11 @@ export const adminReviewService = {
 	 * Get single review details
 	 */
 	async getReviewById(reviewId: number) {
-		const review = await db.query.reviews.findFirst({
-			where: eq(reviews.id, reviewId),
+		const review = await db.query.instructorReviews.findFirst({
+			where: eq(instructorReviews.id, reviewId),
 			with: {
 				instructor: true,
-				bookingRequest: true
+				booking: true
 			}
 		});
 
@@ -113,11 +113,12 @@ export const adminReviewService = {
 	 */
 	async deleteReview(reviewId: number, adminId: number, reason: string, event?: any) {
 		await db
-			.update(reviews)
+			.update(instructorReviews)
 			.set({
-				deletedAt: new Date()
+				isPublished: false,
+				updatedAt: new Date()
 			})
-			.where(eq(reviews.id, reviewId));
+			.where(eq(instructorReviews.id, reviewId));
 
 		// Log the action
 		await adminAuditService.logAction({
@@ -142,15 +143,15 @@ export const adminReviewService = {
 				rating: reviews.rating,
 				count: count()
 			})
-			.from(reviews)
-			.groupBy(reviews.rating);
+			.from(instructorReviews)
+			.groupBy(instructorReviews.rating);
 
 		// Average rating
 		const avgResult = await db
 			.select({
 				avg: count()
 			})
-			.from(reviews);
+			.from(instructorReviews);
 
 		return {
 			byRating,

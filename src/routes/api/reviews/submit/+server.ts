@@ -78,7 +78,11 @@ export const POST: RequestHandler = async (event) => {
 			.where(eq(users.id, booking.instructorId))
 			.limit(1);
 
-		if (instructor && instructor.email.toLowerCase() === booking.clientEmail.toLowerCase()) {
+		if (
+			instructor &&
+			booking.clientEmail &&
+			instructor.email.toLowerCase() === booking.clientEmail.toLowerCase()
+		) {
 			return json(
 				{ error: 'Instructors cannot review themselves' },
 				{ status: 403 }
@@ -88,20 +92,34 @@ export const POST: RequestHandler = async (event) => {
 		// Start transaction to create review and update booking
 		const now = new Date();
 
-		// If logged in, use account profile data; otherwise use booking data
-		const reviewerName = loggedInUser?.name
+		const displayNameRaw =
+			body.displayName && typeof body.displayName === 'string' ? body.displayName.trim() : '';
+
+		if (displayNameRaw && displayNameRaw.length > 100) {
+			return json({ error: 'Display name must be 100 characters or less' }, { status: 400 });
+		}
+
+		const accountName = loggedInUser?.name
 			? `${loggedInUser.name}${loggedInUser.lastName ? ' ' + loggedInUser.lastName : ''}`
-			: booking.clientName;
+			: '';
+		const reviewerDisplayName = displayNameRaw || accountName || 'Anonymous';
 
 		// Create the review
+		const reviewerEmail = loggedInUser?.email
+			? loggedInUser.email.toLowerCase()
+			: booking.clientEmail
+				? booking.clientEmail.toLowerCase()
+				: null;
+
 		const [review] = await db
 			.insert(instructorReviews)
 			.values({
 				instructorId: booking.instructorId,
 				reviewerId, // Link to user account if logged in
 				bookingId: booking.id,
-				clientName: reviewerName,
-				clientEmail: booking.clientEmail,
+				reviewerName: reviewerDisplayName,
+				clientName: booking.clientName,
+				clientEmail: reviewerEmail,
 				rating: body.rating,
 				comment: body.comment?.trim() || null,
 				isVerified: true, // Verified because it came from a booking link

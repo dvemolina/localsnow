@@ -11,16 +11,21 @@
 	}
 
 	// Determine display name and profile picture
-	// Priority: logged-in account data > booking client data > email prefix
+	// Priority: review display name > logged-in account name > booking client data > email prefix > Anonymous
 	const hasAccount = !!review.reviewerId;
-	const reviewerName = hasAccount && review.reviewerName
-		? `${review.reviewerName}${review.reviewerLastName ? ' ' + review.reviewerLastName : ''}`
-		: review.clientName || review.clientEmail.split('@')[0];
+	const accountName = review.reviewerFirstName
+		? `${review.reviewerFirstName}${review.reviewerLastName ? ' ' + review.reviewerLastName : ''}`
+		: '';
+	const reviewerDisplayName =
+		(review.reviewerName && review.reviewerName.trim()) ||
+		(accountName && accountName.trim()) ||
+		(review.clientName && review.clientName.trim()) ||
+		(review.clientEmail ? review.clientEmail.split('@')[0] : 'Anonymous');
 
 	const profileImage = hasAccount ? review.reviewerProfileImage : null;
 
 	// Get initials from name
-	const clientInitials = reviewerName
+	const clientInitials = reviewerDisplayName
 		.split(' ')
 		.map((n: string) => n[0])
 		.join('')
@@ -33,7 +38,7 @@
 		<!-- Reviewer Avatar -->
 		<Avatar.Root class="size-10 shrink-0">
 			{#if profileImage}
-				<Avatar.Image src={profileImage} alt={reviewerName} />
+				<Avatar.Image src={profileImage} alt={reviewerDisplayName} />
 			{/if}
 			<Avatar.Fallback class="bg-primary text-primary-foreground">
 				{clientInitials}
@@ -44,7 +49,7 @@
 		<div class="flex-1">
 			<div class="mb-2 flex items-center justify-between">
 				<div class="flex items-center gap-2">
-					<span class="text-sm font-semibold">{reviewerName}</span>
+					<span class="text-sm font-semibold">{reviewerDisplayName}</span>
 					<RatingInput value={review.rating} readonly={true} size={16} />
 					{#if review.isVerified}
 						<span class="text-xs text-muted-foreground">✓ Verified</span>

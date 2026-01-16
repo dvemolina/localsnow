@@ -265,7 +265,7 @@
 								</div>
 								<p class="mt-1 text-sm">{review.comment || $t('admin_no_comment')}</p>
 								<p class="mt-1 text-xs text-muted-foreground">
-									{$t('instructors_admin_by')} {review.clientEmail}
+									{$t('instructors_admin_by')} {review.reviewerName || review.clientName || review.clientEmail || $t('label_anonymous') || 'Anonymous'}
 								</p>
 							</div>
 						</div>

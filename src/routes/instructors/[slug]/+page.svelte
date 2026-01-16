@@ -124,7 +124,9 @@
 		},
 		author: {
 			'@type': 'Person',
-			name: review.clientEmail.split('@')[0]
+			name: review.reviewerName ||
+				(review.clientName && review.clientName.trim()) ||
+				(review.clientEmail ? review.clientEmail.split('@')[0] : 'Anonymous')
 		},
 		reviewBody: review.comment || '',
 		datePublished: review.createdAt ? new Date(review.createdAt).toISOString() : '',

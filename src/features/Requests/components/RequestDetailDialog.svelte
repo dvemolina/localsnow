@@ -182,12 +182,6 @@
 	async function generateReviewLink() {
 		if (type !== 'booking' || request.status !== 'completed') return;
 
-		// Check if email exists (important for manual bookings)
-		if (!request.clientEmail) {
-			toast.error('Client email is required to generate review link. Please add it first.');
-			return;
-		}
-
 		isGeneratingReviewLink = true;
 		try {
 			const response = await fetch(`/api/bookings/${request.id}/review-token`, {
@@ -345,14 +339,22 @@
 							<span class="text-muted-foreground">{$t('label_name') || 'Name'}:</span>
 							<p class="font-medium">{request.clientName || $t('label_anonymous') || 'Anonymous'}</p>
 						</div>
-						<div>
-							<span class="text-muted-foreground">{$t('label_email') || 'Email'}:</span>
-							<p class="font-medium">
-								<a href="mailto:{request.clientEmail}" class="text-primary hover:underline">
-									{request.clientEmail}
-								</a>
-							</p>
-						</div>
+						{#if request.clientEmail}
+							<div>
+								<span class="text-muted-foreground">{$t('label_email') || 'Email'}:</span>
+								<p class="font-medium">
+									<a href="mailto:{request.clientEmail}" class="text-primary hover:underline">
+										{request.clientEmail}
+									</a>
+								</p>
+							</div>
+						{/if}
+						{#if isManualBooking && request.bookingIdentifier}
+							<div>
+								<span class="text-muted-foreground">{$t('label_booking_identifier') || 'Booking Identifier'}:</span>
+								<p class="font-medium">{request.bookingIdentifier}</p>
+							</div>
+						{/if}
 						{#if request.clientPhone}
 							<div>
 								<span class="text-muted-foreground">{$t('label_phone') || 'Phone'}:</span>

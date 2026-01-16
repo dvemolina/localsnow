@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
-	import { Textarea } from '$lib/components/ui/textarea';
-	import { Label } from '$lib/components/ui/label';
+import { Button } from '$lib/components/ui/button';
+import { Input } from '$lib/components/ui/input';
+import { Textarea } from '$lib/components/ui/textarea';
+import { Label } from '$lib/components/ui/label';
 	import * as Card from '$lib/components/ui/card';
 	import { toast } from 'svelte-sonner';
 	import { goto } from '$app/navigation';
@@ -9,10 +10,11 @@
 
 	let { data } = $props();
 
-	let rating = $state(5);
-	let comment = $state('');
-	let isSubmitting = $state(false);
-	let submitSuccess = $state(false);
+let rating = $state(5);
+let comment = $state('');
+let displayName = $state('');
+let isSubmitting = $state(false);
+let submitSuccess = $state(false);
 
 	async function handleSubmit(event: SubmitEvent) {
 		event.preventDefault();
@@ -40,6 +42,7 @@
 				},
 				body: JSON.stringify({
 					token: data.token,
+					displayName: displayName.trim() || undefined,
 					rating,
 					comment: comment.trim() || undefined
 				})
@@ -50,8 +53,12 @@
 			if (!response.ok) {
 				if (response.status === 400) {
 					toast.error(result.error || 'Invalid review submission');
+				} else if (response.status === 403) {
+					toast.error(result.error || 'You are not allowed to submit this review');
 				} else if (response.status === 404) {
 					toast.error('Review link not found or already used');
+				} else if (response.status === 429) {
+					toast.error(result.error || 'Too many attempts. Please try again later.');
 				} else {
 					toast.error('Failed to submit review. Please try again.');
 				}
@@ -230,6 +237,21 @@
 		<Card.Root>
 			<Card.Content class="p-6">
 				<form onsubmit={handleSubmit} class="space-y-6">
+					<div class="space-y-2">
+						<Label for="displayName">Name to display (optional)</Label>
+						<Input
+							id="displayName"
+							type="text"
+							bind:value={displayName}
+							placeholder="e.g., John D."
+							maxlength={100}
+							disabled={isSubmitting}
+						/>
+						<p class="text-xs text-muted-foreground">
+							This name will appear publicly on the instructor profile. Leave blank to post as
+							Anonymous.
+						</p>
+					</div>
 					<!-- Rating -->
 					<div class="space-y-3">
 						<Label class="text-base font-semibold">Rating *</Label>

@@ -57,6 +57,7 @@
 	let selectedLessonId = $state<number | null>(booking.lessonId || null);
 	let manualPrice = $state<number | null>(booking.manualPrice || null);
 	let currency = $state(booking.currency || '€');
+	let bookingIdentifier = $state(booking.bookingIdentifier || '');
 	let notes = $state(booking.notes || '');
 	let message = $state(booking.message || '');
 
@@ -85,6 +86,7 @@
 			selectedLessonId = booking.lessonId || null;
 			manualPrice = booking.manualPrice || null;
 			currency = booking.currency || '€';
+			bookingIdentifier = booking.bookingIdentifier || '';
 			notes = booking.notes || '';
 			message = booking.message || '';
 		}
@@ -114,6 +116,12 @@
 				return;
 			}
 
+			if (bookingIdentifier && bookingIdentifier.trim().length > 100) {
+				toast.error($t('error_booking_identifier_too_long') || 'Booking identifier is too long');
+				isSubmitting = false;
+				return;
+			}
+
 			// Format phone number
 			const fullPhone = clientPhone ? `+${clientCountryCode} ${clientPhone}` : undefined;
 
@@ -139,6 +147,7 @@
 					hoursPerDay,
 					skillLevel,
 					lessonId: selectedLessonId,
+					bookingIdentifier: bookingIdentifier.trim() || undefined,
 					manualPrice,
 					currency,
 					notes: notes.trim() || undefined,
@@ -252,7 +261,25 @@
 							disabled={isSubmitting}
 						/>
 						<p class="text-xs text-muted-foreground">
-							{$t('email_help_text') || 'Required to send review link after lesson. Can add later.'}
+							{$t('email_help_text') || 'Optional. Helpful if you want to email the review link later.'}
+						</p>
+					</div>
+
+					<!-- Booking Identifier -->
+					<div class="space-y-2">
+						<Label for="bookingIdentifier">
+							{$t('label_booking_identifier') || 'Booking Identifier'} <span class="text-xs text-muted-foreground">({$t('label_optional') || 'Optional'})</span>
+						</Label>
+						<Input
+							id="bookingIdentifier"
+							type="text"
+							bind:value={bookingIdentifier}
+							placeholder={$t('placeholder_booking_identifier') || 'e.g., John from Hotel W'}
+							maxlength={100}
+							disabled={isSubmitting}
+						/>
+						<p class="text-xs text-muted-foreground">
+							{$t('booking_identifier_help') || 'Internal label only. Not shown on public reviews.'}
 						</p>
 					</div>
 

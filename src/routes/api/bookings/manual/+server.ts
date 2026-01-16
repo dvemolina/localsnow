@@ -40,10 +40,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			);
 		}
 
-		// Email validation (optional, but if provided must be valid)
-		if (body.clientEmail) {
+		// Email validation (optional)
+		const email = body.clientEmail ? String(body.clientEmail).trim() : '';
+		if (email) {
 			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-			if (!emailRegex.test(body.clientEmail)) {
+			if (!emailRegex.test(email)) {
 				return json({ error: 'Invalid email address' }, { status: 400 });
 			}
 		}
@@ -63,6 +64,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			return json({ error: 'Price must be positive' }, { status: 400 });
 		}
 
+		const bookingIdentifier = body.bookingIdentifier ? String(body.bookingIdentifier).trim() : '';
+		if (bookingIdentifier && bookingIdentifier.length > 100) {
+			return json({ error: 'Booking identifier must be 100 characters or less' }, { status: 400 });
+		}
+
 		// Create manual booking
 		const [booking] = await db
 			.insert(bookingRequests)
@@ -70,7 +76,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 				instructorId: user.id,
 				lessonId: body.lessonId || null,
 				clientName: body.clientName.trim(),
-				clientEmail: body.clientEmail ? body.clientEmail.toLowerCase().trim() : null, // Optional
+				clientEmail: email ? email.toLowerCase() : null,
 				clientPhone: body.clientPhone || null,
 				numberOfStudents: body.numberOfStudents || 1,
 				startDate: new Date(body.startDate),
@@ -79,6 +85,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 				skillLevel: body.skillLevel || null,
 				message: body.message || null,
 				source: 'manual', // Mark as manual booking
+				bookingIdentifier: bookingIdentifier || null,
 				manualPrice: body.manualPrice || null,
 				currency: body.currency || '€',
 				notes: body.notes || null,

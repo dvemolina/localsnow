@@ -6,6 +6,7 @@ import type { InsertInstructorReview } from '$lib/server/db/schema';
 export interface CreateReviewData {
 	bookingRequestId: number;
 	instructorId: number;
+	reviewerName?: string | null;
 	clientName?: string;
 	clientEmail: string;
 	rating: number;
@@ -22,6 +23,7 @@ export class ReviewRepository {
 			.values({
 				bookingId: data.bookingRequestId,
 				instructorId: data.instructorId,
+				reviewerName: data.reviewerName || null,
 				clientName: data.clientName || null,
 				clientEmail: data.clientEmail,
 				rating: data.rating,
@@ -57,6 +59,7 @@ export class ReviewRepository {
 				instructorId: instructorReviews.instructorId,
 				reviewerId: instructorReviews.reviewerId,
 				bookingId: instructorReviews.bookingId,
+				reviewerName: instructorReviews.reviewerName,
 				clientName: instructorReviews.clientName,
 				clientEmail: instructorReviews.clientEmail,
 				rating: instructorReviews.rating,
@@ -66,7 +69,7 @@ export class ReviewRepository {
 				createdAt: instructorReviews.createdAt,
 				updatedAt: instructorReviews.updatedAt,
 				// Fetch reviewer profile data if they have an account
-				reviewerName: users.name,
+				reviewerFirstName: users.name,
 				reviewerLastName: users.lastName,
 				reviewerProfileImage: users.profileImageUrl
 			})

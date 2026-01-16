@@ -71,6 +71,7 @@
 	let selectedLessonId = $state<number | null>(null);
 	let manualPrice = $state<number | null>(null);
 	let currency = $state('€');
+	let bookingIdentifier = $state('');
 	let notes = $state('');
 	let message = $state('');
 
@@ -81,47 +82,23 @@
 	$effect(() => {
 		if (open) {
 			submitSuccess = false;
-
-			// If we have prefill data (from a converted lead), use it
-			if (prefillData) {
-				const phoneData = extractPhoneData(prefillData.clientPhone);
-				const dates = parsePreferredDates(prefillData.preferredDates);
-
-				clientName = prefillData.clientName || '';
-				clientEmail = prefillData.clientEmail || '';
-				clientCountryCode = phoneData.code;
-				clientPhone = phoneData.number;
-				numberOfStudents = prefillData.numberOfStudents || 1;
-				startDate = dates.startDate;
-				startTime = '10:00';
-				endDate = dates.endDate;
-				endTime = '';
-				hoursPerDay = 2;
-				skillLevel = prefillData.skillLevel || 'intermediate';
-				selectedLessonId = instructorLessons[0]?.id || null;
-				manualPrice = null;
-				currency = '€';
-				notes = prefillData.message ? `Original inquiry: ${prefillData.message}` : '';
-				message = '';
-			} else {
-				// Reset to empty form
-				clientName = '';
-				clientEmail = '';
-				clientCountryCode = 34;
-				clientPhone = '';
-				numberOfStudents = 1;
-				startDate = '';
-				startTime = '10:00';
-				endDate = '';
-				endTime = '';
-				hoursPerDay = 2;
-				skillLevel = 'intermediate';
-				selectedLessonId = instructorLessons[0]?.id || null;
-				manualPrice = null;
-				currency = '€';
-				notes = '';
-				message = '';
-			}
+			clientName = '';
+			clientEmail = '';
+			clientCountryCode = 34;
+			clientPhone = '';
+			numberOfStudents = 1;
+			startDate = '';
+			startTime = '10:00';
+			endDate = '';
+			endTime = '';
+			hoursPerDay = 2;
+			skillLevel = 'intermediate';
+			selectedLessonId = instructorLessons[0]?.id || null;
+			manualPrice = null;
+			currency = '€';
+			bookingIdentifier = '';
+			notes = '';
+			message = '';
 		}
 	});
 
@@ -145,6 +122,12 @@
 
 			if (manualPrice && manualPrice < 0) {
 				toast.error($t('error_invalid_price') || 'Price must be positive');
+				isSubmitting = false;
+				return;
+			}
+
+			if (bookingIdentifier && bookingIdentifier.trim().length > 100) {
+				toast.error($t('error_booking_identifier_too_long') || 'Booking identifier is too long');
 				isSubmitting = false;
 				return;
 			}
@@ -174,6 +157,7 @@
 					hoursPerDay,
 					skillLevel,
 					lessonId: selectedLessonId,
+					bookingIdentifier: bookingIdentifier.trim() || undefined,
 					manualPrice,
 					currency,
 					notes: notes.trim() || undefined,
@@ -187,7 +171,7 @@
 				if (response.status === 429) {
 					toast.error($t('error_rate_limit') || 'Too many requests. Please try again later.');
 				} else if (response.status === 400) {
-					toast.error(result.message || $t('error_validation_failed') || 'Please check your input');
+					toast.error(result.error || $t('error_validation_failed') || 'Please check your input');
 				} else {
 					toast.error($t('error_add_booking_failed') || 'Failed to add booking. Please try again.');
 				}
@@ -275,9 +259,9 @@
 			</div>
 		{:else}
 			<form onsubmit={handleSubmit} class="space-y-6">
-				<!-- Client Information Section -->
-				<div class="space-y-4">
-					<h3 class="text-sm font-semibold">{$t('label_client_information') || 'Client Information'}</h3>
+					<!-- Client Information Section -->
+					<div class="space-y-4">
+						<h3 class="text-sm font-semibold">{$t('label_client_information') || 'Client Information'}</h3>
 
 					<!-- Name -->
 					<div class="space-y-2">
@@ -308,12 +292,30 @@
 							disabled={isSubmitting}
 						/>
 						<p class="text-xs text-muted-foreground">
-							{$t('email_help_text') || 'Required to send review link after lesson. Can add later.'}
+							{$t('email_help_text') || 'Optional. Helpful if you want to email the review link later.'}
 						</p>
-					</div>
+						</div>
 
-					<!-- Phone -->
-					<div class="space-y-2">
+						<!-- Booking Identifier -->
+						<div class="space-y-2">
+							<Label for="bookingIdentifier">
+								{$t('label_booking_identifier') || 'Booking Identifier'} <span class="text-xs text-muted-foreground">({$t('label_optional') || 'Optional'})</span>
+							</Label>
+							<Input
+								id="bookingIdentifier"
+								type="text"
+								bind:value={bookingIdentifier}
+								placeholder={$t('placeholder_booking_identifier') || 'e.g., John from Hotel W'}
+								maxlength={100}
+								disabled={isSubmitting}
+							/>
+							<p class="text-xs text-muted-foreground">
+								{$t('booking_identifier_help') || 'Internal label only. Not shown on public reviews.'}
+							</p>
+						</div>
+
+						<!-- Phone -->
+						<div class="space-y-2">
 						<Label for="clientPhone">
 							{$t('label_phone') || 'Phone'} <span class="text-xs text-muted-foreground">({$t('label_optional') || 'Optional'})</span>
 						</Label>

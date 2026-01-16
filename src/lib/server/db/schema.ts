@@ -115,7 +115,7 @@ export const bookingRequests = pgTable('booking_requests', {
     // Client info
     clientUserId: integer('client_user_id').references(() => users.id, { onDelete: 'set null' }), // Authenticated user reference
     clientName: varchar('client_name', { length: 100 }).notNull(),
-    clientEmail: varchar('client_email', { length: 255 }).notNull(),
+    clientEmail: varchar('client_email', { length: 255 }),
 	clientCountryCode: varchar('client_country_code', { length: 4 }),
     clientPhone: varchar('client_phone', { length: 50 }),
 
@@ -126,10 +126,11 @@ export const bookingRequests = pgTable('booking_requests', {
     hoursPerDay: numeric('hours_per_day', { precision: 4, scale: 1 }).notNull(),
 	timeSlots: text('time_slots'), // JSON array of time slots
 
-    // Additional info
-    skillLevel: varchar('skill_level', { length: 50 }),
-    message: text('message'),
-    promoCode: varchar('promo_code', { length: 50 }),
+	// Additional info
+	skillLevel: varchar('skill_level', { length: 50 }),
+	message: text('message'),
+	promoCode: varchar('promo_code', { length: 50 }),
+	bookingIdentifier: varchar('booking_identifier', { length: 100 }), // Internal booking label
 
     // Pricing estimate (for reference)
     estimatedPrice: integer('estimated_price'),
@@ -182,6 +183,7 @@ export const instructorReviews = pgTable('instructor_reviews', {
 	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
 	reviewerId: integer('reviewer_id').references(() => users.id, { onDelete: 'set null' }), // Optional: if reviewer was logged in
 	bookingId: integer('booking_id').references(() => bookingRequests.id, { onDelete: 'set null' }),
+	reviewerName: varchar('reviewer_name', { length: 100 }), // Public display name for the review
 	clientName: varchar('client_name', { length: 100 }),
 	clientEmail: varchar('client_email', { length: 255 }),
 	rating: integer('rating').notNull(), // 1-5
@@ -350,7 +352,7 @@ export const clientDeposits = pgTable('client_deposits', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
 	uuid: uuid('uuid').defaultRandom().unique().notNull(),
 	bookingRequestId: integer('booking_request_id').notNull().references(() => bookingRequests.id, { onDelete: 'cascade' }),
-	clientEmail: varchar('client_email', { length: 255 }).notNull(),
+    clientEmail: varchar('client_email', { length: 255 }),
 	amount: decimal('amount', { precision: 10, scale: 2 }).notNull(),
 	currency: varchar('currency', { length: 3 }).notNull().default('EUR'),
 	stripePaymentIntentId: varchar('stripe_payment_intent_id', { length: 255 }),

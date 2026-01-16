@@ -44,12 +44,12 @@
 		{
 			title: $t('sidebar_leads') || 'Leads',
 			url: '/dashboard/leads',
-			icon: '/icons/notebook.svg'
+			icon: '/icons/leads.svg'
 		},
 		{
 			title: $t('sidebar_bookings') || 'Bookings',
 			url: '/dashboard/bookings',
-			icon: '/icons/calendar.svg'
+			icon: '/icons/appointment.svg'
 		},
 		{
 			title: $t('sidebar_availability'),
