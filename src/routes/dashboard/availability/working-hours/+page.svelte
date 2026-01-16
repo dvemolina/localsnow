@@ -7,6 +7,7 @@
 	import { toast } from 'svelte-sonner';
 	import { invalidateAll } from '$app/navigation';
 	import { route } from '$lib/i18n/routeHelpers';
+	import { t } from '$src/lib/i18n/i18n';
 	let { data } = $props();
 
 	const daysOfWeek = $derived([
