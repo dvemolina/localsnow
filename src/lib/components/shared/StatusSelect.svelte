@@ -1,7 +1,5 @@
 <script lang="ts">
 	import * as Select from '$lib/components/ui/select/index.js';
-	import { t } from '$lib/i18n/i18n';
-
 	let {
 		currentStatus = $bindable(),
 		statuses,
@@ -17,16 +15,20 @@
 	} = $props();
 
 	let selectedValue = $state(currentStatus);
-	const normalizedStatuses = $derived(() => {
-		if (typeof statuses === 'function') {
-			return statuses();
-		}
-		return Array.isArray(statuses) ? statuses : [];
-	});
+	let normalizedStatuses = $state<Array<{ value: string; label: string }>>([]);
 
 	// Update selectedValue when currentStatus prop changes
 	$effect(() => {
 		selectedValue = currentStatus;
+	});
+
+	$effect(() => {
+		let value: unknown = statuses;
+		// Unwrap getter-style props until we reach a concrete value.
+		while (typeof value === 'function') {
+			value = (value as () => unknown)();
+		}
+		normalizedStatuses = Array.isArray(value) ? value : [];
 	});
 
 	async function handleChange(value: string | undefined) {
