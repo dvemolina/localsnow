@@ -2,8 +2,12 @@
 	import * as Select from '$lib/components/ui/select/index.js';
 	import * as Form from '$lib/components/ui/form';
 	import { t } from '$lib/i18n/i18n';
-  
-	let { form, name, selectedCode = $bindable() } = $props();
+
+	let { form, name = 'countryCode', selectedCode = $bindable() }: {
+		form: any;
+		name?: string;
+		selectedCode?: number;
+	} = $props();
 
 	const prefixes = [
   { label: '+1 (USA/Canada)', value: 1 },
