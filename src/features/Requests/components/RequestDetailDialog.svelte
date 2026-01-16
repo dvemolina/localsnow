@@ -120,7 +120,7 @@
 			{ value: 'cancelled', label: $t('status_cancelled') || 'Cancelled' },
 			{ value: 'expired', label: $t('status_expired') || 'Expired' }
 		];
-	}());
+	});
 
 	// Lead status update
 	async function updateLeadStatus(newStatus: string) {

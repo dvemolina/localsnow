@@ -10,13 +10,19 @@
 		isUpdating = false
 	}: {
 		currentStatus: string;
-		statuses: Array<{ value: string; label: string }>;
+		statuses: Array<{ value: string; label: string }> | (() => Array<{ value: string; label: string }>);
 		onStatusChange: (newStatus: string) => Promise<void>;
 		disabled?: boolean;
 		isUpdating?: boolean;
 	} = $props();
 
 	let selectedValue = $state(currentStatus);
+	const normalizedStatuses = $derived(() => {
+		if (typeof statuses === 'function') {
+			return statuses();
+		}
+		return Array.isArray(statuses) ? statuses : [];
+	});
 
 	// Update selectedValue when currentStatus prop changes
 	$effect(() => {
@@ -34,13 +40,13 @@
 <Select.Root type="single" bind:value={selectedValue} onValueChange={handleChange}>
 	<Select.Trigger class="w-[150px]" disabled={disabled || isUpdating}>
 		{#if selectedValue}
-			{statuses.find((s) => s.value === selectedValue)?.label || selectedValue}
+			{normalizedStatuses.find((s) => s.value === selectedValue)?.label || selectedValue}
 		{:else}
 			Select status
 		{/if}
 	</Select.Trigger>
 	<Select.Content>
-		{#each statuses as status}
+		{#each normalizedStatuses as status}
 			<Select.Item value={status.value}>{status.label}</Select.Item>
 		{/each}
 	</Select.Content>
