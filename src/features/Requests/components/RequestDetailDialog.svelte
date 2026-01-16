@@ -23,10 +23,15 @@
 	let isSubmitting = $state(false);
 	let actionResult = $state<{ success?: boolean; message?: string } | null>(null);
 	let showRejectConfirm = $state(false);
+	let showDeleteConfirm = $state(false);
 	let updatingStatus = $state(false);
 	let updatingBookingStatus = $state(false);
 	let reviewUrl = $state<string | null>(null);
 	let isGeneratingReviewLink = $state(false);
+	let isDeleting = $state(false);
+
+	// Detect manual booking
+	const isManualBooking = $derived(type === 'booking' && request.source === 'manual');
 
 	// Status configuration
 	const statusConfig = $derived(
@@ -92,15 +97,26 @@
 		{ value: 'spam', label: $t('status_spam') || 'Spam' }
 	]);
 
-	const bookingStatusOptions = $derived([
-		{ value: 'pending', label: $t('status_pending_review') || 'Pending Review' },
-		{ value: 'viewed', label: $t('status_unlocked') || 'Unlocked' },
-		{ value: 'accepted', label: $t('status_accepted') || 'Accepted' },
-		{ value: 'completed', label: $t('status_completed') || 'Completed' },
-		{ value: 'rejected', label: $t('status_rejected') || 'Rejected' },
-		{ value: 'cancelled', label: $t('status_cancelled') || 'Cancelled' },
-		{ value: 'expired', label: $t('status_expired') || 'Expired' }
-	]);
+	const bookingStatusOptions = $derived(() => {
+		// Manual bookings have different status options (no "pending" or "rejected")
+		if (isManualBooking) {
+			return [
+				{ value: 'accepted', label: $t('status_accepted') || 'Accepted' },
+				{ value: 'completed', label: $t('status_completed') || 'Completed' },
+				{ value: 'cancelled', label: $t('status_cancelled') || 'Cancelled' }
+			];
+		}
+		// Platform bookings have all statuses
+		return [
+			{ value: 'pending', label: $t('status_pending_review') || 'Pending Review' },
+			{ value: 'viewed', label: $t('status_unlocked') || 'Unlocked' },
+			{ value: 'accepted', label: $t('status_accepted') || 'Accepted' },
+			{ value: 'completed', label: $t('status_completed') || 'Completed' },
+			{ value: 'rejected', label: $t('status_rejected') || 'Rejected' },
+			{ value: 'cancelled', label: $t('status_cancelled') || 'Cancelled' },
+			{ value: 'expired', label: $t('status_expired') || 'Expired' }
+		];
+	}());
 
 	// Lead status update
 	async function updateLeadStatus(newStatus: string) {
@@ -160,6 +176,12 @@
 	async function generateReviewLink() {
 		if (type !== 'booking' || request.status !== 'completed') return;
 
+		// Check if email exists (important for manual bookings)
+		if (!request.clientEmail) {
+			toast.error('Client email is required to generate review link. Please add it first.');
+			return;
+		}
+
 		isGeneratingReviewLink = true;
 		try {
 			const response = await fetch(`/api/bookings/${request.id}/review-token`, {
@@ -185,18 +207,50 @@
 			isGeneratingReviewLink = false;
 		}
 	}
+
+	// Delete manual booking
+	async function deleteBooking() {
+		if (!isManualBooking) return;
+
+		isDeleting = true;
+		try {
+			const response = await fetch(`/api/bookings/${request.id}`, {
+				method: 'DELETE'
+			});
+
+			if (!response.ok) {
+				const error = await response.json();
+				throw new Error(error?.message || 'Failed to delete booking');
+			}
+
+			toast.success('Booking deleted successfully');
+			await invalidateAll();
+			open = false;
+		} catch (error) {
+			console.error('Error deleting booking:', error);
+			toast.error('Failed to delete booking');
+		} finally {
+			isDeleting = false;
+			showDeleteConfirm = false;
+		}
+	}
 </script>
 
 <Dialog.Root bind:open>
 	<Dialog.Content class="max-w-2xl max-h-[90vh] overflow-y-auto">
 		<Dialog.Header>
-			<Dialog.Title class="flex items-center gap-2">
+			<Dialog.Title class="flex items-center gap-2 flex-wrap">
 				{type === 'lead'
 					? ($t('lead_details_title') || 'Contact Inquiry Details')
 					: 'Booking Request Details'}
 				<Badge class="{statusInfo.color} border">
 					{statusInfo.label}
 				</Badge>
+				{#if isManualBooking}
+					<Badge variant="outline" class="bg-purple-50 text-purple-700 border-purple-200">
+						📝 Manual
+					</Badge>
+				{/if}
 			</Dialog.Title>
 			<Dialog.Description>
 				{type === 'lead'
@@ -448,7 +502,39 @@
 			{:else}
 				<!-- Booking Actions: Status Dropdown -->
 				<div class="space-y-3">
-					<h3 class="text-sm font-semibold">{$t('label_update_status') || 'Update Status'}</h3>
+					<div class="flex items-center justify-between">
+						<h3 class="text-sm font-semibold">{$t('label_update_status') || 'Update Status'}</h3>
+						{#if isManualBooking && !isInactiveBooking}
+							<div class="flex gap-2">
+								<!-- Edit Button (Future: Opens edit dialog) -->
+								<Button
+									variant="outline"
+									size="sm"
+									onclick={() => toast.info('Edit functionality coming soon!')}
+									disabled={request.status === 'completed'}
+								>
+									<svg class="size-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+									</svg>
+									Edit
+								</Button>
+								<!-- Delete Button -->
+								{#if request.status === 'accepted'}
+									<Button
+										variant="outline"
+										size="sm"
+										onclick={() => showDeleteConfirm = true}
+										class="text-destructive hover:bg-destructive hover:text-destructive-foreground"
+									>
+										<svg class="size-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+										</svg>
+										Delete
+									</Button>
+								{/if}
+							</div>
+						{/if}
+					</div>
 					<StatusSelect
 						currentStatus={request.status}
 						statuses={bookingStatusOptions}
@@ -680,6 +766,93 @@
 						{isSubmitting ? 'Rejecting...' : 'Yes, Reject Booking'}
 					</Button>
 				</form>
+			</div>
+		</Dialog.Content>
+	</Dialog.Root>
+
+	<!-- Delete Confirmation Dialog (for manual bookings) -->
+	<Dialog.Root bind:open={showDeleteConfirm}>
+		<Dialog.Content class="sm:max-w-md">
+			<Dialog.Header>
+				<Dialog.Title>Delete Manual Booking?</Dialog.Title>
+				<Dialog.Description>
+					Are you sure you want to permanently delete this manual booking?
+				</Dialog.Description>
+			</Dialog.Header>
+
+			<div class="space-y-4 py-4">
+				<div
+					class="rounded-lg bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 p-4"
+				>
+					<div class="flex gap-3">
+						<svg
+							class="h-5 w-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+							/>
+						</svg>
+						<div class="text-sm text-red-800 dark:text-red-200">
+							<p class="font-semibold mb-1">Warning:</p>
+							<ul class="list-disc list-inside space-y-1">
+								<li>This action cannot be undone</li>
+								<li>The booking will be permanently removed</li>
+								<li>All booking data will be deleted</li>
+								<li>This won't affect any completed reviews</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<div class="rounded-lg bg-muted p-3 text-sm">
+					<p class="font-medium mb-1">Booking Details:</p>
+					<p class="text-muted-foreground">
+						<strong>{request.clientName}</strong><br />
+						{formatDate(new Date(request.startDate))}
+						{#if request.endDate}
+							- {formatDate(new Date(request.endDate))}
+						{/if}
+					</p>
+				</div>
+			</div>
+
+			<div class="flex gap-3 justify-end">
+				<Button variant="outline" onclick={() => (showDeleteConfirm = false)} disabled={isDeleting}>
+					Cancel
+				</Button>
+				<Button variant="destructive" onclick={deleteBooking} disabled={isDeleting}>
+					{#if isDeleting}
+						<svg
+							class="mr-2 size-4 animate-spin"
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+						>
+							<circle
+								class="opacity-25"
+								cx="12"
+								cy="12"
+								r="10"
+								stroke="currentColor"
+								stroke-width="4"
+							></circle>
+							<path
+								class="opacity-75"
+								fill="currentColor"
+								d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+							></path>
+						</svg>
+						Deleting...
+					{:else}
+						Yes, Delete Booking
+					{/if}
+				</Button>
 			</div>
 		</Dialog.Content>
 	</Dialog.Root>
