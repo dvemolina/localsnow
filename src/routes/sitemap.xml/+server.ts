@@ -4,6 +4,7 @@ import { db } from '$src/lib/server/db';
 import { users, resorts, regions, countries } from '$src/lib/server/db/schema';
 import { eq, and } from 'drizzle-orm';
 import type { RequestHandler } from './$types';
+import { generateInstructorSlug } from '$lib/utils/slug';
 
 const SITE_URL = 'https://localsnow.org';
 
@@ -58,6 +59,8 @@ export const GET: RequestHandler = async () => {
 		const instructors = await db
 			.select({
 				id: users.id,
+				name: users.name,
+				lastName: users.lastName,
 				updatedAt: users.updatedAt,
 				role: users.role
 			})
@@ -79,9 +82,10 @@ export const GET: RequestHandler = async () => {
 			const lastmod = instructor.updatedAt
 				? new Date(instructor.updatedAt).toISOString().split('T')[0]
 				: undefined;
+			const instructorSlug = generateInstructorSlug(instructor.id, instructor.name, instructor.lastName);
 			urls.push(
 				urlEntry(
-					`${SITE_URL}/instructors/${instructor.id}`,
+					`${SITE_URL}/instructors/${instructorSlug}`,
 					'0.8',
 					'weekly',
 					lastmod

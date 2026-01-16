@@ -3,6 +3,7 @@ import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
 import { bookingRequests, users } from '$lib/server/db/schema';
 import { eq, and } from 'drizzle-orm';
+import { generateInstructorSlug } from '$lib/utils/slug';
 
 export const load: PageServerLoad = async ({ params }) => {
 	const { token } = params;
@@ -25,6 +26,7 @@ export const load: PageServerLoad = async ({ params }) => {
 				status: bookingRequests.status,
 				reviewSubmittedAt: bookingRequests.reviewSubmittedAt,
 				instructorName: users.name,
+				instructorLastName: users.lastName,
 				instructorProfileImage: users.profileImageUrl
 			})
 			.from(bookingRequests)
@@ -41,12 +43,20 @@ export const load: PageServerLoad = async ({ params }) => {
 			throw error(404, 'Review link not found or booking is not completed');
 		}
 
+		// Generate instructor slug for profile link
+		const instructorSlug = generateInstructorSlug(
+			booking.instructorId,
+			booking.instructorName,
+			booking.instructorLastName
+		);
+
 		return {
 			token,
 			alreadySubmitted: !!booking.reviewSubmittedAt,
 			booking: {
 				id: booking.id,
 				instructorId: booking.instructorId,
+				instructorSlug,
 				instructorName: booking.instructorName,
 				instructorProfileImage: booking.instructorProfileImage,
 				clientName: booking.clientName,

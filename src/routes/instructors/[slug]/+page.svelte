@@ -1,4 +1,4 @@
-<!-- src/routes/instructors/[id]/+page.svelte -->
+<!-- src/routes/instructors/[slug]/+page.svelte -->
 <script lang="ts">
 	import StarScore from '$src/lib/components/shared/StarScore.svelte';
 	import * as Avatar from '$src/lib/components/ui/avatar';
@@ -10,6 +10,7 @@
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import { t } from '$lib/i18n/i18n';
+	import { generateInstructorSlug } from '$lib/utils/slug';
 	let { data } = $props();
 	let showContactModal = $state(false);
 
@@ -22,8 +23,9 @@
 	const isAuthenticated = !!data.user; // Will be true if user exists
 	const isIndependent = instructor.role === 'instructor-independent';
 
-	// Construct profile URL
-	const profileUrl = `https://localsnow.org/instructors/${instructor.id}`;
+	// Construct profile URL with slug
+	const instructorSlug = generateInstructorSlug(instructor.id, instructor.name, instructor.lastName);
+	const profileUrl = `https://localsnow.org/instructors/${instructorSlug}`;
 	const instructorFullName = `${instructor.name} ${instructor.lastName.charAt(0)}.`;
 	const instructorImageUrl = instructor.profileImageUrl || 'https://localsnow.org/local-snow-head.png';
 

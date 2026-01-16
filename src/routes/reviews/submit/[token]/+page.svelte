@@ -65,7 +65,7 @@
 
 			// Redirect after 3 seconds
 			setTimeout(() => {
-				goto(`/instructors/${data.booking.instructorId}`);
+				goto(`/instructors/${data.booking.instructorSlug}`);
 			}, 3000);
 		} catch (error) {
 			console.error('Error submitting review:', error);
@@ -114,7 +114,7 @@
 								.booking.instructorName}'s profile.
 						</p>
 					</div>
-					<Button onclick={() => goto(`/instructors/${data.booking.instructorId}`)}>
+					<Button onclick={() => goto(`/instructors/${data.booking.instructorSlug}`)}>
 						View Instructor Profile
 					</Button>
 				</div>
@@ -148,7 +148,7 @@
 								.instructorName}'s profile after verification.
 						</p>
 					</div>
-					<Button onclick={() => goto(`/instructors/${data.booking.instructorId}`)}>
+					<Button onclick={() => goto(`/instructors/${data.booking.instructorSlug}`)}>
 						View Instructor Profile
 					</Button>
 				</div>

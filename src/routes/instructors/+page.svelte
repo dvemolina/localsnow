@@ -18,6 +18,7 @@
 	import * as Dialog from '$src/lib/components/ui/dialog';
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { t } from '$lib/i18n/i18n';
+	import { generateInstructorSlug } from '$lib/utils/slug';
 	let { data } = $props();
 
 	// Comprehensive filter schema for the search form
@@ -167,7 +168,7 @@
 				jobTitle: instructor.role?.includes('independent')
 					? 'Independent Ski Instructor'
 					: 'Ski Instructor',
-				url: `https://localsnow.org/instructors/${instructor.id}`
+				url: `https://localsnow.org/instructors/${generateInstructorSlug(instructor.id, instructor.name, instructor.lastName)}`
 			}
 		}))
 	};

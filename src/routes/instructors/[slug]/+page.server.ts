@@ -1,5 +1,5 @@
-// src/routes/instructors/[id]/+page.server.ts
-import { error, fail, json } from '@sveltejs/kit';
+// src/routes/instructors/[slug]/+page.server.ts
+import { error, fail, json, redirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 import { InstructorService } from '$src/features/Instructors/lib/instructorService';
 import { PricingService } from '$src/features/Pricing/lib/pricingService';
@@ -10,6 +10,7 @@ import { ReviewService } from '$src/features/Reviews/lib/reviewService';
 import { trackProfileVisit } from '$src/features/Dashboard/lib/utils';
 import { getClientIP } from '$src/lib/utils/auth';
 import { sendBookingNotificationToInstructor, sendBookingConfirmationToClient } from '$src/lib/server/webhooks/n8n/email-n8n';
+import { parseInstructorSlug, generateInstructorSlug, validateInstructorSlug } from '$lib/utils/slug';
 
 const instructorService = new InstructorService();
 const pricingService = new PricingService();
@@ -19,16 +20,17 @@ const sportsService = new SportsService();
 const reviewService = new ReviewService();
 
 export const load: PageServerLoad = async (event) => {
-    const instructorId = Number(event.params.id);
-    
-    if (isNaN(instructorId)) {
+    // Parse slug to extract instructor ID
+    const instructorId = parseInstructorSlug(event.params.slug);
+
+    if (!instructorId) {
         throw error(404, 'Instructor not found');
     }
 
     try {
         // Get instructor with relations AND base lesson
         const instructorData = await instructorService.getInstructorWithLessons(instructorId);
-        
+
         if (!instructorData || !instructorData.instructor) {
             throw error(404, 'Instructor not found');
         }
@@ -43,6 +45,26 @@ export const load: PageServerLoad = async (event) => {
         const isAdmin = event.locals.user?.role === 'admin';
         if (!instructorData.instructor.isPublished && !isOwnProfile && !isAdmin) {
             throw error(404, 'Instructor not found');
+        }
+
+        // Validate slug and redirect to canonical URL if incorrect
+        const instructor = instructorData.instructor;
+        const isValidSlug = validateInstructorSlug(
+            event.params.slug,
+            instructor.id,
+            instructor.name,
+            instructor.lastName
+        );
+
+        if (!isValidSlug) {
+            // Generate correct slug and redirect
+            const correctSlug = generateInstructorSlug(
+                instructor.id,
+                instructor.name,
+                instructor.lastName
+            );
+            const locale = event.url.pathname.split('/')[1]; // Extract locale from URL
+            throw redirect(301, `/${locale}/instructors/${correctSlug}`);
         }
 
         // Get sports, resorts, and reviews in parallel
@@ -102,9 +124,10 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
     default: async ({ request, params, url, locals }) => {
-        const instructorId = Number(params.id);
+        // Parse slug to extract instructor ID
+        const instructorId = parseInstructorSlug(params.slug);
 
-        if (isNaN(instructorId)) {
+        if (!instructorId) {
             return fail(400, { message: 'Invalid instructor ID' });
         }
 

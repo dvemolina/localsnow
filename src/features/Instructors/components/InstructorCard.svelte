@@ -3,21 +3,23 @@
 	import * as Avatar from '$src/lib/components/ui/avatar';
 	import { Badge, badgeVariants } from '$src/lib/components/ui/badge';
 	import { Button } from '$src/lib/components/ui/button';
+	import { generateInstructorSlug } from '$lib/utils/slug';
 
 	let { instructorData, baseLesson = null } = $props();
-	
+
 	// Map sport IDs to labels
 	const sportLabels = {
 		1: 'Ski',
 		2: 'Snowboard',
 		3: 'Telemark'
 	};
-	
+
 	const isIndependent = instructorData.role === 'instructor-independent';
+	const instructorSlug = generateInstructorSlug(instructorData.id, instructorData.name, instructorData.lastName);
 </script>
 
 <a
-	href="/instructors/{instructorData.id}"
+	href="/instructors/{instructorSlug}"
 	class="card group relative flex flex-col justify-between gap-3 rounded-md border border-border bg-card p-4 shadow-xs transition-shadow hover:shadow-md w-full min-w-[265px] sm:max-w-[717px] md:max-w-[435px]"
 >
 	<div class="flex w-full flex-row gap-3">
