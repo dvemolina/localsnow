@@ -14,6 +14,15 @@ const ADDITIONAL_REQUEST_FEE = 2; // €2 per additional request
 export class BookingRequestService {
     
     private repository: BookingRequestRepository;
+    private static readonly allowedStatuses = [
+        'pending',
+        'viewed',
+        'accepted',
+        'completed',
+        'rejected',
+        'cancelled',
+        'expired'
+    ];
 
     constructor() {
         this.repository = new BookingRequestRepository();
@@ -65,6 +74,35 @@ export class BookingRequestService {
         }
 
         return result;
+    }
+
+    async updateBookingStatusForInstructor(bookingRequestId: number, instructorId: number, status: string) {
+        if (!BookingRequestService.allowedStatuses.includes(status)) {
+            throw new Error('Invalid status');
+        }
+
+        const booking = await this.repository.getBookingRequestById(bookingRequestId);
+        if (!booking) {
+            throw new Error('Booking not found');
+        }
+
+        if (booking.instructorId !== instructorId) {
+            throw new Error('Not authorized');
+        }
+
+        if (['rejected', 'cancelled', 'expired'].includes(booking.status) && booking.status !== status) {
+            throw new Error('Booking is inactive');
+        }
+
+        if (status === 'completed' && !['accepted', 'completed'].includes(booking.status)) {
+            throw new Error('Booking must be accepted before completing');
+        }
+
+        const updated = await this.updateBookingStatus(bookingRequestId, status);
+        if (!updated) {
+            throw new Error('Failed to update booking status');
+        }
+        return updated;
     }
 
 

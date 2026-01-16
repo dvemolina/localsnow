@@ -24,6 +24,7 @@
 	let actionResult = $state<{ success?: boolean; message?: string } | null>(null);
 	let showRejectConfirm = $state(false);
 	let updatingStatus = $state(false);
+	let updatingBookingStatus = $state(false);
 	let reviewUrl = $state<string | null>(null);
 	let isGeneratingReviewLink = $state(false);
 
@@ -40,6 +41,7 @@
 					pending: { label: $t('status_pending_payment'), color: 'bg-yellow-100 text-yellow-800' },
 					unlocked: { label: $t('status_unlocked'), color: 'bg-blue-100 text-blue-800' },
 					accepted: { label: $t('status_accepted'), color: 'bg-green-100 text-green-800' },
+					completed: { label: $t('status_completed') || 'Completed', color: 'bg-green-100 text-green-800' },
 					rejected: { label: $t('status_rejected'), color: 'bg-red-100 text-red-800' },
 					cancelled: { label: $t('status_cancelled'), color: 'bg-gray-100 text-gray-800' },
 					expired: { label: $t('status_expired'), color: 'bg-gray-100 text-gray-800' }
@@ -53,6 +55,7 @@
 			if (request.status === 'rejected') return 'rejected';
 			if (request.status === 'cancelled') return 'cancelled';
 			if (request.status === 'expired') return 'expired';
+			if (request.status === 'completed') return 'completed';
 			if (request.status === 'accepted') return 'accepted';
 			if (request.contactInfoUnlocked || request.status === 'viewed') return 'unlocked';
 			return 'pending';
@@ -81,6 +84,15 @@
 	};
 
 	const timeSlots = $derived(type === 'booking' ? formatTimeSlots(request.timeSlots || '[]') : []);
+	const bookingStatusOptions = $derived([
+		{ value: 'pending', label: $t('status_pending_review') || 'Pending Review' },
+		{ value: 'viewed', label: $t('status_unlocked') || 'Unlocked' },
+		{ value: 'accepted', label: $t('status_accepted') || 'Accepted' },
+		{ value: 'completed', label: $t('status_completed') || 'Completed' },
+		{ value: 'rejected', label: $t('status_rejected') || 'Rejected' },
+		{ value: 'cancelled', label: $t('status_cancelled') || 'Cancelled' },
+		{ value: 'expired', label: $t('status_expired') || 'Expired' }
+	]);
 
 	// Lead status update
 	async function updateLeadStatus(newStatus: string) {
@@ -106,6 +118,33 @@
 			toast.error($t('error_update_lead_status') || 'Failed to update status');
 		} finally {
 			updatingStatus = false;
+		}
+	}
+
+	async function updateBookingStatus(newStatus: string) {
+		updatingBookingStatus = true;
+		try {
+			const response = await fetch(`/api/bookings/${request.id}/status`, {
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ status: newStatus })
+			});
+
+			if (!response.ok) {
+				const error = await response.json();
+				throw new Error(error?.message || 'Failed to update status');
+			}
+
+			request.status = newStatus;
+			toast.success($t('success_booking_status_updated') || 'Booking status updated successfully');
+			await invalidateAll();
+		} catch (error) {
+			console.error('Error updating booking status:', error);
+			toast.error($t('error_update_booking_status') || 'Failed to update booking status');
+		} finally {
+			updatingBookingStatus = false;
 		}
 	}
 
@@ -412,153 +451,180 @@
 						</Select.Content>
 					</Select.Root>
 				</div>
-			{:else if request.status === 'pending' && !isInactiveBooking}
-				<!-- Booking Actions: Accept/Reject -->
-				<div class="rounded-lg border-2 border-blue-200 bg-blue-50 p-4">
-					<div class="flex items-center gap-2 text-blue-800 mb-2">
-						<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-							/>
-						</svg>
-						<span class="font-semibold">Next Steps</span>
-					</div>
-					<p class="text-sm text-blue-700 mb-3">
-						Review the booking details and contact the client directly using the information above.
-						You can accept this request to confirm your availability, or reject it if you're not
-						interested.
-					</p>
-					<div class="flex gap-3">
-						<form
-							method="POST"
-							action="?/acceptBooking"
-							class="flex-1"
-							use:enhance={() => {
-								isSubmitting = true;
-								return async ({ result, update }) => {
-									isSubmitting = false;
-									if (result.type === 'success') {
-										actionResult = {
-											success: true,
-											message: 'Booking accepted! The client has been notified.'
-										};
-										setTimeout(() => {
-											open = false;
-											window.location.reload();
-										}, 1500);
-									}
-									await update();
-								};
-							}}
-						>
-							<input type="hidden" name="bookingId" value={request.id} />
-							<Button type="submit" class="w-full" disabled={isSubmitting}>
-								{isSubmitting ? 'Accepting...' : 'Accept Request'}
-							</Button>
-						</form>
-						<Button
-							variant="outline"
-							class="flex-1"
-							onclick={() => (showRejectConfirm = true)}
-							disabled={isSubmitting}
-						>
-							Reject
-						</Button>
-					</div>
-				</div>
-			{:else if request.status === 'completed' && !request.reviewSubmittedAt}
-				<!-- Completed Booking: Generate Review Link -->
-				<div class="rounded-lg border-2 border-green-200 bg-green-50 p-4">
-					<div class="flex items-center gap-2 text-green-800 mb-2">
-						<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-							/>
-						</svg>
-						<span class="font-semibold">Request a Review</span>
-					</div>
-					<p class="text-sm text-green-700 mb-3">
-						This booking is completed! Generate a review link to send to {request.clientName} so they can leave feedback about their experience.
-					</p>
-					<Button
-						onclick={generateReviewLink}
-						disabled={isGeneratingReviewLink}
-						class="w-full"
+			{:else}
+				<!-- Booking Actions: Status Dropdown -->
+				<div class="space-y-3">
+					<h3 class="text-sm font-semibold">{$t('label_update_status') || 'Update Status'}</h3>
+					<Select.Root
+						selected={{
+							value: request.status,
+							label: bookingStatusOptions.find((option) => option.value === request.status)?.label || request.status
+						}}
+						onSelectedChange={async (selected) => {
+							if (selected?.value && selected.value !== request.status) {
+								await updateBookingStatus(selected.value);
+							}
+						}}
 					>
-						{#if isGeneratingReviewLink}
-							<svg
-								class="mr-2 size-4 animate-spin"
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-							>
-								<circle
-									class="opacity-25"
-									cx="12"
-									cy="12"
-									r="10"
-									stroke="currentColor"
-									stroke-width="4"
-								></circle>
-								<path
-									class="opacity-75"
-									fill="currentColor"
-									d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-								></path>
-							</svg>
-							Generating...
-						{:else}
-							<svg
-								class="mr-2 size-4"
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-							>
+						<Select.Trigger disabled={updatingBookingStatus || isInactiveBooking}>
+							<Select.Value />
+						</Select.Trigger>
+						<Select.Content>
+							{#each bookingStatusOptions as status}
+								<Select.Item value={status.value}>{status.label}</Select.Item>
+							{/each}
+						</Select.Content>
+					</Select.Root>
+				</div>
+
+				{#if request.status === 'pending' && !isInactiveBooking}
+					<!-- Booking Actions: Accept/Reject -->
+					<div class="rounded-lg border-2 border-blue-200 bg-blue-50 p-4">
+						<div class="flex items-center gap-2 text-blue-800 mb-2">
+							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
 									stroke-width="2"
-									d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+									d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
 								/>
 							</svg>
-							Generate Review Link
-						{/if}
-					</Button>
-					{#if reviewUrl}
-						<div class="mt-3 rounded-md bg-white p-3 border">
-							<p class="text-xs font-medium text-muted-foreground mb-1">Review Link (copied to clipboard):</p>
-							<p class="text-xs break-all font-mono">{reviewUrl}</p>
-							<p class="text-xs text-muted-foreground mt-2">
-								Send this link to {request.clientEmail} via email or WhatsApp
-							</p>
+							<span class="font-semibold">Next Steps</span>
 						</div>
-					{/if}
-				</div>
-			{:else if request.status === 'completed' && request.reviewSubmittedAt}
-				<!-- Review Already Submitted -->
-				<div class="rounded-lg border-2 border-gray-200 bg-gray-50 p-4">
-					<div class="flex items-center gap-2 text-gray-700">
-						<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M5 13l4 4L19 7"
-							/>
-						</svg>
-						<span class="font-semibold">Review Submitted</span>
+						<p class="text-sm text-blue-700 mb-3">
+							Review the booking details and contact the client directly using the information above.
+							You can accept this request to confirm your availability, or reject it if you're not
+							interested.
+						</p>
+						<div class="flex gap-3">
+							<form
+								method="POST"
+								action="?/acceptBooking"
+								class="flex-1"
+								use:enhance={() => {
+									isSubmitting = true;
+									return async ({ result, update }) => {
+										isSubmitting = false;
+										if (result.type === 'success') {
+											actionResult = {
+												success: true,
+												message: 'Booking accepted! The client has been notified.'
+											};
+											setTimeout(() => {
+												open = false;
+												window.location.reload();
+											}, 1500);
+										}
+										await update();
+									};
+								}}
+							>
+								<input type="hidden" name="bookingId" value={request.id} />
+								<Button type="submit" class="w-full" disabled={isSubmitting}>
+									{isSubmitting ? 'Accepting...' : 'Accept Request'}
+								</Button>
+							</form>
+							<Button
+								variant="outline"
+								class="flex-1"
+								onclick={() => (showRejectConfirm = true)}
+								disabled={isSubmitting}
+							>
+								Reject
+							</Button>
+						</div>
 					</div>
-					<p class="text-sm text-gray-600 mt-2">
-						{request.clientName} submitted a review on {new Date(request.reviewSubmittedAt).toLocaleDateString()}
-					</p>
-				</div>
+				{:else if request.status === 'completed' && !request.reviewSubmittedAt}
+					<!-- Completed Booking: Generate Review Link -->
+					<div class="rounded-lg border-2 border-green-200 bg-green-50 p-4">
+						<div class="flex items-center gap-2 text-green-800 mb-2">
+							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 8 8 0 0118 0z"
+								/>
+							</svg>
+							<span class="font-semibold">Request a Review</span>
+						</div>
+						<p class="text-sm text-green-700 mb-3">
+							This booking is completed! Generate a review link to send to {request.clientName} so they can leave feedback about their experience.
+						</p>
+						<Button
+							onclick={generateReviewLink}
+							disabled={isGeneratingReviewLink}
+							class="w-full"
+						>
+							{#if isGeneratingReviewLink}
+								<svg
+									class="mr-2 size-4 animate-spin"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+								>
+									<circle
+										class="opacity-25"
+										cx="12"
+										cy="12"
+										r="10"
+										stroke="currentColor"
+										stroke-width="4"
+									></circle>
+									<path
+										class="opacity-75"
+										fill="currentColor"
+										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+									></path>
+								</svg>
+								Generating...
+							{:else}
+								<svg
+									class="mr-2 size-4"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+									/>
+								</svg>
+								Generate Review Link
+							{/if}
+						</Button>
+						{#if reviewUrl}
+							<div class="mt-3 rounded-md bg-white p-3 border">
+								<p class="text-xs font-medium text-muted-foreground mb-1">Review Link (copied to clipboard):</p>
+								<p class="text-xs break-all font-mono">{reviewUrl}</p>
+								<p class="text-xs text-muted-foreground mt-2">
+									Send this link to {request.clientEmail} via email or WhatsApp
+								</p>
+							</div>
+						{/if}
+					</div>
+				{:else if request.status === 'completed' && request.reviewSubmittedAt}
+					<!-- Review Already Submitted -->
+					<div class="rounded-lg border-2 border-gray-200 bg-gray-50 p-4">
+						<div class="flex items-center gap-2 text-gray-700">
+							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M5 13l4 4L19 7"
+								/>
+							</svg>
+							<span class="font-semibold">Review Submitted</span>
+						</div>
+						<p class="text-sm text-gray-600 mt-2">
+							{request.clientName} submitted a review on {new Date(request.reviewSubmittedAt).toLocaleDateString()}
+						</p>
+					</div>
+				{/if}
 			{/if}
 		</div>
 	</Dialog.Content>

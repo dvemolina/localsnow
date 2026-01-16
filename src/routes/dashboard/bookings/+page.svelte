@@ -31,6 +31,11 @@
 			variant: 'default' as const,
 			color: 'bg-green-100 text-green-800 border-green-200'
 		},
+		completed: {
+			label: $t('status_completed') || 'Completed',
+			variant: 'default' as const,
+			color: 'bg-green-100 text-green-800 border-green-200'
+		},
 		viewed: {
 			label: $t('status_unlocked'),
 			variant: 'default' as const,
@@ -57,6 +62,7 @@
 		if (booking.status === 'rejected') return 'rejected';
 		if (booking.status === 'cancelled') return 'cancelled';
 		if (booking.status === 'expired') return 'expired';
+		if (booking.status === 'completed') return 'completed';
 		if (booking.status === 'accepted') return 'accepted';
 		if (booking.status === 'viewed' || booking.contactInfoUnlocked) return 'viewed';
 		return 'pending';

@@ -106,6 +106,7 @@ export class BookingRequestRepository {
                 currency: bookingRequests.currency,
                 status: bookingRequests.status,
                 contactInfoUnlocked: bookingRequests.contactInfoUnlocked,
+                reviewSubmittedAt: bookingRequests.reviewSubmittedAt,
                 createdAt: bookingRequests.createdAt,
                 paymentStatus: leadPayments.status,
                 paymentId: leadPayments.id
@@ -170,7 +171,7 @@ export class BookingRequestRepository {
     }
     //Update booking request status
     async updateBookingStatus(bookingRequestId: number, status: string) {
-        return await db
+        const result = await db
             .update(bookingRequests)
             .set({
                 status,
@@ -178,6 +179,7 @@ export class BookingRequestRepository {
             })
             .where(eq(bookingRequests.id, bookingRequestId))
             .returning();
+        return result[0] ?? null;
     }
 
     /**
@@ -291,6 +293,7 @@ export class BookingRequestRepository {
                 currency: bookingRequests.currency,
                 status: bookingRequests.status,
                 contactInfoUnlocked: bookingRequests.contactInfoUnlocked,
+                reviewSubmittedAt: bookingRequests.reviewSubmittedAt,
                 usedLaunchCode: bookingRequests.usedLaunchCode,
                 promoCode: bookingRequests.promoCode,
                 createdAt: bookingRequests.createdAt,
