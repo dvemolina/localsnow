@@ -2,9 +2,11 @@
 import type { PageServerLoad } from './$types';
 import { InstructorService } from '$src/features/Instructors/lib/instructorService';
 import { LessonService } from '$src/features/Lessons/lib/lessonService';
+import { ReviewService } from '$src/features/Reviews/lib/reviewService';
 
 const lessonService = new LessonService();
 const instructorService = new InstructorService();
+const reviewService = new ReviewService();
 
 export const load: PageServerLoad = async ({ url }) => {
     const resortId = url.searchParams.get('resort');
@@ -31,21 +33,26 @@ export const load: PageServerLoad = async ({ url }) => {
             sortBy: sortBy || undefined
         });
 
-        // Fetch base lessons for all instructors
+        // Fetch base lessons and review stats for all instructors
         let instructorsWithLessons = await Promise.all(
             instructors.map(async (instructor) => {
                 try {
-                    const lessons = await lessonService.listLessonsByInstructor(instructor.id);
+                    const [lessons, reviewStats] = await Promise.all([
+                        lessonService.listLessonsByInstructor(instructor.id),
+                        reviewService.getInstructorStats(instructor.id)
+                    ]);
                     const baseLesson = lessons.find(l => l.isBaseLesson) || null;
                     return {
                         ...instructor,
-                        baseLesson
+                        baseLesson,
+                        reviewStats
                     };
                 } catch (error) {
-                    console.error(`Error fetching lessons for instructor ${instructor.id}:`, error);
+                    console.error(`Error fetching data for instructor ${instructor.id}:`, error);
                     return {
                         ...instructor,
-                        baseLesson: null
+                        baseLesson: null,
+                        reviewStats: null
                     };
                 }
             })

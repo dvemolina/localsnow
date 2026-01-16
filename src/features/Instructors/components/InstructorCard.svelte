@@ -123,6 +123,10 @@
 
 	<!-- Star Rating (Top Right) -->
 	<div class="absolute right-2 top-2">
-		<StarScore score={instructorData.reviewStats?.averageRating || 'No reviews'} />
+		{#if instructorData.reviewStats && instructorData.reviewStats.totalReviews > 0}
+			<StarScore score={instructorData.reviewStats.averageRating} />
+		{:else}
+			<StarScore score="No reviews" />
+		{/if}
 	</div>
 </a>
