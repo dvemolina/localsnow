@@ -1245,5 +1245,6 @@
 	"sidebar_school_lessons": "Lessons",
 	"sidebar_school_bookings": "Bookings",
 	"sidebar_school_leads": "Leads",
-	"sidebar_school_invitations": "Invitations"
+	"sidebar_school_invitations": "Invitations",
+	"button_add_as_booking": "Add as Booking"
 }

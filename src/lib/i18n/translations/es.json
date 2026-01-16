@@ -1624,5 +1624,6 @@
 	"sidebar_school_lessons": "Servicios",
 	"sidebar_school_bookings": "Reservas",
 	"sidebar_school_leads": "Leads",
-	"sidebar_school_invitations": "Invitaciones"
+	"sidebar_school_invitations": "Invitaciones",
+	"button_add_as_booking": "Añadir como Reserva"
 }
