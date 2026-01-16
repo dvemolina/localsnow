@@ -7,23 +7,27 @@
 	import { enhance } from '$app/forms';
 	import { t } from '$lib/i18n/i18n';
 	import StatusSelect from '$lib/components/shared/StatusSelect.svelte';
+	import EditManualBookingDialog from '$src/features/Bookings/components/EditManualBookingDialog.svelte';
 	import { toast } from 'svelte-sonner';
 	import { invalidateAll } from '$app/navigation';
 
 	let {
 		request,
 		type = 'lead',
-		open = $bindable(false)
+		open = $bindable(false),
+		instructorLessons = []
 	}: {
 		request: any;
 		type: 'lead' | 'booking';
 		open: boolean;
+		instructorLessons?: any[];
 	} = $props();
 
 	let isSubmitting = $state(false);
 	let actionResult = $state<{ success?: boolean; message?: string } | null>(null);
 	let showRejectConfirm = $state(false);
 	let showDeleteConfirm = $state(false);
+	let showEditDialog = $state(false);
 	let updatingStatus = $state(false);
 	let updatingBookingStatus = $state(false);
 	let reviewUrl = $state<string | null>(null);
@@ -506,11 +510,11 @@
 						<h3 class="text-sm font-semibold">{$t('label_update_status') || 'Update Status'}</h3>
 						{#if isManualBooking && !isInactiveBooking}
 							<div class="flex gap-2">
-								<!-- Edit Button (Future: Opens edit dialog) -->
+								<!-- Edit Button -->
 								<Button
 									variant="outline"
 									size="sm"
-									onclick={() => toast.info('Edit functionality coming soon!')}
+									onclick={() => showEditDialog = true}
 									disabled={request.status === 'completed'}
 								>
 									<svg class="size-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -856,4 +860,13 @@
 			</div>
 		</Dialog.Content>
 	</Dialog.Root>
+
+	<!-- Edit Manual Booking Dialog -->
+	{#if isManualBooking}
+		<EditManualBookingDialog
+			bind:open={showEditDialog}
+			booking={request}
+			instructorLessons={instructorLessons}
+		/>
+	{/if}
 {/if}

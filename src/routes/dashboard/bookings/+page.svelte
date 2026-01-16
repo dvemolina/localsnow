@@ -298,7 +298,12 @@
 
 <!-- Detail Dialog -->
 {#if selectedBooking}
-	<RequestDetailDialog request={selectedBooking} type="booking" bind:open={dialogOpen} />
+	<RequestDetailDialog
+		request={selectedBooking}
+		type="booking"
+		bind:open={dialogOpen}
+		instructorLessons={data.instructorLessons}
+	/>
 {/if}
 
 <!-- Add Manual Booking Dialog -->
