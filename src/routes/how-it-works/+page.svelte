@@ -403,13 +403,7 @@
 
 		<div class="mt-6 text-center">
 			<p class="text-gray-700 mb-0">
-				<strong>Sound too good to be true?</strong> Check our
-				<a
-					href="https://github.com/dvemolina/localsnow"
-					target="_blank"
-					rel="noopener"
-					class="text-primary underline font-medium">open-source code</a
-				> or read our <a href={route('/')} class="text-primary underline font-medium"
+				<strong>Sound too good to be true?</strong> read our <a href={route('/')} class="text-primary underline font-medium"
 					>mission statement</a
 				>.
 			</p>
