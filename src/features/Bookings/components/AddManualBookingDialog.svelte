@@ -24,7 +24,9 @@
 	let clientPhone = $state('');
 	let numberOfStudents = $state(1);
 	let startDate = $state('');
+	let startTime = $state('10:00'); // New time field
 	let endDate = $state('');
+	let endTime = $state(''); // Optional end time
 	let hoursPerDay = $state(2);
 	let skillLevel = $state('intermediate');
 	let selectedLessonId = $state<number | null>(null);
@@ -46,7 +48,9 @@
 			clientPhone = '';
 			numberOfStudents = 1;
 			startDate = '';
+			startTime = '10:00';
 			endDate = '';
+			endTime = '';
 			hoursPerDay = 2;
 			skillLevel = 'intermediate';
 			selectedLessonId = instructorLessons[0]?.id || null;
@@ -69,12 +73,6 @@
 				return;
 			}
 
-			if (!clientEmail || !clientEmail.trim()) {
-				toast.error($t('error_email_required') || 'Email is required');
-				isSubmitting = false;
-				return;
-			}
-
 			if (!startDate) {
 				toast.error($t('error_start_date_required') || 'Start date is required');
 				isSubmitting = false;
@@ -90,9 +88,11 @@
 			// Format phone number
 			const fullPhone = clientPhone ? `+${clientCountryCode} ${clientPhone}` : undefined;
 
-			// Format dates for API
-			const startDateTime = new Date(startDate).toISOString();
-			const endDateTime = endDate ? new Date(endDate).toISOString() : null;
+			// Format dates with time for API
+			const startDateTime = new Date(`${startDate}T${startTime || '10:00'}`).toISOString();
+			const endDateTime = endDate
+				? new Date(`${endDate}T${endTime || startTime || '10:00'}`).toISOString()
+				: null;
 
 			// Submit to API
 			const response = await fetch('/api/bookings/manual', {
@@ -102,7 +102,7 @@
 				},
 				body: JSON.stringify({
 					clientName: clientName.trim(),
-					clientEmail: clientEmail.trim(),
+					clientEmail: clientEmail.trim() || undefined, // Optional now
 					clientPhone: fullPhone,
 					numberOfStudents,
 					startDate: startDateTime,
@@ -213,16 +213,18 @@
 					<!-- Email -->
 					<div class="space-y-2">
 						<Label for="clientEmail">
-							{$t('label_email') || 'Email'} <span class="text-destructive">*</span>
+							{$t('label_email') || 'Email'} <span class="text-xs text-muted-foreground">({$t('label_optional') || 'Optional'})</span>
 						</Label>
 						<Input
 							id="clientEmail"
 							type="email"
 							bind:value={clientEmail}
 							placeholder={$t('placeholder_client_email') || 'client@example.com'}
-							required
 							disabled={isSubmitting}
 						/>
+						<p class="text-xs text-muted-foreground">
+							{$t('email_help_text') || 'Required to send review link after lesson. Can add later.'}
+						</p>
 					</div>
 
 					<!-- Phone -->
@@ -290,30 +292,56 @@
 						</div>
 					{/if}
 
-					<!-- Dates -->
-					<div class="grid grid-cols-2 gap-4">
-						<div class="space-y-2">
-							<Label for="startDate">
-								{$t('label_start_date') || 'Start Date'} <span class="text-destructive">*</span>
-							</Label>
-							<Input
-								id="startDate"
-								type="date"
-								bind:value={startDate}
-								required
-								disabled={isSubmitting}
-							/>
+					<!-- Dates and Times -->
+					<div class="space-y-4">
+						<div class="grid grid-cols-2 gap-4">
+							<div class="space-y-2">
+								<Label for="startDate">
+									{$t('label_start_date') || 'Start Date'} <span class="text-destructive">*</span>
+								</Label>
+								<Input
+									id="startDate"
+									type="date"
+									bind:value={startDate}
+									required
+									disabled={isSubmitting}
+								/>
+							</div>
+							<div class="space-y-2">
+								<Label for="startTime">
+									{$t('label_start_time') || 'Start Time'}
+								</Label>
+								<Input
+									id="startTime"
+									type="time"
+									bind:value={startTime}
+									disabled={isSubmitting}
+								/>
+							</div>
 						</div>
-						<div class="space-y-2">
-							<Label for="endDate">
-								{$t('label_end_date') || 'End Date'} <span class="text-xs text-muted-foreground">({$t('label_optional') || 'Optional'})</span>
-							</Label>
-							<Input
-								id="endDate"
-								type="date"
-								bind:value={endDate}
-								disabled={isSubmitting}
-							/>
+						<div class="grid grid-cols-2 gap-4">
+							<div class="space-y-2">
+								<Label for="endDate">
+									{$t('label_end_date') || 'End Date'} <span class="text-xs text-muted-foreground">({$t('label_optional') || 'Optional'})</span>
+								</Label>
+								<Input
+									id="endDate"
+									type="date"
+									bind:value={endDate}
+									disabled={isSubmitting}
+								/>
+							</div>
+							<div class="space-y-2">
+								<Label for="endTime">
+									{$t('label_end_time') || 'End Time'} <span class="text-xs text-muted-foreground">({$t('label_optional') || 'Optional'})</span>
+								</Label>
+								<Input
+									id="endTime"
+									type="time"
+									bind:value={endTime}
+									disabled={isSubmitting}
+								/>
+							</div>
 						</div>
 					</div>
 

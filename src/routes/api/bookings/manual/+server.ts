@@ -33,17 +33,19 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		const body = await request.json();
 
 		// Validation
-		if (!body.clientName || !body.clientEmail || !body.startDate) {
+		if (!body.clientName || !body.startDate) {
 			return json(
-				{ error: 'Missing required fields: clientName, clientEmail, startDate' },
+				{ error: 'Missing required fields: clientName, startDate' },
 				{ status: 400 }
 			);
 		}
 
-		// Email validation
-		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		if (!emailRegex.test(body.clientEmail)) {
-			return json({ error: 'Invalid email address' }, { status: 400 });
+		// Email validation (optional, but if provided must be valid)
+		if (body.clientEmail) {
+			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			if (!emailRegex.test(body.clientEmail)) {
+				return json({ error: 'Invalid email address' }, { status: 400 });
+			}
 		}
 
 		// Number of students validation
@@ -68,7 +70,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 				instructorId: user.id,
 				lessonId: body.lessonId || null,
 				clientName: body.clientName.trim(),
-				clientEmail: body.clientEmail.toLowerCase().trim(),
+				clientEmail: body.clientEmail ? body.clientEmail.toLowerCase().trim() : null, // Optional
 				clientPhone: body.clientPhone || null,
 				numberOfStudents: body.numberOfStudents || 1,
 				startDate: new Date(body.startDate),
