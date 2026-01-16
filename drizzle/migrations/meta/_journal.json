@@ -295,6 +295,13 @@
       "when": 1768501003490,
       "tag": "0041_silent_misty_knight",
       "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "7",
+      "when": 1768574883190,
+      "tag": "0042_cold_roughhouse",
+      "breakpoints": true
     }
   ]
 }
