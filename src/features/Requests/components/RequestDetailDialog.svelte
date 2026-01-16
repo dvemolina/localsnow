@@ -430,6 +430,7 @@
 				<div class="space-y-3">
 					<h3 class="text-sm font-semibold">{$t('label_update_status') || 'Update Status'}</h3>
 					<Select.Root
+						type="single"
 						selected={{
 							value: request.status,
 							label: statusConfig[request.status]?.label || request.status
@@ -456,6 +457,7 @@
 				<div class="space-y-3">
 					<h3 class="text-sm font-semibold">{$t('label_update_status') || 'Update Status'}</h3>
 					<Select.Root
+						type="single"
 						selected={{
 							value: request.status,
 							label: bookingStatusOptions.find((option) => option.value === request.status)?.label || request.status

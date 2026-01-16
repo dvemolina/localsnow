@@ -307,6 +307,11 @@
 							<div class="flex flex-col gap-2">
 								{#if type === 'lead'}
 									<Select.Root
+										type="single"
+										selected={{
+											value: currentStatus,
+											label: getStatusLabel(currentStatus)
+										}}
 										onSelectedChange={async (selected) => {
 											if (selected?.value && selected.value !== request.status) {
 												await updateStatus(request.id, selected.value);
@@ -314,7 +319,7 @@
 										}}
 									>
 										<Select.Trigger class="w-[150px]" disabled={updatingRequestId === request.id}>
-											<Select.Value placeholder={getStatusLabel(request.status)} />
+											<Select.Value placeholder="Select status" />
 										</Select.Trigger>
 										<Select.Content>
 											{#each statusConfig.lead.statuses as status}
