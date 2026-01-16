@@ -1,5 +1,6 @@
 <script lang="ts">
 	import RequestDetailDialog from '$src/features/Requests/components/RequestDetailDialog.svelte';
+	import AddManualBookingDialog from '$src/features/Bookings/components/AddManualBookingDialog.svelte';
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
@@ -12,10 +13,27 @@
 
 	let selectedLead = $state<any>(null);
 	let dialogOpen = $state(false);
+	let addBookingDialogOpen = $state(false);
+	let leadToConvert = $state<any>(null);
 
 	const handleViewDetails = (lead: any) => {
 		selectedLead = lead;
 		dialogOpen = true;
+	};
+
+	const handleConvertToBooking = () => {
+		if (selectedLead) {
+			leadToConvert = {
+				clientName: selectedLead.clientName,
+				clientEmail: selectedLead.clientEmail,
+				clientPhone: selectedLead.clientPhone,
+				numberOfStudents: selectedLead.numberOfStudents,
+				preferredDates: selectedLead.preferredDates,
+				skillLevel: selectedLead.skillLevel,
+				message: selectedLead.message
+			};
+			addBookingDialogOpen = true;
+		}
 	};
 
 	const changeFilter = (status: string) => {
@@ -308,5 +326,18 @@
 
 <!-- Detail Dialog -->
 {#if selectedLead}
-	<RequestDetailDialog request={selectedLead} type="lead" bind:open={dialogOpen} />
+	<RequestDetailDialog
+		request={selectedLead}
+		type="lead"
+		bind:open={dialogOpen}
+		instructorLessons={data.instructorLessons}
+		onConvertToBooking={handleConvertToBooking}
+	/>
 {/if}
+
+<!-- Add Booking from Lead Dialog -->
+<AddManualBookingDialog
+	bind:open={addBookingDialogOpen}
+	instructorLessons={data.instructorLessons}
+	prefillData={leadToConvert}
+/>

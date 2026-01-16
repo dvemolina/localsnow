@@ -11,11 +11,50 @@
 
 	let {
 		open = $bindable(false),
-		instructorLessons = []
+		instructorLessons = [],
+		prefillData = null
 	}: {
 		open: boolean;
 		instructorLessons: any[];
+		prefillData?: {
+			clientName?: string;
+			clientEmail?: string;
+			clientPhone?: string;
+			numberOfStudents?: number;
+			preferredDates?: string;
+			skillLevel?: string;
+			message?: string;
+		} | null;
 	} = $props();
+
+	// Helper to extract country code and phone number from full phone
+	function extractPhoneData(fullPhone: string | null | undefined) {
+		if (!fullPhone) return { code: 34, number: '' };
+		const match = fullPhone.match(/^\+(\d+)\s+(.+)$/);
+		if (match) {
+			return { code: parseInt(match[1]), number: match[2] };
+		}
+		return { code: 34, number: fullPhone };
+	}
+
+	// Helper to parse preferred dates (format: "Dec 20-25" or similar)
+	function parsePreferredDates(preferredDates: string | null | undefined) {
+		if (!preferredDates) return { startDate: '', endDate: '' };
+
+		// Try to extract dates from text like "Dec 20-25" or "2024-12-20 to 2024-12-25"
+		const dateRangeMatch = preferredDates.match(/(\d{4}-\d{2}-\d{2})\s*(?:to|-)\s*(\d{4}-\d{2}-\d{2})/);
+		if (dateRangeMatch) {
+			return { startDate: dateRangeMatch[1], endDate: dateRangeMatch[2] };
+		}
+
+		// Try single date
+		const singleDateMatch = preferredDates.match(/(\d{4}-\d{2}-\d{2})/);
+		if (singleDateMatch) {
+			return { startDate: singleDateMatch[1], endDate: '' };
+		}
+
+		return { startDate: '', endDate: '' };
+	}
 
 	// Form state
 	let clientName = $state('');
@@ -24,9 +63,9 @@
 	let clientPhone = $state('');
 	let numberOfStudents = $state(1);
 	let startDate = $state('');
-	let startTime = $state('10:00'); // New time field
+	let startTime = $state('10:00');
 	let endDate = $state('');
-	let endTime = $state(''); // Optional end time
+	let endTime = $state('');
 	let hoursPerDay = $state(2);
 	let skillLevel = $state('intermediate');
 	let selectedLessonId = $state<number | null>(null);
@@ -38,26 +77,51 @@
 	let isSubmitting = $state(false);
 	let submitSuccess = $state(false);
 
-	// Reset form when dialog opens
+	// Reset/Initialize form when dialog opens or prefillData changes
 	$effect(() => {
 		if (open) {
 			submitSuccess = false;
-			clientName = '';
-			clientEmail = '';
-			clientCountryCode = 34;
-			clientPhone = '';
-			numberOfStudents = 1;
-			startDate = '';
-			startTime = '10:00';
-			endDate = '';
-			endTime = '';
-			hoursPerDay = 2;
-			skillLevel = 'intermediate';
-			selectedLessonId = instructorLessons[0]?.id || null;
-			manualPrice = null;
-			currency = '€';
-			notes = '';
-			message = '';
+
+			// If we have prefill data (from a converted lead), use it
+			if (prefillData) {
+				const phoneData = extractPhoneData(prefillData.clientPhone);
+				const dates = parsePreferredDates(prefillData.preferredDates);
+
+				clientName = prefillData.clientName || '';
+				clientEmail = prefillData.clientEmail || '';
+				clientCountryCode = phoneData.code;
+				clientPhone = phoneData.number;
+				numberOfStudents = prefillData.numberOfStudents || 1;
+				startDate = dates.startDate;
+				startTime = '10:00';
+				endDate = dates.endDate;
+				endTime = '';
+				hoursPerDay = 2;
+				skillLevel = prefillData.skillLevel || 'intermediate';
+				selectedLessonId = instructorLessons[0]?.id || null;
+				manualPrice = null;
+				currency = '€';
+				notes = prefillData.message ? `Original inquiry: ${prefillData.message}` : '';
+				message = '';
+			} else {
+				// Reset to empty form
+				clientName = '';
+				clientEmail = '';
+				clientCountryCode = 34;
+				clientPhone = '';
+				numberOfStudents = 1;
+				startDate = '';
+				startTime = '10:00';
+				endDate = '';
+				endTime = '';
+				hoursPerDay = 2;
+				skillLevel = 'intermediate';
+				selectedLessonId = instructorLessons[0]?.id || null;
+				manualPrice = null;
+				currency = '€';
+				notes = '';
+				message = '';
+			}
 		}
 	});
 
@@ -160,11 +224,32 @@
 <Dialog.Root bind:open modal={true}>
 	<Dialog.Content class="max-h-[90vh] overflow-y-auto sm:max-w-[700px]">
 		<Dialog.Header>
-			<Dialog.Title>{$t('add_manual_booking_title') || 'Add Manual Booking'}</Dialog.Title>
+			<Dialog.Title>
+				{prefillData
+					? ($t('add_booking_from_lead_title') || 'Add Booking from Lead')
+					: ($t('add_manual_booking_title') || 'Add Manual Booking')}
+			</Dialog.Title>
 			<Dialog.Description>
-				{$t('add_manual_booking_description') || 'Add a client you acquired outside LocalSnow to keep track of all your bookings in one place'}
+				{#if prefillData}
+					{$t('add_booking_from_lead_description') || 'Client information has been pre-filled from the converted lead. Review and adjust the details before creating the booking.'}
+				{:else}
+					{$t('add_manual_booking_description') || 'Add a client you acquired outside LocalSnow to keep track of all your bookings in one place'}
+				{/if}
 			</Dialog.Description>
 		</Dialog.Header>
+
+		<!-- Pre-filled from Lead Banner -->
+		{#if prefillData && !submitSuccess}
+			<div class="rounded-lg border-2 border-blue-200 bg-blue-50 p-3 flex items-start gap-3">
+				<svg class="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+				</svg>
+				<div class="text-sm text-blue-800">
+					<p class="font-semibold mb-1">Converting Lead to Booking</p>
+					<p>The form has been pre-filled with information from the lead. Please review all fields and add any missing details before creating the booking.</p>
+				</div>
+			</div>
+		{/if}
 
 		{#if submitSuccess}
 			<div class="flex flex-col items-center gap-4 py-8">

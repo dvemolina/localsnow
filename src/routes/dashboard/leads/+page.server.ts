@@ -1,8 +1,10 @@
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { LeadService } from '$src/features/Leads/lib/leadService';
+import { LessonService } from '$src/features/Lessons/lib/lessonService';
 
 const leadService = new LeadService();
+const lessonService = new LessonService();
 
 export const load: PageServerLoad = async ({ locals, url }) => {
 	const user = locals.user;
@@ -20,8 +22,11 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const statusFilter = url.searchParams.get('status') || 'all';
 
 	try {
-		// Fetch all leads for this instructor
-		const allLeads = await leadService.getInstructorLeads(user.id);
+		// Fetch all leads for this instructor and their lessons (for lead-to-booking conversion)
+		const [allLeads, instructorLessons] = await Promise.all([
+			leadService.getInstructorLeads(user.id),
+			lessonService.listLessonsByInstructor(user.id)
+		]);
 
 		// Filter leads based on status
 		let filteredLeads = allLeads;
@@ -41,6 +46,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		return {
 			user,
 			leads: filteredLeads,
+			instructorLessons,
 			stats,
 			currentFilter: statusFilter
 		};
@@ -49,6 +55,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		return {
 			user,
 			leads: [],
+			instructorLessons: [],
 			stats: { total: 0, new: 0, contacted: 0, converted: 0, spam: 0 },
 			currentFilter: statusFilter
 		};

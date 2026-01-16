@@ -15,12 +15,14 @@
 		request,
 		type = 'lead',
 		open = $bindable(false),
-		instructorLessons = []
+		instructorLessons = [],
+		onConvertToBooking = () => {}
 	}: {
 		request: any;
 		type: 'lead' | 'booking';
 		open: boolean;
 		instructorLessons?: any[];
+		onConvertToBooking?: () => void;
 	} = $props();
 
 	let isSubmitting = $state(false);
@@ -492,9 +494,26 @@
 
 			<!-- Actions -->
 			{#if type === 'lead'}
-				<!-- Lead Actions: Status Dropdown -->
+				<!-- Lead Actions: Status Dropdown + Convert to Booking -->
 				<div class="space-y-3">
-					<h3 class="text-sm font-semibold">{$t('label_update_status') || 'Update Status'}</h3>
+					<div class="flex items-center justify-between">
+						<h3 class="text-sm font-semibold">{$t('label_update_status') || 'Update Status'}</h3>
+						{#if request.status === 'converted'}
+							<Button
+								variant="default"
+								size="sm"
+								onclick={() => {
+									onConvertToBooking();
+									open = false;
+								}}
+							>
+								<svg class="size-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+								</svg>
+								{$t('button_add_as_booking') || 'Add as Booking'}
+							</Button>
+						{/if}
+					</div>
 					<StatusSelect
 						currentStatus={request.status}
 						statuses={leadStatusOptions}
@@ -503,6 +522,43 @@
 						isUpdating={updatingStatus}
 					/>
 				</div>
+
+				<!-- Converted Lead Call-to-Action -->
+				{#if request.status === 'converted'}
+					<div class="rounded-lg border-2 border-green-200 bg-green-50 p-4">
+						<div class="flex items-center gap-2 text-green-800 mb-2">
+							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 8 8 0 0118 0z"
+								/>
+							</svg>
+							<span class="font-semibold">Lead Converted!</span>
+						</div>
+						<p class="text-sm text-green-700 mb-3">
+							This lead has been marked as converted. You can now create a booking with the client's information pre-filled to keep track of this job.
+						</p>
+						<Button
+							onclick={() => {
+								onConvertToBooking();
+								open = false;
+							}}
+							class="w-full"
+						>
+							<svg class="mr-2 size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+								/>
+							</svg>
+							{$t('button_add_as_booking') || 'Add as Booking'}
+						</Button>
+					</div>
+				{/if}
 			{:else}
 				<!-- Booking Actions: Status Dropdown -->
 				<div class="space-y-3">
