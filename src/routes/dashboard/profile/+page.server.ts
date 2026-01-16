@@ -1,19 +1,17 @@
 // src/routes/dashboard/profile/+page.server.ts
-import { userProfileSchema } from "$src/features/Users/lib/validations/userSchemas.js";
+import { userProfileSchema } from "$src/features/Users/lib/validations/userSchemas";
 import { redirect, type Actions } from "@sveltejs/kit";
-import type { PageServerLoad } from "./$types.js";
+import type { PageServerLoad } from "./$types";
 import { fail, setError, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
-import { UserService } from "$src/features/Users/lib/UserService.js";
-import { RefillingTokenBucket } from "$src/lib/server/rate-limit.js";
-import { getClientIP } from "$src/lib/utils/auth.js";
-import { instructorProfileSchema } from "$src/features/Instructors/lib/instructorSchemas.js";
-import { InstructorService } from "$src/features/Instructors/lib/instructorService.js";
-import { schoolProfileSchema } from "$src/features/Schools/lib/validations/schoolSchemas.js";
-import { SchoolService } from "$src/features/Schools/lib/schoolService.js";
-import { StorageService } from "$src/lib/server/R2Storage.js";
-import { schoolProfileSchema } from "$src/features/Schools/lib/validations/schoolSchemas.js";
-import { SchoolRepository } from "$src/features/Schools/lib/schoolRepository.js";
+import { UserService } from "$src/features/Users/lib/UserService";
+import { RefillingTokenBucket } from "$src/lib/server/rate-limit";
+import { getClientIP } from "$src/lib/utils/auth";
+import { instructorProfileSchema } from "$src/features/Instructors/lib/instructorSchemas";
+import { InstructorService } from "$src/features/Instructors/lib/instructorService";
+import { schoolProfileSchema } from "$src/features/Schools/lib/validations/schoolSchemas";
+import { SchoolService } from "$src/features/Schools/lib/schoolService";
+import { StorageService } from "$src/lib/server/R2Storage";
 
 const userService = new UserService();
 const instructorService = new InstructorService();

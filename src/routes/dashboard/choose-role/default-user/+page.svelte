@@ -1,5 +1,6 @@
 <script>
 	import { buttonVariants } from "$src/lib/components/ui/button";	import { enhance } from '$app/forms';
+	import { t } from "$src/lib/i18n/i18n";
 
 	let { data } = $props();
 	let submitting = $state(false);
