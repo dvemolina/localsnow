@@ -83,7 +83,7 @@ export class ReviewRepository {
 				fourStarCount: sql<number>`COUNT(CASE WHEN ${instructorReviews.rating} = 4 THEN 1 END)::int`,
 				threeStarCount: sql<number>`COUNT(CASE WHEN ${instructorReviews.rating} = 3 THEN 1 END)::int`,
 				twoStarCount: sql<number>`COUNT(CASE WHEN ${instructorReviews.rating} = 2 THEN 1 END)::int`,
-				oneStarCount: sql<number>`COUNT(CASE WHEN ${instructorReviews.rating} = 1 THEN 1 END)::int`
+				oneStarCount: sql<number>`COUNT(CASE WHEN ${instructorReviews.rating} = 1 END)::int`
 			})
 			.from(instructorReviews)
 			.where(
@@ -93,7 +93,16 @@ export class ReviewRepository {
 				)
 			);
 
-		return stats || null;
+		// If no reviews, return null
+		if (!stats || stats.totalReviews === 0) {
+			return null;
+		}
+
+		// Convert averageRating to number if it's a string (PostgreSQL numeric type)
+		return {
+			...stats,
+			averageRating: stats.averageRating ? Number(stats.averageRating) : 0
+		};
 	}
 
 	/**
