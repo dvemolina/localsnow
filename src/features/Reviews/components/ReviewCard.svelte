@@ -1,8 +1,8 @@
 <script lang="ts">
 	import RatingInput from './RatingInput.svelte';
-	import type { InstructorReview } from '$lib/server/db/schema';
+	import * as Avatar from '$lib/components/ui/avatar';
 
-	let { review }: { review: InstructorReview } = $props();
+	let { review }: { review: any } = $props();
 
 	function formatDate(date: Date | string | null) {
 		if (!date) return '';
@@ -10,14 +10,19 @@
 		return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 	}
 
-	// Get reviewer display name (privacy-friendly)
-	// If we have clientName, show it; otherwise use email prefix
-	const reviewerName = review.clientName || review.clientEmail.split('@')[0];
+	// Determine display name and profile picture
+	// Priority: logged-in account data > booking client data > email prefix
+	const hasAccount = !!review.reviewerId;
+	const reviewerName = hasAccount && review.reviewerName
+		? `${review.reviewerName}${review.reviewerLastName ? ' ' + review.reviewerLastName : ''}`
+		: review.clientName || review.clientEmail.split('@')[0];
+
+	const profileImage = hasAccount ? review.reviewerProfileImage : null;
 
 	// Get initials from name
 	const clientInitials = reviewerName
 		.split(' ')
-		.map(n => n[0])
+		.map((n: string) => n[0])
 		.join('')
 		.substring(0, 2)
 		.toUpperCase();
@@ -25,12 +30,15 @@
 
 <div class="rounded-lg border bg-card p-4">
 	<div class="flex items-start gap-4">
-		<!-- Client Avatar -->
-		<div
-			class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground"
-		>
-			<span class="text-sm font-semibold">{clientInitials}</span>
-		</div>
+		<!-- Reviewer Avatar -->
+		<Avatar.Root class="size-10 shrink-0">
+			{#if profileImage}
+				<Avatar.Image src={profileImage} alt={reviewerName} />
+			{/if}
+			<Avatar.Fallback class="bg-primary text-primary-foreground">
+				{clientInitials}
+			</Avatar.Fallback>
+		</Avatar.Root>
 
 		<!-- Review Content -->
 		<div class="flex-1">

@@ -180,6 +180,7 @@ export const instructorReviews = pgTable('instructor_reviews', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
 	uuid: uuid('uuid').defaultRandom().unique().notNull(),
 	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	reviewerId: integer('reviewer_id').references(() => users.id, { onDelete: 'set null' }), // Optional: if reviewer was logged in
 	bookingId: integer('booking_id').references(() => bookingRequests.id, { onDelete: 'set null' }),
 	clientName: varchar('client_name', { length: 100 }),
 	clientEmail: varchar('client_email', { length: 255 }),
@@ -193,6 +194,10 @@ export const instructorReviews = pgTable('instructor_reviews', {
 export const instructorReviewsRelations = relations(instructorReviews, ({ one }) => ({
 	instructor: one(users, {
 		fields: [instructorReviews.instructorId],
+		references: [users.id]
+	}),
+	reviewer: one(users, {
+		fields: [instructorReviews.reviewerId],
 		references: [users.id]
 	}),
 	booking: one(bookingRequests, {

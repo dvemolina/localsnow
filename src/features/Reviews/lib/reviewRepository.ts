@@ -47,12 +47,31 @@ export class ReviewRepository {
 	}
 
 	/**
-	 * Get all published reviews for an instructor
+	 * Get all published reviews for an instructor with reviewer profile data
 	 */
 	async getInstructorReviews(instructorId: number, limit = 10, offset = 0) {
 		const reviews = await db
-			.select()
+			.select({
+				id: instructorReviews.id,
+				uuid: instructorReviews.uuid,
+				instructorId: instructorReviews.instructorId,
+				reviewerId: instructorReviews.reviewerId,
+				bookingId: instructorReviews.bookingId,
+				clientName: instructorReviews.clientName,
+				clientEmail: instructorReviews.clientEmail,
+				rating: instructorReviews.rating,
+				comment: instructorReviews.comment,
+				isVerified: instructorReviews.isVerified,
+				isPublished: instructorReviews.isPublished,
+				createdAt: instructorReviews.createdAt,
+				updatedAt: instructorReviews.updatedAt,
+				// Fetch reviewer profile data if they have an account
+				reviewerName: users.name,
+				reviewerLastName: users.lastName,
+				reviewerProfileImage: users.profileImageUrl
+			})
 			.from(instructorReviews)
+			.leftJoin(users, eq(instructorReviews.reviewerId, users.id))
 			.where(
 				and(
 					eq(instructorReviews.instructorId, instructorId),
@@ -65,7 +84,12 @@ export class ReviewRepository {
 
 		console.log(`📊 getInstructorReviews for instructor ${instructorId}:`, {
 			count: reviews.length,
-			reviews: reviews.map(r => ({ id: r.id, rating: r.rating, isPublished: r.isPublished }))
+			reviews: reviews.map(r => ({
+				id: r.id,
+				rating: r.rating,
+				isPublished: r.isPublished,
+				hasAccount: !!r.reviewerId
+			}))
 		});
 
 		return reviews;

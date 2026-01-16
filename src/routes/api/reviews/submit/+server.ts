@@ -75,13 +75,23 @@ export const POST: RequestHandler = async (event) => {
 		// Start transaction to create review and update booking
 		const now = new Date();
 
+		// Check if user is logged in (hybrid system: token + account)
+		const loggedInUser = event.locals.user;
+		const reviewerId = loggedInUser?.id || null;
+
+		// If logged in, use account profile data; otherwise use booking data
+		const reviewerName = loggedInUser?.name
+			? `${loggedInUser.name}${loggedInUser.lastName ? ' ' + loggedInUser.lastName : ''}`
+			: booking.clientName;
+
 		// Create the review
 		const [review] = await db
 			.insert(instructorReviews)
 			.values({
 				instructorId: booking.instructorId,
+				reviewerId, // Link to user account if logged in
 				bookingId: booking.id,
-				clientName: booking.clientName,
+				clientName: reviewerName,
 				clientEmail: booking.clientEmail,
 				rating: body.rating,
 				comment: body.comment?.trim() || null,
