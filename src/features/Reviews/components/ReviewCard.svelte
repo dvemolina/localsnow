@@ -1,8 +1,8 @@
 <script lang="ts">
 	import RatingInput from './RatingInput.svelte';
-	import type { Review } from '$lib/server/db/schema';
+	import type { InstructorReview } from '$lib/server/db/schema';
 
-	let { review }: { review: Review } = $props();
+	let { review }: { review: InstructorReview } = $props();
 
 	function formatDate(date: Date | string | null) {
 		if (!date) return '';
