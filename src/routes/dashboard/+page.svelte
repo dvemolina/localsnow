@@ -5,6 +5,8 @@
 	import { Badge } from '$src/lib/components/ui/badge';
 	import * as Card from '$src/lib/components/ui/card';
 	import ProfileVisitsCard from '$src/features/Dashboard/components/ProfileVisitsCard.svelte';
+	import LeadStatsCard from '$src/features/Leads/components/LeadStatsCard.svelte';
+	import RequestsCard from '$src/features/Requests/components/RequestsCard.svelte';
 	import { t } from '$lib/i18n/i18n';
 	let { data } = $props();
 	let user = $state(data.user);
@@ -33,7 +35,7 @@
 		},
 		{
 			title: $t('dashboard_action_my_bookings'),
-			description: $t('dashboard_action_my_bookings_desc'),
+			description: $t('dashboard_action_desc'),
 			icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01',
 			href: '/dashboard/my-bookings',
 			show: user.role === 'client' || !user.role
@@ -86,7 +88,7 @@
 				<Card.Content>
 					<div class="flex items-center justify-between">
 						<Badge variant={user.isVerified ? 'default' : 'secondary'} class={user.isVerified ? 'bg-green-600' : ''}>
-							{user.isVerified ? `✓ ${$t('instructors_status_verified')}` : $t('status_pending')}
+							{user.isVerified ? `✓ ${$t('status_verified')}` : $t('status_pending')}
 						</Badge>
 						{#if !user.isVerified}
 							<span class="text-xs text-muted-foreground">
@@ -127,6 +129,8 @@
 				</Card.Root>
 
 				<ProfileVisitsCard visits={data.profileVisits || 0} />
+
+				<LeadStatsCard leadStats={data.leadStats} />
 			{:else if user.role === 'school-admin'}
 				<Card.Root>
 					<Card.Header class="pb-2">
@@ -192,6 +196,13 @@
 				{/each}
 			</div>
 		</div>
+
+		<!-- Recent Leads Section (for instructors) -->
+		{#if (user.role === 'instructor-independent' || user.role === 'instructor-school') && data.recentLeads}
+			<div class="mb-8">
+				<RequestsCard requests={data.recentLeads} type="lead" instructorId={user.id} />
+			</div>
+		{/if}
 
 		<!-- Getting Started (for unverified users) -->
 		{#if !user.isVerified && (user.role === 'instructor-independent' || user.role === 'instructor-school')}

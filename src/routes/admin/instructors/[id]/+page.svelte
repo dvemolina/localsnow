@@ -51,9 +51,9 @@
 			<p class="text-muted-foreground">{data.instructor.email}</p>
 			<div class="mt-2 flex gap-2">
 				{#if data.instructor.isSuspended}
-					<Badge variant="destructive">{$t('instructors_status_suspended')}</Badge>
+					<Badge variant="destructive">{$t('status_suspended')}</Badge>
 				{:else if data.instructor.isVerified}
-					<Badge class="bg-green-100 text-green-800">{$t('instructors_status_verified')}</Badge>
+					<Badge class="bg-green-100 text-green-800">{$t('status_verified')}</Badge>
 				{:else}
 					<Badge class="bg-yellow-100 text-yellow-800">{$t('status_pending_verification')}</Badge>
 				{/if}
@@ -97,15 +97,15 @@
 			</CardHeader>
 			<CardContent class="space-y-2">
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{$t('instructors_form_label_phone')}</p>
+					<p class="text-sm font-medium text-muted-foreground">{$t('form_label_phone')}</p>
 					<p>{data.instructor.phone || $t('instructors_admin_not_provided')}</p>
 				</div>
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{$t('instructors_form_label_professional_phone')}</p>
+					<p class="text-sm font-medium text-muted-foreground">{$t('form_label_professional_phone')}</p>
 					<p>{data.instructor.professionalPhone || $t('instructors_admin_not_provided')}</p>
 				</div>
 				<div>
-					<p class="text-sm font-medium text-muted-foreground">{$t('instructors_form_label_bio')}</p>
+					<p class="text-sm font-medium text-muted-foreground">{$t('form_label_bio')}</p>
 					<p class="text-sm">{data.instructor.bio || $t('instructors_admin_no_bio')}</p>
 				</div>
 				<div>
@@ -265,7 +265,7 @@
 								</div>
 								<p class="mt-1 text-sm">{review.comment || $t('admin_no_comment')}</p>
 								<p class="mt-1 text-xs text-muted-foreground">
-									{$t('instructors_admin_by')} {review.clientEmail}
+									{$t('instructors_admin_by')} {review.reviewerName || review.clientName || review.clientEmail || $t('label_anonymous') || 'Anonymous'}
 								</p>
 							</div>
 						</div>

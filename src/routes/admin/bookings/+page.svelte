@@ -68,9 +68,9 @@
 						<Select.Item value="all">{$t('bookings_admin_all_statuses')}</Select.Item>
 						<Select.Item value="pending">{$t('status_pending')}</Select.Item>
 						<Select.Item value="viewed">{$t('bookings_status_viewed')}</Select.Item>
-						<Select.Item value="accepted">{$t('my_bookings_status_accepted')}</Select.Item>
-						<Select.Item value="completed">{$t('status_completed')}</Select.Item>
-						<Select.Item value="rejected">{$t('my_bookings_status_rejected')}</Select.Item>
+						<Select.Item value="accepted">{$t('status_accepted')}</Select.Item>
+						<Select.Item value="completed">{$t('client_status_completed')}</Select.Item>
+						<Select.Item value="rejected">{$t('status_rejected')}</Select.Item>
 					</Select.Content>
 				</Select.Root>
 			</div>

@@ -2,7 +2,7 @@
 	import RatingInput from './RatingInput.svelte';
 	import ReviewCard from './ReviewCard.svelte';
 	import { Button } from '$lib/components/ui/button';
-	import type { Review } from '$lib/server/db/schema';
+	import type { InstructorReview } from '$lib/server/db/schema';
 
 	let {
 		instructorId,
@@ -10,11 +10,11 @@
 		initialStats = null
 	}: {
 		instructorId: number;
-		initialReviews?: Review[];
+		initialReviews?: InstructorReview[];
 		initialStats?: any;
 	} = $props();
 
-	let reviews = $state<Review[]>(initialReviews);
+	let reviews = $state<InstructorReview[]>(initialReviews);
 	let stats = $state(initialStats);
 	let isLoading = $state(false);
 	let hasMore = $state(initialReviews.length === 10);

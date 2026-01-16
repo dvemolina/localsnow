@@ -83,7 +83,7 @@
 							<Table.Cell><Badge variant="outline">{user.role || $t('admin_no_role')}</Badge></Table.Cell>
 							<Table.Cell>
 								{#if user.isSuspended}
-									<Badge variant="destructive">{$t('instructors_status_suspended')}</Badge>
+									<Badge variant="destructive">{$t('status_suspended')}</Badge>
 								{:else}
 									<Badge class="bg-green-100 text-green-800">{$t('status_active')}</Badge>
 								{/if}

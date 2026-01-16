@@ -81,7 +81,7 @@
 			<CardContent>
 				<div class="text-2xl font-bold">{totalBookings}</div>
 				<p class="text-xs text-muted-foreground">
-					{completedBookings} {$t('status_completed')}, {pendingBookings} {$t('status_pending')}
+					{completedBookings} {$t('client_status_completed')}, {pendingBookings} {$t('status_pending')}
 				</p>
 			</CardContent>
 		</Card>

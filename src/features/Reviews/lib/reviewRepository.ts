@@ -1,11 +1,13 @@
 import { db } from '$lib/server/db';
-import { reviews, bookingRequests, users } from '$lib/server/db/schema';
+import { instructorReviews, bookingRequests, users } from '$lib/server/db/schema';
 import { eq, and, desc, sql } from 'drizzle-orm';
-import type { InsertReview } from '$lib/server/db/schema';
+import type { InsertInstructorReview } from '$lib/server/db/schema';
 
 export interface CreateReviewData {
 	bookingRequestId: number;
 	instructorId: number;
+	reviewerName?: string | null;
+	clientName?: string;
 	clientEmail: string;
 	rating: number;
 	comment?: string;
@@ -17,13 +19,17 @@ export class ReviewRepository {
 	 */
 	async createReview(data: CreateReviewData) {
 		const [review] = await db
-			.insert(reviews)
+			.insert(instructorReviews)
 			.values({
-				bookingRequestId: data.bookingRequestId,
+				bookingId: data.bookingRequestId,
 				instructorId: data.instructorId,
+				reviewerName: data.reviewerName || null,
+				clientName: data.clientName || null,
 				clientEmail: data.clientEmail,
 				rating: data.rating,
-				comment: data.comment || null
+				comment: data.comment || null,
+				isVerified: true,
+				isPublished: true // Auto-publish verified reviews
 			})
 			.returning();
 
@@ -36,43 +42,94 @@ export class ReviewRepository {
 	async getReviewByBookingId(bookingRequestId: number) {
 		const [review] = await db
 			.select()
-			.from(reviews)
-			.where(eq(reviews.bookingRequestId, bookingRequestId));
+			.from(instructorReviews)
+			.where(eq(instructorReviews.bookingId, bookingRequestId));
 
 		return review;
 	}
 
 	/**
-	 * Get all reviews for an instructor
+	 * Get all published reviews for an instructor with reviewer profile data
 	 */
 	async getInstructorReviews(instructorId: number, limit = 10, offset = 0) {
-		return await db
-			.select()
-			.from(reviews)
-			.where(eq(reviews.instructorId, instructorId))
-			.orderBy(desc(reviews.createdAt))
+		const reviews = await db
+			.select({
+				id: instructorReviews.id,
+				uuid: instructorReviews.uuid,
+				instructorId: instructorReviews.instructorId,
+				reviewerId: instructorReviews.reviewerId,
+				bookingId: instructorReviews.bookingId,
+				reviewerName: instructorReviews.reviewerName,
+				clientName: instructorReviews.clientName,
+				clientEmail: instructorReviews.clientEmail,
+				rating: instructorReviews.rating,
+				comment: instructorReviews.comment,
+				isVerified: instructorReviews.isVerified,
+				isPublished: instructorReviews.isPublished,
+				createdAt: instructorReviews.createdAt,
+				updatedAt: instructorReviews.updatedAt,
+				// Fetch reviewer profile data if they have an account
+				reviewerFirstName: users.name,
+				reviewerLastName: users.lastName,
+				reviewerProfileImage: users.profileImageUrl
+			})
+			.from(instructorReviews)
+			.leftJoin(users, eq(instructorReviews.reviewerId, users.id))
+			.where(
+				and(
+					eq(instructorReviews.instructorId, instructorId),
+					eq(instructorReviews.isPublished, true)
+				)
+			)
+			.orderBy(desc(instructorReviews.createdAt))
 			.limit(limit)
 			.offset(offset);
+
+		console.log(`📊 getInstructorReviews for instructor ${instructorId}:`, {
+			count: reviews.length,
+			reviews: reviews.map(r => ({
+				id: r.id,
+				rating: r.rating,
+				isPublished: r.isPublished,
+				hasAccount: !!r.reviewerId
+			}))
+		});
+
+		return reviews;
 	}
 
 	/**
-	 * Get instructor rating statistics
+	 * Get instructor rating statistics (only published reviews)
 	 */
 	async getInstructorRatingStats(instructorId: number) {
 		const [stats] = await db
 			.select({
-				averageRating: sql<number>`ROUND(AVG(${reviews.rating})::numeric, 2)`,
+				averageRating: sql<number>`ROUND(AVG(${instructorReviews.rating})::numeric, 2)`,
 				totalReviews: sql<number>`COUNT(*)::int`,
-				fiveStarCount: sql<number>`COUNT(CASE WHEN ${reviews.rating} = 5 THEN 1 END)::int`,
-				fourStarCount: sql<number>`COUNT(CASE WHEN ${reviews.rating} = 4 THEN 1 END)::int`,
-				threeStarCount: sql<number>`COUNT(CASE WHEN ${reviews.rating} = 3 THEN 1 END)::int`,
-				twoStarCount: sql<number>`COUNT(CASE WHEN ${reviews.rating} = 2 THEN 1 END)::int`,
-				oneStarCount: sql<number>`COUNT(CASE WHEN ${reviews.rating} = 1 THEN 1 END)::int`
+				fiveStarCount: sql<number>`COUNT(CASE WHEN ${instructorReviews.rating} = 5 THEN 1 END)::int`,
+				fourStarCount: sql<number>`COUNT(CASE WHEN ${instructorReviews.rating} = 4 THEN 1 END)::int`,
+				threeStarCount: sql<number>`COUNT(CASE WHEN ${instructorReviews.rating} = 3 THEN 1 END)::int`,
+				twoStarCount: sql<number>`COUNT(CASE WHEN ${instructorReviews.rating} = 2 THEN 1 END)::int`,
+				oneStarCount: sql<number>`COUNT(CASE WHEN ${instructorReviews.rating} = 1 THEN 1 END)::int`
 			})
-			.from(reviews)
-			.where(eq(reviews.instructorId, instructorId));
+			.from(instructorReviews)
+			.where(
+				and(
+					eq(instructorReviews.instructorId, instructorId),
+					eq(instructorReviews.isPublished, true)
+				)
+			);
 
-		return stats || null;
+		// If no reviews, return null
+		if (!stats || stats.totalReviews === 0) {
+			return null;
+		}
+
+		// Convert averageRating to number if it's a string (PostgreSQL numeric type)
+		return {
+			...stats,
+			averageRating: stats.averageRating ? Number(stats.averageRating) : 0
+		};
 	}
 
 	/**
@@ -87,6 +144,6 @@ export class ReviewRepository {
 	 * Delete review (admin only)
 	 */
 	async deleteReview(reviewId: number) {
-		return await db.delete(reviews).where(eq(reviews.id, reviewId));
+		return await db.delete(instructorReviews).where(eq(instructorReviews.id, reviewId));
 	}
 }

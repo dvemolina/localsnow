@@ -1,6 +1,6 @@
 // src/features/Admin/lib/adminInstructorService.ts
 import { db } from '$lib/server/db';
-import { users, instructorResorts, instructorSports, bookingRequests, reviews } from '$lib/server/db/schema';
+import { users, instructorResorts, instructorSports, bookingRequests, instructorReviews } from '$lib/server/db/schema';
 import { eq, and, or, like, sql, count, avg } from 'drizzle-orm';
 import { adminAuditService } from './adminAuditService';
 
@@ -83,10 +83,10 @@ export const adminInstructorService = {
 					db
 						.select({
 							count: count(),
-							avgRating: avg(reviews.rating)
+							avgRating: avg(instructorReviews.rating)
 						})
-						.from(reviews)
-						.where(eq(reviews.instructorId, instructor.id))
+						.from(instructorReviews)
+						.where(eq(instructorReviews.instructorId, instructor.id))
 				]);
 
 				return {
@@ -149,8 +149,8 @@ export const adminInstructorService = {
 		});
 
 		// Get reviews
-		const instructorReviews = await db.query.reviews.findMany({
-			where: eq(reviews.instructorId, instructorId),
+		const instructorReviews = await db.query.instructorReviews.findMany({
+			where: eq(instructorReviews.instructorId, instructorId),
 			orderBy: (reviews, { desc }) => [desc(reviews.createdAt)]
 		});
 

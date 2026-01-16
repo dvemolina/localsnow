@@ -1,5 +1,5 @@
 import { db } from "$lib/server/db/index";
-import { users, instructorSports, instructorResorts, lessons, lessonSports as lessonSportsTable, resorts } from "$src/lib/server/db/schema";
+import { users, instructorSports, instructorResorts, lessons, lessonSports as lessonSportsTable, resorts, schoolInstructors } from "$src/lib/server/db/schema";
 import type { InsertUser, User } from "$src/lib/server/db/schema";
 import { eq, and, or } from "drizzle-orm";
 import type { InstructorSignupData } from "./instructorSchemas";
@@ -19,6 +19,7 @@ export interface InstructorData {
     spokenLanguages?: string[];
     basePrice?: number;
     currency?: string;
+    isPublished?: boolean;
 }
 
 export class InstructorRepository {
@@ -113,6 +114,7 @@ export class InstructorRepository {
             if (updateData.professionalPhone) userUpdateFields.professionalPhone = updateData.professionalPhone;
             if (updateData.bio !== undefined) userUpdateFields.bio = updateData.bio;
             if (updateData.spokenLanguages !== undefined) userUpdateFields.spokenLanguages = updateData.spokenLanguages;
+            if (updateData.isPublished !== undefined) userUpdateFields.isPublished = updateData.isPublished;
 
             userUpdateFields.updatedAt = new Date();
 
@@ -190,6 +192,7 @@ export class InstructorRepository {
         priceMax?: number;
         instructorType?: 'instructor-independent' | 'instructor-school';
         verifiedOnly?: boolean;
+        schoolId?: number;
         sortBy?: string;
     }) {
         try {
@@ -214,6 +217,7 @@ export class InstructorRepository {
                 .from(users)
                 .leftJoin(instructorSports, eq(users.id, instructorSports.instructorId))
                 .leftJoin(instructorResorts, eq(users.id, instructorResorts.instructorId))
+                .leftJoin(schoolInstructors, eq(users.id, schoolInstructors.instructorId))
                 .$dynamic();
 
             // Build WHERE conditions
@@ -231,6 +235,9 @@ export class InstructorRepository {
                 );
             }
 
+            // CRITICAL: Only show published profiles in public directory
+            conditions.push(eq(users.isPublished, true));
+
             // Filter by verified status if specified
             if (filters.verifiedOnly) {
                 conditions.push(eq(users.isVerified, true));
@@ -239,6 +246,12 @@ export class InstructorRepository {
             // Filter by resort
             if (filters.resortId) {
                 conditions.push(eq(instructorResorts.resortId, filters.resortId));
+            }
+
+            // Filter by school
+            if (filters.schoolId) {
+                conditions.push(eq(schoolInstructors.schoolId, filters.schoolId));
+                conditions.push(eq(schoolInstructors.isAccepted, true)); // Only show accepted instructors
             }
 
             query = query.where(and(...conditions));

@@ -42,9 +42,14 @@
 			icon: '/icons/service.svg'
 		},
 		{
-			title: $t('sidebar_bookings'),
+			title: $t('sidebar_leads') || 'Leads',
+			url: '/dashboard/leads',
+			icon: '/icons/leads.svg'
+		},
+		{
+			title: $t('sidebar_bookings') || 'Bookings',
 			url: '/dashboard/bookings',
-			icon: '/icons/notebook.svg'
+			icon: '/icons/appointment.svg'
 		},
 		{
 			title: $t('sidebar_availability'),
@@ -65,9 +70,14 @@
 			icon: '/icons/ski-resort.svg'
 		},
 		{
-			title: $t('sidebar_bookings'),
-			url: '/dashboard/bookings',
+			title: $t('sidebar_leads') || 'Leads',
+			url: '/dashboard/leads',
 			icon: '/icons/notebook.svg'
+		},
+		{
+			title: $t('sidebar_bookings') || 'Bookings',
+			url: '/dashboard/bookings',
+			icon: '/icons/calendar.svg'
 		},
 		{
 			title: $t('sidebar_schools'),

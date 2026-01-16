@@ -1,7 +1,13 @@
 import { SchoolInstructorRepository } from './schoolInstructorRepository';
 import type { SchoolInstructor, User, School } from '$src/lib/server/db/schema';
-// Email functions will be imported when created
-// import { sendInstructorInvitation, sendSchoolApplication, etc } from '$lib/server/webhooks/n8n/school-emails-n8n';
+import {
+	sendInstructorInvitation,
+	sendSchoolApplication,
+	sendInstructorAccepted,
+	sendInstructorRejected,
+	sendInvitationAccepted,
+	sendInstructorDeactivated
+} from '$lib/server/webhooks/n8n/email-n8n';
 
 export class SchoolInstructorService {
 	private repository: SchoolInstructorRepository;
@@ -36,14 +42,18 @@ export class SchoolInstructorService {
 			const result = await this.repository.inviteInstructor(schoolId, instructorId);
 
 			// Send email notification to instructor
-			// TODO: Implement sendInstructorInvitation email
-			// await sendInstructorInvitation({
-			//   instructorEmail,
-			//   instructorName,
-			//   schoolName,
-			//   schoolId,
-			//   dashboardUrl: `https://localsnow.org/dashboard/instructors/invitations`
-			// });
+			try {
+				await sendInstructorInvitation({
+					instructorEmail,
+					instructorName,
+					schoolName,
+					schoolSlug: schoolName.toLowerCase().replace(/\s+/g, '-'),
+					invitationUrl: `https://localsnow.org/dashboard/invitations`
+				});
+			} catch (error) {
+				console.error('Failed to send instructor invitation email:', error);
+				// Don't throw - email failure shouldn't break the invitation
+			}
 
 			console.log(`[SCHOOL] Invitation sent to instructor ${instructorId} from school ${schoolId}`);
 
@@ -81,14 +91,18 @@ export class SchoolInstructorService {
 			const result = await this.repository.applyToSchool(instructorId, schoolId);
 
 			// Send email notification to school admin
-			// TODO: Implement sendSchoolApplication email
-			// await sendSchoolApplication({
-			//   schoolAdminEmail,
-			//   schoolName,
-			//   instructorName,
-			//   instructorId,
-			//   dashboardUrl: `https://localsnow.org/dashboard/school/instructors/pending`
-			// });
+			try {
+				await sendSchoolApplication({
+					schoolAdminEmail,
+					schoolName,
+					instructorName,
+					instructorId,
+					reviewUrl: `https://localsnow.org/dashboard/school/instructors/pending`
+				});
+			} catch (error) {
+				console.error('Failed to send school application email:', error);
+				// Don't throw - email failure shouldn't break the application
+			}
 
 			console.log(`[SCHOOL] Application sent to school ${schoolId} from instructor ${instructorId}`);
 
@@ -117,13 +131,18 @@ export class SchoolInstructorService {
 			}
 
 			// Send email notification to instructor
-			// TODO: Implement sendInstructorAccepted email
-			// await sendInstructorAccepted({
-			//   instructorEmail,
-			//   instructorName,
-			//   schoolName,
-			//   dashboardUrl: `https://localsnow.org/dashboard`
-			// });
+			try {
+				await sendInstructorAccepted({
+					instructorEmail,
+					instructorName,
+					schoolName,
+					schoolSlug: schoolName.toLowerCase().replace(/\s+/g, '-'),
+					dashboardUrl: `https://localsnow.org/dashboard`
+				});
+			} catch (error) {
+				console.error('Failed to send instructor accepted email:', error);
+				// Don't throw - email failure shouldn't break the acceptance
+			}
 
 			console.log(`[SCHOOL] Instructor ${instructorId} accepted by school ${schoolId}`);
 
@@ -152,12 +171,16 @@ export class SchoolInstructorService {
 			}
 
 			// Send email notification to instructor
-			// TODO: Implement sendInstructorRejected email
-			// await sendInstructorRejected({
-			//   instructorEmail,
-			//   instructorName,
-			//   schoolName
-			// });
+			try {
+				await sendInstructorRejected({
+					instructorEmail,
+					instructorName,
+					schoolName
+				});
+			} catch (error) {
+				console.error('Failed to send instructor rejected email:', error);
+				// Don't throw - email failure shouldn't break the rejection
+			}
 
 			console.log(`[SCHOOL] Instructor ${instructorId} rejected by school ${schoolId}`);
 
@@ -186,13 +209,17 @@ export class SchoolInstructorService {
 			}
 
 			// Send email notification to school admin
-			// TODO: Implement sendInvitationAccepted email
-			// await sendInvitationAccepted({
-			//   schoolAdminEmail,
-			//   schoolName,
-			//   instructorName,
-			//   dashboardUrl: `https://localsnow.org/dashboard/school/instructors`
-			// });
+			try {
+				await sendInvitationAccepted({
+					schoolAdminEmail,
+					schoolName,
+					instructorName,
+					instructorId
+				});
+			} catch (error) {
+				console.error('Failed to send invitation accepted email:', error);
+				// Don't throw - email failure shouldn't break the acceptance
+			}
 
 			console.log(`[SCHOOL] Invitation accepted by instructor ${instructorId} for school ${schoolId}`);
 
@@ -296,12 +323,16 @@ export class SchoolInstructorService {
 			}
 
 			// Send email notification to instructor
-			// TODO: Implement sendInstructorDeactivated email
-			// await sendInstructorDeactivated({
-			//   instructorEmail,
-			//   instructorName,
-			//   schoolName
-			// });
+			try {
+				await sendInstructorDeactivated({
+					instructorEmail,
+					instructorName,
+					schoolName
+				});
+			} catch (error) {
+				console.error('Failed to send instructor deactivated email:', error);
+				// Don't throw - email failure shouldn't break the deactivation
+			}
 
 			console.log(`[SCHOOL] Instructor ${instructorId} deactivated from school ${schoolId}`);
 

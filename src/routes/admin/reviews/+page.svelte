@@ -59,7 +59,7 @@
 								</p>
 							</Table.Cell>
 							<Table.Cell class="text-sm text-muted-foreground">
-								{review.clientEmail}
+								{review.reviewerName || review.clientName || review.clientEmail || $t('label_anonymous') || 'Anonymous'}
 							</Table.Cell>
 							<Table.Cell>{formatDate(review.createdAt)}</Table.Cell>
 						</Table.Row>

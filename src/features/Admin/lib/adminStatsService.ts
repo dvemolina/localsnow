@@ -1,6 +1,6 @@
 // src/features/Admin/lib/adminStatsService.ts
 import { db } from '$lib/server/db';
-import { users, bookingRequests, reviews, clientDeposits, leadPayments } from '$lib/server/db/schema';
+import { users, bookingRequests, instructorReviews, clientDeposits, leadPayments } from '$lib/server/db/schema';
 import { sql, eq, count, sum, and, gte } from 'drizzle-orm';
 
 export const adminStatsService = {
@@ -60,9 +60,9 @@ export const adminStatsService = {
 		const reviewStats = await db
 			.select({
 				total: count(),
-				avgRating: sql<number>`AVG(${reviews.rating})`
+				avgRating: sql<number>`AVG(${instructorReviews.rating})`
 			})
-			.from(reviews);
+			.from(instructorReviews);
 
 		// Get recent activity (last 30 days)
 		const thirtyDaysAgo = new Date();
@@ -147,7 +147,7 @@ export const adminStatsService = {
 	 * Get recent reviews for dashboard
 	 */
 	async getRecentReviews(limit: number = 10) {
-		const recentReviews = await db.query.reviews.findMany({
+		const recentReviews = await db.query.instructorReviews.findMany({
 			limit,
 			orderBy: (reviews, { desc }) => [desc(reviews.createdAt)],
 			with: {

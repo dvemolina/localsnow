@@ -7,6 +7,7 @@ export const sportSlugEnum = pgEnum('sport_slug', ['ski', 'snowboard', 'telemark
 export const modalitySlugEnum = pgEnum('modality_slug', ['piste', 'off-piste', 'freeride', 'freestyle', 'touring', 'adaptive']);
 export const pricingModeEnum = pgEnum('pricing_mode', ['per_hour', 'per_session', 'per_day']);
 export const bookingStatusEnum = pgEnum('status', ['pending', 'viewed', 'accepted', 'rejected', 'cancelled', 'expired', 'completed', 'no_show']);
+export const bookingSourceEnum = pgEnum('booking_source', ['platform', 'manual']);
 
 export const timestamps = {
     createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -33,6 +34,7 @@ export const users = pgTable('users', {
 	qualificationUrl: varchar('qualification_url', { length: 255 }),
 	spokenLanguages: text('spoken_languages').array(),
     isVerified: boolean('is_verified').default(false),
+	isPublished: boolean('is_published').default(false),
 	acceptedTerms: boolean('accepted_terms').notNull().default(false),
 	isSuspended: boolean('is_suspended').default(false),
 	suspensionReason: text('suspension_reason'),
@@ -108,11 +110,12 @@ export const bookingRequests = pgTable('booking_requests', {
     uuid: uuid('uuid').defaultRandom().unique().notNull(),
     instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
 	schoolId: integer('school_id').references(() => schools.id, { onDelete: 'set null' }), // If booked through school
+	lessonId: integer('lesson_id').references(() => lessons.id, { onDelete: 'set null' }), // Reference to lesson for manual bookings
 
     // Client info
     clientUserId: integer('client_user_id').references(() => users.id, { onDelete: 'set null' }), // Authenticated user reference
     clientName: varchar('client_name', { length: 100 }).notNull(),
-    clientEmail: varchar('client_email', { length: 255 }).notNull(),
+    clientEmail: varchar('client_email', { length: 255 }),
 	clientCountryCode: varchar('client_country_code', { length: 4 }),
     clientPhone: varchar('client_phone', { length: 50 }),
 
@@ -123,17 +126,27 @@ export const bookingRequests = pgTable('booking_requests', {
     hoursPerDay: numeric('hours_per_day', { precision: 4, scale: 1 }).notNull(),
 	timeSlots: text('time_slots'), // JSON array of time slots
 
-    // Additional info
-    skillLevel: varchar('skill_level', { length: 50 }),
-    message: text('message'),
-    promoCode: varchar('promo_code', { length: 50 }),
+	// Additional info
+	skillLevel: varchar('skill_level', { length: 50 }),
+	message: text('message'),
+	promoCode: varchar('promo_code', { length: 50 }),
+	bookingIdentifier: varchar('booking_identifier', { length: 100 }), // Internal booking label
 
     // Pricing estimate (for reference)
     estimatedPrice: integer('estimated_price'),
     currency: varchar('currency', { length: 50 }),
 
+	// Client management fields
+	source: bookingSourceEnum('source').notNull().default('platform'), // platform or manual
+	manualPrice: integer('manual_price'), // For manual bookings with custom price
+	notes: text('notes'), // Private notes for instructor
+
 	//Lead info after payment
 	contactInfoUnlocked: boolean('contact_info_unlocked').notNull().default(false),
+
+	// Review system
+	reviewToken: varchar('review_token', { length: 255 }),
+	reviewSubmittedAt: timestamp('review_submitted_at'),
 
     // Beta launch tracking
     usedLaunchCode: varchar('used_launch_code', { length: 50 }), // Track if beta code was used
@@ -163,6 +176,40 @@ export const userBookingLimitsRelations = relations(userBookingLimits, ({ one })
 export type UserBookingLimit = typeof userBookingLimits.$inferSelect;
 export type InsertUserBookingLimit = typeof userBookingLimits.$inferInsert;
 
+// --- Instructor Reviews ---
+export const instructorReviews = pgTable('instructor_reviews', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	uuid: uuid('uuid').defaultRandom().unique().notNull(),
+	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	reviewerId: integer('reviewer_id').references(() => users.id, { onDelete: 'set null' }), // Optional: if reviewer was logged in
+	bookingId: integer('booking_id').references(() => bookingRequests.id, { onDelete: 'set null' }),
+	reviewerName: varchar('reviewer_name', { length: 100 }), // Public display name for the review
+	clientName: varchar('client_name', { length: 100 }),
+	clientEmail: varchar('client_email', { length: 255 }),
+	rating: integer('rating').notNull(), // 1-5
+	comment: text('comment'),
+	isVerified: boolean('is_verified').notNull().default(false), // Verified = linked to a real booking
+	isPublished: boolean('is_published').notNull().default(false), // Only published reviews show on profile
+	...timestamps
+});
+
+export const instructorReviewsRelations = relations(instructorReviews, ({ one }) => ({
+	instructor: one(users, {
+		fields: [instructorReviews.instructorId],
+		references: [users.id]
+	}),
+	reviewer: one(users, {
+		fields: [instructorReviews.reviewerId],
+		references: [users.id]
+	}),
+	booking: one(bookingRequests, {
+		fields: [instructorReviews.bookingId],
+		references: [bookingRequests.id]
+	})
+}));
+
+export type InstructorReview = typeof instructorReviews.$inferSelect;
+export type InsertInstructorReview = typeof instructorReviews.$inferInsert;
 
 // --- Lessons ---
 export const lessons = pgTable('lessons', {
@@ -305,7 +352,7 @@ export const clientDeposits = pgTable('client_deposits', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
 	uuid: uuid('uuid').defaultRandom().unique().notNull(),
 	bookingRequestId: integer('booking_request_id').notNull().references(() => bookingRequests.id, { onDelete: 'cascade' }),
-	clientEmail: varchar('client_email', { length: 255 }).notNull(),
+    clientEmail: varchar('client_email', { length: 255 }),
 	amount: decimal('amount', { precision: 10, scale: 2 }).notNull(),
 	currency: varchar('currency', { length: 3 }).notNull().default('EUR'),
 	stripePaymentIntentId: varchar('stripe_payment_intent_id', { length: 255 }),
@@ -367,6 +414,32 @@ export const reviewsRelations = relations(reviews, ({ one }) => ({
 
 export type Review = typeof reviews.$inferSelect;
 export type InsertReview = typeof reviews.$inferInsert;
+
+// --- Instructor Leads (Contact Form Submissions) ---
+export const instructorLeads = pgTable('instructor_leads', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	uuid: uuid('uuid').defaultRandom().unique().notNull(),
+	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	clientName: varchar('client_name', { length: 100 }),
+	clientEmail: varchar('client_email', { length: 255 }).notNull(),
+	clientPhone: varchar('client_phone', { length: 20 }),
+	message: text('message').notNull(),
+	preferredDates: text('preferred_dates'), // Optional: when client wants to ski
+	numberOfStudents: integer('number_of_students'), // Optional: group size
+	skillLevel: varchar('skill_level', { length: 20 }), // Optional: beginner, intermediate, advanced
+	status: varchar('status', { length: 20 }).default('new').notNull(), // new, contacted, converted, spam
+	...timestamps
+});
+
+export const instructorLeadsRelations = relations(instructorLeads, ({ one }) => ({
+	instructor: one(users, {
+		fields: [instructorLeads.instructorId],
+		references: [users.id]
+	})
+}));
+
+export type InstructorLead = typeof instructorLeads.$inferSelect;
+export type InsertInstructorLead = typeof instructorLeads.$inferInsert;
 
 // --- Availability System Tables ---
 
