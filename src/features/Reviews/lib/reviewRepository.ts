@@ -83,7 +83,7 @@ export class ReviewRepository {
 				fourStarCount: sql<number>`COUNT(CASE WHEN ${instructorReviews.rating} = 4 THEN 1 END)::int`,
 				threeStarCount: sql<number>`COUNT(CASE WHEN ${instructorReviews.rating} = 3 THEN 1 END)::int`,
 				twoStarCount: sql<number>`COUNT(CASE WHEN ${instructorReviews.rating} = 2 THEN 1 END)::int`,
-				oneStarCount: sql<number>`COUNT(CASE WHEN ${instructorReviews.rating} = 1 END)::int`
+				oneStarCount: sql<number>`COUNT(CASE WHEN ${instructorReviews.rating} = 1 THEN 1 END)::int`
 			})
 			.from(instructorReviews)
 			.where(
