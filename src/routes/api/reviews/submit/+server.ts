@@ -72,7 +72,7 @@ export const POST: RequestHandler = async (event) => {
 				rating: body.rating,
 				comment: body.comment?.trim() || null,
 				isVerified: true, // Verified because it came from a booking link
-				isPublished: false, // Not published yet - instructor/admin can moderate
+				isPublished: true, // Auto-publish verified reviews from booking links
 				createdAt: now
 			})
 			.returning();

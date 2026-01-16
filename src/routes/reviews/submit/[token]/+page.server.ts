@@ -2,7 +2,7 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
 import { bookingRequests, users } from '$lib/server/db/schema';
-import { eq, and, isNull } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 
 export const load: PageServerLoad = async ({ params }) => {
 	const { token } = params;
@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	}
 
 	try {
-		// Find booking by token
+		// Find booking by token (allow both submitted and not submitted)
 		const [booking] = await db
 			.select({
 				id: bookingRequests.id,
@@ -32,18 +32,18 @@ export const load: PageServerLoad = async ({ params }) => {
 			.where(
 				and(
 					eq(bookingRequests.reviewToken, token),
-					eq(bookingRequests.status, 'completed'),
-					isNull(bookingRequests.reviewSubmittedAt)
+					eq(bookingRequests.status, 'completed')
 				)
 			)
 			.limit(1);
 
 		if (!booking) {
-			throw error(404, 'Review link not found, expired, or already used');
+			throw error(404, 'Review link not found or booking is not completed');
 		}
 
 		return {
 			token,
+			alreadySubmitted: !!booking.reviewSubmittedAt,
 			booking: {
 				id: booking.id,
 				instructorId: booking.instructorId,
@@ -53,7 +53,8 @@ export const load: PageServerLoad = async ({ params }) => {
 				clientEmail: booking.clientEmail,
 				startDate: booking.startDate,
 				endDate: booking.endDate,
-				numberOfStudents: booking.numberOfStudents
+				numberOfStudents: booking.numberOfStudents,
+				reviewSubmittedAt: booking.reviewSubmittedAt
 			}
 		};
 	} catch (err) {

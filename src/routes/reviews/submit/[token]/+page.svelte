@@ -81,7 +81,46 @@
 </svelte:head>
 
 <div class="container mx-auto max-w-2xl py-12 px-4">
-	{#if submitSuccess}
+	{#if data.alreadySubmitted}
+		<!-- Already Submitted State -->
+		<Card.Root class="border-2 border-blue-200">
+			<Card.Content class="p-12">
+				<div class="flex flex-col items-center gap-6 text-center">
+					<div class="flex size-20 items-center justify-center rounded-full bg-blue-100">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="size-10 text-blue-600"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+							/>
+						</svg>
+					</div>
+					<div>
+						<h1 class="text-2xl font-bold mb-2">Review Already Submitted</h1>
+						<p class="text-muted-foreground mb-2">
+							You have already submitted a review for this lesson on {formatDate(
+								new Date(data.booking.reviewSubmittedAt!)
+							)}.
+						</p>
+						<p class="text-muted-foreground">
+							Thank you for your feedback! Your review has been recorded and will appear on {data
+								.booking.instructorName}'s profile.
+						</p>
+					</div>
+					<Button onclick={() => goto(`/instructors/${data.booking.instructorId}`)}>
+						View Instructor Profile
+					</Button>
+				</div>
+			</Card.Content>
+		</Card.Root>
+	{:else if submitSuccess}
 		<!-- Success State -->
 		<Card.Root class="border-2 border-green-200">
 			<Card.Content class="p-12">
