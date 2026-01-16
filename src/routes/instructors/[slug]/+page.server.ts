@@ -27,46 +27,46 @@ export const load: PageServerLoad = async (event) => {
         throw error(404, 'Instructor not found');
     }
 
-    try {
-        // Get instructor with relations AND base lesson
-        const instructorData = await instructorService.getInstructorWithLessons(instructorId);
+    // Get instructor with relations AND base lesson
+    const instructorData = await instructorService.getInstructorWithLessons(instructorId);
 
-        if (!instructorData || !instructorData.instructor) {
-            throw error(404, 'Instructor not found');
-        }
+    if (!instructorData || !instructorData.instructor) {
+        throw error(404, 'Instructor not found');
+    }
 
-        // Verify the user has an instructor role
-        if (!instructorData.instructor.role?.includes('instructor')) {
-            throw error(404, 'Instructor not found');
-        }
+    // Verify the user has an instructor role
+    if (!instructorData.instructor.role?.includes('instructor')) {
+        throw error(404, 'Instructor not found');
+    }
 
-        // Check if profile is published (only admins or the instructor themselves can view unpublished)
-        const isOwnProfile = event.locals.user?.id === instructorId;
-        const isAdmin = event.locals.user?.role === 'admin';
-        if (!instructorData.instructor.isPublished && !isOwnProfile && !isAdmin) {
-            throw error(404, 'Instructor not found');
-        }
+    // Check if profile is published (only admins or the instructor themselves can view unpublished)
+    const isOwnProfile = event.locals.user?.id === instructorId;
+    const isAdmin = event.locals.user?.role === 'admin';
+    if (!instructorData.instructor.isPublished && !isOwnProfile && !isAdmin) {
+        throw error(404, 'Instructor not found');
+    }
 
-        // Validate slug and redirect to canonical URL if incorrect
-        const instructor = instructorData.instructor;
-        const isValidSlug = validateInstructorSlug(
-            event.params.slug,
+    // Validate slug and redirect to canonical URL if incorrect
+    const instructor = instructorData.instructor;
+    const isValidSlug = validateInstructorSlug(
+        event.params.slug,
+        instructor.id,
+        instructor.name,
+        instructor.lastName
+    );
+
+    if (!isValidSlug) {
+        // Generate correct slug and redirect
+        const correctSlug = generateInstructorSlug(
             instructor.id,
             instructor.name,
             instructor.lastName
         );
+        const locale = event.url.pathname.split('/')[1]; // Extract locale from URL
+        throw redirect(301, `/${locale}/instructors/${correctSlug}`);
+    }
 
-        if (!isValidSlug) {
-            // Generate correct slug and redirect
-            const correctSlug = generateInstructorSlug(
-                instructor.id,
-                instructor.name,
-                instructor.lastName
-            );
-            const locale = event.url.pathname.split('/')[1]; // Extract locale from URL
-            throw redirect(301, `/${locale}/instructors/${correctSlug}`);
-        }
-
+    try {
         // Get sports, resorts, and reviews in parallel
         const [sportIds, resorts, reviews, reviewStats] = await Promise.all([
             instructorService.getInstructorSports(instructorId),

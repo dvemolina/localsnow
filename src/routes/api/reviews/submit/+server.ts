@@ -77,6 +77,14 @@ export const POST: RequestHandler = async (event) => {
 			})
 			.returning();
 
+		console.log('✅ Review created:', {
+			reviewId: review.id,
+			instructorId: review.instructorId,
+			rating: review.rating,
+			isPublished: review.isPublished,
+			isVerified: review.isVerified
+		});
+
 		// Update booking with review submission timestamp
 		await db
 			.update(bookingRequests)

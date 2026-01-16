@@ -50,7 +50,7 @@ export class ReviewRepository {
 	 * Get all published reviews for an instructor
 	 */
 	async getInstructorReviews(instructorId: number, limit = 10, offset = 0) {
-		return await db
+		const reviews = await db
 			.select()
 			.from(instructorReviews)
 			.where(
@@ -62,6 +62,13 @@ export class ReviewRepository {
 			.orderBy(desc(instructorReviews.createdAt))
 			.limit(limit)
 			.offset(offset);
+
+		console.log(`📊 getInstructorReviews for instructor ${instructorId}:`, {
+			count: reviews.length,
+			reviews: reviews.map(r => ({ id: r.id, rating: r.rating, isPublished: r.isPublished }))
+		});
+
+		return reviews;
 	}
 
 	/**
