@@ -1,7 +1,7 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { db } from '$lib/server/db';
-import { bookingRequests, instructorReviews } from '$lib/server/db/schema';
+import { bookingRequests, instructorReviews, users } from '$lib/server/db/schema';
 import { eq, and, isNull } from 'drizzle-orm';
 import { ExpiringTokenBucket } from '$lib/server/rate-limit';
 import { getClientIP } from '$lib/utils/auth';
@@ -56,6 +56,20 @@ export const POST: RequestHandler = async (event) => {
 
 		if (!booking) {
 			return json({ error: 'Review link not found, expired, or already used' }, { status: 404 });
+		}
+
+		// Prevent instructors from reviewing themselves
+		const [instructor] = await db
+			.select({ email: users.email })
+			.from(users)
+			.where(eq(users.id, booking.instructorId))
+			.limit(1);
+
+		if (instructor && instructor.email.toLowerCase() === booking.clientEmail.toLowerCase()) {
+			return json(
+				{ error: 'Instructors cannot review themselves' },
+				{ status: 403 }
+			);
 		}
 
 		// Start transaction to create review and update booking

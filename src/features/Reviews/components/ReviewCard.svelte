@@ -10,9 +10,15 @@
 		return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 	}
 
-	// Get client initials for avatar
-	const clientInitials = review.clientEmail
-		.split('@')[0]
+	// Get reviewer display name (privacy-friendly)
+	// If we have clientName, show it; otherwise use email prefix
+	const reviewerName = review.clientName || review.clientEmail.split('@')[0];
+
+	// Get initials from name
+	const clientInitials = reviewerName
+		.split(' ')
+		.map(n => n[0])
+		.join('')
 		.substring(0, 2)
 		.toUpperCase();
 </script>
@@ -30,6 +36,7 @@
 		<div class="flex-1">
 			<div class="mb-2 flex items-center justify-between">
 				<div class="flex items-center gap-2">
+					<span class="text-sm font-semibold">{reviewerName}</span>
 					<RatingInput value={review.rating} readonly={true} size={16} />
 					{#if review.isVerified}
 						<span class="text-xs text-muted-foreground">✓ Verified</span>
