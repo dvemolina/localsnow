@@ -144,13 +144,52 @@
 					<div>
 						<h1 class="text-2xl font-bold mb-2">Thank You!</h1>
 						<p class="text-muted-foreground">
-							Your review has been submitted successfully. It will be published on {data.booking
-								.instructorName}'s profile after verification.
+							Your review has been submitted successfully and will appear on {data.booking
+								.instructorName}'s profile.
 						</p>
 					</div>
-					<Button onclick={() => goto(`/instructors/${data.booking.instructorSlug}`)}>
-						View Instructor Profile
-					</Button>
+
+					<div class="flex flex-col gap-2 w-full max-w-sm">
+						<Button onclick={() => goto(`/instructors/${data.booking.instructorSlug}`)}>
+							View Instructor Profile
+						</Button>
+
+						{#if !data.user}
+							<!-- Sign-up CTA for anonymous reviewers -->
+							<div class="mt-4 rounded-lg border border-primary/20 bg-primary/5 p-4">
+								<div class="flex items-start gap-3">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="size-5 shrink-0 text-primary mt-0.5"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M13 10V3L4 14h7v7l9-11h-7z"
+										/>
+									</svg>
+									<div class="flex-1 text-left">
+										<h3 class="text-sm font-semibold mb-1">Want to build your ski profile?</h3>
+										<p class="text-xs text-muted-foreground mb-3">
+											Create an account to showcase your reviews, get matched with instructors, and track your ski journey.
+										</p>
+										<Button
+											variant="outline"
+											size="sm"
+											class="w-full"
+											onclick={() => goto(`/register?from=review&email=${encodeURIComponent(data.booking.clientEmail)}`)}
+										>
+											Create Free Account
+										</Button>
+									</div>
+								</div>
+							</div>
+						{/if}
+					</div>
 				</div>
 			</Card.Content>
 		</Card.Root>
@@ -298,10 +337,25 @@
 			</Card.Content>
 		</Card.Root>
 
-		<!-- Privacy Notice -->
-		<p class="mt-6 text-center text-xs text-muted-foreground">
-			Your review will be verified and published on the instructor's profile. Your email address will
-			not be publicly displayed.
-		</p>
+		<!-- Privacy Notice & Sign-up Hint -->
+		<div class="mt-6 space-y-3">
+			<p class="text-center text-xs text-muted-foreground">
+				Your review will be verified and published on the instructor's profile. Your email address will
+				not be publicly displayed.
+			</p>
+
+			{#if !data.user}
+				<!-- Subtle sign-up hint for anonymous users -->
+				<div class="mx-auto max-w-md rounded-md border border-muted bg-muted/30 px-4 py-3">
+					<p class="text-center text-xs text-muted-foreground">
+						💡 <strong>Pro tip:</strong>
+						<a href="/register?from=review&email={encodeURIComponent(data.booking.clientEmail)}" class="text-primary hover:underline">
+							Create an account
+						</a>
+						to showcase your review with your profile picture and build your ski profile!
+					</p>
+				</div>
+			{/if}
+		</div>
 	{/if}
 </div>

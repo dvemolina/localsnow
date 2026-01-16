@@ -58,7 +58,20 @@ export const POST: RequestHandler = async (event) => {
 			return json({ error: 'Review link not found, expired, or already used' }, { status: 404 });
 		}
 
+		// Check if user is logged in (hybrid system: token + account)
+		const loggedInUser = event.locals.user;
+		const reviewerId = loggedInUser?.id || null;
+
 		// Prevent instructors from reviewing themselves
+		// Priority: Check userId first (more reliable), then email (for anonymous)
+		if (loggedInUser && loggedInUser.id === booking.instructorId) {
+			return json(
+				{ error: 'Instructors cannot review themselves' },
+				{ status: 403 }
+			);
+		}
+
+		// Also check email for anonymous reviews
 		const [instructor] = await db
 			.select({ email: users.email })
 			.from(users)
@@ -74,10 +87,6 @@ export const POST: RequestHandler = async (event) => {
 
 		// Start transaction to create review and update booking
 		const now = new Date();
-
-		// Check if user is logged in (hybrid system: token + account)
-		const loggedInUser = event.locals.user;
-		const reviewerId = loggedInUser?.id || null;
 
 		// If logged in, use account profile data; otherwise use booking data
 		const reviewerName = loggedInUser?.name

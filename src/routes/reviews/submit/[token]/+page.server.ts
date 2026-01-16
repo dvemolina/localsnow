@@ -5,7 +5,7 @@ import { bookingRequests, users } from '$lib/server/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { generateInstructorSlug } from '$lib/utils/slug';
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params, locals }) => {
 	const { token } = params;
 
 	if (!token || token.length < 32) {
@@ -53,6 +53,7 @@ export const load: PageServerLoad = async ({ params }) => {
 		return {
 			token,
 			alreadySubmitted: !!booking.reviewSubmittedAt,
+			user: locals.user || null, // Pass user to show/hide sign-up CTA
 			booking: {
 				id: booking.id,
 				instructorId: booking.instructorId,
