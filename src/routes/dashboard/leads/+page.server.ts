@@ -21,7 +21,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
 	try {
 		// Fetch all leads for this instructor
-		const allLeads = await leadService.getLeadsByInstructor(user.id);
+		const allLeads = await leadService.getInstructorLeads(user.id);
 
 		// Filter leads based on status
 		let filteredLeads = allLeads;
