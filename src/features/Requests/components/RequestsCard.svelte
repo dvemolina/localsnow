@@ -2,7 +2,7 @@
 	import * as Card from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
-	import * as Select from '$lib/components/ui/select';
+	import StatusSelect from '$lib/components/shared/StatusSelect.svelte';
 	import { toast } from 'svelte-sonner';
 	import { t } from '$lib/i18n/i18n';
 	import { invalidateAll } from '$app/navigation';
@@ -306,27 +306,15 @@
 							<!-- Status Actions -->
 							<div class="flex flex-col gap-2">
 								{#if type === 'lead'}
-									<Select.Root
-										type="single"
-										selected={{
-											value: currentStatus,
-											label: getStatusLabel(currentStatus)
+									<StatusSelect
+										currentStatus={request.status}
+										statuses={statusConfig.lead.statuses}
+										onStatusChange={async (newStatus) => {
+											await updateStatus(request.id, newStatus);
 										}}
-										onSelectedChange={async (selected) => {
-											if (selected?.value && selected.value !== request.status) {
-												await updateStatus(request.id, selected.value);
-											}
-										}}
-									>
-										<Select.Trigger class="w-[150px]" disabled={updatingRequestId === request.id}>
-											<Select.Value placeholder="Select status" />
-										</Select.Trigger>
-										<Select.Content>
-											{#each statusConfig.lead.statuses as status}
-												<Select.Item value={status.value}>{status.label}</Select.Item>
-											{/each}
-										</Select.Content>
-									</Select.Root>
+										disabled={updatingRequestId === request.id}
+										isUpdating={updatingRequestId === request.id}
+									/>
 								{:else if onViewDetails}
 									<Button
 										onclick={() => onViewDetails(request)}

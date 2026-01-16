@@ -6,7 +6,7 @@
 	import { formatDate } from '$src/lib/utils/generics';
 	import { enhance } from '$app/forms';
 	import { t } from '$lib/i18n/i18n';
-	import * as Select from '$lib/components/ui/select';
+	import StatusSelect from '$lib/components/shared/StatusSelect.svelte';
 	import { toast } from 'svelte-sonner';
 	import { invalidateAll } from '$app/navigation';
 
@@ -84,6 +84,14 @@
 	};
 
 	const timeSlots = $derived(type === 'booking' ? formatTimeSlots(request.timeSlots || '[]') : []);
+
+	const leadStatusOptions = $derived([
+		{ value: 'new', label: $t('status_new') || 'New' },
+		{ value: 'contacted', label: $t('status_contacted') || 'Contacted' },
+		{ value: 'converted', label: $t('status_converted') || 'Converted' },
+		{ value: 'spam', label: $t('status_spam') || 'Spam' }
+	]);
+
 	const bookingStatusOptions = $derived([
 		{ value: 'pending', label: $t('status_pending_review') || 'Pending Review' },
 		{ value: 'viewed', label: $t('status_unlocked') || 'Unlocked' },
@@ -429,54 +437,25 @@
 				<!-- Lead Actions: Status Dropdown -->
 				<div class="space-y-3">
 					<h3 class="text-sm font-semibold">{$t('label_update_status') || 'Update Status'}</h3>
-					<Select.Root
-						type="single"
-						selected={{
-							value: request.status,
-							label: statusConfig[request.status]?.label || request.status
-						}}
-						onSelectedChange={async (selected) => {
-							if (selected?.value && selected.value !== request.status) {
-								await updateLeadStatus(selected.value);
-							}
-						}}
-					>
-						<Select.Trigger disabled={updatingStatus}>
-							<Select.Value />
-						</Select.Trigger>
-						<Select.Content>
-							<Select.Item value="new">{$t('status_new') || 'New'}</Select.Item>
-							<Select.Item value="contacted">{$t('status_contacted') || 'Contacted'}</Select.Item>
-							<Select.Item value="converted">{$t('status_converted') || 'Converted'}</Select.Item>
-							<Select.Item value="spam">{$t('status_spam') || 'Spam'}</Select.Item>
-						</Select.Content>
-					</Select.Root>
+					<StatusSelect
+						currentStatus={request.status}
+						statuses={leadStatusOptions}
+						onStatusChange={updateLeadStatus}
+						disabled={updatingStatus}
+						isUpdating={updatingStatus}
+					/>
 				</div>
 			{:else}
 				<!-- Booking Actions: Status Dropdown -->
 				<div class="space-y-3">
 					<h3 class="text-sm font-semibold">{$t('label_update_status') || 'Update Status'}</h3>
-					<Select.Root
-						type="single"
-						selected={{
-							value: request.status,
-							label: bookingStatusOptions.find((option) => option.value === request.status)?.label || request.status
-						}}
-						onSelectedChange={async (selected) => {
-							if (selected?.value && selected.value !== request.status) {
-								await updateBookingStatus(selected.value);
-							}
-						}}
-					>
-						<Select.Trigger disabled={updatingBookingStatus || isInactiveBooking}>
-							<Select.Value />
-						</Select.Trigger>
-						<Select.Content>
-							{#each bookingStatusOptions as status}
-								<Select.Item value={status.value}>{status.label}</Select.Item>
-							{/each}
-						</Select.Content>
-					</Select.Root>
+					<StatusSelect
+						currentStatus={request.status}
+						statuses={bookingStatusOptions}
+						onStatusChange={updateBookingStatus}
+						disabled={updatingBookingStatus || isInactiveBooking}
+						isUpdating={updatingBookingStatus}
+					/>
 				</div>
 
 				{#if request.status === 'pending' && !isInactiveBooking}
