@@ -30,6 +30,12 @@ const rateLimitHandle: Handle = async ({ event, resolve }) => {
 	return resolve(event);
 };
 
+const loggingHandle: Handle = async ({ event, resolve }) => {
+	const response = await resolve(event);
+	console.log('[Request]', event.request.method, event.url.pathname, '->', response.status);
+	return response;
+};
+
 /**
  * Handle for language detection and redirects
  * Ensures users are redirected to properly localized URLs
@@ -138,6 +144,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 export const handle: Handle = sequence(
+	loggingHandle,
 	languageHandle, // Run language redirect BEFORE Sentry to avoid catching redirect errors
 	Sentry.sentryHandle(),
 	sequence(rateLimitHandle, i18nHandle, handleAuth)
