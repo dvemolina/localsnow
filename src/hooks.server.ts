@@ -66,7 +66,9 @@ const languageHandle: Handle = async ({ event, resolve }) => {
 		}
 
 		// Redirect to localized URL
+		console.log('[Language Redirect] Redirecting', pathname, 'to locale:', preferredLocale);
 		const localizedUrl = route(pathname, preferredLocale);
+		console.log('[Language Redirect] Computed URL:', localizedUrl);
 		throw redirect(307, localizedUrl);
 	}
 
