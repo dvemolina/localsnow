@@ -67,9 +67,15 @@ const languageHandle: Handle = async ({ event, resolve }) => {
 
 		// Redirect to localized URL
 		console.log('[Language Redirect] Redirecting', pathname, 'to locale:', preferredLocale);
-		const localizedUrl = route(pathname, preferredLocale);
-		console.log('[Language Redirect] Computed URL:', localizedUrl);
-		throw redirect(307, localizedUrl);
+		try {
+			const localizedUrl = route(pathname, preferredLocale);
+			console.log('[Language Redirect] Computed URL:', localizedUrl);
+			console.log('[Language Redirect] About to throw redirect...');
+			throw redirect(307, localizedUrl);
+		} catch (error) {
+			console.error('[Language Redirect] Error during redirect:', error);
+			throw error; // Re-throw to let SvelteKit handle it
+		}
 	}
 
 	// Set locale cookie for future visits
@@ -131,7 +137,8 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 export const handle: Handle = sequence(
+	languageHandle, // Run language redirect BEFORE Sentry to avoid catching redirect errors
 	Sentry.sentryHandle(),
-	sequence(rateLimitHandle, languageHandle, i18nHandle, handleAuth)
+	sequence(rateLimitHandle, i18nHandle, handleAuth)
 );
 export const handleError = Sentry.handleErrorWithSentry();
