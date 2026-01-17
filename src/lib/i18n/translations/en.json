@@ -370,7 +370,7 @@
 	"bookings_empty_state_rejected": "No rejected requests.",
 	"bookings_how_it_works_title": "How Lesson Requests Work",
 	"bookings_unlock_info": "Pay €5 to unlock a client's contact information and respond to their request. This one-time fee gives you direct access to connect with potential students.",
-	"choose_role_welcome": "Welcome, {name}!",
+	"choose_role_welcome": "Welcome,",
 	"choose_role_subtitle": "Choose your account type to get started on Local Snow",
 	"choose_role_note_heading": "Note:",
 	"choose_role_note_text": "You won't be able to change your account type later. If you need to change it, please contact our support team.",

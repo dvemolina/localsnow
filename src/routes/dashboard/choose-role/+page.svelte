@@ -14,7 +14,7 @@
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
 					</svg>
 				</div>
-				<h1 class="title2 mb-2">{$t('choose_role_welcome')}</h1>
+				<h1 class="title2 mb-2">{$t('choose_role_welcome')} {user.name}!</h1>
 				<p class="text-muted-foreground">
 					{$t('choose_role_subtitle')}
 				</p>
