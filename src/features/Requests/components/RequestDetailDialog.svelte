@@ -182,6 +182,12 @@
 	async function generateReviewLink() {
 		if (type !== 'booking' || request.status !== 'completed') return;
 
+		// Check if email exists (important for manual bookings)
+		if (!request.clientEmail) {
+			toast.error($t('error_client_email_required_review_link') || 'Client email is required to generate review link. Please add it first.');
+			return;
+		}
+
 		isGeneratingReviewLink = true;
 		try {
 			const response = await fetch(`/api/bookings/${request.id}/review-token`, {
@@ -190,7 +196,7 @@
 
 			if (!response.ok) {
 				const error = await response.json();
-				toast.error(error.error || 'Failed to generate review link');
+				toast.error(error.error || $t('error_generate_review_link_failed') || 'Failed to generate review link');
 				return;
 			}
 
@@ -199,10 +205,10 @@
 
 			// Copy to clipboard
 			await navigator.clipboard.writeText(result.reviewUrl);
-			toast.success('Review link copied to clipboard!');
+			toast.success($t('success_review_link_copied') || 'Review link copied to clipboard!');
 		} catch (error) {
 			console.error('Error generating review link:', error);
-			toast.error('Failed to generate review link');
+			toast.error($t('error_generate_review_link_failed') || 'Failed to generate review link');
 		} finally {
 			isGeneratingReviewLink = false;
 		}
@@ -220,15 +226,15 @@
 
 			if (!response.ok) {
 				const error = await response.json();
-				throw new Error(error?.message || 'Failed to delete booking');
+				throw new Error(error?.message || $t('error_delete_booking_failed') || 'Failed to delete booking');
 			}
 
-			toast.success('Booking deleted successfully');
+			toast.success($t('success_booking_deleted') || 'Booking deleted successfully');
 			await invalidateAll();
 			open = false;
 		} catch (error) {
 			console.error('Error deleting booking:', error);
-			toast.error('Failed to delete booking');
+			toast.error($t('error_delete_booking_failed') || 'Failed to delete booking');
 		} finally {
 			isDeleting = false;
 			showDeleteConfirm = false;
@@ -242,7 +248,7 @@
 			<Dialog.Title class="flex items-center gap-2 flex-wrap">
 				{type === 'lead'
 					? ($t('lead_details_title') || 'Contact Inquiry Details')
-					: 'Booking Request Details'}
+					: ($t('booking_request_details_title') || 'Booking Request Details')}
 				<Badge class="{statusInfo.color} border">
 					{statusInfo.label}
 				</Badge>
@@ -255,11 +261,11 @@
 			<Dialog.Description>
 				{type === 'lead'
 					? ($t('lead_details_description') || 'Review the inquiry and update its status')
-					: 'Review the booking details and take action'}
+					: ($t('booking_request_details_description') || 'Review the booking details and take action')}
 			</Dialog.Description>
 			{#if request.createdAt}
 				<p class="text-xs text-muted-foreground mt-2">
-					{type === 'lead' ? 'Received' : 'Created'}: {new Date(request.createdAt).toLocaleString()}
+					{type === 'lead' ? ($t('label_received') || 'Received') : ($t('label_created') || 'Created')}: {new Date(request.createdAt).toLocaleString()}
 				</p>
 			{/if}
 		</Dialog.Header>
@@ -295,11 +301,11 @@
 									: 'text-red-900'}"
 							>
 								{#if request.status === 'cancelled'}
-									Booking Cancelled by Client
+									{$t('booking_cancelled_by_client_title') || 'Booking Cancelled by Client'}
 								{:else if request.status === 'expired'}
-									Booking Expired
+									{$t('booking_expired_title') || 'Booking Expired'}
 								{:else}
-									Booking Rejected
+									{$t('booking_rejected_title') || 'Booking Rejected'}
 								{/if}
 							</h3>
 							<p
@@ -308,11 +314,11 @@
 									: 'text-red-600'} mt-1"
 							>
 								{#if request.status === 'cancelled'}
-									The client has cancelled this booking request.
+									{$t('booking_cancelled_by_client_description') || 'The client has cancelled this booking request.'}
 								{:else if request.status === 'expired'}
-									This booking request has expired.
+									{$t('booking_expired_description') || 'This booking request has expired.'}
 								{:else}
-									You have rejected this booking request.
+									{$t('booking_rejected_description') || 'You have rejected this booking request.'}
 								{/if}
 							</p>
 						</div>
@@ -405,32 +411,32 @@
 			{:else}
 				<!-- Booking Lesson Details -->
 				<div>
-					<h3 class="mb-3 font-semibold">Lesson Details</h3>
+					<h3 class="mb-3 font-semibold">{$t('label_lesson_details') || 'Lesson Details'}</h3>
 					<div class="grid gap-4 sm:grid-cols-2 text-sm">
 						<div>
-							<span class="text-muted-foreground">Start Date:</span>
+							<span class="text-muted-foreground">{$t('label_start_date') || 'Start Date'}:</span>
 							<p class="font-medium">{formatDate(new Date(request.startDate))}</p>
 						</div>
 						{#if request.endDate}
 							<div>
-								<span class="text-muted-foreground">End Date:</span>
+								<span class="text-muted-foreground">{$t('label_end_date') || 'End Date'}:</span>
 								<p class="font-medium">{formatDate(new Date(request.endDate))}</p>
 							</div>
 						{/if}
 						<div>
-							<span class="text-muted-foreground">Number of Students:</span>
+							<span class="text-muted-foreground">{$t('label_number_of_students') || 'Number of Students'}:</span>
 							<p class="font-medium">{request.numberOfStudents}</p>
 						</div>
 						<div>
-							<span class="text-muted-foreground">Hours per Day:</span>
+							<span class="text-muted-foreground">{$t('label_hours_per_day') || 'Hours per Day'}:</span>
 							<p class="font-medium">{request.hoursPerDay}h</p>
 						</div>
 						<div>
-							<span class="text-muted-foreground">Skill Level:</span>
+							<span class="text-muted-foreground">{$t('label_skill_level') || 'Skill Level'}:</span>
 							<p class="font-medium capitalize">{request.skillLevel}</p>
 						</div>
 						<div>
-							<span class="text-muted-foreground">Sports:</span>
+							<span class="text-muted-foreground">{$t('filter_sport') || 'Sports'}:</span>
 							<div class="mt-1 flex flex-wrap gap-1">
 								{#each request.sports as sport}
 									<Badge variant="outline" class="text-xs">
@@ -461,13 +467,13 @@
 				{#if request.estimatedPrice}
 					<div class="rounded-lg bg-muted/50 p-4">
 						<div class="flex items-center justify-between">
-							<span class="font-medium">Estimated Price:</span>
+							<span class="font-medium">{$t('label_estimated_price_title') || 'Estimated Price:'}</span>
 							<span class="text-2xl font-bold text-primary">
 								{request.estimatedPrice}{request.currency}
 							</span>
 						</div>
 						<p class="mt-1 text-xs text-muted-foreground">
-							This is an estimate. You can negotiate the final price with the client.
+							{$t('estimated_price_help_text') || 'This is an estimate. You can negotiate the final price with the client.'}
 						</p>
 					</div>
 				{/if}
@@ -578,7 +584,7 @@
 									<svg class="size-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
 									</svg>
-									Edit
+									{$t('button_edit') || 'Edit'}
 								</Button>
 								<!-- Delete Button -->
 								{#if request.status === 'accepted'}
@@ -591,7 +597,7 @@
 										<svg class="size-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
 										</svg>
-										Delete
+										{$t('button_delete') || 'Delete'}
 									</Button>
 								{/if}
 							</div>
@@ -618,12 +624,10 @@
 									d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
 								/>
 							</svg>
-							<span class="font-semibold">Next Steps</span>
+							<span class="font-semibold">{$t('next_steps_title') || 'Next Steps'}</span>
 						</div>
 						<p class="text-sm text-blue-700 mb-3">
-							Review the booking details and contact the client directly using the information above.
-							You can accept this request to confirm your availability, or reject it if you're not
-							interested.
+							{$t('next_steps_description') || 'Review the booking details and contact the client directly using the information above. You can accept this request to confirm your availability, or reject it if you\'re not interested.'}
 						</p>
 						<div class="flex gap-3">
 							<form
@@ -650,7 +654,7 @@
 							>
 								<input type="hidden" name="bookingId" value={request.id} />
 								<Button type="submit" class="w-full" disabled={isSubmitting}>
-									{isSubmitting ? 'Accepting...' : 'Accept Request'}
+									{isSubmitting ? ($t('button_accepting') || 'Accepting...') : ($t('button_accept_request') || 'Accept Request')}
 								</Button>
 							</form>
 							<Button
@@ -659,7 +663,7 @@
 								onclick={() => (showRejectConfirm = true)}
 								disabled={isSubmitting}
 							>
-								Reject
+								{$t('button_reject') || 'Reject'}
 							</Button>
 						</div>
 					</div>
@@ -675,10 +679,10 @@
 									d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 8 8 0 0118 0z"
 								/>
 							</svg>
-							<span class="font-semibold">Request a Review</span>
+							<span class="font-semibold">{$t('request_review_title') || 'Request a Review'}</span>
 						</div>
 						<p class="text-sm text-green-700 mb-3">
-							This booking is completed! Generate a review link to send to {request.clientName} so they can leave feedback about their experience.
+							{$t('request_review_description', { clientName: request.clientName }) || `This booking is completed! Generate a review link to send to ${request.clientName} so they can leave feedback about their experience.`}
 						</p>
 						<Button
 							onclick={generateReviewLink}
@@ -706,7 +710,7 @@
 										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
 									></path>
 								</svg>
-								Generating...
+								{$t('button_generating') || 'Generating...'}
 							{:else}
 								<svg
 									class="mr-2 size-4"
@@ -722,15 +726,15 @@
 										d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
 									/>
 								</svg>
-								Generate Review Link
+								{$t('button_generate_review_link') || 'Generate Review Link'}
 							{/if}
 						</Button>
 						{#if reviewUrl}
 							<div class="mt-3 rounded-md bg-white p-3 border">
-								<p class="text-xs font-medium text-muted-foreground mb-1">Review Link (copied to clipboard):</p>
+								<p class="text-xs font-medium text-muted-foreground mb-1">{$t('review_link_copied_title') || 'Review Link (copied to clipboard):'}</p>
 								<p class="text-xs break-all font-mono">{reviewUrl}</p>
 								<p class="text-xs text-muted-foreground mt-2">
-									Send this link to {request.clientEmail} via email or WhatsApp
+									{$t('review_link_instruction', { clientEmail: request.clientEmail }) || `Send this link to ${request.clientEmail} via email or WhatsApp`}
 								</p>
 							</div>
 						{/if}
@@ -747,10 +751,10 @@
 									d="M5 13l4 4L19 7"
 								/>
 							</svg>
-							<span class="font-semibold">Review Submitted</span>
+							<span class="font-semibold">{$t('review_already_submitted_title') || 'Review Submitted'}</span>
 						</div>
 						<p class="text-sm text-gray-600 mt-2">
-							{request.clientName} submitted a review on {new Date(request.reviewSubmittedAt).toLocaleDateString()}
+							{$t('review_already_submitted_description', { clientName: request.clientName, date: new Date(request.reviewSubmittedAt).toLocaleDateString() }) || `${request.clientName} submitted a review on ${new Date(request.reviewSubmittedAt).toLocaleDateString()}`}
 						</p>
 					</div>
 				{/if}
@@ -764,9 +768,9 @@
 	<Dialog.Root bind:open={showRejectConfirm}>
 		<Dialog.Content class="sm:max-w-md">
 			<Dialog.Header>
-				<Dialog.Title>Reject Booking Request?</Dialog.Title>
+				<Dialog.Title>{$t('reject_booking_title') || 'Reject Booking Request?'}</Dialog.Title>
 				<Dialog.Description>
-					Are you sure you want to reject this booking request?
+					{$t('reject_booking_description') || 'Are you sure you want to reject this booking request?'}
 				</Dialog.Description>
 			</Dialog.Header>
 
@@ -789,12 +793,12 @@
 							/>
 						</svg>
 						<div class="text-sm text-amber-800 dark:text-amber-200">
-							<p class="font-semibold mb-1">Important Information:</p>
+							<p class="font-semibold mb-1">{$t('reject_booking_warning_title') || 'Important Information:'}</p>
 							<ul class="list-disc list-inside space-y-1">
-								<li>This action cannot be undone</li>
-								<li>The client will be notified</li>
-								<li>You won't be able to see this request again</li>
-								<li>The time slots will be released back to your calendar</li>
+								<li>{$t('reject_booking_warning_1') || 'This action cannot be undone'}</li>
+								<li>{$t('reject_booking_warning_2') || 'The client will be notified'}</li>
+								<li>{$t('reject_booking_warning_3') || 'You won\'t be able to see this request again'}</li>
+								<li>{$t('reject_booking_warning_4') || 'The time slots will be released back to your calendar'}</li>
 							</ul>
 						</div>
 					</div>
@@ -802,7 +806,7 @@
 			</div>
 
 			<div class="flex gap-3 justify-end">
-				<Button variant="outline" onclick={() => (showRejectConfirm = false)}> Cancel </Button>
+				<Button variant="outline" onclick={() => (showRejectConfirm = false)}>{$t('button_cancel') || 'Cancel'}</Button>
 
 				<form
 					method="POST"
@@ -825,7 +829,7 @@
 				>
 					<input type="hidden" name="bookingId" value={request.id} />
 					<Button type="submit" variant="destructive" disabled={isSubmitting}>
-						{isSubmitting ? 'Rejecting...' : 'Yes, Reject Booking'}
+						{isSubmitting ? ($t('button_rejecting') || 'Rejecting...') : ($t('button_yes_reject_booking') || 'Yes, Reject Booking')}
 					</Button>
 				</form>
 			</div>
@@ -836,9 +840,9 @@
 	<Dialog.Root bind:open={showDeleteConfirm}>
 		<Dialog.Content class="sm:max-w-md">
 			<Dialog.Header>
-				<Dialog.Title>Delete Manual Booking?</Dialog.Title>
+				<Dialog.Title>{$t('delete_manual_booking_title') || 'Delete Manual Booking?'}</Dialog.Title>
 				<Dialog.Description>
-					Are you sure you want to permanently delete this manual booking?
+					{$t('delete_manual_booking_description') || 'Are you sure you want to permanently delete this manual booking?'}
 				</Dialog.Description>
 			</Dialog.Header>
 
@@ -861,19 +865,19 @@
 							/>
 						</svg>
 						<div class="text-sm text-red-800 dark:text-red-200">
-							<p class="font-semibold mb-1">Warning:</p>
+							<p class="font-semibold mb-1">{$t('delete_booking_warning_title') || 'Warning:'}</p>
 							<ul class="list-disc list-inside space-y-1">
-								<li>This action cannot be undone</li>
-								<li>The booking will be permanently removed</li>
-								<li>All booking data will be deleted</li>
-								<li>This won't affect any completed reviews</li>
+								<li>{$t('delete_booking_warning_1') || 'This action cannot be undone'}</li>
+								<li>{$t('delete_booking_warning_2') || 'The booking will be permanently removed'}</li>
+								<li>{$t('delete_booking_warning_3') || 'All booking data will be deleted'}</li>
+								<li>{$t('delete_booking_warning_4') || 'This won\'t affect any completed reviews'}</li>
 							</ul>
 						</div>
 					</div>
 				</div>
 
 				<div class="rounded-lg bg-muted p-3 text-sm">
-					<p class="font-medium mb-1">Booking Details:</p>
+					<p class="font-medium mb-1">{$t('delete_booking_details_title') || 'Booking Details:'}</p>
 					<p class="text-muted-foreground">
 						<strong>{request.clientName}</strong><br />
 						{formatDate(new Date(request.startDate))}
@@ -886,7 +890,7 @@
 
 			<div class="flex gap-3 justify-end">
 				<Button variant="outline" onclick={() => (showDeleteConfirm = false)} disabled={isDeleting}>
-					Cancel
+					{$t('button_cancel') || 'Cancel'}
 				</Button>
 				<Button variant="destructive" onclick={deleteBooking} disabled={isDeleting}>
 					{#if isDeleting}
@@ -910,9 +914,9 @@
 								d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
 							></path>
 						</svg>
-						Deleting...
+						{$t('button_deleting') || 'Deleting...'}
 					{:else}
-						Yes, Delete Booking
+						{$t('button_yes_delete_booking') || 'Yes, Delete Booking'}
 					{/if}
 				</Button>
 			</div>
