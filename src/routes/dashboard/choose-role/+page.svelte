@@ -14,16 +14,16 @@
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
 					</svg>
 				</div>
-				<h1 class="title2 mb-2">{$t('choose_role_choose_role_welcome')}</h1>
+				<h1 class="title2 mb-2">{$t('choose_role_welcome')}</h1>
 				<p class="text-muted-foreground">
-					{$t('choose_role_choose_role_subtitle')}
+					{$t('choose_role_subtitle')}
 				</p>
 			</div>
 
 			<div class="space-y-4">
                 <div class="flex flex-col gap-2 items-center justify-center">
-                    <a href={route('/dashboard/choose-role/default-user')} class=" w-full {buttonVariants({ variant: "default" })}" >{$t('choose_role_role_student')}</a>
-                    <a href={route('/dashboard/choose-role/instructor')} class="w-full {buttonVariants({ variant: "default" })}">{$t('choose_role_role_instructor')}</a>
+                    <a href={route('/dashboard/choose-role/default-user')} class=" w-full {buttonVariants({ variant: "default" })}" >{$t('role_student')}</a>
+                    <a href={route('/dashboard/choose-role/instructor')} class="w-full {buttonVariants({ variant: "default" })}">{$t('role_instructor')}</a>
                     <a href={route('/dashboard/choose-role/school-admin')} class="w-full {buttonVariants({ variant: "default" })}"> {$t('role_school_admin')}</a>
             </div>
 			</div>
@@ -34,7 +34,7 @@
 						<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
 					</svg>
 					<p class="text-sm text-blue-800 dark:text-blue-200">
-						<strong>{$t('choose_role_choose_role_note_heading')}</strong> {$t('choose_role_choose_role_note_text')}
+						<strong>{$t('choose_role_note_heading')}</strong> {$t('choose_role_note_text')}
 					</p>
 				</div>
 			</div>
