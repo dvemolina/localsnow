@@ -224,8 +224,14 @@ services:
         - "traefik.http.middlewares.localsnow-www-redirect.redirectregex.replacement=https://localsnow.org/$${1}"
         - "traefik.http.middlewares.localsnow-www-redirect.redirectregex.permanent=true"
 
+        # Buffering Middleware - Allow larger request bodies (20MB for file uploads)
+        - "traefik.http.middlewares.localsnow-buffering.buffering.maxRequestBodyBytes=20000000"
+        - "traefik.http.middlewares.localsnow-buffering.buffering.memRequestBodyBytes=2000000"
+        - "traefik.http.middlewares.localsnow-buffering.buffering.maxResponseBodyBytes=20000000"
+        - "traefik.http.middlewares.localsnow-buffering.buffering.memResponseBodyBytes=2000000"
+
         # Apply all middlewares to router
-        - "traefik.http.routers.localsnow.middlewares=localsnow-www-redirect,localsnow-security"
+        - "traefik.http.routers.localsnow.middlewares=localsnow-www-redirect,localsnow-security,localsnow-buffering"
 
         # Docker Swarm specific - use overlay network
         - "traefik.docker.network=proxy"

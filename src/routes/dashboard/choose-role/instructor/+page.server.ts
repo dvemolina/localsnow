@@ -34,51 +34,61 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
     default: async (event)=> {
+        console.log('[Instructor Signup] Starting form submission');
         const user = requireAuth(event, 'Session Expired. Login again to proceed')
         const form = await superValidate(event.request, zod(instructorSignupSchema));
 
         const clientIP = getClientIP(event);
         if (clientIP !== null && !ipBucket.check(clientIP, 1)) {
+            console.log('[Instructor Signup] Rate limit exceeded for IP:', clientIP);
             return fail(429, {
                 message: "Too many requests"
             });
         }
-        
+
         if (!form.valid) {
+            console.log('[Instructor Signup] Form validation failed:', form.errors);
             return fail(400, { form })
         }
 
-        console.log('Sent Form: ', form)
+        console.log('[Instructor Signup] Form validated. User ID:', user.id);
+        console.log('[Instructor Signup] Profile image size:', form.data.profileImage?.size || 0, 'bytes');
+        console.log('[Instructor Signup] Qualification size:', form.data.qualification?.size || 0, 'bytes');
+
         let qualificationUrl: string | null = null;
         let profileImageUrl: string | null = null;
 
         try {
-            
+
             //Process profile image
             if (form.data.profileImage && form.data.profileImage.size > 0){
+                console.log('[Instructor Signup] Starting profile image upload');
                 //Convert file Browser API to Buffer
                 const imageArrayBuffer = await form.data.profileImage.arrayBuffer();
                 const imageBuffer = Buffer.from(imageArrayBuffer);
-                
+
                 profileImageUrl = await storageService.uploadProfileImage(imageBuffer, user.id);
+                console.log('[Instructor Signup] Profile image uploaded:', profileImageUrl);
             }
 
             // Process qualification PDF
             if (form.data.qualification && form.data.qualification.size > 0) {
+                console.log('[Instructor Signup] Starting qualification PDF upload');
                 // Convert File to Buffer
                 const pdfArrayBuffer = await form.data.qualification.arrayBuffer();
                 const pdfBuffer = Buffer.from(pdfArrayBuffer);
-                
+
                 qualificationUrl = await storageService.uploadQualificationPDF(pdfBuffer, user.id);
+                console.log('[Instructor Signup] Qualification PDF uploaded:', qualificationUrl);
             }
         } catch (error) {
-            console.error('Error processing form files:', error);
+            console.error('[Instructor Signup] Error processing form files:', error);
             return fail(500, {
                 form,
                 message: 'Failed to process files. Please try again.'
             });
         }
-        
+
         // Remove the File objects since we now have URLs
         delete form.data.profileImage;
         delete form.data.qualification;
@@ -93,10 +103,20 @@ export const actions: Actions = {
             userId
         };
 
-
-        await instructorService.createInstructor(instructorSignupData);
+        console.log('[Instructor Signup] Creating instructor profile in database');
+        try {
+            await instructorService.createInstructor(instructorSignupData);
+            console.log('[Instructor Signup] Instructor profile created successfully');
+        } catch (error) {
+            console.error('[Instructor Signup] Error creating instructor:', error);
+            return fail(500, {
+                form,
+                message: 'Failed to create instructor profile. Please try again.'
+            });
+        }
 
         const locale = getLocaleFromPath(event.url.pathname);
+        console.log('[Instructor Signup] Redirecting to dashboard');
         //To improve set a Flash Message System (sveltekit-flash-messages library maybe?)
         throw redirect(303, `/${locale}/dashboard`);
     }
