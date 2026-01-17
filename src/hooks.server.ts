@@ -47,35 +47,41 @@ const languageHandle: Handle = async ({ event, resolve }) => {
 
 	// If URL doesn't have locale prefix, redirect to localized version
 	if (!locale) {
-		// Detect preferred language from Accept-Language header or cookie
-		const acceptLanguage = event.request.headers.get('accept-language');
-		const cookieLocale = event.cookies.get('locale');
+		try {
+			// Detect preferred language from Accept-Language header or cookie
+			const acceptLanguage = event.request.headers.get('accept-language');
+			const cookieLocale = event.cookies.get('locale');
 
-		let preferredLocale: Locale = 'en'; // Default to English
+			let preferredLocale: Locale = 'en'; // Default to English
 
-		// Check cookie first
-		if (cookieLocale === 'es' || cookieLocale === 'en') {
-			preferredLocale = cookieLocale;
-		}
-		// Then check Accept-Language header
-		else if (acceptLanguage) {
-			// Prefer Spanish for Spain-focused platform if user accepts it
-			if (acceptLanguage.includes('es')) {
-				preferredLocale = 'es';
+			// Check cookie first
+			if (cookieLocale === 'es' || cookieLocale === 'en') {
+				preferredLocale = cookieLocale;
 			}
-		}
-
-		// Redirect to localized URL
-		const localizedUrl = route(pathname, preferredLocale);
-		console.log('[Language Redirect]', pathname, '→', localizedUrl, `(locale: ${preferredLocale})`);
-
-		// Return redirect Response directly instead of throwing
-		return new Response(null, {
-			status: 307,
-			headers: {
-				location: localizedUrl
+			// Then check Accept-Language header
+			else if (acceptLanguage) {
+				// Prefer Spanish for Spain-focused platform if user accepts it
+				if (acceptLanguage.includes('es')) {
+					preferredLocale = 'es';
+				}
 			}
-		});
+
+			// Redirect to localized URL
+			const localizedUrl = route(pathname, preferredLocale);
+			console.log('[Language Redirect]', pathname, '→', localizedUrl, `(locale: ${preferredLocale})`);
+
+			// Use SvelteKit's redirect - safe now since languageHandle runs before Sentry
+			throw redirect(307, localizedUrl);
+		} catch (error) {
+			// Only log if it's NOT a redirect (redirects are expected throws)
+			if (error && typeof error === 'object' && 'status' in error && error.status >= 300 && error.status < 400) {
+				// This is a redirect, re-throw it
+				throw error;
+			}
+			// This is an actual error
+			console.error('[Language Redirect] Unexpected error:', error);
+			throw error;
+		}
 	}
 
 	// Set locale cookie for future visits
