@@ -68,7 +68,14 @@ const languageHandle: Handle = async ({ event, resolve }) => {
 		// Redirect to localized URL
 		const localizedUrl = route(pathname, preferredLocale);
 		console.log('[Language Redirect]', pathname, '→', localizedUrl, `(locale: ${preferredLocale})`);
-		throw redirect(307, localizedUrl);
+
+		// Return redirect Response directly instead of throwing
+		return new Response(null, {
+			status: 307,
+			headers: {
+				location: localizedUrl
+			}
+		});
 	}
 
 	// Set locale cookie for future visits
