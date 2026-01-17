@@ -147,4 +147,22 @@ export const handle: Handle = sequence(
 	Sentry.sentryHandle(),
 	sequence(rateLimitHandle, i18nHandle, handleAuth)
 );
-export const handleError = Sentry.handleErrorWithSentry();
+
+// Wrap Sentry's error handler to exclude redirects (300-399 status codes)
+export const handleError = (({ error, event }) => {
+	// Don't treat redirects as errors
+	if (error && typeof error === 'object' && 'status' in error) {
+		const status = (error as { status: number }).status;
+		if (status >= 300 && status < 400) {
+			// This is a redirect, not an error - don't send to Sentry
+			console.log('[HandleError] Skipping Sentry for redirect:', status);
+			return {
+				message: 'Redirect'
+			};
+		}
+	}
+
+	// For actual errors, use Sentry's handler
+	const sentryHandler = Sentry.handleErrorWithSentry();
+	return sentryHandler({ error, event });
+}) satisfies import('@sveltejs/kit').HandleServerError;
