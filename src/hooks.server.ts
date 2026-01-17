@@ -47,41 +47,30 @@ const languageHandle: Handle = async ({ event, resolve }) => {
 
 	// If URL doesn't have locale prefix, redirect to localized version
 	if (!locale) {
-		try {
-			// Detect preferred language from Accept-Language header or cookie
-			const acceptLanguage = event.request.headers.get('accept-language');
-			const cookieLocale = event.cookies.get('locale');
+		// Detect preferred language from Accept-Language header or cookie
+		const acceptLanguage = event.request.headers.get('accept-language');
+		const cookieLocale = event.cookies.get('locale');
 
-			let preferredLocale: Locale = 'en'; // Default to English
+		let preferredLocale: Locale = 'en'; // Default to English
 
-			// Check cookie first
-			if (cookieLocale === 'es' || cookieLocale === 'en') {
-				preferredLocale = cookieLocale;
-			}
-			// Then check Accept-Language header
-			else if (acceptLanguage) {
-				// Prefer Spanish for Spain-focused platform if user accepts it
-				if (acceptLanguage.includes('es')) {
-					preferredLocale = 'es';
-				}
-			}
-
-			// Redirect to localized URL
-			const localizedUrl = route(pathname, preferredLocale);
-			console.log('[Language Redirect]', pathname, '→', localizedUrl, `(locale: ${preferredLocale})`);
-
-			// Use SvelteKit's redirect - safe now since languageHandle runs before Sentry
-			throw redirect(307, localizedUrl);
-		} catch (error) {
-			// Only log if it's NOT a redirect (redirects are expected throws)
-			if (error && typeof error === 'object' && 'status' in error && error.status >= 300 && error.status < 400) {
-				// This is a redirect, re-throw it
-				throw error;
-			}
-			// This is an actual error
-			console.error('[Language Redirect] Unexpected error:', error);
-			throw error;
+		// Check cookie first
+		if (cookieLocale === 'es' || cookieLocale === 'en') {
+			preferredLocale = cookieLocale;
 		}
+		// Then check Accept-Language header
+		else if (acceptLanguage) {
+			// Prefer Spanish for Spain-focused platform if user accepts it
+			if (acceptLanguage.includes('es')) {
+				preferredLocale = 'es';
+			}
+		}
+
+		// Redirect to localized URL
+		const localizedUrl = route(pathname, preferredLocale);
+		console.log('[Language Redirect]', pathname, '→', localizedUrl, `(locale: ${preferredLocale})`);
+
+		// Throw redirect directly - no try-catch to avoid interfering with SvelteKit
+		throw redirect(307, localizedUrl);
 	}
 
 	// Set locale cookie for future visits
@@ -142,11 +131,42 @@ if (process.env.NODE_ENV === 'production') {
 	console.log('✅ Configuration validated successfully');
 }
 
-export const handle: Handle = sequence(
-	languageHandle, // Run language redirect BEFORE Sentry to avoid catching redirect errors
-	Sentry.sentryHandle(),
-	sequence(rateLimitHandle, i18nHandle, handleAuth)
-);
+export const handle: Handle = async (input) => {
+	// Run language redirect FIRST, completely separate from other hooks
+	// This ensures the redirect isn't caught or modified by other handlers
+	const pathname = input.event.url.pathname;
+
+	if (shouldTranslatePath(pathname)) {
+		const { locale } = extractLocale(pathname);
+
+		if (!locale) {
+			// Need to redirect
+			const acceptLanguage = input.event.request.headers.get('accept-language');
+			const cookieLocale = input.event.cookies.get('locale');
+			let preferredLocale: Locale = 'en';
+
+			if (cookieLocale === 'es' || cookieLocale === 'en') {
+				preferredLocale = cookieLocale;
+			} else if (acceptLanguage?.includes('es')) {
+				preferredLocale = 'es';
+			}
+
+			const localizedUrl = route(pathname, preferredLocale);
+			console.log('[Language Redirect]', pathname, '→', localizedUrl, `(locale: ${preferredLocale})`);
+
+			// Return redirect response directly
+			throw redirect(307, localizedUrl);
+		}
+	}
+
+	// If no redirect needed, run the normal hook sequence
+	const handleSequence = sequence(
+		Sentry.sentryHandle(),
+		sequence(rateLimitHandle, i18nHandle, handleAuth)
+	);
+
+	return handleSequence(input);
+};
 
 // Wrap Sentry's error handler to exclude redirects (300-399 status codes)
 export const handleError = (({ error, event }) => {
