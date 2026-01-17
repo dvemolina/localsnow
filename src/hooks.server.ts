@@ -66,16 +66,16 @@ const languageHandle: Handle = async ({ event, resolve }) => {
 		}
 
 		// Redirect to localized URL
-		console.log('[Language Redirect] Redirecting', pathname, 'to locale:', preferredLocale);
-		try {
-			const localizedUrl = route(pathname, preferredLocale);
-			console.log('[Language Redirect] Computed URL:', localizedUrl);
-			console.log('[Language Redirect] About to throw redirect...');
-			throw redirect(307, localizedUrl);
-		} catch (error) {
-			console.error('[Language Redirect] Error during redirect:', error);
-			throw error; // Re-throw to let SvelteKit handle it
-		}
+		const localizedUrl = route(pathname, preferredLocale);
+		console.log('[Language Redirect]', pathname, '→', localizedUrl, `(locale: ${preferredLocale})`);
+
+		// Return redirect Response directly instead of throwing
+		return new Response(null, {
+			status: 307,
+			headers: {
+				location: localizedUrl
+			}
+		});
 	}
 
 	// Set locale cookie for future visits
