@@ -6,7 +6,6 @@ import * as auth from '$src/lib/server/session.js';
 import { RefillingTokenBucket } from './lib/server/rate-limit';
 import { getClientIP } from './lib/utils/auth';
 import { extractLocale, shouldTranslatePath, type Locale } from '$lib/i18n/routes';
-import { redirect } from '@sveltejs/kit';
 import { route } from '$lib/i18n/routeHelpers';
 import { validateConfig } from './lib/server/config';
 
@@ -48,41 +47,30 @@ const languageHandle: Handle = async ({ event, resolve }) => {
 
 	// If URL doesn't have locale prefix, redirect to localized version
 	if (!locale) {
-		try {
-			// Detect preferred language from Accept-Language header or cookie
-			const acceptLanguage = event.request.headers.get('accept-language');
-			const cookieLocale = event.cookies.get('locale');
+		// Detect preferred language from Accept-Language header or cookie
+		const acceptLanguage = event.request.headers.get('accept-language');
+		const cookieLocale = event.cookies.get('locale');
 
-			let preferredLocale: Locale = 'en'; // Default to English
+		let preferredLocale: Locale = 'en'; // Default to English
 
-			// Check cookie first
-			if (cookieLocale === 'es' || cookieLocale === 'en') {
-				preferredLocale = cookieLocale;
-			}
-			// Then check Accept-Language header
-			else if (acceptLanguage) {
-				// Prefer Spanish for Spain-focused platform if user accepts it
-				if (acceptLanguage.includes('es')) {
-					preferredLocale = 'es';
-				}
-			}
-
-			// Redirect to localized URL
-			localizedUrl = route(pathname, preferredLocale);
-			console.log('[Language Redirect]', pathname, '→', localizedUrl, `(locale: ${preferredLocale})`);
-
-		} catch (error) {
-			// Only log if it's NOT a redirect (redirects are expected throws)
-			if (error && typeof error === 'object' && 'status' in error && error.status >= 300 && error.status < 400) {
-				// This is a redirect, re-throw it
-				throw error;
-			}
-			// This is an actual error
-			console.error('[Language Redirect] Unexpected error:', error);
-			throw error;
+		// Check cookie first
+		if (cookieLocale === 'es' || cookieLocale === 'en') {
+			preferredLocale = cookieLocale;
 		}
-		// Use SvelteKit's redirect - safe now since languageHandle runs before Sentry
-			throw redirect(307, localizedUrl);
+		// Then check Accept-Language header
+		else if (acceptLanguage) {
+			// Prefer Spanish for Spain-focused platform if user accepts it
+			if (acceptLanguage.includes('es')) {
+				preferredLocale = 'es';
+			}
+		}
+
+		// Redirect to localized URL
+		localizedUrl = route(pathname, preferredLocale);
+		console.log('[Language Redirect]', pathname, '→', localizedUrl, `(locale: ${preferredLocale})`);
+
+		// Return a redirect response to avoid redirect exceptions bubbling as 500s
+		return Response.redirect(localizedUrl, 307);
 	}
 
 	// Set locale cookie for future visits
