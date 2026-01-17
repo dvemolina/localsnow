@@ -43,7 +43,8 @@ const languageHandle: Handle = async ({ event, resolve }) => {
 		return resolve(event);
 	}
 
-	const { locale, path } = extractLocale(pathname);
+	const { locale } = extractLocale(pathname);
+	let localizedUrl;
 
 	// If URL doesn't have locale prefix, redirect to localized version
 	if (!locale) {
@@ -67,11 +68,9 @@ const languageHandle: Handle = async ({ event, resolve }) => {
 			}
 
 			// Redirect to localized URL
-			const localizedUrl = route(pathname, preferredLocale);
+			localizedUrl = route(pathname, preferredLocale);
 			console.log('[Language Redirect]', pathname, '→', localizedUrl, `(locale: ${preferredLocale})`);
 
-			// Use SvelteKit's redirect - safe now since languageHandle runs before Sentry
-			throw redirect(307, localizedUrl);
 		} catch (error) {
 			// Only log if it's NOT a redirect (redirects are expected throws)
 			if (error && typeof error === 'object' && 'status' in error && error.status >= 300 && error.status < 400) {
@@ -82,6 +81,8 @@ const languageHandle: Handle = async ({ event, resolve }) => {
 			console.error('[Language Redirect] Unexpected error:', error);
 			throw error;
 		}
+		// Use SvelteKit's redirect - safe now since languageHandle runs before Sentry
+			throw redirect(307, localizedUrl);
 	}
 
 	// Set locale cookie for future visits
