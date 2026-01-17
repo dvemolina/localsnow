@@ -77,6 +77,9 @@ export function route(path: string, locale?: Locale, params?: Record<string, str
 	}
 
 	// Add locale prefix
+	if (finalPath === '/') {
+		return `/${currentLocale}`;
+	}
 	return `/${currentLocale}${finalPath}`;
 }
 
