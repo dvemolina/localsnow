@@ -69,8 +69,9 @@ const languageHandle: Handle = async ({ event, resolve }) => {
 		localizedUrl = route(pathname, preferredLocale);
 		console.log('[Language Redirect]', pathname, '→', localizedUrl, `(locale: ${preferredLocale})`);
 
-		// Return a redirect response to avoid redirect exceptions bubbling as 500s
-		return Response.redirect(localizedUrl, 307);
+		// Return a redirect response with absolute URL for undici compatibility
+		const redirectUrl = new URL(localizedUrl, event.url).toString();
+		return Response.redirect(redirectUrl, 307);
 	}
 
 	// Set locale cookie for future visits
