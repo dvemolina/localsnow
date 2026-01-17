@@ -71,7 +71,12 @@ const languageHandle: Handle = async ({ event, resolve }) => {
 
 		// Return a redirect response with absolute URL for undici compatibility
 		const redirectUrl = new URL(localizedUrl, event.url).toString();
-		return Response.redirect(redirectUrl, 307);
+		return new Response(null, {
+			status: 307,
+			headers: {
+				location: redirectUrl
+			}
+		});
 	}
 
 	// Set locale cookie for future visits
@@ -151,6 +156,9 @@ export const handleError = (({ error, event }) => {
 			};
 		}
 	}
+
+	const errorForLog = error instanceof Error ? error : new Error(String(error));
+	console.error('[HandleError] Unhandled error for', event.url.toString(), errorForLog);
 
 	// For actual errors, use Sentry's handler
 	const sentryHandler = Sentry.handleErrorWithSentry();
