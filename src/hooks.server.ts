@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/sveltekit';
 import { sequence } from '@sveltejs/kit/hooks';
-import type { Handle } from '@sveltejs/kit';
+import { redirect, type Handle } from '@sveltejs/kit';
 import { getCanonicalUrl } from '$lib/i18n/routeHelpers';
 import * as auth from '$src/lib/server/session.js';
 import { RefillingTokenBucket } from './lib/server/rate-limit';
