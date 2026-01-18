@@ -36,60 +36,6 @@ const loggingHandle: Handle = async ({ event, resolve }) => {
 	return response;
 };
 
-/**
- * Handle for language detection and redirects
- * Ensures users are redirected to properly localized URLs
- */
-const languageHandle: Handle = async ({ event, resolve }) => {
-	const pathname = event.url.pathname;
-
-	// Skip non-page requests (API, static files, etc.)
-	if (!shouldTranslatePath(pathname)) {
-		return resolve(event);
-	}
-
-	const { locale } = extractLocale(pathname);
-	let localizedUrl;
-
-	// If URL doesn't have locale prefix, redirect to localized version
-	if (!locale) {
-		// Detect preferred language from Accept-Language header or cookie
-		const acceptLanguage = event.request.headers.get('accept-language');
-		const cookieLocale = event.cookies.get('locale');
-
-		let preferredLocale: Locale = 'en'; // Default to English
-
-		// Check cookie first
-		if (cookieLocale === 'es' || cookieLocale === 'en') {
-			preferredLocale = cookieLocale;
-		}
-		// Then check Accept-Language header
-		else if (acceptLanguage) {
-			// Prefer Spanish for Spain-focused platform if user accepts it
-			if (acceptLanguage.includes('es')) {
-				preferredLocale = 'es';
-			}
-		}
-
-		// Redirect to localized URL
-		const localizedUrl = route(pathname, preferredLocale);
-		console.log('[Language Redirect]', pathname, '→', localizedUrl, `(locale: ${preferredLocale})`);
-
-		// Throw redirect directly - no try-catch to avoid interfering with SvelteKit
-		throw redirect(307, localizedUrl);
-	}
-
-	// Set locale cookie for future visits
-	event.cookies.set('locale', locale, {
-		path: '/',
-		maxAge: 60 * 60 * 24 * 365, // 1 year
-		sameSite: 'lax',
-		httpOnly: false // Accessible to client-side for language switcher
-	});
-
-	return resolve(event);
-};
-
 const handleAuth: Handle = async ({ event, resolve }) => {
 	const sessionToken = event.cookies.get(auth.sessionCookieName);
 	if (!sessionToken) {
@@ -137,42 +83,56 @@ if (process.env.NODE_ENV === 'production') {
 	console.log('✅ Configuration validated successfully');
 }
 
-export const handle: Handle = async (input) => {
-	// Run language redirect FIRST, completely separate from other hooks
-	// This ensures the redirect isn't caught or modified by other handlers
-	const pathname = input.event.url.pathname;
+/**
+ * Language redirect handle - runs BEFORE everything else
+ * Redirects root path and non-localized paths to localized versions
+ */
+const languageRedirectHandle: Handle = async ({ event, resolve }) => {
+	const pathname = event.url.pathname;
 
-	if (shouldTranslatePath(pathname)) {
-		const { locale } = extractLocale(pathname);
-
-		if (!locale) {
-			// Need to redirect
-			const acceptLanguage = input.event.request.headers.get('accept-language');
-			const cookieLocale = input.event.cookies.get('locale');
-			let preferredLocale: Locale = 'en';
-
-			if (cookieLocale === 'es' || cookieLocale === 'en') {
-				preferredLocale = cookieLocale;
-			} else if (acceptLanguage?.includes('es')) {
-				preferredLocale = 'es';
-			}
-
-			const localizedUrl = route(pathname, preferredLocale);
-			console.log('[Language Redirect]', pathname, '→', localizedUrl, `(locale: ${preferredLocale})`);
-
-			// Return redirect response directly
-			throw redirect(307, localizedUrl);
-		}
+	// Skip non-page requests (API, static files, etc.)
+	if (!shouldTranslatePath(pathname)) {
+		return resolve(event);
 	}
 
-	// If no redirect needed, run the normal hook sequence
-	const handleSequence = sequence(
-		Sentry.sentryHandle(),
-		sequence(rateLimitHandle, i18nHandle, handleAuth)
-	);
+	const { locale } = extractLocale(pathname);
 
-	return handleSequence(input);
+	// If URL doesn't have locale prefix, redirect to localized version
+	if (!locale) {
+		const acceptLanguage = event.request.headers.get('accept-language');
+		const cookieLocale = event.cookies.get('locale');
+		let preferredLocale: Locale = 'en';
+
+		if (cookieLocale === 'es' || cookieLocale === 'en') {
+			preferredLocale = cookieLocale;
+		} else if (acceptLanguage?.includes('es')) {
+			preferredLocale = 'es';
+		}
+
+		const localizedUrl = route(pathname, preferredLocale);
+		console.log('[Language Redirect]', pathname, '→', localizedUrl, `(locale: ${preferredLocale})`);
+
+		throw redirect(307, localizedUrl);
+	}
+
+	// Set locale cookie for future visits
+	event.cookies.set('locale', locale, {
+		path: '/',
+		maxAge: 60 * 60 * 24 * 365,
+		sameSite: 'lax',
+		httpOnly: false
+	});
+
+	return resolve(event);
 };
+
+export const handle: Handle = sequence(
+	languageRedirectHandle, // MUST be first - before Sentry
+	Sentry.sentryHandle(),
+	rateLimitHandle,
+	i18nHandle,
+	handleAuth
+);
 
 // Wrap Sentry's error handler to exclude redirects (300-399 status codes)
 export const handleError = (({ error, event }) => {
