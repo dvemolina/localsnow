@@ -276,7 +276,7 @@
 	"bookings_empty_state_all": "No tienes solicitudes de reserva aún. Cuando los clientes soliciten clases, aparecerán aquí.",
 	"bookings_empty_state_rejected": "No hay reservas rechazadas.",
 	"bookings_how_it_works_title": "Cómo Funciona",
-	"choose_role_welcome": "¡Bienvenido, {name}!",
+	"choose_role_welcome": "¡Bienvenido,",
 	"choose_role_subtitle": "Elige tu tipo de cuenta para empezar en Local Snow",
 	"choose_role_student_title": "Estudiante / Cliente",
 	"choose_role_student_description": "Encuentra y reserva instructores para tus clases de deportes de nieve",

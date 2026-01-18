@@ -6,7 +6,6 @@ import * as auth from '$src/lib/server/session.js';
 import { RefillingTokenBucket } from './lib/server/rate-limit';
 import { getClientIP } from './lib/utils/auth';
 import { extractLocale, shouldTranslatePath, type Locale } from '$lib/i18n/routes';
-import { redirect } from '@sveltejs/kit';
 import { route } from '$lib/i18n/routeHelpers';
 import { validateConfig } from './lib/server/config';
 
@@ -31,6 +30,12 @@ const rateLimitHandle: Handle = async ({ event, resolve }) => {
 	return resolve(event);
 };
 
+const loggingHandle: Handle = async ({ event, resolve }) => {
+	const response = await resolve(event);
+	console.log('[Request]', event.request.method, event.url.pathname, '->', response.status);
+	return response;
+};
+
 /**
  * Handle for language detection and redirects
  * Ensures users are redirected to properly localized URLs
@@ -43,7 +48,8 @@ const languageHandle: Handle = async ({ event, resolve }) => {
 		return resolve(event);
 	}
 
-	const { locale, path } = extractLocale(pathname);
+	const { locale } = extractLocale(pathname);
+	let localizedUrl;
 
 	// If URL doesn't have locale prefix, redirect to localized version
 	if (!locale) {
