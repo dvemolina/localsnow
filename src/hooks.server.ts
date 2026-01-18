@@ -72,17 +72,11 @@ const languageHandle: Handle = async ({ event, resolve }) => {
 		}
 
 		// Redirect to localized URL
-		localizedUrl = route(pathname, preferredLocale);
+		const localizedUrl = route(pathname, preferredLocale);
 		console.log('[Language Redirect]', pathname, '→', localizedUrl, `(locale: ${preferredLocale})`);
 
-		// Return a redirect response with absolute URL for undici compatibility
-		const redirectUrl = new URL(localizedUrl, event.url).toString();
-		return new Response(null, {
-			status: 307,
-			headers: {
-				location: redirectUrl
-			}
-		});
+		// Throw redirect directly - no try-catch to avoid interfering with SvelteKit
+		throw redirect(307, localizedUrl);
 	}
 
 	// Set locale cookie for future visits
@@ -143,12 +137,42 @@ if (process.env.NODE_ENV === 'production') {
 	console.log('✅ Configuration validated successfully');
 }
 
-export const handle: Handle = sequence(
-	loggingHandle,
-	languageHandle, // Run language redirect BEFORE Sentry to avoid catching redirect errors
-	Sentry.sentryHandle(),
-	sequence(rateLimitHandle, i18nHandle, handleAuth)
-);
+export const handle: Handle = async (input) => {
+	// Run language redirect FIRST, completely separate from other hooks
+	// This ensures the redirect isn't caught or modified by other handlers
+	const pathname = input.event.url.pathname;
+
+	if (shouldTranslatePath(pathname)) {
+		const { locale } = extractLocale(pathname);
+
+		if (!locale) {
+			// Need to redirect
+			const acceptLanguage = input.event.request.headers.get('accept-language');
+			const cookieLocale = input.event.cookies.get('locale');
+			let preferredLocale: Locale = 'en';
+
+			if (cookieLocale === 'es' || cookieLocale === 'en') {
+				preferredLocale = cookieLocale;
+			} else if (acceptLanguage?.includes('es')) {
+				preferredLocale = 'es';
+			}
+
+			const localizedUrl = route(pathname, preferredLocale);
+			console.log('[Language Redirect]', pathname, '→', localizedUrl, `(locale: ${preferredLocale})`);
+
+			// Return redirect response directly
+			throw redirect(307, localizedUrl);
+		}
+	}
+
+	// If no redirect needed, run the normal hook sequence
+	const handleSequence = sequence(
+		Sentry.sentryHandle(),
+		sequence(rateLimitHandle, i18nHandle, handleAuth)
+	);
+
+	return handleSequence(input);
+};
 
 // Wrap Sentry's error handler to exclude redirects (300-399 status codes)
 export const handleError = (({ error, event }) => {
@@ -163,9 +187,6 @@ export const handleError = (({ error, event }) => {
 			};
 		}
 	}
-
-	const errorForLog = error instanceof Error ? error : new Error(String(error));
-	console.error('[HandleError] Unhandled error for', event.url.toString(), errorForLog);
 
 	// For actual errors, use Sentry's handler
 	const sentryHandler = Sentry.handleErrorWithSentry();
