@@ -67,9 +67,6 @@ const languageHandle: Handle = async ({ event, resolve }) => {
 
 		// Redirect to localized URL
 		const localizedUrl = route(pathname, preferredLocale);
-		console.log('[Language Redirect]', pathname, '→', localizedUrl, `(locale: ${preferredLocale})`);
-
-		// Throw redirect directly - no try-catch to avoid interfering with SvelteKit
 		throw redirect(307, localizedUrl);
 	}
 
@@ -131,58 +128,8 @@ if (process.env.NODE_ENV === 'production') {
 	console.log('✅ Configuration validated successfully');
 }
 
-export const handle: Handle = async (input) => {
-	// Run language redirect FIRST, completely separate from other hooks
-	// This ensures the redirect isn't caught or modified by other handlers
-	const pathname = input.event.url.pathname;
-
-	if (shouldTranslatePath(pathname)) {
-		const { locale } = extractLocale(pathname);
-
-		if (!locale) {
-			// Need to redirect
-			const acceptLanguage = input.event.request.headers.get('accept-language');
-			const cookieLocale = input.event.cookies.get('locale');
-			let preferredLocale: Locale = 'en';
-
-			if (cookieLocale === 'es' || cookieLocale === 'en') {
-				preferredLocale = cookieLocale;
-			} else if (acceptLanguage?.includes('es')) {
-				preferredLocale = 'es';
-			}
-
-			const localizedUrl = route(pathname, preferredLocale);
-			console.log('[Language Redirect]', pathname, '→', localizedUrl, `(locale: ${preferredLocale})`);
-
-			// Return redirect response directly
-			throw redirect(307, localizedUrl);
-		}
-	}
-
-	// If no redirect needed, run the normal hook sequence
-	const handleSequence = sequence(
-		Sentry.sentryHandle(),
-		sequence(rateLimitHandle, i18nHandle, handleAuth)
-	);
-
-	return handleSequence(input);
-};
-
-// Wrap Sentry's error handler to exclude redirects (300-399 status codes)
-export const handleError = (({ error, event }) => {
-	// Don't treat redirects as errors
-	if (error && typeof error === 'object' && 'status' in error) {
-		const status = (error as { status: number }).status;
-		if (status >= 300 && status < 400) {
-			// This is a redirect, not an error - don't send to Sentry
-			console.log('[HandleError] Skipping Sentry for redirect:', status);
-			return {
-				message: 'Redirect'
-			};
-		}
-	}
-
-	// For actual errors, use Sentry's handler
-	const sentryHandler = Sentry.handleErrorWithSentry();
-	return sentryHandler({ error, event });
-}) satisfies import('@sveltejs/kit').HandleServerError;
+export const handle: Handle = sequence(
+	Sentry.sentryHandle(),
+	sequence(rateLimitHandle, languageHandle, i18nHandle, handleAuth)
+);
+export const handleError = Sentry.handleErrorWithSentry();

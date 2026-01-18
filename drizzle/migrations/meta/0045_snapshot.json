@@ -1,6 +1,6 @@
 {
-  "id": "c94232aa-6c49-4dc2-8866-ae91e5b9ac55",
-  "prevId": "346d55fb-c56b-4280-971a-ba2872bd6224",
+  "id": "82b17956-33cc-4096-82a7-58e8f7eb10c1",
+  "prevId": "c94232aa-6c49-4dc2-8866-ae91e5b9ac55",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -14,15 +14,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "admin_audit_log_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "uuid": {
@@ -99,25 +99,25 @@
         "admin_audit_log_admin_id_users_id_fk": {
           "name": "admin_audit_log_admin_id_users_id_fk",
           "tableFrom": "admin_audit_log",
-          "tableTo": "users",
           "columnsFrom": [
             "admin_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "admin_audit_log_uuid_unique": {
           "name": "admin_audit_log_uuid_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "uuid"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -146,28 +146,28 @@
         "booking_request_sports_booking_request_id_booking_requests_id_fk": {
           "name": "booking_request_sports_booking_request_id_booking_requests_id_fk",
           "tableFrom": "booking_request_sports",
-          "tableTo": "booking_requests",
           "columnsFrom": [
             "booking_request_id"
           ],
+          "tableTo": "booking_requests",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "booking_request_sports_sport_id_sports_id_fk": {
           "name": "booking_request_sports_sport_id_sports_id_fk",
           "tableFrom": "booking_request_sports",
-          "tableTo": "sports",
           "columnsFrom": [
             "sport_id"
           ],
+          "tableTo": "sports",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -186,15 +186,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "booking_requests_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "uuid": {
@@ -397,64 +397,64 @@
         "booking_requests_instructor_id_users_id_fk": {
           "name": "booking_requests_instructor_id_users_id_fk",
           "tableFrom": "booking_requests",
-          "tableTo": "users",
           "columnsFrom": [
             "instructor_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "booking_requests_school_id_schools_id_fk": {
           "name": "booking_requests_school_id_schools_id_fk",
           "tableFrom": "booking_requests",
-          "tableTo": "schools",
           "columnsFrom": [
             "school_id"
           ],
+          "tableTo": "schools",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "set null"
         },
         "booking_requests_lesson_id_lessons_id_fk": {
           "name": "booking_requests_lesson_id_lessons_id_fk",
           "tableFrom": "booking_requests",
-          "tableTo": "lessons",
           "columnsFrom": [
             "lesson_id"
           ],
+          "tableTo": "lessons",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "set null"
         },
         "booking_requests_client_user_id_users_id_fk": {
           "name": "booking_requests_client_user_id_users_id_fk",
           "tableFrom": "booking_requests",
-          "tableTo": "users",
           "columnsFrom": [
             "client_user_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "set null"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "booking_requests_uuid_unique": {
           "name": "booking_requests_uuid_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "uuid"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -471,15 +471,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "client_deposits_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "uuid": {
@@ -570,25 +570,25 @@
         "client_deposits_booking_request_id_booking_requests_id_fk": {
           "name": "client_deposits_booking_request_id_booking_requests_id_fk",
           "tableFrom": "client_deposits",
-          "tableTo": "booking_requests",
           "columnsFrom": [
             "booking_request_id"
           ],
+          "tableTo": "booking_requests",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "client_deposits_uuid_unique": {
           "name": "client_deposits_uuid_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "uuid"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -605,15 +605,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "conditional_pricing_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "uuid": {
@@ -698,25 +698,25 @@
         "conditional_pricing_lesson_id_lessons_id_fk": {
           "name": "conditional_pricing_lesson_id_lessons_id_fk",
           "tableFrom": "conditional_pricing",
-          "tableTo": "lessons",
           "columnsFrom": [
             "lesson_id"
           ],
+          "tableTo": "lessons",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "conditional_pricing_uuid_unique": {
           "name": "conditional_pricing_uuid_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "uuid"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -740,15 +740,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "countries_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "country": {
@@ -776,17 +776,17 @@
       "uniqueConstraints": {
         "countries_uuid_unique": {
           "name": "countries_uuid_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "uuid"
-          ]
+          ],
+          "nullsNotDistinct": false
         },
         "countries_country_slug_unique": {
           "name": "countries_country_slug_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "country_slug"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -803,15 +803,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "duration_packages_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "lesson_id": {
@@ -883,15 +883,15 @@
         "duration_packages_lesson_id_lessons_id_fk": {
           "name": "duration_packages_lesson_id_lessons_id_fk",
           "tableFrom": "duration_packages",
-          "tableTo": "lessons",
           "columnsFrom": [
             "lesson_id"
           ],
+          "tableTo": "lessons",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -910,15 +910,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "group_pricing_tiers_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "lesson_id": {
@@ -970,15 +970,15 @@
         "group_pricing_tiers_lesson_id_lessons_id_fk": {
           "name": "group_pricing_tiers_lesson_id_lessons_id_fk",
           "tableFrom": "group_pricing_tiers",
-          "tableTo": "lessons",
           "columnsFrom": [
             "lesson_id"
           ],
+          "tableTo": "lessons",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -997,15 +997,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "instructor_calendar_blocks_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "uuid": {
@@ -1095,38 +1095,38 @@
         "instructor_calendar_blocks_instructor_id_users_id_fk": {
           "name": "instructor_calendar_blocks_instructor_id_users_id_fk",
           "tableFrom": "instructor_calendar_blocks",
-          "tableTo": "users",
           "columnsFrom": [
             "instructor_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "instructor_calendar_blocks_booking_request_id_booking_requests_id_fk": {
           "name": "instructor_calendar_blocks_booking_request_id_booking_requests_id_fk",
           "tableFrom": "instructor_calendar_blocks",
-          "tableTo": "booking_requests",
           "columnsFrom": [
             "booking_request_id"
           ],
+          "tableTo": "booking_requests",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "instructor_calendar_blocks_uuid_unique": {
           "name": "instructor_calendar_blocks_uuid_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "uuid"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -1143,15 +1143,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "instructor_google_tokens_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "instructor_id": {
@@ -1223,25 +1223,25 @@
         "instructor_google_tokens_instructor_id_users_id_fk": {
           "name": "instructor_google_tokens_instructor_id_users_id_fk",
           "tableFrom": "instructor_google_tokens",
-          "tableTo": "users",
           "columnsFrom": [
             "instructor_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "instructor_google_tokens_instructor_id_unique": {
           "name": "instructor_google_tokens_instructor_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "instructor_id"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -1258,15 +1258,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "instructor_leads_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "uuid": {
@@ -1356,25 +1356,25 @@
         "instructor_leads_instructor_id_users_id_fk": {
           "name": "instructor_leads_instructor_id_users_id_fk",
           "tableFrom": "instructor_leads",
-          "tableTo": "users",
           "columnsFrom": [
             "instructor_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "instructor_leads_uuid_unique": {
           "name": "instructor_leads_uuid_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "uuid"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -1403,28 +1403,28 @@
         "instructor_resorts_instructor_id_users_id_fk": {
           "name": "instructor_resorts_instructor_id_users_id_fk",
           "tableFrom": "instructor_resorts",
-          "tableTo": "users",
           "columnsFrom": [
             "instructor_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "instructor_resorts_resort_id_resorts_id_fk": {
           "name": "instructor_resorts_resort_id_resorts_id_fk",
           "tableFrom": "instructor_resorts",
-          "tableTo": "resorts",
           "columnsFrom": [
             "resort_id"
           ],
+          "tableTo": "resorts",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -1443,15 +1443,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "instructor_reviews_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "uuid": {
@@ -1548,51 +1548,51 @@
         "instructor_reviews_instructor_id_users_id_fk": {
           "name": "instructor_reviews_instructor_id_users_id_fk",
           "tableFrom": "instructor_reviews",
-          "tableTo": "users",
           "columnsFrom": [
             "instructor_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "instructor_reviews_reviewer_id_users_id_fk": {
           "name": "instructor_reviews_reviewer_id_users_id_fk",
           "tableFrom": "instructor_reviews",
-          "tableTo": "users",
           "columnsFrom": [
             "reviewer_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "set null"
         },
         "instructor_reviews_booking_id_booking_requests_id_fk": {
           "name": "instructor_reviews_booking_id_booking_requests_id_fk",
           "tableFrom": "instructor_reviews",
-          "tableTo": "booking_requests",
           "columnsFrom": [
             "booking_id"
           ],
+          "tableTo": "booking_requests",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "set null"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "instructor_reviews_uuid_unique": {
           "name": "instructor_reviews_uuid_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "uuid"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -1621,28 +1621,28 @@
         "instructor_sports_instructor_id_users_id_fk": {
           "name": "instructor_sports_instructor_id_users_id_fk",
           "tableFrom": "instructor_sports",
-          "tableTo": "users",
           "columnsFrom": [
             "instructor_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "instructor_sports_sport_id_sports_id_fk": {
           "name": "instructor_sports_sport_id_sports_id_fk",
           "tableFrom": "instructor_sports",
-          "tableTo": "sports",
           "columnsFrom": [
             "sport_id"
           ],
+          "tableTo": "sports",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -1661,15 +1661,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "instructor_working_hours_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "uuid": {
@@ -1747,25 +1747,25 @@
         "instructor_working_hours_instructor_id_users_id_fk": {
           "name": "instructor_working_hours_instructor_id_users_id_fk",
           "tableFrom": "instructor_working_hours",
-          "tableTo": "users",
           "columnsFrom": [
             "instructor_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "instructor_working_hours_uuid_unique": {
           "name": "instructor_working_hours_uuid_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "uuid"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -1834,10 +1834,10 @@
       "uniqueConstraints": {
         "launch_codes_code_unique": {
           "name": "launch_codes_code_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "code"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -1930,28 +1930,28 @@
         "lead_payments_booking_request_id_booking_requests_id_fk": {
           "name": "lead_payments_booking_request_id_booking_requests_id_fk",
           "tableFrom": "lead_payments",
-          "tableTo": "booking_requests",
           "columnsFrom": [
             "booking_request_id"
           ],
+          "tableTo": "booking_requests",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         },
         "lead_payments_instructor_id_users_id_fk": {
           "name": "lead_payments_instructor_id_users_id_fk",
           "tableFrom": "lead_payments",
-          "tableTo": "users",
           "columnsFrom": [
             "instructor_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -1982,28 +1982,28 @@
         "lesson_sports_lesson_id_lessons_id_fk": {
           "name": "lesson_sports_lesson_id_lessons_id_fk",
           "tableFrom": "lesson_sports",
-          "tableTo": "lessons",
           "columnsFrom": [
             "lesson_id"
           ],
+          "tableTo": "lessons",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "lesson_sports_sport_id_sports_id_fk": {
           "name": "lesson_sports_sport_id_sports_id_fk",
           "tableFrom": "lesson_sports",
-          "tableTo": "sports",
           "columnsFrom": [
             "sport_id"
           ],
+          "tableTo": "sports",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -2029,15 +2029,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "lessons_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "title": {
@@ -2121,38 +2121,38 @@
         "lessons_instructor_id_users_id_fk": {
           "name": "lessons_instructor_id_users_id_fk",
           "tableFrom": "lessons",
-          "tableTo": "users",
           "columnsFrom": [
             "instructor_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         },
         "lessons_school_id_schools_id_fk": {
           "name": "lessons_school_id_schools_id_fk",
           "tableFrom": "lessons",
-          "tableTo": "schools",
           "columnsFrom": [
             "school_id"
           ],
+          "tableTo": "schools",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "lessons_uuid_unique": {
           "name": "lessons_uuid_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "uuid"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -2169,15 +2169,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "pricing_modes_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "mode": {
@@ -2206,10 +2206,10 @@
       "uniqueConstraints": {
         "pricing_modes_mode_unique": {
           "name": "pricing_modes_mode_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "mode"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -2226,15 +2226,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "profile_visits_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "instructor_id": {
@@ -2281,15 +2281,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "promo_codes_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "instructor_id": {
@@ -2360,38 +2360,38 @@
         "promo_codes_instructor_id_users_id_fk": {
           "name": "promo_codes_instructor_id_users_id_fk",
           "tableFrom": "promo_codes",
-          "tableTo": "users",
           "columnsFrom": [
             "instructor_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "promo_codes_lesson_id_lessons_id_fk": {
           "name": "promo_codes_lesson_id_lessons_id_fk",
           "tableFrom": "promo_codes",
-          "tableTo": "lessons",
           "columnsFrom": [
             "lesson_id"
           ],
+          "tableTo": "lessons",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "promo_codes_code_unique": {
           "name": "promo_codes_code_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "code"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -2408,15 +2408,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "promotional_pricing_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "uuid": {
@@ -2519,45 +2519,45 @@
         "promotional_pricing_lesson_id_lessons_id_fk": {
           "name": "promotional_pricing_lesson_id_lessons_id_fk",
           "tableFrom": "promotional_pricing",
-          "tableTo": "lessons",
           "columnsFrom": [
             "lesson_id"
           ],
+          "tableTo": "lessons",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "promotional_pricing_instructor_id_users_id_fk": {
           "name": "promotional_pricing_instructor_id_users_id_fk",
           "tableFrom": "promotional_pricing",
-          "tableTo": "users",
           "columnsFrom": [
             "instructor_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "promotional_pricing_uuid_unique": {
           "name": "promotional_pricing_uuid_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "uuid"
-          ]
+          ],
+          "nullsNotDistinct": false
         },
         "promotional_pricing_code_unique": {
           "name": "promotional_pricing_code_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "code"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -2581,15 +2581,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "regions_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "country_id": {
@@ -2616,32 +2616,32 @@
         "regions_country_id_countries_id_fk": {
           "name": "regions_country_id_countries_id_fk",
           "tableFrom": "regions",
-          "tableTo": "countries",
           "columnsFrom": [
             "country_id"
           ],
+          "tableTo": "countries",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "regions_uuid_unique": {
           "name": "regions_uuid_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "uuid"
-          ]
+          ],
+          "nullsNotDistinct": false
         },
         "regions_region_slug_unique": {
           "name": "regions_region_slug_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "region_slug"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -2658,15 +2658,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "resorts_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "uuid": {
@@ -2773,45 +2773,45 @@
         "resorts_country_id_countries_id_fk": {
           "name": "resorts_country_id_countries_id_fk",
           "tableFrom": "resorts",
-          "tableTo": "countries",
           "columnsFrom": [
             "country_id"
           ],
+          "tableTo": "countries",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "resorts_region_id_regions_id_fk": {
           "name": "resorts_region_id_regions_id_fk",
           "tableFrom": "resorts",
-          "tableTo": "regions",
           "columnsFrom": [
             "region_id"
           ],
+          "tableTo": "regions",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "resorts_uuid_unique": {
           "name": "resorts_uuid_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "uuid"
-          ]
+          ],
+          "nullsNotDistinct": false
         },
         "resorts_slug_unique": {
           "name": "resorts_slug_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "slug"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -2828,15 +2828,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "reviews_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "uuid": {
@@ -2908,45 +2908,45 @@
         "reviews_booking_request_id_booking_requests_id_fk": {
           "name": "reviews_booking_request_id_booking_requests_id_fk",
           "tableFrom": "reviews",
-          "tableTo": "booking_requests",
           "columnsFrom": [
             "booking_request_id"
           ],
+          "tableTo": "booking_requests",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "reviews_instructor_id_users_id_fk": {
           "name": "reviews_instructor_id_users_id_fk",
           "tableFrom": "reviews",
-          "tableTo": "users",
           "columnsFrom": [
             "instructor_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "reviews_uuid_unique": {
           "name": "reviews_uuid_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "uuid"
-          ]
+          ],
+          "nullsNotDistinct": false
         },
         "reviews_booking_request_id_unique": {
           "name": "reviews_booking_request_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "booking_request_id"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -3008,28 +3008,28 @@
         "school_admins_school_id_schools_id_fk": {
           "name": "school_admins_school_id_schools_id_fk",
           "tableFrom": "school_admins",
-          "tableTo": "schools",
           "columnsFrom": [
             "school_id"
           ],
+          "tableTo": "schools",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "school_admins_user_id_users_id_fk": {
           "name": "school_admins_user_id_users_id_fk",
           "tableFrom": "school_admins",
-          "tableTo": "users",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -3048,15 +3048,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "school_instructor_history_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "instructor_id": {
@@ -3109,28 +3109,28 @@
         "school_instructor_history_instructor_id_users_id_fk": {
           "name": "school_instructor_history_instructor_id_users_id_fk",
           "tableFrom": "school_instructor_history",
-          "tableTo": "users",
           "columnsFrom": [
             "instructor_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "school_instructor_history_school_id_schools_id_fk": {
           "name": "school_instructor_history_school_id_schools_id_fk",
           "tableFrom": "school_instructor_history",
-          "tableTo": "schools",
           "columnsFrom": [
             "school_id"
           ],
+          "tableTo": "schools",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -3207,28 +3207,28 @@
         "school_instructors_school_id_schools_id_fk": {
           "name": "school_instructors_school_id_schools_id_fk",
           "tableFrom": "school_instructors",
-          "tableTo": "schools",
           "columnsFrom": [
             "school_id"
           ],
+          "tableTo": "schools",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "school_instructors_instructor_id_users_id_fk": {
           "name": "school_instructors_instructor_id_users_id_fk",
           "tableFrom": "school_instructors",
-          "tableTo": "users",
           "columnsFrom": [
             "instructor_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -3259,28 +3259,28 @@
         "school_resorts_school_id_schools_id_fk": {
           "name": "school_resorts_school_id_schools_id_fk",
           "tableFrom": "school_resorts",
-          "tableTo": "schools",
           "columnsFrom": [
             "school_id"
           ],
+          "tableTo": "schools",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "school_resorts_resort_id_resorts_id_fk": {
           "name": "school_resorts_resort_id_resorts_id_fk",
           "tableFrom": "school_resorts",
-          "tableTo": "resorts",
           "columnsFrom": [
             "resort_id"
           ],
+          "tableTo": "resorts",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -3311,28 +3311,28 @@
         "school_sports_school_id_schools_id_fk": {
           "name": "school_sports_school_id_schools_id_fk",
           "tableFrom": "school_sports",
-          "tableTo": "schools",
           "columnsFrom": [
             "school_id"
           ],
+          "tableTo": "schools",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "school_sports_sport_id_sports_id_fk": {
           "name": "school_sports_sport_id_sports_id_fk",
           "tableFrom": "school_sports",
-          "tableTo": "sports",
           "columnsFrom": [
             "sport_id"
           ],
+          "tableTo": "sports",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -3358,15 +3358,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "schools_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "owner_user_id": {
@@ -3437,32 +3437,32 @@
         "schools_owner_user_id_users_id_fk": {
           "name": "schools_owner_user_id_users_id_fk",
           "tableFrom": "schools",
-          "tableTo": "users",
           "columnsFrom": [
             "owner_user_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "schools_uuid_unique": {
           "name": "schools_uuid_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "uuid"
-          ]
+          ],
+          "nullsNotDistinct": false
         },
         "schools_slug_unique": {
           "name": "schools_slug_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "slug"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -3497,15 +3497,15 @@
         "session_user_id_users_id_fk": {
           "name": "session_user_id_users_id_fk",
           "tableFrom": "session",
-          "tableTo": "users",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -3531,15 +3531,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "sports_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "sport": {
@@ -3563,24 +3563,24 @@
       "uniqueConstraints": {
         "sports_uuid_unique": {
           "name": "sports_uuid_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "uuid"
-          ]
+          ],
+          "nullsNotDistinct": false
         },
         "sports_sport_unique": {
           "name": "sports_sport_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "sport"
-          ]
+          ],
+          "nullsNotDistinct": false
         },
         "sports_sport_slug_unique": {
           "name": "sports_sport_slug_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "sport_slug"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -3597,15 +3597,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "user_booking_limits_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "user_id": {
@@ -3658,15 +3658,15 @@
         "user_booking_limits_user_id_users_id_fk": {
           "name": "user_booking_limits_user_id_users_id_fk",
           "tableFrom": "user_booking_limits",
-          "tableTo": "users",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -3692,15 +3692,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
             "name": "users_id_seq",
-            "schema": "public",
             "increment": "1",
-            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
+            "startWith": "1",
             "cache": "1",
-            "cycle": false
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
           }
         },
         "google_id": {
@@ -3861,24 +3861,24 @@
       "uniqueConstraints": {
         "users_uuid_unique": {
           "name": "users_uuid_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "uuid"
-          ]
+          ],
+          "nullsNotDistinct": false
         },
         "users_google_id_unique": {
           "name": "users_google_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "google_id"
-          ]
+          ],
+          "nullsNotDistinct": false
         },
         "users_email_unique": {
           "name": "users_email_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "email"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -3961,10 +3961,10 @@
     }
   },
   "schemas": {},
+  "views": {},
   "sequences": {},
   "roles": {},
   "policies": {},
-  "views": {},
   "_meta": {
     "columns": {},
     "schemas": {},
