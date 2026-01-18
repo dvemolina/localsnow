@@ -1,11 +1,12 @@
 import * as Sentry from '@sentry/sveltekit';
 import { sequence } from '@sveltejs/kit/hooks';
-import { redirect, type Handle } from '@sveltejs/kit';
+import type { Handle } from '@sveltejs/kit';
 import { getCanonicalUrl } from '$lib/i18n/routeHelpers';
 import * as auth from '$src/lib/server/session.js';
 import { RefillingTokenBucket } from './lib/server/rate-limit';
 import { getClientIP } from './lib/utils/auth';
 import { extractLocale, shouldTranslatePath, type Locale } from '$lib/i18n/routes';
+import { redirect } from '@sveltejs/kit';
 import { route } from '$lib/i18n/routeHelpers';
 import { validateConfig } from './lib/server/config';
 
@@ -30,10 +31,54 @@ const rateLimitHandle: Handle = async ({ event, resolve }) => {
 	return resolve(event);
 };
 
-const loggingHandle: Handle = async ({ event, resolve }) => {
-	const response = await resolve(event);
-	console.log('[Request]', event.request.method, event.url.pathname, '->', response.status);
-	return response;
+/**
+ * Handle for language detection and redirects
+ * Ensures users are redirected to properly localized URLs
+ */
+const languageHandle: Handle = async ({ event, resolve }) => {
+	const pathname = event.url.pathname;
+
+	// Skip non-page requests (API, static files, etc.)
+	if (!shouldTranslatePath(pathname)) {
+		return resolve(event);
+	}
+
+	const { locale, path } = extractLocale(pathname);
+
+	// If URL doesn't have locale prefix, redirect to localized version
+	if (!locale) {
+		// Detect preferred language from Accept-Language header or cookie
+		const acceptLanguage = event.request.headers.get('accept-language');
+		const cookieLocale = event.cookies.get('locale');
+
+		let preferredLocale: Locale = 'en'; // Default to English
+
+		// Check cookie first
+		if (cookieLocale === 'es' || cookieLocale === 'en') {
+			preferredLocale = cookieLocale;
+		}
+		// Then check Accept-Language header
+		else if (acceptLanguage) {
+			// Prefer Spanish for Spain-focused platform if user accepts it
+			if (acceptLanguage.includes('es')) {
+				preferredLocale = 'es';
+			}
+		}
+
+		// Redirect to localized URL
+		const localizedUrl = route(pathname, preferredLocale);
+		throw redirect(307, localizedUrl);
+	}
+
+	// Set locale cookie for future visits
+	event.cookies.set('locale', locale, {
+		path: '/',
+		maxAge: 60 * 60 * 24 * 365, // 1 year
+		sameSite: 'lax',
+		httpOnly: false // Accessible to client-side for language switcher
+	});
+
+	return resolve(event);
 };
 
 const handleAuth: Handle = async ({ event, resolve }) => {
@@ -83,72 +128,8 @@ if (process.env.NODE_ENV === 'production') {
 	console.log('✅ Configuration validated successfully');
 }
 
-/**
- * Language redirect handle - runs BEFORE everything else
- * Redirects root path and non-localized paths to localized versions
- */
-const languageRedirectHandle: Handle = async ({ event, resolve }) => {
-	const pathname = event.url.pathname;
-
-	// Skip non-page requests (API, static files, etc.)
-	if (!shouldTranslatePath(pathname)) {
-		return resolve(event);
-	}
-
-	const { locale } = extractLocale(pathname);
-
-	// If URL doesn't have locale prefix, redirect to localized version
-	if (!locale) {
-		const acceptLanguage = event.request.headers.get('accept-language');
-		const cookieLocale = event.cookies.get('locale');
-		let preferredLocale: Locale = 'en';
-
-		if (cookieLocale === 'es' || cookieLocale === 'en') {
-			preferredLocale = cookieLocale;
-		} else if (acceptLanguage?.includes('es')) {
-			preferredLocale = 'es';
-		}
-
-		const localizedUrl = route(pathname, preferredLocale);
-		console.log('[Language Redirect]', pathname, '→', localizedUrl, `(locale: ${preferredLocale})`);
-
-		throw redirect(307, localizedUrl);
-	}
-
-	// Set locale cookie for future visits
-	event.cookies.set('locale', locale, {
-		path: '/',
-		maxAge: 60 * 60 * 24 * 365,
-		sameSite: 'lax',
-		httpOnly: false
-	});
-
-	return resolve(event);
-};
-
 export const handle: Handle = sequence(
-	languageRedirectHandle, // MUST be first - before Sentry
 	Sentry.sentryHandle(),
-	rateLimitHandle,
-	i18nHandle,
-	handleAuth
+	sequence(rateLimitHandle, languageHandle, i18nHandle, handleAuth)
 );
-
-// Wrap Sentry's error handler to exclude redirects (300-399 status codes)
-export const handleError = (({ error, event }) => {
-	// Don't treat redirects as errors
-	if (error && typeof error === 'object' && 'status' in error) {
-		const status = (error as { status: number }).status;
-		if (status >= 300 && status < 400) {
-			// This is a redirect, not an error - don't send to Sentry
-			console.log('[HandleError] Skipping Sentry for redirect:', status);
-			return {
-				message: 'Redirect'
-			};
-		}
-	}
-
-	// For actual errors, use Sentry's handler
-	const sentryHandler = Sentry.handleErrorWithSentry();
-	return sentryHandler({ error, event });
-}) satisfies import('@sveltejs/kit').HandleServerError;
+export const handleError = Sentry.handleErrorWithSentry();
