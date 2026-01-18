@@ -224,12 +224,9 @@ services:
         - "traefik.http.middlewares.localsnow-www-redirect.redirectregex.replacement=https://localsnow.org/$${1}"
         - "traefik.http.middlewares.localsnow-www-redirect.redirectregex.permanent=true"
 
-        # Buffering Middleware - Allow larger request bodies (20MB for file uploads)
-        # TEMPORARILY DISABLED TO TEST IF THIS CAUSES ROOT PATH REDIRECT ISSUE
-        # - "traefik.http.middlewares.localsnow-buffering.buffering.maxRequestBodyBytes=20000000"
-        # - "traefik.http.middlewares.localsnow-buffering.buffering.memRequestBodyBytes=2000000"
-        # - "traefik.http.middlewares.localsnow-buffering.buffering.maxResponseBodyBytes=20000000"
-        # - "traefik.http.middlewares.localsnow-buffering.buffering.memResponseBodyBytes=2000000"
+        # NOTE: Buffering middleware was removed because it interfered with SvelteKit redirects
+        # Traefik has NO default body size limit - requests are streamed to the backend
+        # File upload size limits (20MB) are handled at the SvelteKit/Node.js level
 
         # Apply all middlewares to router
         - "traefik.http.routers.localsnow.middlewares=localsnow-www-redirect,localsnow-security"
