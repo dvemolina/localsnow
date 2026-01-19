@@ -36,7 +36,12 @@ export const actions: Actions = {
     default: async (event)=> {
         console.log('[Instructor Signup] Starting form submission');
         const user = requireAuth(event, 'Session Expired. Login again to proceed')
-        const form = await superValidate(event.request, zod(instructorSignupSchema));
+
+        // For file uploads, explicitly get FormData first
+        const formData = await event.request.formData();
+        console.log('[Instructor Signup] FormData entries:', Array.from(formData.keys()));
+
+        const form = await superValidate(formData, zod(instructorSignupSchema));
 
         const clientIP = getClientIP(event);
         if (clientIP !== null && !ipBucket.check(clientIP, 1)) {
