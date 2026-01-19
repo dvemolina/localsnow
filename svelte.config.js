@@ -17,7 +17,10 @@ const config = {
 			// This is required when running behind a reverse proxy
 			out: 'build',
 			precompress: false,
-			envPrefix: ''
+			envPrefix: '',
+			// Allow large file uploads (20MB) for instructor signup forms
+			// Profile images (max 5MB) + qualification PDFs (max 10MB)
+			bodySize: 20 * 1024 * 1024 // 20MB in bytes
 		}),
 
 		alias: {
