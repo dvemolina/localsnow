@@ -47,7 +47,22 @@ export const actions: Actions = {
         }
 
         if (!form.valid) {
-            console.log('[Instructor Signup] Form validation failed:', form.errors);
+            console.log('[Instructor Signup] Form validation failed');
+            console.log('[Instructor Signup] Errors:', JSON.stringify(form.errors, null, 2));
+            console.log('[Instructor Signup] Form data types:', {
+                profileImage: form.data.profileImage ? {
+                    constructor: form.data.profileImage.constructor.name,
+                    size: form.data.profileImage.size,
+                    type: form.data.profileImage.type,
+                    name: form.data.profileImage.name
+                } : 'null/undefined',
+                qualification: form.data.qualification ? {
+                    constructor: form.data.qualification.constructor.name,
+                    size: form.data.qualification.size,
+                    type: form.data.qualification.type,
+                    name: form.data.qualification.name
+                } : 'null/undefined'
+            });
             return fail(400, { form })
         }
 
