@@ -139,6 +139,8 @@ services:
       ORIGIN: https://localsnow.org
       PROTOCOL_HEADER: x-forwarded-proto
       HOST_HEADER: x-forwarded-host
+      # Allow file uploads up to 20MB (instructor signup: 5MB image + 10MB PDF)
+      BODY_SIZE_LIMIT: 20M
 
       # Point to Docker secret files
       # Our config.ts reads these _FILE env vars and loads the secret files
