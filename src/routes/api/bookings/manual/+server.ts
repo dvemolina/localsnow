@@ -1,8 +1,8 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { db } from '$lib/server/db';
-import { bookingRequests } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+import { bookingRequests, schoolInstructors } from '$lib/server/db/schema';
+import { eq, and } from 'drizzle-orm';
 import { ExpiringTokenBucket } from '$lib/server/rate-limit';
 
 // Rate limiting: 50 manual bookings per day per instructor
@@ -69,11 +69,30 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			return json({ error: 'Booking identifier must be 100 characters or less' }, { status: 400 });
 		}
 
+		// Look up school_id for instructor-school users
+		let schoolId: number | null = null;
+		if (user.role === 'instructor-school') {
+			const schoolAssociation = await db
+				.select({ schoolId: schoolInstructors.schoolId })
+				.from(schoolInstructors)
+				.where(
+					and(
+						eq(schoolInstructors.instructorId, user.id),
+						eq(schoolInstructors.isAcceptedBySchool, true),
+						eq(schoolInstructors.isActive, true)
+					)
+				)
+				.limit(1);
+
+			schoolId = schoolAssociation[0]?.schoolId || null;
+		}
+
 		// Create manual booking
 		const [booking] = await db
 			.insert(bookingRequests)
 			.values({
 				instructorId: user.id,
+				schoolId: schoolId,
 				lessonId: body.lessonId || null,
 				clientName: body.clientName.trim(),
 				clientEmail: email ? email.toLowerCase() : null,

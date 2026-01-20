@@ -55,6 +55,11 @@
 			title: $t('sidebar_availability'),
 			url: '/dashboard/availability',
 			icon: '/icons/calendar.svg'
+		},
+		{
+			title: 'Find Schools',
+			url: '/dashboard/schools/search',
+			icon: '/icons/service.svg'
 		}
 	]);
 
@@ -82,6 +87,11 @@
 		{
 			title: $t('sidebar_schools'),
 			url: '/dashboard/schools',
+			icon: '/icons/service.svg'
+		},
+		{
+			title: 'Find Schools',
+			url: '/dashboard/schools/search',
 			icon: '/icons/service.svg'
 		},
 		{
@@ -116,6 +126,16 @@
 			title: $t('sidebar_school_bookings'),
 			url: '/dashboard/school/bookings',
 			icon: '/icons/notebook.svg'
+		},
+		{
+			title: 'Ownership Claims',
+			url: '/dashboard/school/claims',
+			icon: '/icons/notebook.svg'
+		},
+		{
+			title: 'Find Schools',
+			url: '/dashboard/schools/search',
+			icon: '/icons/service.svg'
 		}
 	]);
 

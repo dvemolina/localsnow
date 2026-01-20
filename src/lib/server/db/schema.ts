@@ -8,6 +8,7 @@ export const modalitySlugEnum = pgEnum('modality_slug', ['piste', 'off-piste', '
 export const pricingModeEnum = pgEnum('pricing_mode', ['per_hour', 'per_session', 'per_day']);
 export const bookingStatusEnum = pgEnum('status', ['pending', 'viewed', 'accepted', 'rejected', 'cancelled', 'expired', 'completed', 'no_show']);
 export const bookingSourceEnum = pgEnum('booking_source', ['platform', 'manual']);
+export const schoolClaimStatusEnum = pgEnum('school_claim_status', ['pending', 'approved', 'rejected']);
 
 export const timestamps = {
     createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -101,7 +102,23 @@ export const schools = pgTable('schools', {
 	schoolPhone: varchar('school_phone', { length: 50 }),
 	logo: varchar('logo', { length: 255 }),
 	isPublished: boolean('is_published').default(true),
-	isVerified: boolean('is_verified').default(false)
+	isVerified: boolean('is_verified').default(false),
+	createdBy: varchar('created_by', { length: 50 }).default('school-admin'), // 'school-admin' or 'instructor'
+	...timestamps
+});
+
+// --- School Claims (for claiming existing school listings) ---
+export const schoolClaims = pgTable('school_claims', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	uuid: uuid('uuid').defaultRandom().unique().notNull(),
+	schoolId: integer('school_id').notNull().references(() => schools.id, { onDelete: 'cascade' }),
+	claimantUserId: integer('claimant_user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	currentOwnerUserId: integer('current_owner_user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	status: schoolClaimStatusEnum('status').default('pending').notNull(),
+	message: text('message'), // Optional message from claimant
+	responseMessage: text('response_message'), // Optional response from current owner
+	reviewedAt: timestamp('reviewed_at'),
+	...timestamps
 });
 
 // --- Booking Requests ---
@@ -574,6 +591,22 @@ export const adminAuditLogRelations = relations(adminAuditLog, ({ one }) => ({
 export type AdminAuditLog = typeof adminAuditLog.$inferSelect;
 export type InsertAdminAuditLog = typeof adminAuditLog.$inferInsert;
 
+// School Claims relations
+export const schoolClaimsRelations = relations(schoolClaims, ({ one }) => ({
+	school: one(schools, {
+		fields: [schoolClaims.schoolId],
+		references: [schools.id]
+	}),
+	claimant: one(users, {
+		fields: [schoolClaims.claimantUserId],
+		references: [users.id]
+	}),
+	currentOwner: one(users, {
+		fields: [schoolClaims.currentOwnerUserId],
+		references: [users.id]
+	})
+}));
+
 // --- Additional Relations for Drizzle Queries ---
 
 // Users relations
@@ -707,6 +740,8 @@ export type SchoolInstructor = typeof schoolInstructors.$inferSelect;
 export type InsertSchoolInstructor = typeof schoolInstructors.$inferInsert;
 export type SchoolInstructorHistory = typeof schoolInstructorHistory.$inferSelect;
 export type InsertSchoolInstructorHistory = typeof schoolInstructorHistory.$inferInsert;
+export type SchoolClaim = typeof schoolClaims.$inferSelect;
+export type InsertSchoolClaim = typeof schoolClaims.$inferInsert;
 //Countries
 export type Country = typeof countries.$inferSelect;
 export type InsertCountry = typeof countries.$inferInsert;

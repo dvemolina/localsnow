@@ -1,6 +1,6 @@
 import { db } from "$lib/server/db/index";
-import { schools, schoolResorts, schoolAdmins, users, type InsertSchool, type School } from "$src/lib/server/db/schema";
-import { eq, and } from "drizzle-orm";
+import { schools, schoolResorts, schoolAdmins, users, resorts, type InsertSchool, type School } from "$src/lib/server/db/schema";
+import { eq, and, ilike, or } from "drizzle-orm";
 import type { SchoolSignupData } from "./validations/schoolSchemas";
 
 
@@ -224,7 +224,11 @@ export class SchoolRepository {
                 schoolPhone: schools.schoolPhone,
                 logo: schools.logo,
                 isPublished: schools.isPublished,
-                isVerified: schools.isVerified
+                isVerified: schools.isVerified,
+                createdBy: schools.createdBy,
+                createdAt: schools.createdAt,
+                updatedAt: schools.updatedAt,
+                deletedAt: schools.deletedAt
             })
             .from(schools)
             .innerJoin(schoolResorts, eq(schools.id, schoolResorts.schoolId))
@@ -236,5 +240,85 @@ export class SchoolRepository {
             );
 
         return result;
+    }
+
+    /**
+     * Search schools by name or location
+     */
+    async searchSchools(searchTerm: string, resortId?: number): Promise<Array<School & { resortName?: string }>> {
+        const searchPattern = `%${searchTerm}%`;
+
+        let query = db
+            .select({
+                school: schools,
+                resortName: resorts.name
+            })
+            .from(schools)
+            .leftJoin(schoolResorts, eq(schools.id, schoolResorts.schoolId))
+            .leftJoin(resorts, eq(schoolResorts.resortId, resorts.id))
+            .where(
+                and(
+                    eq(schools.isPublished, true),
+                    or(
+                        ilike(schools.name, searchPattern),
+                        ilike(resorts.name, searchPattern)
+                    )
+                )
+            );
+
+        if (resortId) {
+            query = query.where(eq(schoolResorts.resortId, resortId));
+        }
+
+        const results = await query;
+
+        return results.map(r => ({
+            ...r.school,
+            resortName: r.resortName || undefined
+        }));
+    }
+
+    /**
+     * Create an instructor-listed school (unverified)
+     */
+    async createInstructorListedSchool(
+        instructorId: number,
+        name: string,
+        slug: string,
+        resortId: number,
+        countryCode: string,
+        bio?: string,
+        schoolEmail?: string,
+        schoolPhone?: string
+    ): Promise<School> {
+        return await db.transaction(async (tx) => {
+            const [school] = await tx
+                .insert(schools)
+                .values({
+                    ownerUserId: instructorId,
+                    name,
+                    slug,
+                    bio: bio || null,
+                    schoolEmail: schoolEmail || null,
+                    countryCode,
+                    schoolPhone: schoolPhone || null,
+                    isVerified: false,
+                    isPublished: true,
+                    createdBy: 'instructor'
+                })
+                .returning();
+
+            if (!school) {
+                throw new Error('Failed to create school listing');
+            }
+
+            // Add resort relationship
+            await tx.insert(schoolResorts).values({
+                schoolId: school.id,
+                resortId
+            });
+
+            return school;
+        });
     }
 }

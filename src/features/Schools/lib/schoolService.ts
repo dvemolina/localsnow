@@ -191,4 +191,48 @@ export class SchoolService {
             throw new Error('Failed to fetch school resorts');
         }
     }
+
+    async searchSchools(searchTerm: string, resortId?: number): Promise<Array<School & { resortName?: string }>> {
+        try {
+            return await this.schoolRepository.searchSchools(searchTerm, resortId);
+        } catch (error) {
+            console.error('Error searching schools:', error);
+            throw new Error('Failed to search schools');
+        }
+    }
+
+    async createInstructorListedSchool(
+        instructorId: number,
+        name: string,
+        resortId: number,
+        countryCode: string,
+        bio?: string,
+        schoolEmail?: string,
+        schoolPhone?: string
+    ): Promise<School> {
+        try {
+            // Generate unique slug
+            let slug = slugifyString(name);
+            let slugSuffix = 1;
+
+            while (!(await this.schoolRepository.checkSlugAvailability(slug))) {
+                slug = `${slugifyString(name)}-${slugSuffix}`;
+                slugSuffix++;
+            }
+
+            return await this.schoolRepository.createInstructorListedSchool(
+                instructorId,
+                name,
+                slug,
+                resortId,
+                countryCode,
+                bio,
+                schoolEmail,
+                schoolPhone
+            );
+        } catch (error) {
+            console.error('Error creating instructor-listed school:', error);
+            throw new Error('Failed to create school listing');
+        }
+    }
 }
