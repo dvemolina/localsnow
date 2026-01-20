@@ -8,6 +8,7 @@ import { RefillingTokenBucket } from "$src/lib/server/rate-limit";
 import { instructorSignupSchema, type InstructorSignupData } from "$src/features/Instructors/lib/instructorSchemas";
 import { StorageService } from "$src/lib/server/R2Storage";
 import { InstructorService } from "$src/features/Instructors/lib/instructorService";
+import { validateSessionToken, sessionCookieName } from "$src/lib/server/session";
 
 const instructorService = new InstructorService();
 const storageService = new StorageService();
@@ -133,6 +134,18 @@ export const actions: Actions = {
                 form,
                 message: 'Failed to create instructor profile. Please try again.'
             });
+        }
+
+        // Refresh session to get updated user data with the newly assigned role
+        // This ensures the sidebar appears immediately on the dashboard without page reload
+        console.log('[Instructor Signup] Refreshing session with updated user data');
+        const sessionToken = event.cookies.get(sessionCookieName);
+        if (sessionToken) {
+            const { user: updatedUser } = await validateSessionToken(sessionToken);
+            if (updatedUser) {
+                event.locals.user = updatedUser;
+                console.log('[Instructor Signup] Session refreshed, user role:', updatedUser.role);
+            }
         }
 
         const locale = getLocaleFromPath(event.url.pathname);
