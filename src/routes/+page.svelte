@@ -2,6 +2,8 @@
 	import SearchResort from '$src/features/Resorts/components/SearchResort.svelte';
 	import { heroResortSearchSchema } from '$src/features/Resorts/lib/resortSchemas';
 	import SportSelect from '$src/features/Resorts/components/SportSelect.svelte';
+	import SearchTypeToggle from '$src/lib/components/shared/SearchTypeToggle.svelte';
+	import FeaturedSchools from '$src/features/Schools/components/FeaturedSchools.svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { t } from '$lib/i18n/i18n';
@@ -10,10 +12,13 @@
 	import { extractLocale } from '$lib/i18n/routes';
 	let { data } = $props();
 
+	// Search type state for toggle
+	let searchType = $state<'instructors' | 'schools'>('instructors');
+
 	// Get current locale for form submission
 	const currentLocale = $derived(extractLocale($page.url.pathname).locale || 'en');
 
-	// Top Spanish resorts for homepage - use $derived for translation reactivity
+	// Top resorts for homepage - use $derived for translation reactivity
 	const topResorts = $derived([
 		{
 			name: 'Baqueira Beret',
@@ -67,12 +72,8 @@
 		url: 'https://localsnow.org',
 		logo: 'https://localsnow.org/local-snow-head.png',
 		description:
-			'Curated directory of ski and snowboard instructors across Spain. Browse profiles by resort, specialty, and language. Send lesson requests and connect directly. Zero platform fees, community-driven, built for local discovery.',
+			'Curated directory of ski and snowboard instructors worldwide. Browse profiles by resort, specialty, and language. Send lesson requests and connect directly. Zero platform fees, community-driven, built for local discovery.',
 		email: 'support@localsnow.org',
-		areaServed: {
-			'@type': 'Country',
-			name: 'Spain'
-		},
 		serviceType: 'Ski Instructor Directory',
 		foundingDate: '2024',
 		sameAs: []
@@ -154,9 +155,16 @@
 				<!-- Search form -->
 				<form method="POST" use:enhance class="rounded-lg bg-white/90 p-4 shadow-lg">
 					<input type="hidden" name="locale" value={currentLocale} />
+					<input type="hidden" name="searchType" value={searchType} />
+
+					<!-- Search Type Toggle -->
+					<div class="mb-4">
+						<SearchTypeToggle bind:value={searchType} />
+					</div>
+
 					<div class="flex flex-col gap-4 md:flex-row">
 						<div class="flex-1">
-							<SearchResort {form} name="resort" id="location" countryId={data.spainCountryId} />
+							<SearchResort {form} name="resort" id="location" />
 						</div>
 						<div class="text-foreground flex-1">
 							<SportSelect {form} name="sport" isHero={true} />
@@ -222,6 +230,11 @@
 		</div>
 	</div>
 </section>
+
+<!-- Featured Schools Section -->
+{#if data.featuredSchools && data.featuredSchools.length > 0}
+	<FeaturedSchools schools={data.featuredSchools} />
+{/if}
 
 <!-- Top Resorts Section -->
 <section class="section">

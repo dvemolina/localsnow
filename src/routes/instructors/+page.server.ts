@@ -21,15 +21,25 @@ export const load: PageServerLoad = async ({ url }) => {
     const sortBy = url.searchParams.get('sortBy');
 
     try {
+        // Parse and validate numeric parameters
+        const resortIdNum = resortId ? Number(resortId) : undefined;
+        const sportIdNum = sportId ? Number(sportId) : undefined;
+        const schoolIdNum = schoolId ? Number(schoolId) : undefined;
+
+        // Validate that numeric IDs are valid numbers (not NaN)
+        const validResortId = resortIdNum && !isNaN(resortIdNum) ? resortIdNum : undefined;
+        const validSportId = sportIdNum && !isNaN(sportIdNum) ? sportIdNum : undefined;
+        const validSchoolId = schoolIdNum && !isNaN(schoolIdNum) ? schoolIdNum : undefined;
+
         // Search instructors worldwide (no country restrictions)
         const instructors = await instructorService.searchInstructors({
-            resortId: resortId ? Number(resortId) : undefined,
-            sportId: sportId ? Number(sportId) : undefined,
+            resortId: validResortId,
+            sportId: validSportId,
             searchQuery: searchQuery || undefined,
             language: language || undefined,
             instructorType: instructorType || undefined,
             verifiedOnly: verifiedOnly || undefined,
-            schoolId: schoolId ? Number(schoolId) : undefined,
+            schoolId: validSchoolId,
             sortBy: sortBy || undefined
         });
 

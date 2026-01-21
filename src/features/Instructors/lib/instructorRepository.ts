@@ -1,5 +1,5 @@
 import { db } from "$lib/server/db/index";
-import { users, instructorSports, instructorResorts, lessons, lessonSports as lessonSportsTable, resorts, schoolInstructors } from "$src/lib/server/db/schema";
+import { users, instructorSports, instructorResorts, lessons, lessonSports as lessonSportsTable, resorts, schoolInstructors, schools } from "$src/lib/server/db/schema";
 import type { InsertUser, User } from "$src/lib/server/db/schema";
 import { eq, and, or } from "drizzle-orm";
 import type { InstructorSignupData } from "./instructorSchemas";
@@ -212,12 +212,21 @@ export class InstructorRepository {
                     isVerified: users.isVerified,
                     // Join data
                     sports: instructorSports.sportId,
-                    resorts: instructorResorts.resortId
+                    resorts: instructorResorts.resortId,
+                    // School data
+                    schoolId: schools.id,
+                    schoolName: schools.name,
+                    schoolSlug: schools.slug
                 })
                 .from(users)
                 .leftJoin(instructorSports, eq(users.id, instructorSports.instructorId))
                 .leftJoin(instructorResorts, eq(users.id, instructorResorts.instructorId))
-                .leftJoin(schoolInstructors, eq(users.id, schoolInstructors.instructorId))
+                .leftJoin(schoolInstructors, and(
+                    eq(users.id, schoolInstructors.instructorId),
+                    eq(schoolInstructors.isAcceptedBySchool, true),
+                    eq(schoolInstructors.isActive, true)
+                ))
+                .leftJoin(schools, eq(schoolInstructors.schoolId, schools.id))
                 .$dynamic();
 
             // Build WHERE conditions
@@ -251,7 +260,7 @@ export class InstructorRepository {
             // Filter by school
             if (filters.schoolId) {
                 conditions.push(eq(schoolInstructors.schoolId, filters.schoolId));
-                conditions.push(eq(schoolInstructors.isAccepted, true)); // Only show accepted instructors
+                conditions.push(eq(schoolInstructors.isAcceptedBySchool, true)); // Only show accepted instructors
             }
 
             query = query.where(and(...conditions));
@@ -278,17 +287,22 @@ export class InstructorRepository {
                         spokenLanguages: row.spokenLanguages,
                         isVerified: row.isVerified,
                         sports: [],
-                        resorts: []
+                        resorts: [],
+                        school: row.schoolId ? {
+                            id: row.schoolId,
+                            name: row.schoolName,
+                            slug: row.schoolSlug
+                        } : null
                     });
                 }
 
                 const instructor = instructorsMap.get(row.id);
-                
+
                 // Add sport if exists and not already added
                 if (row.sports && !instructor.sports.includes(row.sports)) {
                     instructor.sports.push(row.sports);
                 }
-                
+
                 // Add resort if exists and not already added
                 if (row.resorts && !instructor.resorts.includes(row.resorts)) {
                     instructor.resorts.push(row.resorts);

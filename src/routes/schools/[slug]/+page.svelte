@@ -18,7 +18,7 @@
 	// Create meta description
 	const metaDescription = school.bio
 		? school.bio.substring(0, 160)
-		: `${school.name} offers professional ski and snowboard instruction at ${resorts.length > 0 ? resorts[0].name : 'Spanish ski resorts'}.`;
+		: `${school.name} offers professional ski and snowboard instruction at ${resorts.length > 0 ? resorts[0].name : 'top ski resorts'}.`;
 
 	// Create structured data for school profile
 	const organizationSchemaForSchool = {
@@ -27,7 +27,7 @@
 		name: school.name,
 		description:
 			school.bio ||
-			`Professional ski and snowboard instruction at ${resorts.length > 0 ? resorts[0].name : 'Spanish ski resorts'}`,
+			`Professional ski and snowboard instruction at ${resorts.length > 0 ? resorts[0].name : 'top ski resorts'}`,
 		image: schoolImageUrl,
 		url: profileUrl,
 		...(school.schoolEmail && {
@@ -45,7 +45,7 @@
 		name: 'Local Snow',
 		url: 'https://localsnow.org',
 		logo: 'https://localsnow.org/local-snow-head.png',
-		description: 'Free directory of ski and snowboard schools in Spain',
+		description: 'Free directory of ski and snowboard schools worldwide',
 		sameAs: []
 	};
 

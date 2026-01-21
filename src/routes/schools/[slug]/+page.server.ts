@@ -38,14 +38,14 @@ export const load: PageServerLoad = async (event) => {
 				regionName: regions.region,
 				countryName: countries.country
 			})
-			.from(schoolResorts)
-			.innerJoin(resorts, eq(schoolResorts.resortId, resorts.id))
+			.from(resorts)
+			.innerJoin(schoolResorts, eq(resorts.id, schoolResorts.resortId))
 			.leftJoin(regions, eq(resorts.regionId, regions.id))
 			.innerJoin(countries, eq(resorts.countryId, countries.id))
 			.where(eq(schoolResorts.schoolId, school.id));
 
-		// Get school instructors (only accepted instructors)
-		const schoolInstructorsData = await db
+		// Get school instructors (only accepted and published instructors)
+		const allSchoolInstructors = await db
 			.select({
 				id: users.id,
 				name: users.name,
@@ -55,20 +55,19 @@ export const load: PageServerLoad = async (event) => {
 				isVerified: users.isVerified,
 				isPublished: users.isPublished
 			})
-			.from(schoolInstructors)
-			.innerJoin(users, eq(schoolInstructors.instructorId, users.id))
-			.where(
-				and(
-					eq(schoolInstructors.schoolId, school.id),
-					eq(schoolInstructors.isAccepted, true),
-					eq(users.isPublished, true) // Only show published instructors
-				)
-			);
+			.from(users)
+			.innerJoin(schoolInstructors, eq(users.id, schoolInstructors.instructorId))
+			.where(and(
+				eq(schoolInstructors.schoolId, school.id),
+				eq(schoolInstructors.isAcceptedBySchool, true),
+				eq(schoolInstructors.isActive, true),
+				eq(users.isPublished, true)
+			));
 
 		return {
 			school,
 			resorts: schoolResortsData,
-			instructors: schoolInstructorsData,
+			instructors: allSchoolInstructors,
 			user: event.locals.user
 		};
 	} catch (err) {

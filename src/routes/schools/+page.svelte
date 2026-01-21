@@ -79,7 +79,7 @@
 		'@context': 'https://schema.org',
 		'@type': 'ItemList',
 		name: 'Ski and Snowboard Schools',
-		description: 'Browse certified ski and snowboard schools at top Spanish resorts',
+		description: 'Browse certified ski and snowboard schools at top resorts worldwide',
 		numberOfItems: data.schools.length,
 		itemListElement: data.schools.slice(0, 20).map((school, index) => ({
 			'@type': 'ListItem',
@@ -99,7 +99,7 @@
 		name: 'Local Snow',
 		url: 'https://localsnow.org',
 		logo: 'https://localsnow.org/local-snow-head.png',
-		description: 'Free directory of ski and snowboard schools in Spain',
+		description: 'Free directory of ski and snowboard schools worldwide',
 		sameAs: []
 	};
 
@@ -128,14 +128,14 @@
 	<title>Ski & Snowboard Schools Directory | LocalSnow</title>
 	<meta
 		name="description"
-		content="Find certified ski and snowboard schools at top Spanish resorts. Browse profiles, compare services, and connect with professional ski schools."
+		content="Find certified ski and snowboard schools at top resorts worldwide. Browse profiles, compare services, and connect with professional ski schools."
 	/>
 
 	<!-- Open Graph -->
 	<meta property="og:title" content="Ski & Snowboard Schools Directory | LocalSnow" />
 	<meta
 		property="og:description"
-		content="Find certified ski and snowboard schools at top Spanish resorts."
+		content="Find certified ski and snowboard schools at top resorts worldwide."
 	/>
 	<meta property="og:url" content="https://localsnow.org/schools" />
 	<meta property="og:image" content="https://localsnow.org/ski-instructor-turn.webp" />
@@ -144,7 +144,7 @@
 	<meta name="twitter:title" content="Ski & Snowboard Schools Directory | LocalSnow" />
 	<meta
 		name="twitter:description"
-		content="Find certified ski and snowboard schools at top Spanish resorts."
+		content="Find certified ski and snowboard schools at top resorts worldwide."
 	/>
 	<meta name="twitter:image" content="https://localsnow.org/ski-instructor-turn.webp" />
 
@@ -167,7 +167,7 @@
 	<div class="mb-6 text-center">
 		<h1 class="title2 mb-2">Ski & Snowboard Schools</h1>
 		<p class="text-muted-foreground text-sm">
-			Find certified ski and snowboard schools at top Spanish resorts
+			Find certified ski and snowboard schools at top resorts worldwide
 		</p>
 	</div>
 
