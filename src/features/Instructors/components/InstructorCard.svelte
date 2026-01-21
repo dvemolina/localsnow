@@ -4,6 +4,7 @@
 	import { Badge, badgeVariants } from '$src/lib/components/ui/badge';
 	import { Button } from '$src/lib/components/ui/button';
 	import { generateInstructorSlug } from '$lib/utils/slug';
+	import { t } from '$lib/i18n/i18n';
 
 	let { instructorData, baseLesson = null } = $props();
 
@@ -78,11 +79,25 @@
 			<div class="flex flex-row items-center gap-2">
 				<img src="/icons/service.svg" alt="Instructor Type" class="size-4" />
 				{#if isIndependent}
-					<Badge variant="secondary" class="text-[0.65rem] sm:text-xs">Independent</Badge>
+					<Badge variant="secondary" class="text-[0.65rem] sm:text-xs">{$t('instructor_card_independent')}</Badge>
 				{:else}
-					<Badge variant="secondary" class="text-[0.65rem] sm:text-xs">School Instructor</Badge>
+					<Badge variant="secondary" class="text-[0.65rem] sm:text-xs">{$t('instructor_card_school')}</Badge>
 				{/if}
 			</div>
+
+			<!-- School Affiliation (if applicable) -->
+			{#if instructorData.school}
+				<div class="flex flex-row items-center gap-2">
+					<img src="/icons/home.svg" alt={$t('instructor_card_school_alt')} class="size-4" />
+					<a
+						href="/schools/{instructorData.school.slug}"
+						class="text-[0.65rem] sm:text-xs {badgeVariants({ variant: 'secondary' })} hover:bg-primary hover:text-primary-foreground transition-colors no-underline"
+						onclick={(e) => e.stopPropagation()}
+					>
+						{instructorData.school.name}
+					</a>
+				</div>
+			{/if}
 
 			<!-- Certification -->
 			<div class="flex flex-row items-center gap-2">
