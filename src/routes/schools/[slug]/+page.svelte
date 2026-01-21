@@ -20,10 +20,10 @@
 		? school.bio.substring(0, 160)
 		: `${school.name} offers professional ski and snowboard instruction at ${resorts.length > 0 ? resorts[0].name : 'top ski resorts'}.`;
 
-	// Create structured data for school profile
+	// Create structured data for school profile - Using LocalBusiness for SEO
 	const organizationSchemaForSchool = {
 		'@context': 'https://schema.org',
-		'@type': 'Organization',
+		'@type': ['LocalBusiness', 'SportsActivityLocation'],
 		name: school.name,
 		description:
 			school.bio ||
@@ -35,6 +35,38 @@
 		}),
 		...(school.schoolPhone && school.countryCode && {
 			telephone: `+${school.countryCode}${school.schoolPhone}`
+		}),
+		...(resorts.length > 0 && {
+			address: {
+				'@type': 'PostalAddress',
+				addressLocality: resorts[0].name,
+				addressRegion: resorts[0].region || resorts[0].country,
+				addressCountry: resorts[0].countryCode || 'ES'
+			}
+		}),
+		// Add geographic coordinates if available
+		...(resorts.length > 0 && resorts[0].lat && resorts[0].lon && {
+			geo: {
+				'@type': 'GeoCoordinates',
+				latitude: resorts[0].lat,
+				longitude: resorts[0].lon
+			}
+		}),
+		// Service area
+		...(resorts.length > 0 && {
+			areaServed: resorts.map(resort => ({
+				'@type': 'City',
+				name: resort.name
+			}))
+		}),
+		// Team members (instructors)
+		...(instructors.length > 0 && {
+			member: instructors.slice(0, 10).map(instructor => ({
+				'@type': 'Person',
+				'@id': `https://localsnow.org/instructors/${instructor.id}-${instructor.name.toLowerCase()}-${instructor.lastName.toLowerCase()}`,
+				name: `${instructor.name} ${instructor.lastName.charAt(0)}.`,
+				jobTitle: 'Ski Instructor'
+			}))
 		})
 	};
 

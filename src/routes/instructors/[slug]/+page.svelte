@@ -75,6 +75,38 @@
 		})
 	};
 
+	// Service schema for SEO
+	const serviceSchema = {
+		'@context': 'https://schema.org',
+		'@type': 'Service',
+		serviceType: sports.map(s => `${s.sport} Instruction`).join(', ') || 'Ski Instruction',
+		name: `${sports.map(s => s.sport).join(' & ')} Lessons`,
+		description: instructor.bio || `Professional ${sports.map(s => s.sport.toLowerCase()).join(' and ')} instruction for all skill levels`,
+		provider: {
+			'@type': 'Person',
+			name: instructorFullName,
+			url: profileUrl
+		},
+		...(resorts.length > 0 && {
+			areaServed: resorts.map(resort => ({
+				'@type': 'City',
+				name: resort.name
+			}))
+		}),
+		...(data.baseLesson && {
+			offers: {
+				'@type': 'Offer',
+				priceSpecification: {
+					'@type': 'UnitPriceSpecification',
+					price: data.baseLesson.basePrice,
+					priceCurrency: data.baseLesson.currency || 'EUR',
+					unitText: 'per hour'
+				},
+				availability: 'https://schema.org/InStock'
+			}
+		})
+	};
+
 	// Organization schema for LocalSnow
 	const organizationSchema = {
 		'@context': 'https://schema.org',
@@ -163,6 +195,9 @@
 	<!-- Structured Data -->
 	<script type="application/ld+json">
 		{JSON.stringify(personSchema)}
+	</script>
+	<script type="application/ld+json">
+		{JSON.stringify(serviceSchema)}
 	</script>
 	<script type="application/ld+json">
 		{JSON.stringify(organizationSchema)}

@@ -91,9 +91,56 @@
 		</div>
 	</div>
 
-	<!-- Find Instructors Section -->
+	<!-- Find Instructors & Schools Section -->
+	<div class="mb-8 grid gap-4 md:grid-cols-2">
+		<!-- All Instructors Card -->
+		<Card class="border-2 border-primary/20">
+			<CardHeader>
+				<CardTitle class="flex items-center gap-2">
+					<ArrowRight class="h-5 w-5 text-primary" />
+					All Instructors
+				</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<p class="mb-4 text-sm text-muted-foreground">
+					Browse all verified ski and snowboard instructors at {resort.name}. Compare profiles, read reviews, and book directly.
+				</p>
+				<Button
+					href="/resorts/{location.country.countrySlug}/{location.region?.regionSlug || location.country.countrySlug}/{resort.slug}/instructors"
+					class="w-full"
+				>
+					View All Instructors
+					<ArrowRight class="ml-2 h-4 w-4" />
+				</Button>
+			</CardContent>
+		</Card>
+
+		<!-- All Schools Card -->
+		<Card class="border-2 border-primary/20">
+			<CardHeader>
+				<CardTitle class="flex items-center gap-2">
+					<ArrowRight class="h-5 w-5 text-primary" />
+					Ski Schools
+				</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<p class="mb-4 text-sm text-muted-foreground">
+					Discover ski schools offering group lessons, kids programs, and structured courses at {resort.name}.
+				</p>
+				<Button
+					href="/resorts/{location.country.countrySlug}/{location.region?.regionSlug || location.country.countrySlug}/{resort.slug}/schools"
+					class="w-full"
+				>
+					View Ski Schools
+					<ArrowRight class="ml-2 h-4 w-4" />
+				</Button>
+			</CardContent>
+		</Card>
+	</div>
+
+	<!-- Find Instructors by Sport -->
 	<div class="mb-8">
-		<h2 class="mb-4 text-xl font-semibold">Find Instructors</h2>
+		<h2 class="mb-4 text-xl font-semibold">Find Instructors by Sport</h2>
 		<div class="grid gap-4 md:grid-cols-3">
 			{#each sportsAvailable as sport}
 				<Card>

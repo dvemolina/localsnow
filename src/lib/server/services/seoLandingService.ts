@@ -6,7 +6,10 @@ import {
   countries,
   sports,
   instructorResorts,
-  instructorSports
+  instructorSports,
+  faqs,
+  schools,
+  schoolResorts
 } from "$src/lib/server/db/schema";
 import { eq, and, inArray, ne } from "drizzle-orm";
 
@@ -586,4 +589,326 @@ export async function getAllResortSportCombinations() {
     .groupBy(countries.countrySlug, regions.regionSlug, resorts.slug, sports.sportSlug);
 
   return combinations;
+}
+
+/**
+ * Get FAQs for a specific entity (resort, instructor, school) or global FAQs
+ */
+export async function getFAQsByEntity(entityType: string, entityId?: number) {
+  const conditions = [
+    eq(faqs.isPublished, true),
+    eq(faqs.entityType, entityType)
+  ];
+
+  if (entityId) {
+    conditions.push(eq(faqs.entityId, entityId));
+  } else {
+    // For global FAQs, entityId should be null
+    conditions.push(eq(faqs.entityId, null as any));
+  }
+
+  const faqList = await db
+    .select({
+      id: faqs.id,
+      question: faqs.question,
+      answer: faqs.answer,
+      displayOrder: faqs.displayOrder
+    })
+    .from(faqs)
+    .where(and(...conditions))
+    .orderBy(faqs.displayOrder);
+
+  return faqList;
+}
+
+/**
+ * Get all instructors at a specific resort (regardless of sport)
+ */
+export async function getResortInstructors(
+  countrySlug: string,
+  regionSlug: string,
+  resortSlug: string
+) {
+  // First, verify the resort exists
+  const resortData = await db
+    .select({
+      resortId: resorts.id,
+      resortName: resorts.name,
+      resortSlug: resorts.slug,
+      minElevation: resorts.minElevation,
+      maxElevation: resorts.maxElevation,
+      lat: resorts.lat,
+      lon: resorts.lon,
+      website: resorts.website,
+      description: resorts.description,
+      image: resorts.image,
+      regionId: regions.id,
+      regionName: regions.region,
+      regionSlug: regions.regionSlug,
+      countryId: countries.id,
+      countryName: countries.country,
+      countrySlug: countries.countrySlug,
+      countryCode: countries.countryCode
+    })
+    .from(resorts)
+    .innerJoin(countries, eq(resorts.countryId, countries.id))
+    .leftJoin(regions, eq(resorts.regionId, regions.id))
+    .where(
+      and(
+        eq(resorts.slug, resortSlug),
+        eq(countries.countrySlug, countrySlug),
+        regionSlug ? eq(regions.regionSlug, regionSlug) : undefined
+      )
+    )
+    .limit(1);
+
+  if (resortData.length === 0) return null;
+
+  const resort = resortData[0];
+
+  // Get all instructors teaching at this resort
+  const instructorIds = await db
+    .select({ instructorId: instructorResorts.instructorId })
+    .from(instructorResorts)
+    .where(eq(instructorResorts.resortId, resort.resortId));
+
+  if (instructorIds.length === 0) {
+    return {
+      location: {
+        country: {
+          id: resort.countryId,
+          country: resort.countryName,
+          countrySlug: resort.countrySlug,
+          countryCode: resort.countryCode
+        },
+        region: resort.regionId ? {
+          id: resort.regionId,
+          region: resort.regionName!,
+          regionSlug: resort.regionSlug!
+        } : undefined,
+        resort: {
+          id: resort.resortId,
+          name: resort.resortName,
+          slug: resort.resortSlug,
+          minElevation: resort.minElevation,
+          maxElevation: resort.maxElevation,
+          lat: resort.lat,
+          lon: resort.lon,
+          website: resort.website,
+          description: resort.description,
+          image: resort.image
+        }
+      },
+      instructors: [],
+      totalInstructors: 0
+    };
+  }
+
+  const ids = instructorIds.map(i => i.instructorId);
+
+  // Get full instructor details
+  const instructorsData = await db
+    .select({
+      id: users.id,
+      uuid: users.uuid,
+      name: users.name,
+      lastName: users.lastName,
+      bio: users.bio,
+      profileImageUrl: users.profileImageUrl,
+      isVerified: users.isVerified
+    })
+    .from(users)
+    .where(
+      and(
+        inArray(users.id, ids),
+        eq(users.isVerified, true),
+        eq(users.isPublished, true)
+      )
+    );
+
+  // Get each instructor's sports and resorts
+  const instructors: InstructorLandingData[] = await Promise.all(
+    instructorsData.map(async (instructor) => {
+      const instructorSportsData = await db
+        .select({
+          id: sports.id,
+          sport: sports.sport,
+          sportSlug: sports.sportSlug
+        })
+        .from(instructorSports)
+        .innerJoin(sports, eq(instructorSports.sportId, sports.id))
+        .where(eq(instructorSports.instructorId, instructor.id));
+
+      const instructorResortsData = await db
+        .select({
+          id: resorts.id,
+          name: resorts.name,
+          slug: resorts.slug
+        })
+        .from(instructorResorts)
+        .innerJoin(resorts, eq(instructorResorts.resortId, resorts.id))
+        .where(eq(instructorResorts.instructorId, instructor.id));
+
+      return {
+        ...instructor,
+        sports: instructorSportsData,
+        resorts: instructorResortsData
+      };
+    })
+  );
+
+  return {
+    location: {
+      country: {
+        id: resort.countryId,
+        country: resort.countryName,
+        countrySlug: resort.countrySlug,
+        countryCode: resort.countryCode
+      },
+      region: resort.regionId ? {
+        id: resort.regionId,
+        region: resort.regionName!,
+        regionSlug: resort.regionSlug!
+      } : undefined,
+      resort: {
+        id: resort.resortId,
+        name: resort.resortName,
+        slug: resort.resortSlug,
+        minElevation: resort.minElevation,
+        maxElevation: resort.maxElevation,
+        lat: resort.lat,
+        lon: resort.lon,
+        website: resort.website,
+        description: resort.description,
+        image: resort.image
+      }
+    },
+    instructors,
+    totalInstructors: instructors.length
+  };
+}
+
+/**
+ * Get all schools at a specific resort
+ */
+export async function getResortSchools(
+  countrySlug: string,
+  regionSlug: string,
+  resortSlug: string
+) {
+  // First, verify the resort exists
+  const resortData = await db
+    .select({
+      resortId: resorts.id,
+      resortName: resorts.name,
+      resortSlug: resorts.slug,
+      minElevation: resorts.minElevation,
+      maxElevation: resorts.maxElevation,
+      lat: resorts.lat,
+      lon: resorts.lon,
+      website: resorts.website,
+      description: resorts.description,
+      image: resorts.image,
+      regionId: regions.id,
+      regionName: regions.region,
+      regionSlug: regions.regionSlug,
+      countryId: countries.id,
+      countryName: countries.country,
+      countrySlug: countries.countrySlug,
+      countryCode: countries.countryCode
+    })
+    .from(resorts)
+    .innerJoin(countries, eq(resorts.countryId, countries.id))
+    .leftJoin(regions, eq(resorts.regionId, regions.id))
+    .where(
+      and(
+        eq(resorts.slug, resortSlug),
+        eq(countries.countrySlug, countrySlug),
+        regionSlug ? eq(regions.regionSlug, regionSlug) : undefined
+      )
+    )
+    .limit(1);
+
+  if (resortData.length === 0) return null;
+
+  const resort = resortData[0];
+
+  // Get all schools teaching at this resort
+  const schoolsData = await db
+    .select({
+      id: schools.id,
+      uuid: schools.uuid,
+      name: schools.name,
+      slug: schools.slug,
+      bio: schools.bio,
+      logo: schools.logo,
+      schoolEmail: schools.schoolEmail,
+      schoolPhone: schools.schoolPhone,
+      countryCode: schools.countryCode,
+      isVerified: schools.isVerified,
+      isPublished: schools.isPublished
+    })
+    .from(schoolResorts)
+    .innerJoin(schools, eq(schoolResorts.schoolId, schools.id))
+    .where(
+      and(
+        eq(schoolResorts.resortId, resort.resortId),
+        eq(schools.isPublished, true)
+      )
+    );
+
+  // Get sports for each school
+  const schoolsWithSports = await Promise.all(
+    schoolsData.map(async (school) => {
+      const schoolSportsData = await db
+        .select({
+          id: sports.id,
+          sport: sports.sport,
+          sportSlug: sports.sportSlug
+        })
+        .from(sports)
+        .innerJoin(
+          db
+            .select({ sportId: sports.id })
+            .from(sports)
+            .as('school_sports'),
+          eq(sports.id, sports.id)
+        );
+
+      return {
+        ...school,
+        sports: schoolSportsData
+      };
+    })
+  );
+
+  return {
+    location: {
+      country: {
+        id: resort.countryId,
+        country: resort.countryName,
+        countrySlug: resort.countrySlug,
+        countryCode: resort.countryCode
+      },
+      region: resort.regionId ? {
+        id: resort.regionId,
+        region: resort.regionName!,
+        regionSlug: resort.regionSlug!
+      } : undefined,
+      resort: {
+        id: resort.resortId,
+        name: resort.resortName,
+        slug: resort.resortSlug,
+        minElevation: resort.minElevation,
+        maxElevation: resort.maxElevation,
+        lat: resort.lat,
+        lon: resort.lon,
+        website: resort.website,
+        description: resort.description,
+        image: resort.image
+      }
+    },
+    schools: schoolsWithSports,
+    totalSchools: schoolsData.length
+  };
 }
