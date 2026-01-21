@@ -60,7 +60,7 @@ export const load: PageServerLoad = async (event) => {
 			.where(
 				and(
 					eq(schoolInstructors.schoolId, school.id),
-					eq(schoolInstructors.isAccepted, true),
+					eq(schoolInstructors.isAcceptedBySchool, true),
 					eq(users.isPublished, true) // Only show published instructors
 				)
 			);

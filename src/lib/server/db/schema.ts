@@ -121,6 +121,26 @@ export const schoolClaims = pgTable('school_claims', {
 	...timestamps
 });
 
+// --- School Verification Requests (admin-only verification) ---
+export const schoolVerificationRequests = pgTable('school_verification_requests', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	uuid: uuid('uuid').defaultRandom().unique().notNull(),
+	schoolId: integer('school_id').references(() => schools.id, { onDelete: 'cascade' }), // null if requesting new school
+	requesterId: integer('requester_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	schoolName: varchar('school_name', { length: 100 }).notNull(),
+	schoolEmail: varchar('school_email', { length: 255 }),
+	schoolPhone: varchar('school_phone', { length: 50 }),
+	resortId: integer('resort_id').references(() => resorts.id),
+	countryCode: varchar('country_code', { length: 4 }),
+	message: text('message'), // Why they should get access
+	proofDocument: varchar('proof_document', { length: 255 }), // URL to uploaded proof
+	status: schoolClaimStatusEnum('status').default('pending').notNull(),
+	reviewedBy: integer('reviewed_by').references(() => users.id, { onDelete: 'set null' }),
+	adminNotes: text('admin_notes'),
+	reviewedAt: timestamp('reviewed_at'),
+	...timestamps
+});
+
 // --- Booking Requests ---
 export const bookingRequests = pgTable('booking_requests', {
     id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
@@ -607,6 +627,26 @@ export const schoolClaimsRelations = relations(schoolClaims, ({ one }) => ({
 	})
 }));
 
+// School Verification Requests relations
+export const schoolVerificationRequestsRelations = relations(schoolVerificationRequests, ({ one }) => ({
+	school: one(schools, {
+		fields: [schoolVerificationRequests.schoolId],
+		references: [schools.id]
+	}),
+	requester: one(users, {
+		fields: [schoolVerificationRequests.requesterId],
+		references: [users.id]
+	}),
+	resort: one(resorts, {
+		fields: [schoolVerificationRequests.resortId],
+		references: [resorts.id]
+	}),
+	reviewer: one(users, {
+		fields: [schoolVerificationRequests.reviewedBy],
+		references: [users.id]
+	})
+}));
+
 // --- Additional Relations for Drizzle Queries ---
 
 // Users relations
@@ -742,6 +782,8 @@ export type SchoolInstructorHistory = typeof schoolInstructorHistory.$inferSelec
 export type InsertSchoolInstructorHistory = typeof schoolInstructorHistory.$inferInsert;
 export type SchoolClaim = typeof schoolClaims.$inferSelect;
 export type InsertSchoolClaim = typeof schoolClaims.$inferInsert;
+export type SchoolVerificationRequest = typeof schoolVerificationRequests.$inferSelect;
+export type InsertSchoolVerificationRequest = typeof schoolVerificationRequests.$inferInsert;
 //Countries
 export type Country = typeof countries.$inferSelect;
 export type InsertCountry = typeof countries.$inferInsert;

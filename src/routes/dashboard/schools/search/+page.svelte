@@ -119,11 +119,12 @@
 
 		isSubmitting = true;
 		try {
-			const response = await fetch('/api/schools/claim', {
+			const response = await fetch('/api/schools/verification-request', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					schoolId: selectedSchool.id,
+					schoolName: selectedSchool.name,
 					message: claimMessage
 				})
 			});
@@ -131,16 +132,16 @@
 			const result = await response.json();
 
 			if (response.ok && result.success) {
-				toast.success('Claim submitted successfully!');
+				toast.success('Verification request submitted! Admin will review it soon.');
 				showClaimDialog = false;
 				claimMessage = '';
 				selectedSchool = null;
 			} else {
-				toast.error(result.error || 'Failed to submit claim');
+				toast.error(result.error || 'Failed to submit request');
 			}
 		} catch (error) {
-			console.error('Claim error:', error);
-			toast.error('Failed to submit claim');
+			console.error('Request error:', error);
+			toast.error('Failed to submit request');
 		} finally {
 			isSubmitting = false;
 		}
@@ -268,7 +269,7 @@
 										variant="default"
 										size="sm"
 									>
-										Claim School
+										Request Access
 									</Button>
 								{:else if user.role === 'instructor-independent' || user.role === 'instructor-school'}
 									<Button href="/dashboard/schools" variant="default" size="sm">
@@ -386,29 +387,33 @@
 	</Dialog.Content>
 </Dialog.Root>
 
-<!-- Claim School Dialog -->
+<!-- Request Verification Dialog -->
 <Dialog.Root bind:open={showClaimDialog}>
 	<Dialog.Content>
 		<Dialog.Header>
-			<Dialog.Title>Claim School</Dialog.Title>
+			<Dialog.Title>Request School Access</Dialog.Title>
 			<Dialog.Description>
-				Submit a request to claim ownership of {selectedSchool?.name}. The current owner will review your request.
+				Submit a verification request to the LocalSnow admin team for access to {selectedSchool?.name}.
+				The admin will contact you directly to verify your identity and grant access.
 			</Dialog.Description>
 		</Dialog.Header>
 		<div class="grid gap-4 py-4">
 			<div class="grid gap-2">
-				<Label for="claimMessage">Message (Optional)</Label>
+				<Label for="claimMessage">Message to Admin (Optional)</Label>
 				<Textarea
 					id="claimMessage"
 					bind:value={claimMessage}
-					placeholder="Explain why you should own this school..."
+					placeholder="Tell us about your role at this school, your contact info, etc..."
 				/>
 			</div>
+			<p class="text-sm text-muted-foreground">
+				💡 Tip: Include your position at the school and best contact method so we can verify faster!
+			</p>
 		</div>
 		<Dialog.Footer>
 			<Button variant="outline" onclick={() => (showClaimDialog = false)}>Cancel</Button>
 			<Button onclick={handleClaimSchool} disabled={isSubmitting}>
-				{isSubmitting ? 'Submitting...' : 'Submit Claim'}
+				{isSubmitting ? 'Submitting...' : 'Submit Request'}
 			</Button>
 		</Dialog.Footer>
 	</Dialog.Content>
