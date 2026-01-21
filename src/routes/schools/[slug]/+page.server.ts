@@ -56,13 +56,13 @@ export const load: PageServerLoad = async (event) => {
 				isPublished: users.isPublished
 			})
 			.from(users)
-			.innerJoin(schoolInstructors, and(
-				eq(users.id, schoolInstructors.instructorId),
+			.innerJoin(schoolInstructors, eq(users.id, schoolInstructors.instructorId))
+			.where(and(
 				eq(schoolInstructors.schoolId, school.id),
 				eq(schoolInstructors.isAccepted, true),
-				eq(schoolInstructors.isActive, true)
-			))
-			.where(eq(users.isPublished, true));
+				eq(schoolInstructors.isActive, true),
+				eq(users.isPublished, true)
+			));
 
 		return {
 			school,
