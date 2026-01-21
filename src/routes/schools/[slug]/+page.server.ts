@@ -53,22 +53,21 @@ export const load: PageServerLoad = async (event) => {
 				profileImageUrl: users.profileImageUrl,
 				bio: users.bio,
 				isVerified: users.isVerified,
-				isPublished: users.isPublished,
-				isAccepted: schoolInstructors.isAccepted
+				isPublished: users.isPublished
 			})
-			.from(schoolInstructors)
-			.innerJoin(users, eq(schoolInstructors.instructorId, users.id))
-			.where(eq(schoolInstructors.schoolId, school.id));
-
-		// Filter accepted and published instructors in JavaScript to avoid SQL syntax issues
-		const schoolInstructorsData = allSchoolInstructors.filter(
-			instructor => instructor.isAccepted === true && instructor.isPublished === true
-		);
+			.from(users)
+			.innerJoin(schoolInstructors, and(
+				eq(users.id, schoolInstructors.instructorId),
+				eq(schoolInstructors.schoolId, school.id),
+				eq(schoolInstructors.isAccepted, true),
+				eq(schoolInstructors.isActive, true)
+			))
+			.where(eq(users.isPublished, true));
 
 		return {
 			school,
 			resorts: schoolResortsData,
-			instructors: schoolInstructorsData,
+			instructors: allSchoolInstructors,
 			user: event.locals.user
 		};
 	} catch (err) {
