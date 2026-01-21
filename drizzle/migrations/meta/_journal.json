@@ -330,6 +330,13 @@
       "when": 1768936123828,
       "tag": "0046_sharp_galactus",
       "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "7",
+      "when": 1768982739149,
+      "tag": "0047_thin_amazoness",
+      "breakpoints": true
     }
   ]
 }
