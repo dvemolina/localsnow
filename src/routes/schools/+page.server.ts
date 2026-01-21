@@ -12,8 +12,24 @@ export const load: PageServerLoad = async ({ url }) => {
 	const sortBy = url.searchParams.get('sortBy');
 
 	try {
-		// Get schools with resort information
-		let schoolsQuery = db
+		// Build WHERE conditions array for proper filtering
+		const conditions: any[] = [eq(schools.isPublished, true)];
+
+		// Add verified filter if requested
+		if (verifiedOnly) {
+			conditions.push(eq(schools.isVerified, true));
+		}
+
+		// Add resort filter if provided
+		if (resortIdParam) {
+			const resortId = Number(resortIdParam);
+			if (!isNaN(resortId)) {
+				conditions.push(eq(schoolResorts.resortId, resortId));
+			}
+		}
+
+		// Execute query with all conditions applied at once
+		let schoolsData = await db
 			.select({
 				id: schools.id,
 				uuid: schools.uuid,
@@ -38,23 +54,7 @@ export const load: PageServerLoad = async ({ url }) => {
 			.innerJoin(resorts, eq(schoolResorts.resortId, resorts.id))
 			.leftJoin(regions, eq(resorts.regionId, regions.id))
 			.innerJoin(countries, eq(resorts.countryId, countries.id))
-			.where(eq(schools.isPublished, true));
-
-		// Apply filters
-		if (verifiedOnly) {
-			schoolsQuery = schoolsQuery.where(
-				and(eq(schools.isPublished, true), eq(schools.isVerified, true))
-			);
-		}
-
-		if (resortIdParam) {
-			const resortId = Number(resortIdParam);
-			schoolsQuery = schoolsQuery.where(
-				and(eq(schools.isPublished, true), eq(schoolResorts.resortId, resortId))
-			);
-		}
-
-		let schoolsData = await schoolsQuery;
+			.where(and(...conditions));
 
 		// Sort schools
 		if (sortBy === 'name_asc') {

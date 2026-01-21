@@ -44,8 +44,8 @@ export const load: PageServerLoad = async (event) => {
 			.innerJoin(countries, eq(resorts.countryId, countries.id))
 			.where(eq(schoolResorts.schoolId, school.id));
 
-		// Get school instructors (only accepted instructors)
-		const schoolInstructorsData = await db
+		// Get school instructors (only accepted and published instructors)
+		const allSchoolInstructors = await db
 			.select({
 				id: users.id,
 				name: users.name,
@@ -53,17 +53,17 @@ export const load: PageServerLoad = async (event) => {
 				profileImageUrl: users.profileImageUrl,
 				bio: users.bio,
 				isVerified: users.isVerified,
-				isPublished: users.isPublished
+				isPublished: users.isPublished,
+				isAccepted: schoolInstructors.isAccepted
 			})
 			.from(schoolInstructors)
 			.innerJoin(users, eq(schoolInstructors.instructorId, users.id))
-			.where(
-				and(
-					eq(schoolInstructors.schoolId, school.id),
-					eq(schoolInstructors.isAccepted, true),
-					eq(users.isPublished, true) // Only show published instructors
-				)
-			);
+			.where(eq(schoolInstructors.schoolId, school.id));
+
+		// Filter accepted and published instructors in JavaScript to avoid SQL syntax issues
+		const schoolInstructorsData = allSchoolInstructors.filter(
+			instructor => instructor.isAccepted === true && instructor.isPublished === true
+		);
 
 		return {
 			school,
