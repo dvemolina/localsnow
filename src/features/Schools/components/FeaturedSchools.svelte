@@ -24,7 +24,7 @@
 
 <section class="section" itemscope itemtype="https://schema.org/ItemList">
 	<meta itemprop="name" content="Featured Ski Schools" />
-	<meta itemprop="description" content="Top ski and snowboard schools in Spain" />
+	<meta itemprop="description" content="Top ski and snowboard schools worldwide" />
 
 	<h2 class="mb-2 text-center text-3xl font-bold" itemprop="headline">
 		{$t('home_featured_schools_title')}

@@ -63,16 +63,8 @@ export const load: PageServerLoad = async ({ url }) => {
 			schoolsData.sort((a, b) => b.name.localeCompare(a.name));
 		}
 
-		// Get Spain country ID for resort search
-		const [spainCountry] = await db
-			.select({ id: countries.id })
-			.from(countries)
-			.where(eq(countries.country, 'Spain'))
-			.limit(1);
-
 		return {
 			schools: schoolsData,
-			spainCountryId: spainCountry?.id || null,
 			filters: {
 				resort: resortIdParam,
 				verifiedOnly: verifiedOnly ? 'true' : null,
@@ -83,7 +75,6 @@ export const load: PageServerLoad = async ({ url }) => {
 		console.error('Error loading schools:', error);
 		return {
 			schools: [],
-			spainCountryId: null,
 			filters: {
 				resort: resortIdParam,
 				verifiedOnly: verifiedOnly ? 'true' : null,

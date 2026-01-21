@@ -6,7 +6,7 @@ import type { PageServerLoad } from "./$types";
 import type { Locale } from '$lib/i18n/routes';
 import { db } from '$lib/server/db';
 import { schools, schoolResorts, resorts, regions, countries, schoolInstructors } from '$lib/server/db/schema';
-import { eq, and, count, sql } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 
 const locales: Locale[] = ['en', 'es'];
 const baseLocale: Locale = 'en';
@@ -17,15 +17,8 @@ export const load: PageServerLoad = async () => {
    const form = await superValidate(zod(heroResortSearchSchema));
 
    try {
-      // Get Spain country ID for resort search filtering
-      const [spainCountry] = await db
-         .select({ id: countries.id })
-         .from(countries)
-         .where(eq(countries.country, 'Spain'))
-         .limit(1);
-
-      // Fetch featured schools (verified, published schools with instructor counts)
-      const featuredSchoolsData = await db
+      // Fetch featured schools (verified, published schools)
+      const featuredSchoolsBase = await db
          .select({
             id: schools.id,
             name: schools.name,
@@ -36,49 +29,52 @@ export const load: PageServerLoad = async () => {
             resortName: resorts.name,
             resortSlug: resorts.slug,
             regionName: regions.region,
-            countryName: countries.country,
-            instructorCount: count(schoolInstructors.instructorId)
+            countryName: countries.country
          })
          .from(schools)
          .innerJoin(schoolResorts, eq(schools.id, schoolResorts.schoolId))
          .innerJoin(resorts, eq(schoolResorts.resortId, resorts.id))
          .leftJoin(regions, eq(resorts.regionId, regions.id))
          .innerJoin(countries, eq(resorts.countryId, countries.id))
-         .leftJoin(schoolInstructors, and(
-            eq(schools.id, schoolInstructors.schoolId),
-            eq(schoolInstructors.isAccepted, true),
-            eq(schoolInstructors.isActive, true)
-         ))
          .where(and(
             eq(schools.isPublished, true),
             eq(schools.isVerified, true)
          ))
-         .groupBy(
-            schools.id,
-            schools.name,
-            schools.slug,
-            schools.bio,
-            schools.logo,
-            schools.isVerified,
-            resorts.name,
-            resorts.slug,
-            regions.region,
-            countries.country
-         )
-         .orderBy(sql`${count(schoolInstructors.instructorId)} DESC`)
-         .limit(4);
+         .limit(20); // Get more schools initially
+
+      // Count instructors for each school
+      const schoolsWithCounts = await Promise.all(
+         featuredSchoolsBase.map(async (school) => {
+            const instructorCount = await db
+               .select({ count: schoolInstructors.instructorId })
+               .from(schoolInstructors)
+               .where(and(
+                  eq(schoolInstructors.schoolId, school.id),
+                  eq(schoolInstructors.isAccepted, true),
+                  eq(schoolInstructors.isActive, true)
+               ));
+
+            return {
+               ...school,
+               instructorCount: instructorCount.length
+            };
+         })
+      );
+
+      // Sort by instructor count and take top 4
+      const featuredSchools = schoolsWithCounts
+         .sort((a, b) => b.instructorCount - a.instructorCount)
+         .slice(0, 4);
 
       return {
          form,
-         featuredSchools: featuredSchoolsData,
-         spainCountryId: spainCountry?.id || null
+         featuredSchools
       };
    } catch (error) {
       console.error('Error loading homepage data:', error);
       return {
          form,
-         featuredSchools: [],
-         spainCountryId: null
+         featuredSchools: []
       };
    }
 };
