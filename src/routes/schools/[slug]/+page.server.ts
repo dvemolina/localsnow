@@ -38,8 +38,8 @@ export const load: PageServerLoad = async (event) => {
 				regionName: regions.region,
 				countryName: countries.country
 			})
-			.from(schoolResorts)
-			.innerJoin(resorts, eq(schoolResorts.resortId, resorts.id))
+			.from(resorts)
+			.innerJoin(schoolResorts, eq(resorts.id, schoolResorts.resortId))
 			.leftJoin(regions, eq(resorts.regionId, regions.id))
 			.innerJoin(countries, eq(resorts.countryId, countries.id))
 			.where(eq(schoolResorts.schoolId, school.id));
