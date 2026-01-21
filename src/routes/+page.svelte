@@ -185,7 +185,7 @@
 </section>
 
 <!-- Free Forever Banner -->
-<section class="bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-500 py-10 mt-12 rounded-md shadow-sm">
+<section class="bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-500 px-5 py-10 mt-12 rounded-md shadow-sm">
 	<div class="container">
 		<div class="mx-auto max-w-4xl text-center">
 			<div class="mb-4 inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-bold text-green-900">
