@@ -50,7 +50,7 @@ export const load: PageServerLoad = async () => {
                .from(schoolInstructors)
                .where(and(
                   eq(schoolInstructors.schoolId, school.id),
-                  eq(schoolInstructors.isAccepted, true),
+                  eq(schoolInstructors.isAcceptedBySchool, true),
                   eq(schoolInstructors.isActive, true)
                ));
 

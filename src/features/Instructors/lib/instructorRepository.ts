@@ -223,7 +223,7 @@ export class InstructorRepository {
                 .leftJoin(instructorResorts, eq(users.id, instructorResorts.instructorId))
                 .leftJoin(schoolInstructors, and(
                     eq(users.id, schoolInstructors.instructorId),
-                    eq(schoolInstructors.isAccepted, true),
+                    eq(schoolInstructors.isAcceptedBySchool, true),
                     eq(schoolInstructors.isActive, true)
                 ))
                 .leftJoin(schools, eq(schoolInstructors.schoolId, schools.id))
@@ -260,7 +260,7 @@ export class InstructorRepository {
             // Filter by school
             if (filters.schoolId) {
                 conditions.push(eq(schoolInstructors.schoolId, filters.schoolId));
-                conditions.push(eq(schoolInstructors.isAccepted, true)); // Only show accepted instructors
+                conditions.push(eq(schoolInstructors.isAcceptedBySchool, true)); // Only show accepted instructors
             }
 
             query = query.where(and(...conditions));
