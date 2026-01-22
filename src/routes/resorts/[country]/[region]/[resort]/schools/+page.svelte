@@ -3,7 +3,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import * as Avatar from '$src/lib/components/ui/avatar';
-	import { MapPin, Mountain, ExternalLink, Building2, Check } from 'lucide-svelte';
+	import { MapPin, Mountain, ExternalLink, Building2, Check } from '@lucide/svelte';
 	import { page } from '$app/stores';
 	import Breadcrumb from '$lib/components/shared/Breadcrumb.svelte';
 	import * as Accordion from '$lib/components/ui/accordion';
