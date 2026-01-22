@@ -121,10 +121,15 @@
     }
   }
 
-  function onInput(event: Event) {
-    query = (event.target as HTMLInputElement).value;
+  function onInput() {
+    // Note: bind:value automatically updates query, so we don't set it manually here
     console.log(`⌨️ [SearchResort ${name}] User typed:`, query);
     selectedResort = null; // Clear selection when typing
+
+    // Clear form value when user starts typing (they're entering a new search)
+    if ($formData[name]) {
+      $formData[name] = undefined;
+    }
 
     if (debounceTimeout) clearTimeout(debounceTimeout);
 
