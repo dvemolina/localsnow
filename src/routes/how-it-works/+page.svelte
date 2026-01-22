@@ -53,17 +53,17 @@
 </script>
 
 <svelte:head>
-	<title>How It Works - Free Ski Instructor Directory | LocalSnow</title>
+	<title>{$t('seo_meta_how_it_works_title')}</title>
 	<meta
 		name="description"
-		content="LocalSnow connects ski instructors and students directly. Currently free - no booking fees, no commissions. See how our directory works for instructors and clients."
+		content={$t('seo_meta_how_it_works_description')}
 	/>
 
 	<!-- Open Graph -->
-	<meta property="og:title" content="How LocalSnow Works - Free Directory" />
+	<meta property="og:title" content={$t('seo_meta_how_it_works_title')} />
 	<meta
 		property="og:description"
-		content="Free platform connecting ski instructors with students. No fees, no commissions, direct contact."
+		content={$t('seo_meta_how_it_works_description')}
 	/>
 	<meta property="og:url" content="https://localsnow.org/how-it-works" />
 	<meta property="og:image" content="https://localsnow.org/og-image.jpg" />
@@ -71,10 +71,10 @@
 
 	<!-- Twitter Card -->
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content="How LocalSnow Works - Free Directory" />
+	<meta name="twitter:title" content={$t('seo_meta_how_it_works_title')} />
 	<meta
 		name="twitter:description"
-		content="Free platform for finding ski instructors. No fees, no commissions, direct contact."
+		content={$t('seo_meta_how_it_works_description')}
 	/>
 	<meta name="twitter:image" content="https://localsnow.org/og-image.jpg" />
 
@@ -375,37 +375,41 @@
 
 	<!-- Why We're Different Section -->
 	<section class="mt-12 rounded-lg bg-gray-50 border-2 border-gray-200 p-8 not-prose">
-		<h2 class="title3 text-center mb-6">Why LocalSnow is Different</h2>
+		<h2 class="title3 text-center mb-6">{$t('how_it_works_page_difference_title')}</h2>
 
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 			<div class="bg-white rounded-lg p-5 border border-gray-200">
-				<h3 class="font-bold text-red-700 mb-2">❌ Traditional Booking Platforms</h3>
+				<h3 class="font-bold text-red-700 mb-2">
+					{$t('how_it_works_page_difference_traditional_title')}
+				</h3>
 				<ul class="text-sm text-gray-600 space-y-1.5 pl-5 mb-0">
-					<li>15-30% commission per lesson</li>
-					<li>Booking fees for students</li>
-					<li>Mandatory payment processing</li>
-					<li>Profit-driven, VC-funded</li>
-					<li>Complex pricing tiers</li>
+					<li>{$t('how_it_works_page_difference_traditional_item1')}</li>
+					<li>{$t('how_it_works_page_difference_traditional_item2')}</li>
+					<li>{$t('how_it_works_page_difference_traditional_item3')}</li>
+					<li>{$t('how_it_works_page_difference_traditional_item4')}</li>
+					<li>{$t('how_it_works_page_difference_traditional_item5')}</li>
 				</ul>
 			</div>
 
 			<div class="bg-white rounded-lg p-5 border border-green-500">
-				<h3 class="font-bold text-green-700 mb-2">✅ LocalSnow</h3>
+				<h3 class="font-bold text-green-700 mb-2">{$t('how_it_works_page_difference_localsnow_title')}</h3>
 				<ul class="text-sm text-gray-600 space-y-1.5 pl-5 mb-0">
-					<li><strong>0% commission</strong> - instructors keep everything</li>
-					<li><strong>€0 booking fees</strong> - completely free</li>
-					<li><strong>Direct contact</strong> - you arrange payment</li>
-					<li><strong>Community-driven</strong> - open-source</li>
-					<li><strong>Simple & transparent</strong> - no hidden costs</li>
+					<li>{$t('how_it_works_page_difference_localsnow_item1')}</li>
+					<li>{$t('how_it_works_page_difference_localsnow_item2')}</li>
+					<li>{$t('how_it_works_page_difference_localsnow_item3')}</li>
+					<li>{$t('how_it_works_page_difference_localsnow_item4')}</li>
+					<li>{$t('how_it_works_page_difference_localsnow_item5')}</li>
 				</ul>
 			</div>
 		</div>
 
 		<div class="mt-6 text-center">
 			<p class="text-gray-700 mb-0">
-				<strong>Sound too good to be true?</strong> read our <a href={route('/')} class="text-primary underline font-medium"
-					>mission statement</a
-				>.
+				<strong>{$t('how_it_works_page_difference_note_title')}</strong>
+				<a href={route('/about')} class="text-primary underline font-medium">
+					{$t('how_it_works_page_difference_note_link')}
+				</a>
+				.
 			</p>
 		</div>
 	</section>
