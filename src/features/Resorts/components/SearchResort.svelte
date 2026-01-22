@@ -68,21 +68,13 @@
       currentQuery: query
     });
 
-    if (mode === 'form') {
-      if (resortId && resortId > 0) {
-        // Only fetch if we haven't already loaded this resort
-        if (!selectedResort || selectedResort.id !== resortId) {
-          console.log(`📡 [SearchResort ${name}] Fetching resort ID:`, resortId);
-          fetchResortById(resortId);
-        }
-      } else if (!resortId && (selectedResort !== null || query !== '')) {
-        // Form value was cleared - reset component state
-        // Only clear if we actually have something to clear (prevent infinite loop)
-        console.log(`🧹 [SearchResort ${name}] Clearing selection`);
-        selectedResort = null;
-        query = '';
-        suggestions = [];
-        isOpen = false;
+    // Only fetch resort data when form has a valid ID
+    // Do NOT clear state here - let user input be the source of truth for query
+    if (mode === 'form' && resortId && resortId > 0) {
+      // Only fetch if we haven't already loaded this resort
+      if (!selectedResort || selectedResort.id !== resortId) {
+        console.log(`📡 [SearchResort ${name}] Fetching resort ID:`, resortId);
+        fetchResortById(resortId);
       }
     }
   });
