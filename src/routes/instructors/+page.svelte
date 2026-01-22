@@ -54,6 +54,29 @@
 
 	const { form: formData, enhance } = form;
 
+	// Debug: Log when component receives data
+	console.log('📊 [Instructors Page Client] Received data:', {
+		hasFilters: data.hasFilters,
+		filters: data.filters,
+		instructorCount: data.instructors.length
+	});
+
+	// Reactively update form when data.filters changes (Svelte 5 $effect)
+	$effect(() => {
+		console.log('🔄 [Form Update Effect] data.filters changed:', data.filters);
+
+		// Update form values when server data changes
+		if (data.filters.resort !== undefined) $formData.resort = data.filters.resort;
+		if (data.filters.sport !== undefined) $formData.sport = data.filters.sport;
+		if (data.filters.language !== undefined) $formData.language = data.filters.language;
+		if (data.filters.priceMin !== undefined) $formData.priceMin = data.filters.priceMin;
+		if (data.filters.priceMax !== undefined) $formData.priceMax = data.filters.priceMax;
+		if (data.filters.instructorType !== undefined) $formData.instructorType = data.filters.instructorType;
+		if (data.filters.school !== undefined) $formData.school = data.filters.school;
+		if (data.filters.sortBy !== undefined) $formData.sortBy = data.filters.sortBy;
+		verifiedOnly = data.filters.verifiedOnly === 'true';
+	});
+
 	// Verified only checkbox (separate from superform since it's a simple boolean)
 	let verifiedOnly = $state(data.filters.verifiedOnly === 'true');
 

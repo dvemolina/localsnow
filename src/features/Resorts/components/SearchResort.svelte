@@ -61,14 +61,23 @@
     // Watch for changes to the form value
     const resortId = $formData[name];
 
+    console.log(`🏔️ [SearchResort ${name}] Form value changed:`, {
+      resortId,
+      mode,
+      currentSelection: selectedResort?.id,
+      currentQuery: query
+    });
+
     if (mode === 'form') {
       if (resortId && resortId > 0) {
         // Only fetch if we haven't already loaded this resort
         if (!selectedResort || selectedResort.id !== resortId) {
+          console.log(`📡 [SearchResort ${name}] Fetching resort ID:`, resortId);
           fetchResortById(resortId);
         }
       } else if (!resortId) {
         // Form value was cleared - reset component state
+        console.log(`🧹 [SearchResort ${name}] Clearing selection`);
         selectedResort = null;
         query = '';
         suggestions = [];
@@ -78,6 +87,8 @@
   });
 
   async function fetchSuggestions(q: string) {
+    console.log(`🔎 [SearchResort ${name}] Fetching suggestions for:`, { q, countryId });
+
     abortController?.abort();
     abortController = new AbortController();
 
@@ -88,20 +99,30 @@
         queryParams += `&countryId=${countryId}`;
       }
 
-      const res = await fetch(`/api/search-suggestions?${queryParams}`, {
+      const url = `/api/search-suggestions?${queryParams}`;
+      console.log(`📡 [SearchResort ${name}] Fetching:`, url);
+
+      const res = await fetch(url, {
         signal: abortController.signal
       });
+
+      console.log(`📥 [SearchResort ${name}] Response:`, { ok: res.ok, status: res.status });
+
       if (res.ok) {
         const data: Resort[] = await res.json();
+        console.log(`✅ [SearchResort ${name}] Got ${data.length} suggestions:`, data);
         suggestions = data;
         isOpen = data.length > 0;
         highlightedIndex = -1;
       } else {
+        console.warn(`❌ [SearchResort ${name}] Fetch failed:`, res.status, res.statusText);
         suggestions = [];
         isOpen = false;
       }
     } catch (e: any) {
-      if (e.name !== 'AbortError') console.error(e);
+      if (e.name !== 'AbortError') {
+        console.error(`💥 [SearchResort ${name}] Fetch error:`, e);
+      }
       suggestions = [];
       isOpen = false;
     }
@@ -109,13 +130,16 @@
 
   function onInput(event: Event) {
     query = (event.target as HTMLInputElement).value;
+    console.log(`⌨️ [SearchResort ${name}] User typed:`, query);
     selectedResort = null; // Clear selection when typing
-    
+
     if (debounceTimeout) clearTimeout(debounceTimeout);
 
     if (query.length >= 2) {
+      console.log(`⏱️ [SearchResort ${name}] Debouncing search for:`, query);
       debounceTimeout = setTimeout(() => fetchSuggestions(query), 200);
     } else {
+      console.log(`❌ [SearchResort ${name}] Query too short (${query.length} chars)`);
       suggestions = [];
       isOpen = false;
     }
