@@ -49,7 +49,7 @@ export const load: PageServerLoad = async (event) => {
                 bio: fullUser.bio || '',
                 professionalCountryCode: fullUser.professionalCountryCode ? parseInt(fullUser.professionalCountryCode) : 1,
                 professionalPhone: fullUser.professionalPhone || '',
-                resort: instructorData.resorts[0] || 0,
+                resort: instructorData.resorts[0]?.id ?? 0,
                 sports: instructorData.sports || [],
                 spokenLanguages: fullUser.spokenLanguages || []
             },
