@@ -282,14 +282,23 @@
 					d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
 				/>
 			</svg>
-			<h3 class="mb-2 text-lg font-semibold">No schools found</h3>
-			<p class="text-muted-foreground mb-4">Try adjusting your filters to see more results</p>
-			<Button onclick={clearFilters} variant="outline">Clear Filters</Button>
+			{#if hasActiveFilters}
+				<h3 class="mb-2 text-lg font-semibold">No schools match your search</h3>
+				<p class="text-muted-foreground mb-4">Try adjusting your filters or search criteria to see more results.</p>
+				<div class="flex gap-3">
+					<Button onclick={clearFilters} variant="default">Clear all filters</Button>
+					<Button href="/resorts" variant="outline">Browse by resort</Button>
+				</div>
+			{:else}
+				<h3 class="mb-2 text-lg font-semibold">No schools available</h3>
+				<p class="text-muted-foreground mb-4">We're working on adding more schools to our directory. Check back soon!</p>
+				<Button href="/resorts" variant="outline">Browse resorts</Button>
+			{/if}
 		</div>
 	{:else}
 		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
 			{#each data.schools as school (school.id)}
-				<SchoolCard schoolData={school} />
+				<SchoolCard schoolData={school} preserveFilters={hasActiveFilters} />
 			{/each}
 		</div>
 	{/if}

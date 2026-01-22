@@ -3,8 +3,9 @@
 	import { Badge, badgeVariants } from '$src/lib/components/ui/badge';
 	import { Button } from '$src/lib/components/ui/button';
 	import { route } from '$lib/i18n/routeHelpers';
+	import { page } from '$app/stores';
 
-	let { schoolData } = $props<{
+	let { schoolData, preserveFilters = false } = $props<{
 		schoolData: {
 			id: number;
 			name: string;
@@ -17,7 +18,18 @@
 			regionName: string | null;
 			countryName: string;
 		};
+		preserveFilters?: boolean;
 	}>();
+
+	// Build href with optional filter preservation
+	const href = $derived(() => {
+		const baseHref = route(`/schools/${schoolData.slug}`);
+		if (!preserveFilters) return baseHref;
+
+		// Preserve current search params for back navigation
+		const searchParams = $page.url.searchParams.toString();
+		return searchParams ? `${baseHref}?returnTo=${encodeURIComponent(`/schools?${searchParams}`)}` : baseHref;
+	});
 </script>
 
 <div class="card relative flex flex-col gap-3 bg-card justify-between rounded-md border border-border p-2 w-full min-w-[265px] sm:max-w-[717px] md:max-w-[435px] shadow-xs">
@@ -68,7 +80,7 @@
 				Professional ski and snowboard instruction
 			</p>
 		{/if}
-		<a href={route(`/schools/${schoolData.slug}`)}>
+		<a href={href()}>
 			<Button variant="outline" class="w-full">View Profile</Button>
 		</a>
 	</div>

@@ -20,6 +20,9 @@
 	const reviews = data.reviews;
 	const reviewStats = data.reviewStats;
 
+	// Get return URL from query params for filter preservation
+	const returnTo = $derived($page.url.searchParams.get('returnTo') || '/instructors');
+
 	const isAuthenticated = !!data.user; // Will be true if user exists
 	const isIndependent = instructor.role === 'instructor-independent';
 
@@ -217,8 +220,8 @@
 <section class="w-full">
 	<!-- Back Button -->
 	<div class="mb-6">
-		<a 
-			href="/instructors" 
+		<a
+			href={returnTo}
 			class="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
 		>
 			<svg

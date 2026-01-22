@@ -5,8 +5,9 @@
 	import { Button } from '$src/lib/components/ui/button';
 	import { generateInstructorSlug } from '$lib/utils/slug';
 	import { t } from '$lib/i18n/i18n';
+	import { page } from '$app/stores';
 
-	let { instructorData, baseLesson = null } = $props();
+	let { instructorData, baseLesson = null, preserveFilters = false } = $props();
 
 	// Map sport IDs to labels
 	const sportLabels = {
@@ -17,10 +18,20 @@
 
 	const isIndependent = instructorData.role === 'instructor-independent';
 	const instructorSlug = generateInstructorSlug(instructorData.id, instructorData.name, instructorData.lastName);
+
+	// Build href with optional filter preservation
+	const href = $derived(() => {
+		const baseHref = `/instructors/${instructorSlug}`;
+		if (!preserveFilters) return baseHref;
+
+		// Preserve current search params for back navigation
+		const searchParams = $page.url.searchParams.toString();
+		return searchParams ? `${baseHref}?returnTo=${encodeURIComponent(`/instructors?${searchParams}`)}` : baseHref;
+	});
 </script>
 
 <a
-	href="/instructors/{instructorSlug}"
+	href={href()}
 	class="card group relative flex flex-col justify-between gap-3 rounded-md border border-border bg-card p-4 shadow-xs transition-shadow hover:shadow-md w-full min-w-[265px] sm:max-w-[717px] md:max-w-[435px]"
 >
 	<div class="flex w-full flex-row gap-3">

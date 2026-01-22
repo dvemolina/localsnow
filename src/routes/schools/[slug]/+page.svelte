@@ -4,12 +4,16 @@
 	import { Button } from '$src/lib/components/ui/button';
 	import * as Card from '$src/lib/components/ui/card';
 	import { route } from '$lib/i18n/routeHelpers';
+	import { page } from '$app/stores';
 
 	let { data } = $props();
 
 	const school = data.school;
 	const resorts = data.resorts;
 	const instructors = data.instructors;
+
+	// Get return URL from query params for filter preservation
+	const returnTo = $derived($page.url.searchParams.get('returnTo') || route('/schools'));
 
 	// Construct profile URL
 	const profileUrl = `https://localsnow.org/schools/${school.slug}`;
@@ -144,7 +148,7 @@
 	<div class="mb-8">
 		<!-- Back Button -->
 		<div class="mb-4">
-			<a href={route('/schools')}>
+			<a href={returnTo}>
 				<Button variant="ghost" size="sm">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
