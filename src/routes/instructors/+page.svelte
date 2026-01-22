@@ -234,6 +234,7 @@
 		{JSON.stringify(breadcrumbSchema)}
 	</script>
 
+	<!-- Canonical tag: always point to clean URL without query params -->
 	<link rel="canonical" href="https://localsnow.org/instructors" />
 </svelte:head>
 
@@ -486,25 +487,13 @@
 		</div>
 	{/if}
 
-	<!-- Results Count -->
-	<div class="mb-4 flex items-center justify-between">
-		<p class="text-muted-foreground text-sm">
-			{#if data.instructors.length === 0}
-				{$t('instructors_page_results_none')}
-			{:else if data.instructors.length === 1}
-				{$t('instructors_page_results_one')}
-			{:else}
-				{data.instructors.length} {$t('instructors_page_results_many')}
-			{/if}
-		</p>
-	</div>
-
-	<!-- Instructor Cards Grid -->
-	{#if data.instructors.length === 0}
-		<div class="flex flex-col items-center justify-center rounded-lg border border-border bg-card p-12 text-center">
+	<!-- Results Section -->
+	{#if !data.hasFilters}
+		<!-- Prompt-First UI: Show before any search is performed -->
+		<div class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-border bg-muted/30 p-12 text-center">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
-				class="text-muted-foreground mb-4 h-16 w-16"
+				class="text-primary mb-4 h-20 w-20"
 				fill="none"
 				viewBox="0 0 24 24"
 				stroke="currentColor"
@@ -516,24 +505,60 @@
 					d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
 				/>
 			</svg>
-			{#if hasActiveFilters}
+			<h3 class="mb-2 text-xl font-semibold">Find Your Perfect Ski Instructor</h3>
+			<p class="text-muted-foreground mb-6 max-w-md">
+				Search our directory of certified ski and snowboard instructors. Use the filters above to find instructors by resort, sport, language, and more.
+			</p>
+			<div class="flex flex-col gap-3 sm:flex-row">
+				<Button href="/resorts" variant="default">Browse by Resort</Button>
+				<Button href="/about" variant="outline">Learn More</Button>
+			</div>
+		</div>
+	{:else}
+		<!-- Results with filters applied -->
+		<!-- Results Count -->
+		<div class="mb-4 flex items-center justify-between">
+			<p class="text-muted-foreground text-sm">
+				{#if data.instructors.length === 0}
+					{$t('instructors_page_results_none')}
+				{:else if data.instructors.length === 1}
+					{$t('instructors_page_results_one')}
+				{:else}
+					{data.instructors.length} {$t('instructors_page_results_many')}
+				{/if}
+			</p>
+		</div>
+
+		<!-- Instructor Cards Grid or Empty State -->
+		{#if data.instructors.length === 0}
+			<div class="flex flex-col items-center justify-center rounded-lg border border-border bg-card p-12 text-center">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="text-muted-foreground mb-4 h-16 w-16"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+					/>
+				</svg>
 				<h3 class="mb-2 text-lg font-semibold">No instructors match your search</h3>
 				<p class="text-muted-foreground mb-4">Try adjusting your filters or search criteria to see more results.</p>
 				<div class="flex gap-3">
 					<Button onclick={clearFilters} variant="default">Clear all filters</Button>
 					<Button href="/resorts" variant="outline">Browse by resort</Button>
 				</div>
-			{:else}
-				<h3 class="mb-2 text-lg font-semibold">No instructors available</h3>
-				<p class="text-muted-foreground mb-4">We're working on adding more instructors to our directory. Check back soon!</p>
-				<Button href="/resorts" variant="outline">Browse resorts</Button>
-			{/if}
-		</div>
-	{:else}
-		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
-			{#each data.instructors as instructor (instructor.id)}
-				<InstructorCard instructorData={instructor} preserveFilters={hasActiveFilters} />
-			{/each}
-		</div>
+			</div>
+		{:else}
+			<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
+				{#each data.instructors as instructor (instructor.id)}
+					<InstructorCard instructorData={instructor} preserveFilters={hasActiveFilters} />
+				{/each}
+			</div>
+		{/if}
 	{/if}
 </section>

@@ -34,19 +34,18 @@
 		instructorData.rating ??
 		0;
 
-	// Build href with optional filter preservation
-	const href = $derived(() => {
-		const baseHref = `/instructors/${instructorSlug}`;
-		if (!preserveFilters) return baseHref;
-
-		// Preserve current search params for back navigation
-		const searchParams = $page.url.searchParams.toString();
-		return searchParams ? `${baseHref}?returnTo=${encodeURIComponent(`/instructors?${searchParams}`)}` : baseHref;
-	});
+	// Build href with optional filter preservation - Properly reactive with Svelte 5
+	// Extract search params reactively so $derived tracks changes
+	const currentSearchParams = $derived($page.url.searchParams.toString());
+	const href = $derived(
+		preserveFilters && currentSearchParams
+			? `/instructors/${instructorSlug}?returnTo=${encodeURIComponent(`/instructors?${currentSearchParams}`)}`
+			: `/instructors/${instructorSlug}`
+	);
 </script>
 
 <a
-	href={href()}
+	{href}
 	class="card group relative flex flex-col justify-between gap-3 rounded-md border border-border bg-card p-4 shadow-xs transition-shadow hover:shadow-md w-full min-w-[265px] sm:max-w-[717px] md:max-w-[435px]"
 >
 	<div class="flex w-full flex-row gap-3">

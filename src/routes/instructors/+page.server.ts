@@ -20,6 +20,9 @@ export const load: PageServerLoad = async ({ url }) => {
     const schoolId = url.searchParams.get('school');
     const sortBy = url.searchParams.get('sortBy');
 
+    // Check if any filters are active (prompt-first UX)
+    const hasFilters = !!(resortId || sportId || searchQuery || language || priceMin || priceMax || instructorType || verifiedOnly || schoolId || sortBy);
+
     try {
         // Parse and validate numeric parameters
         const resortIdNum = resortId ? Number(resortId) : undefined;
@@ -31,17 +34,23 @@ export const load: PageServerLoad = async ({ url }) => {
         const validSportId = sportIdNum && !isNaN(sportIdNum) ? sportIdNum : undefined;
         const validSchoolId = schoolIdNum && !isNaN(schoolIdNum) ? schoolIdNum : undefined;
 
-        // Search instructors worldwide (no country restrictions)
-        const instructors = await instructorService.searchInstructors({
-            resortId: validResortId,
-            sportId: validSportId,
-            searchQuery: searchQuery || undefined,
-            language: language || undefined,
-            instructorType: instructorType || undefined,
-            verifiedOnly: verifiedOnly || undefined,
-            schoolId: validSchoolId,
-            sortBy: sortBy || undefined
-        });
+        // If no filters applied, return empty array (prompt-first UX like Yelp/Airbnb)
+        // User should search first before seeing results
+        let instructors = [];
+
+        if (hasFilters) {
+            // Search instructors worldwide (no country restrictions)
+            instructors = await instructorService.searchInstructors({
+                resortId: validResortId,
+                sportId: validSportId,
+                searchQuery: searchQuery || undefined,
+                language: language || undefined,
+                instructorType: instructorType || undefined,
+                verifiedOnly: verifiedOnly || undefined,
+                schoolId: validSchoolId,
+                sortBy: sortBy || undefined
+            });
+        }
 
         // Fetch base lessons and review stats for all instructors
         let instructorsWithLessons = await Promise.all(
@@ -99,6 +108,8 @@ export const load: PageServerLoad = async ({ url }) => {
 
         return {
             instructors: instructorsWithLessons,
+            hasFilters,
+            spainCountryId: 1, // Spain country ID for resort filter
             filters: {
                 resort: resortId,
                 sport: sportId,
@@ -116,6 +127,8 @@ export const load: PageServerLoad = async ({ url }) => {
         console.error('Error loading instructors:', error);
         return {
             instructors: [],
+            hasFilters,
+            spainCountryId: 1,
             filters: {
                 resort: resortId,
                 sport: sportId,

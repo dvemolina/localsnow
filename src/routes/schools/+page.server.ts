@@ -11,25 +11,32 @@ export const load: PageServerLoad = async ({ url }) => {
 	const verifiedOnly = url.searchParams.get('verifiedOnly') === 'true';
 	const sortBy = url.searchParams.get('sortBy');
 
+	// Check if any filters are active (prompt-first UX)
+	const hasFilters = !!(resortIdParam || verifiedOnly || sortBy);
+
 	try {
-		// Build WHERE conditions array for proper filtering
-		const conditions: any[] = [eq(schools.isPublished, true)];
+		// If no filters applied, return empty array (prompt-first UX like Yelp/Airbnb)
+		let schoolsData = [];
 
-		// Add verified filter if requested
-		if (verifiedOnly) {
-			conditions.push(eq(schools.isVerified, true));
-		}
+		if (hasFilters) {
+			// Build WHERE conditions array for proper filtering
+			const conditions: any[] = [eq(schools.isPublished, true)];
 
-		// Add resort filter if provided
-		if (resortIdParam) {
-			const resortId = Number(resortIdParam);
-			if (!isNaN(resortId)) {
-				conditions.push(eq(schoolResorts.resortId, resortId));
+			// Add verified filter if requested
+			if (verifiedOnly) {
+				conditions.push(eq(schools.isVerified, true));
 			}
-		}
 
-		// Execute query with all conditions applied at once
-		let schoolsData = await db
+			// Add resort filter if provided
+			if (resortIdParam) {
+				const resortId = Number(resortIdParam);
+				if (!isNaN(resortId)) {
+					conditions.push(eq(schoolResorts.resortId, resortId));
+				}
+			}
+
+			// Execute query with all conditions applied at once
+			schoolsData = await db
 			.select({
 				id: schools.id,
 				uuid: schools.uuid,
@@ -56,15 +63,18 @@ export const load: PageServerLoad = async ({ url }) => {
 			.innerJoin(countries, eq(resorts.countryId, countries.id))
 			.where(and(...conditions));
 
-		// Sort schools
-		if (sortBy === 'name_asc') {
-			schoolsData.sort((a, b) => a.name.localeCompare(b.name));
-		} else if (sortBy === 'name_desc') {
-			schoolsData.sort((a, b) => b.name.localeCompare(a.name));
+			// Sort schools
+			if (sortBy === 'name_asc') {
+				schoolsData.sort((a, b) => a.name.localeCompare(b.name));
+			} else if (sortBy === 'name_desc') {
+				schoolsData.sort((a, b) => b.name.localeCompare(a.name));
+			}
 		}
 
 		return {
 			schools: schoolsData,
+			hasFilters,
+			spainCountryId: 1, // Spain country ID for resort filter
 			filters: {
 				resort: resortIdParam,
 				verifiedOnly: verifiedOnly ? 'true' : null,
@@ -75,6 +85,8 @@ export const load: PageServerLoad = async ({ url }) => {
 		console.error('Error loading schools:', error);
 		return {
 			schools: [],
+			hasFilters,
+			spainCountryId: 1,
 			filters: {
 				resort: resortIdParam,
 				verifiedOnly: verifiedOnly ? 'true' : null,

@@ -21,15 +21,14 @@
 		preserveFilters?: boolean;
 	}>();
 
-	// Build href with optional filter preservation
-	const href = $derived(() => {
-		const baseHref = route(`/schools/${schoolData.slug}`);
-		if (!preserveFilters) return baseHref;
-
-		// Preserve current search params for back navigation
-		const searchParams = $page.url.searchParams.toString();
-		return searchParams ? `${baseHref}?returnTo=${encodeURIComponent(`/schools?${searchParams}`)}` : baseHref;
-	});
+	// Build href with optional filter preservation - Properly reactive with Svelte 5
+	// Extract search params reactively so $derived tracks changes
+	const currentSearchParams = $derived($page.url.searchParams.toString());
+	const href = $derived(
+		preserveFilters && currentSearchParams
+			? `${route(`/schools/${schoolData.slug}`)}?returnTo=${encodeURIComponent(`/schools?${currentSearchParams}`)}`
+			: route(`/schools/${schoolData.slug}`)
+	);
 </script>
 
 <div class="card relative flex flex-col gap-3 bg-card justify-between rounded-md border border-border p-2 w-full min-w-[265px] sm:max-w-[717px] md:max-w-[435px] shadow-xs">
@@ -80,7 +79,7 @@
 				Professional ski and snowboard instruction
 			</p>
 		{/if}
-		<a href={href()}>
+		<a {href}>
 			<Button variant="outline" class="w-full">View Profile</Button>
 		</a>
 	</div>
