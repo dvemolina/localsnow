@@ -1,0 +1,64 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "=/booking-cancellation-instructor",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "booking-cancel-inst-webhook",
+      "name": "Webhook",
+      "webhookId": "booking-cancel-inst-webhook-id"
+    },
+    {
+      "parameters": {
+        "fromEmail": "Local Snow <admin@localsnow.org>",
+        "toEmail": "={{$json.body.instructorEmail}}",
+        "subject": "=Booking request cancelled #{{$json.body.bookingRequestId}}",
+        "html": "=<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;\">\n  <div style=\"background: #ef4444; color: white; padding: 20px; border-radius: 8px 8px 0 0; text-align: center;\">\n    <h2 style=\"margin: 0;\">Booking Cancelled</h2>\n  </div>\n  <div style=\"padding: 20px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px;\">\n    <p>Hi {{$json.body.instructorName}},</p>\n    <p>The client has cancelled their booking request.</p>\n    <div style=\"background: #f9fafb; padding: 16px; border-radius: 8px; margin: 16px 0;\">\n      <p><strong>Request ID:</strong> {{$json.body.bookingRequestId}}</p>\n      <p><strong>Client:</strong> {{$json.body.clientName}}</p>\n      <p><strong>Start date:</strong> {{$json.body.startDate}}</p>\n      {{ $json.body.endDate ? '<p><strong>End date:</strong> ' + $json.body.endDate + '</p>' : '' }}\n      <p><strong>Students:</strong> {{$json.body.numberOfStudents}}</p>\n      <p><strong>Hours per day:</strong> {{$json.body.hoursPerDay}}h</p>\n    </div>\n    <div style=\"text-align: center; margin: 24px 0;\">\n      <a href=\"{{$json.body.dashboardUrl || 'https://localsnow.org/dashboard/bookings'}}\" style=\"background: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;\">\n        View Bookings\n      </a>\n    </div>\n  </div>\n</div>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "booking-cancel-inst-email",
+      "name": "Send Email",
+      "webhookId": "booking-cancel-inst-email-id",
+      "credentials": {
+        "smtp": {
+          "id": "SMTP_CREDENTIAL_ID",
+          "name": "LocalSnow SMTP account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "localsnow"
+  }
+}
