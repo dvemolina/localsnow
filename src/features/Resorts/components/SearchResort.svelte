@@ -75,8 +75,9 @@
           console.log(`📡 [SearchResort ${name}] Fetching resort ID:`, resortId);
           fetchResortById(resortId);
         }
-      } else if (!resortId) {
+      } else if (!resortId && (selectedResort !== null || query !== '')) {
         // Form value was cleared - reset component state
+        // Only clear if we actually have something to clear (prevent infinite loop)
         console.log(`🧹 [SearchResort ${name}] Clearing selection`);
         selectedResort = null;
         query = '';
