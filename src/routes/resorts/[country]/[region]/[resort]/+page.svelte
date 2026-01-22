@@ -5,6 +5,8 @@
 	import { MapPin, Mountain, ExternalLink, ArrowRight } from '@lucide/svelte';
 	import { page } from '$app/stores';
 	import Breadcrumb from '$lib/components/shared/Breadcrumb.svelte';
+	import { t } from '$lib/i18n/i18n';
+	import { formatMessage } from '$lib/i18n/format';
 
 	let { data } = $props();
 	const { resort, location, sportsAvailable, nearbyResorts, seo } = data;
@@ -13,6 +15,7 @@
 		href: crumb.url.replace('https://localsnow.com', ''),
 		label: crumb.name
 	}));
+
 </script>
 
 <svelte:head>
@@ -54,7 +57,7 @@
 			<!-- Background Image -->
 			<img
 				src={resort.image || 'https://assets.localsnow.org/resorts/default-resort-landscape.webp'}
-				alt="{resort.name} ski resort"
+				alt={formatMessage($t('resort_page_image_alt'), { resort: resort.name })}
 				class="h-full w-full object-cover {resort.image ? 'object-center' : 'object-bottom'}"
 				loading="eager"
 			/>
@@ -83,7 +86,7 @@
 							class="flex items-center gap-1.5 transition-colors hover:text-white"
 						>
 							<ExternalLink class="h-4 w-4 md:h-5 md:w-5" />
-							<span>Official Website</span>
+							<span>{$t('resort_page_official_website')}</span>
 						</a>
 					{/if}
 				</div>
@@ -98,18 +101,18 @@
 			<CardHeader>
 				<CardTitle class="flex items-center gap-2">
 					<ArrowRight class="h-5 w-5 text-primary" />
-					All Instructors
+					{$t('resort_page_all_instructors_title')}
 				</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<p class="mb-4 text-sm text-muted-foreground">
-					Browse all verified ski and snowboard instructors at {resort.name}. Compare profiles, read reviews, and book directly.
+					{formatMessage($t('resort_page_all_instructors_desc'), { resort: resort.name })}
 				</p>
 				<Button
 					href="/resorts/{location.country.countrySlug}/{location.region?.regionSlug || location.country.countrySlug}/{resort.slug}/instructors"
 					class="w-full"
 				>
-					View All Instructors
+					{$t('resort_page_view_all_instructors')}
 					<ArrowRight class="ml-2 h-4 w-4" />
 				</Button>
 			</CardContent>
@@ -120,18 +123,18 @@
 			<CardHeader>
 				<CardTitle class="flex items-center gap-2">
 					<ArrowRight class="h-5 w-5 text-primary" />
-					Ski Schools
+					{$t('resort_page_ski_schools_title')}
 				</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<p class="mb-4 text-sm text-muted-foreground">
-					Discover ski schools offering group lessons, kids programs, and structured courses at {resort.name}.
+					{formatMessage($t('resort_page_ski_schools_desc'), { resort: resort.name })}
 				</p>
 				<Button
 					href="/resorts/{location.country.countrySlug}/{location.region?.regionSlug || location.country.countrySlug}/{resort.slug}/schools"
 					class="w-full"
 				>
-					View Ski Schools
+					{$t('resort_page_view_ski_schools')}
 					<ArrowRight class="ml-2 h-4 w-4" />
 				</Button>
 			</CardContent>
@@ -140,28 +143,38 @@
 
 	<!-- Find Instructors by Sport -->
 	<div class="mb-8">
-		<h2 class="mb-4 text-xl font-semibold">Find Instructors by Sport</h2>
+		<h2 class="mb-4 text-xl font-semibold">{$t('resort_page_find_by_sport_title')}</h2>
 		<div class="grid gap-4 md:grid-cols-3">
 			{#each sportsAvailable as sport}
 				<Card>
 					<CardContent class="p-4">
-						<h3 class="mb-2 font-semibold">{sport.sport} Instructors</h3>
+						<h3 class="mb-2 font-semibold">
+							{formatMessage($t('resort_page_sport_instructors_title'), { sport: sport.sport })}
+						</h3>
 						{#if sport.instructorCount > 0}
 							<p class="mb-3 text-sm text-muted-foreground">
-								{sport.instructorCount} verified {sport.instructorCount === 1 ? 'instructor' : 'instructors'}
+								{sport.instructorCount === 1
+									? formatMessage($t('resort_page_verified_instructor_single'), {
+											count: sport.instructorCount
+										})
+									: formatMessage($t('resort_page_verified_instructor_plural'), {
+											count: sport.instructorCount
+										})}
 							</p>
 							<Button
 								href="/resorts/{location.country.countrySlug}/{location.region?.regionSlug || location.country.countrySlug}/{resort.slug}/{sport.sportSlug}-instructors"
 								class="w-full"
 								size="sm"
 							>
-								View Instructors
+								{$t('resort_page_view_instructors')}
 								<ArrowRight class="ml-2 h-4 w-4" />
 							</Button>
 						{:else}
-							<p class="mb-3 text-sm text-muted-foreground">No instructors available</p>
+							<p class="mb-3 text-sm text-muted-foreground">
+								{$t('resort_page_no_instructors')}
+							</p>
 							<Button variant="outline" disabled class="w-full" size="sm">
-								Coming Soon
+								{$t('resort_page_coming_soon')}
 							</Button>
 						{/if}
 					</CardContent>
@@ -174,19 +187,25 @@
 	<div class="mb-8">
 		<Card>
 			<CardHeader>
-				<CardTitle>About {resort.name}</CardTitle>
+				<CardTitle>{formatMessage($t('resort_page_about_title'), { resort: resort.name })}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<p class="text-muted-foreground">
 					{#if resort.description}
 						{resort.description}
 					{:else}
-						{resort.name} is located in {location.region?.region || location.country.country}, {location.country.country}.
+						{formatMessage($t('resort_page_fallback_intro'), {
+							resort: resort.name,
+							region: location.region?.region || location.country.country,
+							country: location.country.country
+						})}
 						{#if resort.minElevation && resort.maxElevation}
-							The resort features slopes ranging from {resort.minElevation} to {resort.maxElevation} meters in elevation,
-							offering terrain suitable for all skill levels.
+							{formatMessage($t('resort_page_fallback_elevation'), {
+								min: resort.minElevation,
+								max: resort.maxElevation
+							})}
 						{/if}
-						Book professional ski and snowboard lessons with verified instructors.
+						{$t('resort_page_fallback_cta')}
 					{/if}
 				</p>
 			</CardContent>
@@ -197,7 +216,9 @@
 	{#if nearbyResorts && nearbyResorts.length > 0}
 		<div>
 			<h2 class="mb-4 text-xl font-semibold">
-				Other Resorts in {location.region?.region || location.country.country}
+				{formatMessage($t('resort_page_other_resorts_title'), {
+					region: location.region?.region || location.country.country
+				})}
 			</h2>
 			<div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
 				{#each nearbyResorts as nearby}

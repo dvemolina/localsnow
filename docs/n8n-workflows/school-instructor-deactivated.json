@@ -1,0 +1,64 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "=/school-instructor-deactivated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "school-deactivated-webhook",
+      "name": "Webhook",
+      "webhookId": "school-deactivated-webhook-id"
+    },
+    {
+      "parameters": {
+        "fromEmail": "Local Snow <admin@localsnow.org>",
+        "toEmail": "={{$json.body.instructorEmail}}",
+        "subject": "=Your instructor profile was deactivated",
+        "html": "=<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;\">\n  <div style=\"background: #ef4444; color: white; padding: 20px; border-radius: 8px 8px 0 0; text-align: center;\">\n    <h2 style=\"margin: 0;\">Instructor Deactivated</h2>\n  </div>\n  <div style=\"padding: 20px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px;\">\n    <p>Hi {{$json.body.instructorName}},</p>\n    <p>Your instructor profile was deactivated by {{$json.body.schoolName}}.</p>\n    <p>If this is unexpected, contact the school admin.</p>\n    <div style=\"text-align: center; margin: 24px 0;\">\n      <a href=\"https://localsnow.org/dashboard\" style=\"background: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;\">\n        Go to Dashboard\n      </a>\n    </div>\n  </div>\n</div>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "school-deactivated-email",
+      "name": "Send Email",
+      "webhookId": "school-deactivated-email-id",
+      "credentials": {
+        "smtp": {
+          "id": "SMTP_CREDENTIAL_ID",
+          "name": "LocalSnow SMTP account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "localsnow"
+  }
+}

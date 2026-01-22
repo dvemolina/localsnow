@@ -7,11 +7,12 @@ import {
   sports,
   instructorResorts,
   instructorSports,
+  instructorReviews,
   faqs,
   schools,
   schoolResorts
 } from "$src/lib/server/db/schema";
-import { eq, and, inArray, ne } from "drizzle-orm";
+import { eq, and, inArray, ne, sql } from "drizzle-orm";
 
 export interface InstructorLandingData {
   id: number;
@@ -21,6 +22,10 @@ export interface InstructorLandingData {
   bio: string | null;
   profileImageUrl: string | null;
   isVerified: boolean;
+  reviewStats?: {
+    averageRating: number;
+    totalReviews: number;
+  } | null;
   sports: Array<{
     id: number;
     sport: string;
@@ -195,6 +200,31 @@ export async function getResortSportInstructors(
       )
     );
 
+  const reviewStatsRows = await db
+    .select({
+      instructorId: instructorReviews.instructorId,
+      averageRating: sql<number>`ROUND(AVG(${instructorReviews.rating})::numeric, 2)`,
+      totalReviews: sql<number>`COUNT(*)::int`
+    })
+    .from(instructorReviews)
+    .where(
+      and(
+        inArray(instructorReviews.instructorId, ids),
+        eq(instructorReviews.isPublished, true)
+      )
+    )
+    .groupBy(instructorReviews.instructorId);
+
+  const reviewStatsByInstructor = new Map(
+    reviewStatsRows.map((row) => [
+      row.instructorId,
+      {
+        averageRating: row.averageRating ? Number(row.averageRating) : 0,
+        totalReviews: row.totalReviews
+      }
+    ])
+  );
+
   // Get each instructor's sports and resorts
   const instructors: InstructorLandingData[] = await Promise.all(
     instructorsData.map(async (instructor) => {
@@ -220,6 +250,7 @@ export async function getResortSportInstructors(
 
       return {
         ...instructor,
+        reviewStats: reviewStatsByInstructor.get(instructor.id) || null,
         sports: instructorSportsData,
         resorts: instructorResortsData
       };
@@ -726,6 +757,31 @@ export async function getResortInstructors(
       )
     );
 
+  const reviewStatsRows = await db
+    .select({
+      instructorId: instructorReviews.instructorId,
+      averageRating: sql<number>`ROUND(AVG(${instructorReviews.rating})::numeric, 2)`,
+      totalReviews: sql<number>`COUNT(*)::int`
+    })
+    .from(instructorReviews)
+    .where(
+      and(
+        inArray(instructorReviews.instructorId, ids),
+        eq(instructorReviews.isPublished, true)
+      )
+    )
+    .groupBy(instructorReviews.instructorId);
+
+  const reviewStatsByInstructor = new Map(
+    reviewStatsRows.map((row) => [
+      row.instructorId,
+      {
+        averageRating: row.averageRating ? Number(row.averageRating) : 0,
+        totalReviews: row.totalReviews
+      }
+    ])
+  );
+
   // Get each instructor's sports and resorts
   const instructors: InstructorLandingData[] = await Promise.all(
     instructorsData.map(async (instructor) => {
@@ -751,6 +807,7 @@ export async function getResortInstructors(
 
       return {
         ...instructor,
+        reviewStats: reviewStatsByInstructor.get(instructor.id) || null,
         sports: instructorSportsData,
         resorts: instructorResortsData
       };

@@ -1,0 +1,64 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "=/school-instructor-invitation",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "school-invite-webhook",
+      "name": "Webhook",
+      "webhookId": "school-invite-webhook-id"
+    },
+    {
+      "parameters": {
+        "fromEmail": "Local Snow <admin@localsnow.org>",
+        "toEmail": "={{$json.body.instructorEmail}}",
+        "subject": "=Invitation to join {{$json.body.schoolName}}",
+        "html": "=<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;\">\n  <div style=\"background: #2563eb; color: white; padding: 20px; border-radius: 8px 8px 0 0; text-align: center;\">\n    <h2 style=\"margin: 0;\">School Invitation</h2>\n  </div>\n  <div style=\"padding: 20px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px;\">\n    <p>Hi {{$json.body.instructorName}},</p>\n    <p>{{$json.body.schoolName}} has invited you to join their school on Local Snow.</p>\n    <div style=\"text-align: center; margin: 24px 0;\">\n      <a href=\"{{$json.body.invitationUrl}}\" style=\"background: #16a34a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;\">\n        Review Invitation\n      </a>\n    </div>\n    <p style=\"color: #6b7280; font-size: 14px;\">If you do not want to join, you can ignore this email.</p>\n  </div>\n</div>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "school-invite-email",
+      "name": "Send Email",
+      "webhookId": "school-invite-email-id",
+      "credentials": {
+        "smtp": {
+          "id": "SMTP_CREDENTIAL_ID",
+          "name": "LocalSnow SMTP account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "localsnow"
+  }
+}

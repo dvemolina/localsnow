@@ -19,6 +19,21 @@
 	const isIndependent = instructorData.role === 'instructor-independent';
 	const instructorSlug = generateInstructorSlug(instructorData.id, instructorData.name, instructorData.lastName);
 
+	// Review stats handling with fallbacks for different data shapes
+	const reviewStats = instructorData.reviewStats || instructorData.review_stats || instructorData.ratingStats || null;
+	const totalReviews =
+		reviewStats?.totalReviews ??
+		reviewStats?.total_reviews ??
+		instructorData.totalReviews ??
+		instructorData.reviewCount ??
+		0;
+	const averageRating =
+		reviewStats?.averageRating ??
+		reviewStats?.average_rating ??
+		instructorData.averageRating ??
+		instructorData.rating ??
+		0;
+
 	// Build href with optional filter preservation
 	const href = $derived(() => {
 		const baseHref = `/instructors/${instructorSlug}`;
@@ -148,9 +163,12 @@
 	</div>
 
 	<!-- Star Rating (Top Right) -->
-	<div class="absolute right-2 top-2">
-		{#if instructorData.reviewStats && instructorData.reviewStats.totalReviews > 0}
-			<StarScore score={instructorData.reviewStats.averageRating} />
+	<div class="absolute right-2 top-2 flex flex-col items-end gap-1">
+		{#if totalReviews > 0}
+			<StarScore score={averageRating} />
+			<span class="text-[0.65rem] text-muted-foreground">
+				{totalReviews} {totalReviews === 1 ? $t('instructor_review') : $t('instructor_reviews')}
+			</span>
 		{:else}
 			<StarScore score="No reviews" />
 		{/if}
