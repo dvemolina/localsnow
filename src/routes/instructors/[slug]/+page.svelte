@@ -21,7 +21,7 @@
 	const reviewStats = data.reviewStats;
 
 	// Get return URL from query params for filter preservation
-	const returnTo = $derived($page.url.searchParams.get('returnTo') || '/instructors');
+	const returnTo = $derived(page.url.searchParams.get('returnTo') || '/instructors');
 
 	const isAuthenticated = !!data.user; // Will be true if user exists
 	const isIndependent = instructor.role === 'instructor-independent';
