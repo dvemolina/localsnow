@@ -139,17 +139,21 @@
   }
 
   function selectResort(resort: Resort) {
+    console.log(`✅ [SearchResort ${name}] Resort selected:`, resort);
+
     selectedResort = resort;
     query = resort.name;
     isOpen = false;
     suggestions = [];
-    
+
     if (mode === 'form') {
       const resortId = Number(resort.id);
+      console.log(`💾 [SearchResort ${name}] Setting form value to:`, resortId);
       if (!isNaN(resortId)) {
         $formData[name] = resortId;
+        console.log(`✅ [SearchResort ${name}] Form data updated:`, $formData[name]);
       } else {
-        console.error('Invalid resort ID:', resort.id);
+        console.error(`❌ [SearchResort ${name}] Invalid resort ID:`, resort.id);
         $formData[name] = 0;
       }
     } else {
