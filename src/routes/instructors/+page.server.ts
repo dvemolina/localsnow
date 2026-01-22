@@ -26,13 +26,13 @@ export const load: PageServerLoad = async ({ url }) => {
     try {
         // Parse and validate numeric parameters
         const resortIdNum = resortId ? Number(resortId) : undefined;
-        const sportIdNum = sportId ? Number(sportId) : undefined;
         const schoolIdNum = schoolId ? Number(schoolId) : undefined;
 
         // Validate that numeric IDs are valid numbers (not NaN)
         const validResortId = resortIdNum && !isNaN(resortIdNum) ? resortIdNum : undefined;
-        const validSportId = sportIdNum && !isNaN(sportIdNum) ? sportIdNum : undefined;
         const validSchoolId = schoolIdNum && !isNaN(schoolIdNum) ? schoolIdNum : undefined;
+        // Sport is a string ('ski', 'snowboard', etc.), not a number
+        const validSportId = sportId || undefined;
 
         // If no filters applied, return empty array (prompt-first UX like Yelp/Airbnb)
         // User should search first before seeing results
@@ -111,34 +111,36 @@ export const load: PageServerLoad = async ({ url }) => {
             hasFilters,
             spainCountryId: 1, // Spain country ID for resort filter
             filters: {
-                resort: resortId,
-                sport: sportId,
+                resort: validResortId || undefined, // Pass parsed number, not string
+                sport: sportId || undefined, // Pass as string
                 query: searchQuery,
                 language: language,
-                priceMin: priceMin,
-                priceMax: priceMax,
+                priceMin: priceMin ? Number(priceMin) : undefined,
+                priceMax: priceMax ? Number(priceMax) : undefined,
                 instructorType: instructorType,
                 verifiedOnly: verifiedOnly ? 'true' : null,
-                school: schoolId,
+                school: validSchoolId || undefined, // Pass parsed number, not string
                 sortBy: sortBy
             }
         };
     } catch (error) {
         console.error('Error loading instructors:', error);
+        const validResortId = resortId ? Number(resortId) : undefined;
+        const validSchoolId = schoolId ? Number(schoolId) : undefined;
         return {
             instructors: [],
             hasFilters,
             spainCountryId: 1,
             filters: {
-                resort: resortId,
-                sport: sportId,
+                resort: validResortId && !isNaN(validResortId) ? validResortId : undefined,
+                sport: sportId || undefined,
                 query: searchQuery,
                 language: language,
-                priceMin: priceMin,
-                priceMax: priceMax,
+                priceMin: priceMin ? Number(priceMin) : undefined,
+                priceMax: priceMax ? Number(priceMax) : undefined,
                 instructorType: instructorType,
                 verifiedOnly: verifiedOnly ? 'true' : null,
-                school: schoolId,
+                school: validSchoolId && !isNaN(validSchoolId) ? validSchoolId : undefined,
                 sortBy: sortBy
             }
         };

@@ -71,24 +71,30 @@ export const load: PageServerLoad = async ({ url }) => {
 			}
 		}
 
+		// Parse resort ID to number for client form
+		const parsedResortId = resortIdParam ? Number(resortIdParam) : undefined;
+		const validResortId = parsedResortId && !isNaN(parsedResortId) ? parsedResortId : undefined;
+
 		return {
 			schools: schoolsData,
 			hasFilters,
 			spainCountryId: 1, // Spain country ID for resort filter
 			filters: {
-				resort: resortIdParam,
+				resort: validResortId, // Pass parsed number, not string
 				verifiedOnly: verifiedOnly ? 'true' : null,
 				sortBy: sortBy
 			}
 		};
 	} catch (error) {
 		console.error('Error loading schools:', error);
+		const parsedResortId = resortIdParam ? Number(resortIdParam) : undefined;
+		const validResortId = parsedResortId && !isNaN(parsedResortId) ? parsedResortId : undefined;
 		return {
 			schools: [],
 			hasFilters,
 			spainCountryId: 1,
 			filters: {
-				resort: resortIdParam,
+				resort: validResortId,
 				verifiedOnly: verifiedOnly ? 'true' : null,
 				sortBy: sortBy
 			}
