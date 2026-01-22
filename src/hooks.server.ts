@@ -65,9 +65,11 @@ const languageHandle: Handle = async ({ event, resolve }) => {
 			}
 		}
 
-		// Redirect to localized URL
+		// Redirect to localized URL, preserving query parameters
 		const localizedUrl = route(pathname, preferredLocale);
-		throw redirect(307, localizedUrl);
+		const urlWithParams = localizedUrl + event.url.search; // Preserve ?resort=X&sport=Y etc
+		console.log(`🌍 [Language Hook] Redirecting:`, { from: event.url.href, to: urlWithParams });
+		throw redirect(307, urlWithParams);
 	}
 
 	// Set locale cookie for future visits
