@@ -56,11 +56,24 @@
     }
   }
 
-  onMount(() => {
-    // Load existing resort if form has a value
-    const resortId = formData ? $formData[name] : null;
-    if (mode === 'form' && resortId && resortId > 0) {
-      fetchResortById(resortId);
+  // Reactively load resort when form value changes (Svelte 5 $effect)
+  $effect(() => {
+    // Watch for changes to the form value
+    const resortId = $formData[name];
+
+    if (mode === 'form') {
+      if (resortId && resortId > 0) {
+        // Only fetch if we haven't already loaded this resort
+        if (!selectedResort || selectedResort.id !== resortId) {
+          fetchResortById(resortId);
+        }
+      } else if (!resortId) {
+        // Form value was cleared - reset component state
+        selectedResort = null;
+        query = '';
+        suggestions = [];
+        isOpen = false;
+      }
     }
   });
 
