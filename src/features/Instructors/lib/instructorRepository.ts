@@ -269,6 +269,19 @@ export class InstructorRepository {
             // Filter by resort
             if (filters.resortId) {
                 conditions.push(eq(instructorResorts.resortId, filters.resortId));
+
+                // DEBUG: Check what resorts instructors are actually linked to
+                const debugResorts = await db
+                    .select({ instructorId: instructorResorts.instructorId, resortId: instructorResorts.resortId })
+                    .from(instructorResorts)
+                    .limit(20);
+                console.log(`🔍 [DEBUG] Sample instructor_resorts associations:`, debugResorts);
+
+                const resortsForThisId = await db
+                    .select({ instructorId: instructorResorts.instructorId })
+                    .from(instructorResorts)
+                    .where(eq(instructorResorts.resortId, filters.resortId));
+                console.log(`🔍 [DEBUG] Instructors linked to resortId ${filters.resortId}:`, resortsForThisId.length);
             }
 
             // Filter by school
