@@ -185,7 +185,7 @@
 
 		<!-- Main Filters -->
 		<div class="grid gap-3 md:grid-cols-3 overflow-visible mb-4">
-			<SearchResort {form} name="resort" label="Resort" countryId={data.spainCountryId} />
+			<SearchResort {form} name="resort" label="Resort" />
 			<SortBySelect {form} name="sortBy" />
 			<div class="flex items-center space-x-2 pt-6">
 				<Checkbox id="verified" bind:checked={verifiedOnly} />

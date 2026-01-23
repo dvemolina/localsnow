@@ -78,7 +78,6 @@ export const load: PageServerLoad = async ({ url }) => {
 		return {
 			schools: schoolsData,
 			hasFilters,
-			spainCountryId: 1, // Spain country ID for resort filter
 			filters: {
 				resort: validResortId, // Pass parsed number, not string
 				verifiedOnly: verifiedOnly ? 'true' : null,
@@ -92,7 +91,6 @@ export const load: PageServerLoad = async ({ url }) => {
 		return {
 			schools: [],
 			hasFilters,
-			spainCountryId: 1,
 			filters: {
 				resort: validResortId,
 				verifiedOnly: verifiedOnly ? 'true' : null,

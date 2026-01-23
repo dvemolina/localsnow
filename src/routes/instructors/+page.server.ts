@@ -111,7 +111,6 @@ export const load: PageServerLoad = async ({ url }) => {
         const result = {
             instructors: instructorsWithLessons,
             hasFilters,
-            spainCountryId: 1, // Spain country ID for resort filter
             filters: {
                 resort: validResortId || undefined, // Pass parsed number, not string
                 sport: sportId || undefined, // Pass as string
@@ -140,7 +139,6 @@ export const load: PageServerLoad = async ({ url }) => {
         return {
             instructors: [],
             hasFilters,
-            spainCountryId: 1,
             filters: {
                 resort: validResortId && !isNaN(validResortId) ? validResortId : undefined,
                 sport: sportId || undefined,

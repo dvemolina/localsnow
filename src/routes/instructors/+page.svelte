@@ -268,7 +268,7 @@
 
 		<!-- Main Filters -->
 		<div class="grid gap-3 md:grid-cols-2 lg:grid-cols-4 overflow-visible mb-4">
-			<SearchResort {form} name="resort" label="Resort" countryId={data.spainCountryId} />
+			<SearchResort {form} name="resort" label="Resort" />
 			<SportSelect {form} name="sport" />
 			<LanguageSelect {form} name="language" />
 			<SortBySelect {form} name="sortBy" />
