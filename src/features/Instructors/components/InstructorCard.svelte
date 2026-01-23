@@ -68,7 +68,7 @@
 				<img src="/icons/ski-resort.svg" alt="Resort" class="size-4" />
 				<span class="text-[0.65rem] sm:text-xs {badgeVariants({ variant: 'secondary' })}">
 					{#if instructorData.resorts && instructorData.resorts.length > 0}
-						{instructorData.resorts.length} Resort{instructorData.resorts.length > 1 ? 's' : ''}
+						{instructorData.resorts[0]?.name || instructorData.resorts[0]}
 					{:else}
 						Multiple Locations
 					{/if}

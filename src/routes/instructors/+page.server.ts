@@ -3,6 +3,9 @@ import type { PageServerLoad } from './$types';
 import { InstructorService } from '$src/features/Instructors/lib/instructorService';
 import { LessonService } from '$src/features/Lessons/lib/lessonService';
 import { ReviewService } from '$src/features/Reviews/lib/reviewService';
+import { db } from '$lib/server/db';
+import { resorts } from '$lib/server/db/schema';
+import { inArray } from 'drizzle-orm';
 
 const lessonService = new LessonService();
 const instructorService = new InstructorService();
@@ -97,8 +100,39 @@ export const load: PageServerLoad = async ({ url }) => {
             // name_asc and name_desc are already handled in repository
         }
 
+        const resortIds = Array.from(
+            new Set(
+                instructorsWithLessons
+                    .flatMap((instructor) => instructor.resorts || [])
+                    .filter((resortId) => typeof resortId === 'number')
+            )
+        );
+
+        const resortNameRows = resortIds.length > 0
+            ? await db
+                    .select({ id: resorts.id, name: resorts.name })
+                    .from(resorts)
+                    .where(inArray(resorts.id, resortIds))
+            : [];
+
+        const resortNameMap = new Map(resortNameRows.map((row) => [row.id, row.name]));
+
+        const instructorsWithResorts = instructorsWithLessons.map((instructor) => {
+            const resortObjects = (instructor.resorts || [])
+                .map((resortId) => {
+                    if (typeof resortId !== 'number') return resortId;
+                    const name = resortNameMap.get(resortId);
+                    return name ? { id: resortId, name } : resortId;
+                })
+                .filter(Boolean);
+            return {
+                ...instructor,
+                resorts: resortObjects
+            };
+        });
+
         return {
-            instructors: instructorsWithLessons,
+            instructors: instructorsWithResorts,
             filters: {
                 resort: resortId,
                 sport: sportId,
