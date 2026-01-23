@@ -31,8 +31,7 @@ export const load: PageServerLoad = async (event) => {
     return { form, school };
 };
 
-export const actions: Actions = {
-    default: async (event) => {
+const updateSchoolProfile: Actions["schoolProfile"] = async (event) => {
         const { user, school } = await requireSchoolAdmin(event);
 
         // Rate limiting
@@ -80,5 +79,8 @@ export const actions: Actions = {
                 error: 'Failed to update school profile. Please try again.'
             });
         }
-    }
+};
+
+export const actions: Actions = {
+    schoolProfile: updateSchoolProfile
 };
