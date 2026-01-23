@@ -272,8 +272,13 @@ export class InstructorRepository {
 
                 // DEBUG: Check what resorts instructors are actually linked to
                 const debugResorts = await db
-                    .select({ instructorId: instructorResorts.instructorId, resortId: instructorResorts.resortId })
+                    .select({
+                        instructorId: instructorResorts.instructorId,
+                        resortId: instructorResorts.resortId,
+                        resortName: resorts.name
+                    })
                     .from(instructorResorts)
+                    .leftJoin(resorts, eq(instructorResorts.resortId, resorts.id))
                     .limit(20);
                 console.log(`🔍 [DEBUG] Sample instructor_resorts associations:`, debugResorts);
 
