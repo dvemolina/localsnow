@@ -3,7 +3,7 @@ import { users, instructorSports, instructorResorts, lessons, lessonSports as le
 import type { InsertUser, User } from "$src/lib/server/db/schema";
 import { eq, and, or } from "drizzle-orm";
 import type { InstructorSignupData } from "./instructorSchemas";
-import { getSportIdBySlug } from "$features/Sports/lib/sportsConstants";
+import { getSportIdBySlug } from "$src/features/Sports/lib/sportsConstants";
 
 
 
