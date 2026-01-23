@@ -254,10 +254,12 @@ export class InstructorRepository {
                 conditions.push(eq(users.isVerified, true));
             }
 
-            // Filter by resort
-            if (filters.resortId) {
-                conditions.push(eq(instructorResorts.resortId, filters.resortId));
-            }
+            // Filter by resort - TEMPORARILY DISABLED FOR DEBUGGING
+            // if (filters.resortId) {
+            //     conditions.push(eq(instructorResorts.resortId, filters.resortId));
+            // }
+            // TODO: Re-enable after checking instructor_resorts table
+            console.log('⚠️ [DEBUG] Resort filter DISABLED - will show ALL instructors regardless of resort');
 
             // Filter by school
             if (filters.schoolId) {
