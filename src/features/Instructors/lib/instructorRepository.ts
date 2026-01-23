@@ -3,6 +3,7 @@ import { users, instructorSports, instructorResorts, lessons, lessonSports as le
 import type { InsertUser, User } from "$src/lib/server/db/schema";
 import { eq, and, or } from "drizzle-orm";
 import type { InstructorSignupData } from "./instructorSchemas";
+import { getSportIdBySlug } from "$features/Sports/lib/sportsConstants";
 
 
 
@@ -185,7 +186,7 @@ export class InstructorRepository {
 
     async searchInstructors(filters: {
         resortId?: number;
-        sportId?: number;
+        sportId?: number | string; // Can be numeric ID or slug string
         searchQuery?: string;
         language?: string;
         priceMin?: number;
@@ -196,6 +197,17 @@ export class InstructorRepository {
         sortBy?: string;
     }) {
         console.log('👨‍🏫 [InstructorRepository] searchInstructors called with filters:', filters);
+
+        // Convert sport slug to ID if it's a string
+        let sportIdNumeric: number | undefined;
+        if (filters.sportId) {
+            if (typeof filters.sportId === 'string') {
+                sportIdNumeric = getSportIdBySlug(filters.sportId);
+                console.log(`🔄 [InstructorRepository] Converted sport slug "${filters.sportId}" to ID: ${sportIdNumeric}`);
+            } else {
+                sportIdNumeric = filters.sportId;
+            }
+        }
 
         try {
             let query = db
@@ -254,12 +266,10 @@ export class InstructorRepository {
                 conditions.push(eq(users.isVerified, true));
             }
 
-            // Filter by resort - TEMPORARILY DISABLED FOR DEBUGGING
-            // if (filters.resortId) {
-            //     conditions.push(eq(instructorResorts.resortId, filters.resortId));
-            // }
-            // TODO: Re-enable after checking instructor_resorts table
-            console.log('⚠️ [DEBUG] Resort filter DISABLED - will show ALL instructors regardless of resort');
+            // Filter by resort
+            if (filters.resortId) {
+                conditions.push(eq(instructorResorts.resortId, filters.resortId));
+            }
 
             // Filter by school
             if (filters.schoolId) {
@@ -272,7 +282,7 @@ export class InstructorRepository {
             console.log('🔍 [InstructorRepository] Executing query with conditions:', {
                 conditionsCount: conditions.length,
                 hasResortFilter: !!filters.resortId,
-                hasSportFilter: !!filters.sportId,
+                hasSportFilter: !!sportIdNumeric,
                 hasSchoolFilter: !!filters.schoolId
             });
 
@@ -327,14 +337,15 @@ export class InstructorRepository {
             console.log('📦 [InstructorRepository] After grouping:', { count: instructorsList.length });
 
             // Filter by sport if specified
-            if (filters.sportId) {
+            if (sportIdNumeric) {
                 const beforeCount = instructorsList.length;
                 instructorsList = instructorsList.filter(instructor =>
-                    instructor.sports.includes(filters.sportId)
+                    instructor.sports.includes(sportIdNumeric)
                 );
-                console.log(`🏂 [InstructorRepository] After sport filter (${filters.sportId}):`, {
+                console.log(`🏂 [InstructorRepository] After sport filter (${sportIdNumeric}):`, {
                     before: beforeCount,
-                    after: instructorsList.length
+                    after: instructorsList.length,
+                    exampleSports: instructorsList.length > 0 ? instructorsList[0].sports : 'none'
                 });
             }
 

@@ -32,3 +32,11 @@ export function getSportName(id: number): string {
 export function getSportSlug(id: number): string {
     return SPORT_SLUGS[id] || 'unknown';
 }
+
+/**
+ * Get sport ID by slug
+ */
+export function getSportIdBySlug(slug: string): number | undefined {
+    const entry = Object.entries(SPORT_SLUGS).find(([_, s]) => s === slug);
+    return entry ? Number(entry[0]) : undefined;
+}
