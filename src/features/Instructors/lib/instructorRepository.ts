@@ -195,6 +195,8 @@ export class InstructorRepository {
         schoolId?: number;
         sortBy?: string;
     }) {
+        console.log('👨‍🏫 [InstructorRepository] searchInstructors called with filters:', filters);
+
         try {
             let query = db
                 .select({
@@ -265,8 +267,17 @@ export class InstructorRepository {
 
             query = query.where(and(...conditions));
 
+            console.log('🔍 [InstructorRepository] Executing query with conditions:', {
+                conditionsCount: conditions.length,
+                hasResortFilter: !!filters.resortId,
+                hasSportFilter: !!filters.sportId,
+                hasSchoolFilter: !!filters.schoolId
+            });
+
             // Execute query
             const results = await query;
+
+            console.log('📥 [InstructorRepository] Raw query results:', { count: results.length });
 
             // Group by instructor ID to handle multiple sports/resorts
             const instructorsMap = new Map();
@@ -311,19 +322,31 @@ export class InstructorRepository {
 
             let instructorsList = Array.from(instructorsMap.values());
 
+            console.log('📦 [InstructorRepository] After grouping:', { count: instructorsList.length });
+
             // Filter by sport if specified
             if (filters.sportId) {
+                const beforeCount = instructorsList.length;
                 instructorsList = instructorsList.filter(instructor =>
                     instructor.sports.includes(filters.sportId)
                 );
+                console.log(`🏂 [InstructorRepository] After sport filter (${filters.sportId}):`, {
+                    before: beforeCount,
+                    after: instructorsList.length
+                });
             }
 
             // Filter by language if specified
             if (filters.language) {
+                const beforeCount = instructorsList.length;
                 instructorsList = instructorsList.filter(instructor =>
                     instructor.spokenLanguages &&
                     instructor.spokenLanguages.includes(filters.language)
                 );
+                console.log(`🗣️ [InstructorRepository] After language filter (${filters.language}):`, {
+                    before: beforeCount,
+                    after: instructorsList.length
+                });
             }
 
             // Basic sorting (name-based only, price and rating sorting happens in page.server after fetching lessons)
@@ -332,6 +355,11 @@ export class InstructorRepository {
             } else if (filters.sortBy === 'name_desc') {
                 instructorsList.sort((a, b) => b.name.localeCompare(a.name));
             }
+
+            console.log('✅ [InstructorRepository] Final results:', {
+                count: instructorsList.length,
+                instructors: instructorsList.map(i => `${i.name} ${i.lastName}`)
+            });
 
             return instructorsList;
         } catch (error) {
