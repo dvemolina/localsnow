@@ -1,30 +1,17 @@
-import { EMAIL_HEADER_SECRET } from '$lib/server/config';
-
-const N8N_BASE_URL = 'https://automation.personalflow.net/webhook';
-const EMAIL_SECRET = EMAIL_HEADER_SECRET;
+import { emailService } from '$lib/server/email/service';
 
 export async function sendSignupEmail(name: string, email: string, betaCode: string = 'BETA2025') {
 	try {
-		const response = await fetch(`${N8N_BASE_URL}/797b1c35-f0fd-4b8c-a0a2-014d07e396ae`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-                'x-n8n-secret': EMAIL_SECRET
-			},
-			body: JSON.stringify({
-				name: name,
-				email: email,
-				betaCode: betaCode,
-				isBetaLaunch: true,
-				betaValidUntil: '2025-03-31'
-			})
+		await emailService.sendSignupEmail({
+			name,
+			email,
+			betaCode,
+			isBetaLaunch: true,
+			betaValidUntil: '2025-03-31'
 		});
-
-		if (!response.ok) {
-			console.error('Failed to send email via n8n', await response.text());
-		}
 	} catch (err) {
-		console.error('Error calling n8n webhook:', err);
+		console.error('Error sending signup email:', err);
+		// Don't throw - graceful degradation
 	}
 }
 
@@ -42,24 +29,13 @@ export async function sendBookingNotificationToInstructor(data: {
 	dashboardUrl?: string;
 }) {
 	try {
-		const response = await fetch(`${N8N_BASE_URL}/booking-notification-instructor`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'x-n8n-secret': EMAIL_SECRET
-			},
-			body: JSON.stringify({
-				type: 'instructor_notification',
-				...data,
-				dashboardUrl: data.dashboardUrl || 'https://localsnow.org/dashboard'
-			})
+		await emailService.sendBookingNotificationToInstructor({
+			...data,
+			dashboardUrl: data.dashboardUrl || 'https://localsnow.org/dashboard'
 		});
-
-		if (!response.ok) {
-			console.error('Failed to send instructor notification', await response.text());
-		}
 	} catch (err) {
 		console.error('Error sending instructor notification:', err);
+		// Don't throw - graceful degradation
 	}
 }
 
@@ -75,23 +51,10 @@ export async function sendBookingConfirmationToClient(data: {
 	currency?: string;
 }) {
 	try {
-		const response = await fetch(`${N8N_BASE_URL}/booking-confirmation-client`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'x-n8n-secret': EMAIL_SECRET
-			},
-			body: JSON.stringify({
-				type: 'client_confirmation',
-				...data
-			})
-		});
-
-		if (!response.ok) {
-			console.error('Failed to send client confirmation', await response.text());
-		}
+		await emailService.sendBookingConfirmationToClient(data);
 	} catch (err) {
 		console.error('Error sending client confirmation:', err);
+		// Don't throw - graceful degradation
 	}
 }
 
@@ -113,23 +76,10 @@ export async function sendContactInfoToInstructor(data: {
 	currency?: string;
 }) {
 	try {
-		const response = await fetch(`${N8N_BASE_URL}/booking-contact-info`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'x-n8n-secret': EMAIL_SECRET
-			},
-			body: JSON.stringify({
-				type: 'contact_info',
-				...data
-			})
-		});
-
-		if (!response.ok) {
-			console.error('Failed to send contact info to instructor', await response.text());
-		}
+		await emailService.sendContactInfoToInstructor(data);
 	} catch (err) {
 		console.error('Error sending contact info:', err);
+		// Don't throw - graceful degradation
 	}
 }
 
@@ -145,24 +95,13 @@ export async function sendCancellationNotificationToInstructor(data: {
 	dashboardUrl?: string;
 }) {
 	try {
-		const response = await fetch(`${N8N_BASE_URL}/booking-cancellation-instructor`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'x-n8n-secret': EMAIL_SECRET
-			},
-			body: JSON.stringify({
-				type: 'cancellation_notification',
-				...data,
-				dashboardUrl: data.dashboardUrl || 'https://localsnow.org/dashboard/bookings'
-			})
+		await emailService.sendCancellationNotificationToInstructor({
+			...data,
+			dashboardUrl: data.dashboardUrl || 'https://localsnow.org/dashboard/bookings'
 		});
-
-		if (!response.ok) {
-			console.error('Failed to send cancellation notification', await response.text());
-		}
 	} catch (err) {
 		console.error('Error sending cancellation notification:', err);
+		// Don't throw - graceful degradation
 	}
 }
 
@@ -175,23 +114,10 @@ export async function sendCancellationConfirmationToClient(data: {
 	endDate?: string;
 }) {
 	try {
-		const response = await fetch(`${N8N_BASE_URL}/booking-cancellation-client`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'x-n8n-secret': EMAIL_SECRET
-			},
-			body: JSON.stringify({
-				type: 'cancellation_confirmation',
-				...data
-			})
-		});
-
-		if (!response.ok) {
-			console.error('Failed to send cancellation confirmation', await response.text());
-		}
+		await emailService.sendCancellationConfirmationToClient(data);
 	} catch (err) {
 		console.error('Error sending cancellation confirmation:', err);
+		// Don't throw - graceful degradation
 	}
 }
 
@@ -205,23 +131,10 @@ export async function sendInstructorInvitation(data: {
 	invitationUrl: string;
 }) {
 	try {
-		const response = await fetch(`${N8N_BASE_URL}/school-instructor-invitation`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'x-n8n-secret': EMAIL_SECRET
-			},
-			body: JSON.stringify({
-				type: 'instructor_invitation',
-				...data
-			})
-		});
-
-		if (!response.ok) {
-			console.error('Failed to send instructor invitation', await response.text());
-		}
+		await emailService.sendInstructorInvitation(data);
 	} catch (err) {
 		console.error('Error sending instructor invitation:', err);
+		// Don't throw - graceful degradation
 	}
 }
 
@@ -233,23 +146,10 @@ export async function sendSchoolApplication(data: {
 	reviewUrl: string;
 }) {
 	try {
-		const response = await fetch(`${N8N_BASE_URL}/school-application`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'x-n8n-secret': EMAIL_SECRET
-			},
-			body: JSON.stringify({
-				type: 'school_application',
-				...data
-			})
-		});
-
-		if (!response.ok) {
-			console.error('Failed to send school application notification', await response.text());
-		}
+		await emailService.sendSchoolApplication(data);
 	} catch (err) {
 		console.error('Error sending school application notification:', err);
+		// Don't throw - graceful degradation
 	}
 }
 
@@ -261,23 +161,10 @@ export async function sendInstructorAccepted(data: {
 	dashboardUrl: string;
 }) {
 	try {
-		const response = await fetch(`${N8N_BASE_URL}/school-instructor-accepted`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'x-n8n-secret': EMAIL_SECRET
-			},
-			body: JSON.stringify({
-				type: 'instructor_accepted',
-				...data
-			})
-		});
-
-		if (!response.ok) {
-			console.error('Failed to send instructor accepted notification', await response.text());
-		}
+		await emailService.sendInstructorAccepted(data);
 	} catch (err) {
 		console.error('Error sending instructor accepted notification:', err);
+		// Don't throw - graceful degradation
 	}
 }
 
@@ -287,23 +174,10 @@ export async function sendInstructorRejected(data: {
 	schoolName: string;
 }) {
 	try {
-		const response = await fetch(`${N8N_BASE_URL}/school-instructor-rejected`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'x-n8n-secret': EMAIL_SECRET
-			},
-			body: JSON.stringify({
-				type: 'instructor_rejected',
-				...data
-			})
-		});
-
-		if (!response.ok) {
-			console.error('Failed to send instructor rejected notification', await response.text());
-		}
+		await emailService.sendInstructorRejected(data);
 	} catch (err) {
 		console.error('Error sending instructor rejected notification:', err);
+		// Don't throw - graceful degradation
 	}
 }
 
@@ -314,23 +188,10 @@ export async function sendInvitationAccepted(data: {
 	instructorId: number;
 }) {
 	try {
-		const response = await fetch(`${N8N_BASE_URL}/school-invitation-accepted`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'x-n8n-secret': EMAIL_SECRET
-			},
-			body: JSON.stringify({
-				type: 'invitation_accepted',
-				...data
-			})
-		});
-
-		if (!response.ok) {
-			console.error('Failed to send invitation accepted notification', await response.text());
-		}
+		await emailService.sendInvitationAccepted(data);
 	} catch (err) {
 		console.error('Error sending invitation accepted notification:', err);
+		// Don't throw - graceful degradation
 	}
 }
 
@@ -340,23 +201,10 @@ export async function sendInstructorDeactivated(data: {
 	schoolName: string;
 }) {
 	try {
-		const response = await fetch(`${N8N_BASE_URL}/school-instructor-deactivated`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'x-n8n-secret': EMAIL_SECRET
-			},
-			body: JSON.stringify({
-				type: 'instructor_deactivated',
-				...data
-			})
-		});
-
-		if (!response.ok) {
-			console.error('Failed to send instructor deactivated notification', await response.text());
-		}
+		await emailService.sendInstructorDeactivated(data);
 	} catch (err) {
 		console.error('Error sending instructor deactivated notification:', err);
+		// Don't throw - graceful degradation
 	}
 }
 
@@ -372,22 +220,9 @@ export async function sendInstructorContactForm(data: {
 	instructorProfileUrl: string;
 }) {
 	try {
-		const response = await fetch(`${N8N_BASE_URL}/instructor-contact-form`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'x-n8n-secret': EMAIL_SECRET
-			},
-			body: JSON.stringify({
-				type: 'contact_form',
-				...data
-			})
-		});
-
-		if (!response.ok) {
-			console.error('Failed to send instructor contact form notification', await response.text());
-		}
+		await emailService.sendInstructorContactForm(data);
 	} catch (err) {
 		console.error('Error sending instructor contact form notification:', err);
+		// Don't throw - graceful degradation
 	}
 }
