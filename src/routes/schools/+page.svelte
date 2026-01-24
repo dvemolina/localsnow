@@ -159,6 +159,7 @@
 		{JSON.stringify(breadcrumbSchema)}
 	</script>
 
+	<!-- Canonical tag: always point to clean URL without query params -->
 	<link rel="canonical" href="https://localsnow.org/schools" />
 </svelte:head>
 
@@ -184,7 +185,7 @@
 
 		<!-- Main Filters -->
 		<div class="grid gap-3 md:grid-cols-3 overflow-visible mb-4">
-			<SearchResort {form} name="resort" label="Resort" countryId={data.spainCountryId} />
+			<SearchResort {form} name="resort" label="Resort" />
 			<SortBySelect {form} name="sortBy" />
 			<div class="flex items-center space-x-2 pt-6">
 				<Checkbox id="verified" bind:checked={verifiedOnly} />
@@ -250,47 +251,78 @@
 		</div>
 	{/if}
 
-	<!-- Results Count -->
-	<div class="mb-4 flex items-center justify-between">
-		<p class="text-muted-foreground text-sm">
-			{#if data.schools.length === 0}
-				No schools found
-			{:else if data.schools.length === 1}
-				1 school found
-			{:else}
-				{data.schools.length} schools found
-			{/if}
-		</p>
-	</div>
-
-	<!-- School Cards Grid -->
-	{#if data.schools.length === 0}
-		<div
-			class="flex flex-col items-center justify-center rounded-lg border border-border bg-card p-12 text-center"
-		>
+	<!-- Results Section -->
+	{#if !data.hasFilters}
+		<!-- Prompt-First UI: Show before any search is performed -->
+		<div class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-border bg-muted/30 p-8 sm:p-12 text-center">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
-				class="text-muted-foreground mb-4 h-16 w-16"
+				class="text-primary mb-3 h-12 w-12"
 				fill="none"
 				viewBox="0 0 24 24"
 				stroke="currentColor"
+				stroke-width="1.5"
 			>
 				<path
 					stroke-linecap="round"
 					stroke-linejoin="round"
-					stroke-width="2"
 					d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
 				/>
 			</svg>
-			<h3 class="mb-2 text-lg font-semibold">No schools found</h3>
-			<p class="text-muted-foreground mb-4">Try adjusting your filters to see more results</p>
-			<Button onclick={clearFilters} variant="outline">Clear Filters</Button>
+			<h3 class="mb-2 text-lg font-semibold">Find Ski & Snowboard Schools</h3>
+			<p class="text-muted-foreground text-sm mb-5 max-w-md">
+				Search our directory of certified ski and snowboard schools. Use the filters above to find schools by resort, or browse verified schools only.
+			</p>
+			<div class="flex flex-col gap-2 sm:flex-row">
+				<Button href="/resorts" variant="default" size="sm">Browse by Resort</Button>
+				<Button href="/instructors" variant="outline" size="sm">View Instructors</Button>
+			</div>
 		</div>
 	{:else}
-		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
-			{#each data.schools as school (school.id)}
-				<SchoolCard schoolData={school} />
-			{/each}
+		<!-- Results with filters applied -->
+		<!-- Results Count -->
+		<div class="mb-4 flex items-center justify-between">
+			<p class="text-muted-foreground text-sm">
+				{#if data.schools.length === 0}
+					No schools found
+				{:else if data.schools.length === 1}
+					1 school found
+				{:else}
+					{data.schools.length} schools found
+				{/if}
+			</p>
 		</div>
+
+		<!-- School Cards Grid or Empty State -->
+		{#if data.schools.length === 0}
+			<div class="flex flex-col items-center justify-center rounded-lg border border-border bg-card p-8 sm:p-12 text-center">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="text-muted-foreground mb-3 h-12 w-12"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+					stroke-width="1.5"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+					/>
+				</svg>
+				<h3 class="mb-2 text-base font-semibold">No schools match your search</h3>
+				<p class="text-muted-foreground text-sm mb-4">Try adjusting your filters or search criteria to see more results.</p>
+				<div class="flex gap-2">
+					<Button onclick={clearFilters} variant="default" size="sm">Clear all filters</Button>
+					<Button href="/resorts" variant="outline" size="sm">Browse by resort</Button>
+				</div>
+			</div>
+		{:else}
+			<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
+				{#each data.schools as school (school.id)}
+					<SchoolCard schoolData={school} preserveFilters={hasActiveFilters} />
+				{/each}
+			</div>
+		{/if}
 	{/if}
 </section>

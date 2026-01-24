@@ -1,0 +1,64 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "=/instructor-contact-form",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "contact-form-webhook",
+      "name": "Webhook",
+      "webhookId": "contact-form-webhook-id"
+    },
+    {
+      "parameters": {
+        "fromEmail": "Local Snow <admin@localsnow.org>",
+        "toEmail": "={{$json.body.instructorEmail}}",
+        "subject": "=New inquiry from {{$json.body.clientName}}",
+        "html": "=<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;\">\n  <div style=\"background: #2563eb; color: white; padding: 20px; border-radius: 8px 8px 0 0; text-align: center;\">\n    <h2 style=\"margin: 0;\">New Contact Request</h2>\n  </div>\n  <div style=\"padding: 20px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px;\">\n    <p>Hi {{$json.body.instructorName}},</p>\n    <p>You received a new message from a potential client.</p>\n    <div style=\"background: #f9fafb; padding: 16px; border-radius: 8px; margin: 16px 0;\">\n      <p><strong>Name:</strong> {{$json.body.clientName}}</p>\n      <p><strong>Email:</strong> <a href=\"mailto:{{$json.body.clientEmail}}\" style=\"color: #2563eb;\">{{$json.body.clientEmail}}</a></p>\n      {{ $json.body.clientPhone ? '<p><strong>Phone:</strong> ' + $json.body.clientPhone + '</p>' : '' }}\n    </div>\n    <div style=\"background: #fffbeb; padding: 16px; border-radius: 8px; margin: 16px 0; border-left: 4px solid #f59e0b;\">\n      <p style=\"margin: 0;\"><strong>Message:</strong></p>\n      <p style=\"margin: 8px 0 0 0;\">{{$json.body.message}}</p>\n    </div>\n    <div style=\"text-align: center; margin: 24px 0;\">\n      <a href=\"mailto:{{$json.body.clientEmail}}?subject=Local Snow inquiry\" style=\"background: #16a34a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; margin-right: 10px;\">\n        Reply by Email\n      </a>\n      <a href=\"{{$json.body.instructorProfileUrl}}\" style=\"background: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;\">\n        View Profile\n      </a>\n    </div>\n  </div>\n</div>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "contact-form-email",
+      "name": "Send Email",
+      "webhookId": "contact-form-email-id",
+      "credentials": {
+        "smtp": {
+          "id": "SMTP_CREDENTIAL_ID",
+          "name": "LocalSnow SMTP account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "localsnow"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "=/booking-notification-instructor",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "booking-notification-webhook",
+      "name": "Webhook",
+      "webhookId": "booking-notification-webhook-id"
+    },
+    {
+      "parameters": {
+        "fromEmail": "Local Snow <admin@localsnow.org>",
+        "toEmail": "={{$json.body.instructorEmail}}",
+        "subject": "=New booking request #{{$json.body.bookingRequestId}}",
+        "html": "=<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;\">\n  <div style=\"background: #2563eb; color: white; padding: 20px; border-radius: 8px 8px 0 0; text-align: center;\">\n    <h2 style=\"margin: 0;\">New Booking Request</h2>\n  </div>\n  <div style=\"padding: 20px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px;\">\n    <p>Hi {{$json.body.instructorName}},</p>\n    <p>You have a new booking request.</p>\n    <div style=\"background: #f9fafb; padding: 16px; border-radius: 8px; margin: 16px 0;\">\n      <p><strong>Request ID:</strong> {{$json.body.bookingRequestId}}</p>\n      <p><strong>Client:</strong> {{$json.body.clientName}}</p>\n      <p><strong>Students:</strong> {{$json.body.numberOfStudents}}</p>\n      <p><strong>Start date:</strong> {{$json.body.startDate}}</p>\n      {{ $json.body.endDate ? '<p><strong>End date:</strong> ' + $json.body.endDate + '</p>' : '' }}\n      <p><strong>Hours per day:</strong> {{$json.body.hoursPerDay}}h</p>\n      {{ $json.body.estimatedPrice ? '<p><strong>Estimated value:</strong> ' + $json.body.estimatedPrice + ' ' + ($json.body.currency || 'EUR') + '</p>' : '' }}\n    </div>\n    <div style=\"text-align: center; margin: 24px 0;\">\n      <a href=\"{{$json.body.dashboardUrl || 'https://localsnow.org/dashboard'}}\" style=\"background: #16a34a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;\">\n        Open Dashboard\n      </a>\n    </div>\n    <p style=\"color: #6b7280; font-size: 14px;\">Respond quickly to improve conversion rates.</p>\n  </div>\n</div>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "booking-notification-email",
+      "name": "Send Email",
+      "webhookId": "booking-notification-email-id",
+      "credentials": {
+        "smtp": {
+          "id": "SMTP_CREDENTIAL_ID",
+          "name": "LocalSnow SMTP account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "localsnow"
+  }
+}

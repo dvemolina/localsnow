@@ -149,7 +149,7 @@ export const adminInstructorService = {
 		});
 
 		// Get reviews
-		const instructorReviews = await db.query.instructorReviews.findMany({
+		const reviews = await db.query.instructorReviews.findMany({
 			where: eq(instructorReviews.instructorId, instructorId),
 			orderBy: (reviews, { desc }) => [desc(reviews.createdAt)]
 		});
@@ -160,7 +160,7 @@ export const adminInstructorService = {
 		return {
 			instructor,
 			bookings,
-			reviews: instructorReviews,
+			reviews,
 			auditLogs
 		};
 	},

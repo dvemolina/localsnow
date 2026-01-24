@@ -6,6 +6,7 @@
 	// Navigation items - use $derived for translation reactivity
 	const items = $derived([
 		{ label: $t('nav_instructors'), href: route('/instructors') },
+		{ label: $t('nav_schools'), href: route('/schools') },
 		{ label: $t('nav_resorts'), href: route('/resorts') },
 		{ label: $t('nav_how_it_works'), href: route('/how-it-works') },
 		{ label: $t('nav_about'), href: route('/about') },

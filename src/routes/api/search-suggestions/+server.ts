@@ -10,6 +10,11 @@ export async function GET({ url }) {
 	// Parse countryId if provided
 	const countryId = countryIdParam ? parseInt(countryIdParam, 10) : undefined;
 
+	console.log('🔍 [API /search-suggestions] Request:', { q, countryId, countryIdParam });
+
 	const results = await resortService.getSuggestions(q ?? '', countryId);
+
+	console.log('📊 [API /search-suggestions] Results:', { count: results.length, results });
+
 	return json(results);
 }

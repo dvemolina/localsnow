@@ -1,0 +1,64 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "=/booking-contact-info",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "booking-contact-info-webhook",
+      "name": "Webhook",
+      "webhookId": "booking-contact-info-webhook-id"
+    },
+    {
+      "parameters": {
+        "fromEmail": "Local Snow <admin@localsnow.org>",
+        "toEmail": "={{$json.body.instructorEmail}}",
+        "subject": "=Contact info unlocked - Booking #{{$json.body.bookingRequestId}}",
+        "html": "=<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;\">\n  <div style=\"background: #16a34a; color: white; padding: 20px; border-radius: 8px 8px 0 0; text-align: center;\">\n    <h2 style=\"margin: 0;\">Contact Info Unlocked</h2>\n  </div>\n  <div style=\"padding: 20px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px;\">\n    <p>Hi {{$json.body.instructorName}},</p>\n    <p>Here are the full contact details for the booking request.</p>\n    <div style=\"background: #f9fafb; padding: 16px; border-radius: 8px; margin: 16px 0; border: 2px solid #2563eb;\">\n      <h3 style=\"margin-top: 0; color: #2563eb;\">Client Contact</h3>\n      <p><strong>Name:</strong> {{$json.body.clientName}}</p>\n      <p><strong>Email:</strong> <a href=\"mailto:{{$json.body.clientEmail}}\" style=\"color: #2563eb;\">{{$json.body.clientEmail}}</a></p>\n      <p><strong>Phone:</strong> +{{$json.body.clientCountryCode}} {{$json.body.clientPhone}}</p>\n    </div>\n    <div style=\"background: #f3f4f6; padding: 16px; border-radius: 8px; margin: 16px 0;\">\n      <h3 style=\"margin-top: 0;\">Lesson Details</h3>\n      <p><strong>Students:</strong> {{$json.body.numberOfStudents}}</p>\n      <p><strong>Start date:</strong> {{$json.body.startDate}}</p>\n      {{ $json.body.endDate ? '<p><strong>End date:</strong> ' + $json.body.endDate + '</p>' : '' }}\n      <p><strong>Hours per day:</strong> {{$json.body.hoursPerDay}}h</p>\n      <p><strong>Sports:</strong> {{ $json.body.sports ? $json.body.sports.join(', ') : 'Not specified' }}</p>\n      <p><strong>Skill level:</strong> {{$json.body.skillLevel}}</p>\n      {{ $json.body.estimatedPrice ? '<p><strong>Estimated value:</strong> ' + $json.body.estimatedPrice + ' ' + ($json.body.currency || 'EUR') + '</p>' : '' }}\n    </div>\n    {{ $json.body.message ? '<div style=\"background: #fffbeb; padding: 16px; border-radius: 8px; margin: 16px 0; border-left: 4px solid #f59e0b;\"><p style=\"margin: 0;\"><strong>Message:</strong></p><p style=\"margin: 8px 0 0 0;\">' + $json.body.message + '</p></div>' : '' }}\n    <div style=\"text-align: center; margin: 24px 0;\">\n      <a href=\"mailto:{{$json.body.clientEmail}}?subject=Lesson booking - Local Snow\" style=\"background: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; margin-right: 10px;\">\n        Email Client\n      </a>\n      <a href=\"tel:+{{$json.body.clientCountryCode}}{{$json.body.clientPhone}}\" style=\"background: #16a34a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;\">\n        Call Client\n      </a>\n    </div>\n  </div>\n</div>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "booking-contact-info-email",
+      "name": "Send Email",
+      "webhookId": "booking-contact-info-email-id",
+      "credentials": {
+        "smtp": {
+          "id": "SMTP_CREDENTIAL_ID",
+          "name": "LocalSnow SMTP account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "localsnow"
+  }
+}

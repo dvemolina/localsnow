@@ -20,28 +20,39 @@ export const load: PageServerLoad = async ({ url }) => {
     const schoolId = url.searchParams.get('school');
     const sortBy = url.searchParams.get('sortBy');
 
+    console.log('🔍 [Instructors Page Load] URL params:', { resortId, sportId, searchQuery });
+
+    // Check if any filters are active (prompt-first UX)
+    const hasFilters = !!(resortId || sportId || searchQuery || language || priceMin || priceMax || instructorType || verifiedOnly || schoolId || sortBy);
+
     try {
         // Parse and validate numeric parameters
         const resortIdNum = resortId ? Number(resortId) : undefined;
-        const sportIdNum = sportId ? Number(sportId) : undefined;
         const schoolIdNum = schoolId ? Number(schoolId) : undefined;
 
         // Validate that numeric IDs are valid numbers (not NaN)
         const validResortId = resortIdNum && !isNaN(resortIdNum) ? resortIdNum : undefined;
-        const validSportId = sportIdNum && !isNaN(sportIdNum) ? sportIdNum : undefined;
         const validSchoolId = schoolIdNum && !isNaN(schoolIdNum) ? schoolIdNum : undefined;
+        // Sport is a string ('ski', 'snowboard', etc.), not a number
+        const validSportId = sportId || undefined;
 
-        // Search instructors worldwide (no country restrictions)
-        const instructors = await instructorService.searchInstructors({
-            resortId: validResortId,
-            sportId: validSportId,
-            searchQuery: searchQuery || undefined,
-            language: language || undefined,
-            instructorType: instructorType || undefined,
-            verifiedOnly: verifiedOnly || undefined,
-            schoolId: validSchoolId,
-            sortBy: sortBy || undefined
-        });
+        // If no filters applied, return empty array (prompt-first UX like Yelp/Airbnb)
+        // User should search first before seeing results
+        let instructors = [];
+
+        if (hasFilters) {
+            // Search instructors worldwide (no country restrictions)
+            instructors = await instructorService.searchInstructors({
+                resortId: validResortId,
+                sportId: validSportId,
+                searchQuery: searchQuery || undefined,
+                language: language || undefined,
+                instructorType: instructorType || undefined,
+                verifiedOnly: verifiedOnly || undefined,
+                schoolId: validSchoolId,
+                sortBy: sortBy || undefined
+            });
+        }
 
         // Fetch base lessons and review stats for all instructors
         let instructorsWithLessons = await Promise.all(
@@ -97,35 +108,47 @@ export const load: PageServerLoad = async ({ url }) => {
             // name_asc and name_desc are already handled in repository
         }
 
-        return {
+        const result = {
             instructors: instructorsWithLessons,
+            hasFilters,
             filters: {
-                resort: resortId,
-                sport: sportId,
+                resort: validResortId || undefined, // Pass parsed number, not string
+                sport: sportId || undefined, // Pass as string
                 query: searchQuery,
                 language: language,
-                priceMin: priceMin,
-                priceMax: priceMax,
+                priceMin: priceMin ? Number(priceMin) : undefined,
+                priceMax: priceMax ? Number(priceMax) : undefined,
                 instructorType: instructorType,
                 verifiedOnly: verifiedOnly ? 'true' : null,
-                school: schoolId,
+                school: validSchoolId || undefined, // Pass parsed number, not string
                 sortBy: sortBy
             }
         };
+
+        console.log('✅ [Instructors Page] Returning to client:', {
+            hasFilters: result.hasFilters,
+            filters: result.filters,
+            instructorCount: result.instructors.length
+        });
+
+        return result;
     } catch (error) {
         console.error('Error loading instructors:', error);
+        const validResortId = resortId ? Number(resortId) : undefined;
+        const validSchoolId = schoolId ? Number(schoolId) : undefined;
         return {
             instructors: [],
+            hasFilters,
             filters: {
-                resort: resortId,
-                sport: sportId,
+                resort: validResortId && !isNaN(validResortId) ? validResortId : undefined,
+                sport: sportId || undefined,
                 query: searchQuery,
                 language: language,
-                priceMin: priceMin,
-                priceMax: priceMax,
+                priceMin: priceMin ? Number(priceMin) : undefined,
+                priceMax: priceMax ? Number(priceMax) : undefined,
                 instructorType: instructorType,
                 verifiedOnly: verifiedOnly ? 'true' : null,
-                school: schoolId,
+                school: validSchoolId && !isNaN(validSchoolId) ? validSchoolId : undefined,
                 sortBy: sortBy
             }
         };

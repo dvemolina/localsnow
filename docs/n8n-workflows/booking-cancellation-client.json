@@ -1,0 +1,64 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "=/booking-cancellation-client",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "booking-cancel-client-webhook",
+      "name": "Webhook",
+      "webhookId": "booking-cancel-client-webhook-id"
+    },
+    {
+      "parameters": {
+        "fromEmail": "Local Snow <admin@localsnow.org>",
+        "toEmail": "={{$json.body.clientEmail}}",
+        "subject": "=Your booking request has been cancelled",
+        "html": "=<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;\">\n  <div style=\"background: #ef4444; color: white; padding: 20px; border-radius: 8px 8px 0 0; text-align: center;\">\n    <h2 style=\"margin: 0;\">Booking Cancelled</h2>\n  </div>\n  <div style=\"padding: 20px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px;\">\n    <p>Hi {{$json.body.clientName}},</p>\n    <p>Your booking request with {{$json.body.instructorName}} has been cancelled.</p>\n    <div style=\"background: #f9fafb; padding: 16px; border-radius: 8px; margin: 16px 0;\">\n      <p><strong>Request ID:</strong> {{$json.body.bookingRequestId}}</p>\n      <p><strong>Start date:</strong> {{$json.body.startDate}}</p>\n      {{ $json.body.endDate ? '<p><strong>End date:</strong> ' + $json.body.endDate + '</p>' : '' }}\n    </div>\n    <p>If this was a mistake, you can submit a new request.</p>\n    <div style=\"text-align: center; margin: 24px 0;\">\n      <a href=\"https://localsnow.org\" style=\"background: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;\">\n        Browse Instructors\n      </a>\n    </div>\n  </div>\n</div>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "booking-cancel-client-email",
+      "name": "Send Email",
+      "webhookId": "booking-cancel-client-email-id",
+      "credentials": {
+        "smtp": {
+          "id": "SMTP_CREDENTIAL_ID",
+          "name": "LocalSnow SMTP account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "localsnow"
+  }
+}

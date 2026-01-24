@@ -574,6 +574,41 @@ export const adminAuditLogRelations = relations(adminAuditLog, ({ one }) => ({
 export type AdminAuditLog = typeof adminAuditLog.$inferSelect;
 export type InsertAdminAuditLog = typeof adminAuditLog.$inferInsert;
 
+// FAQs (Frequently Asked Questions)
+export const faqs = pgTable('faqs', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	uuid: uuid('uuid').defaultRandom().unique().notNull(),
+	// Target entity (resort, instructor, school, etc.)
+	entityType: varchar('entity_type', { length: 50 }).notNull(), // 'resort', 'instructor', 'school', 'global'
+	entityId: integer('entity_id'), // ID of the resort/instructor/school, null for global FAQs
+	// FAQ content
+	question: text('question').notNull(),
+	answer: text('answer').notNull(),
+	// Display settings
+	displayOrder: integer('display_order').default(0),
+	isPublished: boolean('is_published').default(true),
+	// Metadata
+	...timestamps
+});
+
+export const faqsRelations = relations(faqs, ({ one }) => ({
+	resort: one(resorts, {
+		fields: [faqs.entityId],
+		references: [resorts.id]
+	}),
+	instructor: one(users, {
+		fields: [faqs.entityId],
+		references: [users.id]
+	}),
+	school: one(schools, {
+		fields: [faqs.entityId],
+		references: [schools.id]
+	})
+}));
+
+export type FAQ = typeof faqs.$inferSelect;
+export type InsertFAQ = typeof faqs.$inferInsert;
+
 // --- Additional Relations for Drizzle Queries ---
 
 // Users relations
