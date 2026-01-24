@@ -39,6 +39,8 @@ export const users = pgTable('users', {
 	isSuspended: boolean('is_suspended').default(false),
 	suspensionReason: text('suspension_reason'),
 	suspendedAt: timestamp('suspended_at'),
+	lastRoleChange: timestamp('last_role_change'),
+	roleChangeCount: integer('role_change_count').default(0),
 	...timestamps
 });
 // --- Sports ---
@@ -573,6 +575,66 @@ export const adminAuditLogRelations = relations(adminAuditLog, ({ one }) => ({
 
 export type AdminAuditLog = typeof adminAuditLog.$inferSelect;
 export type InsertAdminAuditLog = typeof adminAuditLog.$inferInsert;
+
+// Role Transition Archive - Stores complete snapshots of user state during role transitions
+export const roleTransitionArchive = pgTable('role_transition_archive', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	adminId: integer('admin_id').references(() => users.id),
+	fromRole: userRoleEnum('from_role'),
+	toRole: userRoleEnum('to_role').notNull(),
+
+	// Snapshot of user data at time of transition
+	archivedUserData: text('archived_user_data').notNull(), // JSON string of full user row before transition
+
+	// Archived relationships
+	archivedSports: integer('archived_sports').array(), // Sport IDs if was instructor
+	archivedResorts: integer('archived_resorts').array(), // Resort IDs if was instructor
+	archivedSchoolId: integer('archived_school_id'), // School ID if was school-admin
+
+	// Metadata
+	transitionReason: text('transition_reason'),
+	canRestore: boolean('can_restore').default(true), // Can be restored within 90 days
+	restoredAt: timestamp('restored_at'),
+
+	createdAt: timestamp('created_at').defaultNow().notNull(),
+	expiresAt: timestamp('expires_at') // Set to created_at + 90 days
+});
+
+export const roleTransitionArchiveRelations = relations(roleTransitionArchive, ({ one }) => ({
+	user: one(users, {
+		fields: [roleTransitionArchive.userId],
+		references: [users.id]
+	}),
+	admin: one(users, {
+		fields: [roleTransitionArchive.adminId],
+		references: [users.id]
+	})
+}));
+
+export type RoleTransitionArchive = typeof roleTransitionArchive.$inferSelect;
+export type InsertRoleTransitionArchive = typeof roleTransitionArchive.$inferInsert;
+
+// Role Transition Blocks - Tracks blocking conditions that prevent role changes
+export const roleTransitionBlocks = pgTable('role_transition_blocks', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	blockType: varchar('block_type', { length: 50 }).notNull(), // 'active_bookings', 'school_has_instructors', etc.
+	blockData: text('block_data'), // JSON string with details about the block (booking IDs, etc.)
+	resolved: boolean('resolved').default(false),
+	resolvedAt: timestamp('resolved_at'),
+	createdAt: timestamp('created_at').defaultNow().notNull()
+});
+
+export const roleTransitionBlocksRelations = relations(roleTransitionBlocks, ({ one }) => ({
+	user: one(users, {
+		fields: [roleTransitionBlocks.userId],
+		references: [users.id]
+	})
+}));
+
+export type RoleTransitionBlock = typeof roleTransitionBlocks.$inferSelect;
+export type InsertRoleTransitionBlock = typeof roleTransitionBlocks.$inferInsert;
 
 // --- Additional Relations for Drizzle Queries ---
 

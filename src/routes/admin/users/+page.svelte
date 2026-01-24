@@ -72,6 +72,7 @@
 						<Table.Head>{$t('users_table_role')}</Table.Head>
 						<Table.Head>{$t('table_status')}</Table.Head>
 						<Table.Head>{$t('instructors_table_joined')}</Table.Head>
+						<Table.Head class="text-right">Actions</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -89,6 +90,11 @@
 								{/if}
 							</Table.Cell>
 							<Table.Cell>{formatDate(user.createdAt)}</Table.Cell>
+							<Table.Cell class="text-right">
+								<Button href="/admin/users/{user.id}" variant="outline" size="sm">
+									View Details
+								</Button>
+							</Table.Cell>
 						</Table.Row>
 					{/each}
 				</Table.Body>
