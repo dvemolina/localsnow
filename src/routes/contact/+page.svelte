@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { t } from '$lib/i18n/i18n';
 	import { route } from '$lib/i18n/routeHelpers';
-	const contactEmail = 'support@localsnow.org';
+	const contactEmail = 'admin@localsnow.org';
 
 	// Schema markup for SEO
 	const contactPageSchema = {

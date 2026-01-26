@@ -769,7 +769,7 @@ return {
 **File:** `src/routes/contact/+page.svelte`
 
 **Current State:**
-- Exists as a marketing page with hardcoded email `support@localsnow.org`
+- Exists as a marketing page with hardcoded email `admin@localsnow.org`
 - No form submission handler
 - No API endpoint for contact form
 - No email notification when contact form submitted

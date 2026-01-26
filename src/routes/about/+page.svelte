@@ -86,13 +86,6 @@
 	</section>
 
 	<section class="my-6">
-		<h2 class="title3">{$t('about_spain_title')}</h2>
-		<p>
-			{$t('about_spain_p1')}
-		</p>
-	</section>
-
-	<section class="my-6">
 		<h2 class="title3">{$t('about_goal_title')}</h2>
 		<p>
 			{$t('about_goal_p1')}

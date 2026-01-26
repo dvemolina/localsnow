@@ -337,7 +337,7 @@
 
 		<h3 class="title4">13.1 Informal Resolution</h3>
 		<p>
-			If you have a dispute with us, please contact us first at support@localsnow.org to attempt
+			If you have a dispute with us, please contact us first at admin@localsnow.org to attempt
 			to resolve it informally.
 		</p>
 
@@ -433,7 +433,7 @@
 		<h2 class="title3">17. Contact Information</h2>
 		<p>For questions or concerns about these Terms, please contact us:</p>
 		<p>
-			<strong>Email:</strong> support@localsnow.org<br />
+			<strong>Email:</strong> admin@localsnow.org<br />
 			<strong>Legal Inquiries:</strong> legal@localsnow.org<br />
 			<strong>Website:</strong> <a href="https://localsnow.org">https://localsnow.org</a>
 		</p>

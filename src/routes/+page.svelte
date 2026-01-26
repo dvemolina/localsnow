@@ -31,7 +31,7 @@
 		{
 			name: 'Verbier',
 			slug: 'verbier',
-			region: 'Swiss Alps, Switzerland',
+			region: 'Alps, Switzerland',
 			description: $t('home_resort_descriptions_verbier'),
 			image: '/ski-instructor-turn.webp'
 		},
@@ -74,7 +74,7 @@
 		logo: 'https://localsnow.org/local-snow-head.png',
 		description:
 			'Curated directory of ski and snowboard instructors worldwide. Browse profiles by resort, specialty, and language. Send lesson requests and connect directly. Zero platform fees, community-driven, built for local discovery.',
-		email: 'support@localsnow.org',
+		email: 'admin@localsnow.org',
 		serviceType: 'Ski Instructor Directory',
 		foundingDate: '2024',
 		sameAs: []
