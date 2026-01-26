@@ -29,7 +29,4 @@ ALTER TABLE "users" ADD COLUMN "last_role_change" timestamp;--> statement-breakp
 ALTER TABLE "users" ADD COLUMN "role_change_count" integer DEFAULT 0;--> statement-breakpoint
 ALTER TABLE "role_transition_archive" ADD CONSTRAINT "role_transition_archive_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "role_transition_archive" ADD CONSTRAINT "role_transition_archive_admin_id_users_id_fk" FOREIGN KEY ("admin_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "role_transition_blocks" ADD CONSTRAINT "role_transition_blocks_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-CREATE INDEX "idx_transition_archive_user" ON "role_transition_archive" ("user_id");--> statement-breakpoint
-CREATE INDEX "idx_transition_archive_restore" ON "role_transition_archive" ("user_id", "can_restore") WHERE "can_restore" = true AND "restored_at" IS NULL;--> statement-breakpoint
-CREATE INDEX "idx_transition_blocks_user" ON "role_transition_blocks" ("user_id", "resolved");
+ALTER TABLE "role_transition_blocks" ADD CONSTRAINT "role_transition_blocks_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
