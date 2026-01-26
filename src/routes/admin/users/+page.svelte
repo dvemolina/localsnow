@@ -22,6 +22,10 @@
 	function formatDate(date: Date | string) {
 		return new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 	}
+
+	function getUserRoles(user: { roles?: string[]; role?: string | null }) {
+		return user.roles && user.roles.length > 0 ? user.roles : user.role ? [user.role] : [];
+	}
 </script>
 
 <div class="container mx-auto max-w-7xl space-y-6">
@@ -81,7 +85,15 @@
 							<Table.Cell class="font-mono text-xs text-muted-foreground">#{user.id}</Table.Cell>
 							<Table.Cell class="font-medium">{user.name} {user.lastName}</Table.Cell>
 							<Table.Cell>{user.email}</Table.Cell>
-							<Table.Cell><Badge variant="outline">{user.role || $t('admin_no_role')}</Badge></Table.Cell>
+							<Table.Cell>
+								{#if getUserRoles(user).length > 0}
+									{#each getUserRoles(user) as role}
+										<Badge variant="outline" class="mr-1">{role}</Badge>
+									{/each}
+								{:else}
+									<Badge variant="outline">{$t('admin_no_role')}</Badge>
+								{/if}
+							</Table.Cell>
 							<Table.Cell>
 								{#if user.isSuspended}
 									<Badge variant="destructive">{$t('status_suspended')}</Badge>

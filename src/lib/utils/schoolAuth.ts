@@ -1,5 +1,6 @@
 import { redirect, type RequestEvent } from "@sveltejs/kit";
 import { requireAuth } from "./auth";
+import { hasRole } from "./roles";
 import { SchoolService } from "$src/features/Schools/lib/schoolService";
 
 const schoolService = new SchoolService();
@@ -9,7 +10,7 @@ export async function requireSchoolAdmin(event: RequestEvent) {
 	const user = requireAuth(event);
 
 	// Check if user is a school admin
-	if (user.role !== 'school-admin') {
+	if (!hasRole(user, 'school-admin')) {
 		throw redirect(302, '/dashboard');
 	}
 

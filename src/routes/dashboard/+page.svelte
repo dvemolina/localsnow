@@ -8,6 +8,7 @@
 	import LeadStatsCard from '$src/features/Leads/components/LeadStatsCard.svelte';
 	import RequestsCard from '$src/features/Requests/components/RequestsCard.svelte';
 	import { t } from '$lib/i18n/i18n';
+	import { getRoles, hasInstructorRole, hasRole } from '$lib/utils/roles';
 	let { data } = $props();
 	let user = $state(data.user);
 
@@ -31,34 +32,34 @@
 			description: $t('dashboard_action_view_bookings_desc'),
 			icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
 			href: '/dashboard/bookings',
-			show: user.role === 'instructor-independent' || user.role === 'instructor-school'
+			show: hasInstructorRole(user)
 		},
 		{
 			title: $t('dashboard_action_my_bookings'),
 			description: $t('dashboard_action_desc'),
 			icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01',
 			href: '/dashboard/my-bookings',
-			show: user.role === 'client' || !user.role
+			show: hasRole(user, 'client') || getRoles(user).length === 0
 		},
 		{
 			title: $t('dashboard_action_manage_lessons'),
 			description: $t('dashboard_action_manage_lessons_desc'),
 			icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253',
 			href: '/dashboard/lessons',
-			show: user.role === 'instructor-independent' || user.role === 'instructor-school'
+			show: hasInstructorRole(user)
 		},
 		{
 			title: 'School Profile',
 			description: 'Manage your school information and settings',
 			icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4',
 			href: '/dashboard/profile',
-			show: user.role === 'school-admin'
+			show: hasRole(user, 'school-admin')
 		}
 
 	].filter(action => action.show));
 </script>
 
-{#if !user.role}
+{#if getRoles(user).length === 0}
 	<div class="flex flex-col items-center justify-center">
 		<p class="title3">{$t('dashboard_choose_role_greeting')}, {user.name}!</p>
 		<Button onclick={() => goto('/dashboard/choose-role')} class="w-full">
@@ -99,7 +100,7 @@
 				</Card.Content>
 			</Card.Root>
 
-			{#if user.role === 'instructor-independent' || user.role === 'instructor-school'}
+			{#if hasInstructorRole(user)}
 				<Card.Root>
 					<Card.Header class="pb-2">
 						<Card.Title class="text-sm font-medium text-muted-foreground">
@@ -131,7 +132,7 @@
 				<ProfileVisitsCard visits={data.profileVisits || 0} />
 
 				<LeadStatsCard leadStats={data.leadStats} />
-			{:else if user.role === 'school-admin'}
+			{:else if hasRole(user, 'school-admin')}
 				<Card.Root>
 					<Card.Header class="pb-2">
 						<Card.Title class="text-sm font-medium text-muted-foreground">
@@ -198,14 +199,14 @@
 		</div>
 
 		<!-- Recent Leads Section (for instructors) -->
-		{#if (user.role === 'instructor-independent' || user.role === 'instructor-school') && data.recentLeads}
+		{#if hasInstructorRole(user) && data.recentLeads}
 			<div class="mb-8">
 				<RequestsCard requests={data.recentLeads} type="lead" instructorId={user.id} />
 			</div>
 		{/if}
 
 		<!-- Getting Started (for unverified users) -->
-		{#if !user.isVerified && (user.role === 'instructor-independent' || user.role === 'instructor-school')}
+		{#if !user.isVerified && hasInstructorRole(user)}
 			<Card.Root class="border-yellow-200 bg-yellow-50" >
 				<Card.Header>
 					<Card.Title class="flex items-center gap-2">
@@ -244,7 +245,7 @@
 					</Button>
 				</Card.Content>
 			</Card.Root>
-		{:else if !user.isVerified && user.role === 'school-admin'}
+		{:else if !user.isVerified && hasRole(user, 'school-admin')}
 			<Card.Root class="border-yellow-200 bg-yellow-50" >
 				<Card.Header>
 					<Card.Title class="flex items-center gap-2">

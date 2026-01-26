@@ -1,7 +1,7 @@
 // src/features/Admin/lib/adminUserService.ts
 import { db } from '$lib/server/db';
-import { users } from '$lib/server/db/schema';
-import { eq, and, or, like, count } from 'drizzle-orm';
+import { users, userRoles } from '$lib/server/db/schema';
+import { eq, and, or, like, count, inArray } from 'drizzle-orm';
 import { adminAuditService } from './adminAuditService';
 
 interface UserFilters {
@@ -31,7 +31,25 @@ export const adminUserService = {
 		}
 
 		if (filters.role) {
-			conditions.push(eq(users.role, filters.role as any));
+			const roleUserIds = await db
+				.select({ userId: userRoles.userId })
+				.from(userRoles)
+				.where(eq(userRoles.role, filters.role as any));
+
+			const ids = roleUserIds.map(row => row.userId);
+			if (ids.length === 0) {
+				return {
+					users: [],
+					pagination: {
+						page,
+						pageSize,
+						total: 0,
+						totalPages: 0
+					}
+				};
+			}
+
+			conditions.push(inArray(users.id, ids));
 		}
 
 		if (filters.isSuspended !== undefined) {
@@ -50,6 +68,26 @@ export const adminUserService = {
 			}
 		});
 
+		const userIds = allUsers.map(user => user.id);
+		const rolesByUserId = new Map<number, string[]>();
+		if (userIds.length > 0) {
+			const roles = await db
+				.select({ userId: userRoles.userId, role: userRoles.role })
+				.from(userRoles)
+				.where(inArray(userRoles.userId, userIds));
+
+			for (const row of roles) {
+				const current = rolesByUserId.get(row.userId) || [];
+				current.push(row.role);
+				rolesByUserId.set(row.userId, current);
+			}
+		}
+
+		const usersWithRoles = allUsers.map(user => ({
+			...user,
+			roles: rolesByUserId.get(user.id) || []
+		}));
+
 		// Get total count
 		const totalResult = await db
 			.select({ count: count() })
@@ -59,7 +97,7 @@ export const adminUserService = {
 		const total = totalResult[0]?.count || 0;
 
 		return {
-			users: allUsers,
+			users: usersWithRoles,
 			pagination: {
 				page,
 				pageSize,
@@ -84,11 +122,16 @@ export const adminUserService = {
 			return null;
 		}
 
+		const roles = await db
+			.select({ role: userRoles.role })
+			.from(userRoles)
+			.where(eq(userRoles.userId, userId));
+
 		// Get audit logs for this user
 		const auditLogs = await adminAuditService.getLogsByTarget('user', userId, 20);
 
 		return {
-			user,
+			user: { ...user, roles: roles.map(r => r.role) },
 			auditLogs
 		};
 	},
@@ -120,6 +163,8 @@ export const adminUserService = {
 			})
 			.where(eq(users.id, userId));
 
+		await db.insert(userRoles).values({ userId, role: newRole as any }).onConflictDoNothing();
+
 		// Log the action
 		await adminAuditService.logAction({
 			adminId,
@@ -130,6 +175,67 @@ export const adminUserService = {
 				oldRole,
 				newRole
 			},
+			event
+		});
+
+		return { success: true };
+	},
+
+	/**
+	 * Add a role to a user
+	 */
+	async addUserRole(userId: number, role: string, adminId: number, event?: any) {
+		const user = await db.query.users.findFirst({ where: eq(users.id, userId) });
+		if (!user) return { success: false, error: 'User not found' };
+
+		await db.insert(userRoles).values({
+			userId,
+			role: role as any
+		}).onConflictDoNothing();
+
+		if (!user.role) {
+			await db.update(users).set({ role: role as any, updatedAt: new Date() }).where(eq(users.id, userId));
+		}
+
+		await adminAuditService.logAction({
+			adminId,
+			action: 'add_user_role',
+			targetType: 'user',
+			targetId: userId,
+			details: { role },
+			event
+		});
+
+		return { success: true };
+	},
+
+	/**
+	 * Remove a role from a user
+	 */
+	async removeUserRole(userId: number, role: string, adminId: number, event?: any) {
+		const user = await db.query.users.findFirst({ where: eq(users.id, userId) });
+		if (!user) return { success: false, error: 'User not found' };
+
+		await db.delete(userRoles).where(and(eq(userRoles.userId, userId), eq(userRoles.role, role as any)));
+
+		if (user.role === role) {
+			const remainingRoles = await db
+				.select({ role: userRoles.role })
+				.from(userRoles)
+				.where(eq(userRoles.userId, userId));
+
+			const nextPrimary = remainingRoles[0]?.role ?? null;
+			await db.update(users)
+				.set({ role: nextPrimary as any, updatedAt: new Date() })
+				.where(eq(users.id, userId));
+		}
+
+		await adminAuditService.logAction({
+			adminId,
+			action: 'remove_user_role',
+			targetType: 'user',
+			targetId: userId,
+			details: { role },
 			event
 		});
 

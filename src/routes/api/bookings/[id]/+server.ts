@@ -3,6 +3,7 @@ import type { RequestHandler } from './$types';
 import { db } from '$lib/server/db';
 import { bookingRequests } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
+import { hasInstructorRole } from '$src/lib/utils/roles';
 
 // PATCH: Update manual booking (instructors only)
 export const PATCH: RequestHandler = async ({ params, locals, request }) => {
@@ -14,7 +15,7 @@ export const PATCH: RequestHandler = async ({ params, locals, request }) => {
 	}
 
 	// Only instructors can update bookings
-	if (user.role !== 'instructor-independent' && user.role !== 'instructor-school') {
+	if (!hasInstructorRole(user)) {
 		return json({ error: 'Forbidden: Only instructors can update bookings' }, { status: 403 });
 	}
 
@@ -154,7 +155,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 		// CASE 1: Instructor deleting their own manual booking
 		if (
 			user &&
-			(user.role === 'instructor-independent' || user.role === 'instructor-school') &&
+			hasInstructorRole(user) &&
 			booking.instructorId === user.id &&
 			booking.source === 'manual'
 		) {

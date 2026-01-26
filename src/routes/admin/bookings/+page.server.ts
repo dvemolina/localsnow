@@ -1,6 +1,7 @@
 // src/routes/admin/bookings/+page.server.ts
 import { adminBookingService } from '$src/features/Admin/lib/adminBookingService';
 import { fail } from '@sveltejs/kit';
+import { hasRole } from '$src/lib/utils/roles';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ url }) => {
@@ -20,7 +21,7 @@ export const actions: Actions = {
 		const bookingId = parseInt(formData.get('bookingId') as string);
 		const reason = formData.get('reason') as string;
 
-		if (!locals.user || locals.user.role !== 'admin') {
+		if (!locals.user || !hasRole(locals.user, 'admin')) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -32,7 +33,7 @@ export const actions: Actions = {
 		const formData = await request.formData();
 		const bookingId = parseInt(formData.get('bookingId') as string);
 
-		if (!locals.user || locals.user.role !== 'admin') {
+		if (!locals.user || !hasRole(locals.user, 'admin')) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 

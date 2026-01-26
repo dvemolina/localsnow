@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types';
 import { db } from '$src/lib/server/db/index';
-import { resorts, countries, regions, users, instructorResorts } from '$src/lib/server/db/schema';
-import { eq, sql, isNull, or, and, desc } from 'drizzle-orm';
+import { resorts, countries, regions, users, instructorResorts, userRoles } from '$src/lib/server/db/schema';
+import { eq, sql, isNull, and, desc, inArray } from 'drizzle-orm';
 
 export const load: PageServerLoad = async () => {
 	// Show ALL resorts worldwide that have at least 1 active instructor
@@ -26,11 +26,17 @@ export const load: PageServerLoad = async () => {
 		.leftJoin(regions, eq(resorts.regionId, regions.id))
 		.leftJoin(instructorResorts, eq(resorts.id, instructorResorts.resortId))
 		.leftJoin(
+			userRoles,
+			and(
+				eq(instructorResorts.instructorId, userRoles.userId),
+				inArray(userRoles.role, ['instructor-independent', 'instructor-school'])
+			)
+		)
+		.leftJoin(
 			users,
 			and(
-				eq(instructorResorts.instructorId, users.id),
-				isNull(users.deletedAt),
-				or(eq(users.role, 'instructor-independent'), eq(users.role, 'instructor-school'))
+				eq(userRoles.userId, users.id),
+				isNull(users.deletedAt)
 			)
 		)
 		.groupBy(

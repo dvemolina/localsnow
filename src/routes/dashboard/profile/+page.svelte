@@ -8,10 +8,11 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { t } from '$lib/i18n/i18n';
 	import { toast } from 'svelte-sonner';
+	import { hasInstructorRole, hasRole } from '$lib/utils/roles';
 	let { data } = $props();
 
-	const isInstructor = data.user.role === 'instructor-independent' || data.user.role === 'instructor-school';
-	const isSchoolAdmin = data.user.role === 'school-admin';
+	const isInstructor = hasInstructorRole(data.user);
+	const isSchoolAdmin = hasRole(data.user, 'school-admin');
 
 	// Publishing toggle state
 	let isPublished = $state(data.user.isPublished ?? false);
@@ -108,7 +109,7 @@
 				<div class="rounded-lg border border-border bg-card p-6 shadow-sm">
 					<div class="mb-4">
 						<h2 class="title4 mb-1">
-							{data.user.role === 'instructor-independent' ? $t('profile_section_instructor') : $t('profile_section_school_instructor')}
+							{hasRole(data.user, 'instructor-independent') ? $t('profile_section_instructor') : $t('profile_section_school_instructor')}
 						</h2>
 						<p class="text-sm text-muted-foreground">
 							{$t('profile_section_instructor_desc')}

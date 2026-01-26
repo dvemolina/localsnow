@@ -5,6 +5,7 @@ import { bookingRequests } from '$lib/server/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { randomBytes } from 'crypto';
 import { ExpiringTokenBucket } from '$lib/server/rate-limit';
+import { hasInstructorRole } from '$src/lib/utils/roles';
 
 // Rate limiting: 100 review token generations per day per instructor
 const reviewTokenBucket = new ExpiringTokenBucket<number>(100, 86400);
@@ -18,7 +19,7 @@ export const POST: RequestHandler = async ({ params, locals, url }) => {
 	}
 
 	// Only instructors can generate review links
-	if (user.role !== 'instructor-independent' && user.role !== 'instructor-school') {
+	if (!hasInstructorRole(user)) {
 		return json({ error: 'Forbidden: Only instructors can generate review links' }, { status: 403 });
 	}
 

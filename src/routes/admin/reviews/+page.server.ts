@@ -1,6 +1,7 @@
 // src/routes/admin/reviews/+page.server.ts
 import { adminReviewService } from '$src/features/Admin/lib/adminReviewService';
 import { fail } from '@sveltejs/kit';
+import { hasRole } from '$src/lib/utils/roles';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ url }) => {
@@ -15,7 +16,7 @@ export const actions: Actions = {
 		const reviewId = parseInt(formData.get('reviewId') as string);
 		const reason = formData.get('reason') as string;
 
-		if (!locals.user || locals.user.role !== 'admin') {
+		if (!locals.user || !hasRole(locals.user, 'admin')) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 

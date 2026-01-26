@@ -11,6 +11,7 @@ import { trackProfileVisit } from '$src/features/Dashboard/lib/utils';
 import { getClientIP } from '$src/lib/utils/auth';
 import { sendBookingNotificationToInstructor, sendBookingConfirmationToClient } from '$src/lib/server/webhooks/n8n/email-n8n';
 import { parseInstructorSlug, generateInstructorSlug, validateInstructorSlug } from '$lib/utils/slug';
+import { hasRole } from '$src/lib/utils/roles';
 
 const instructorService = new InstructorService();
 const pricingService = new PricingService();
@@ -41,7 +42,7 @@ export const load: PageServerLoad = async (event) => {
 
     // Check if profile is published (only admins or the instructor themselves can view unpublished)
     const isOwnProfile = event.locals.user?.id === instructorId;
-    const isAdmin = event.locals.user?.role === 'admin';
+    const isAdmin = hasRole(event.locals.user, 'admin');
     if (!instructorData.instructor.isPublished && !isOwnProfile && !isAdmin) {
         throw error(404, 'Instructor not found');
     }

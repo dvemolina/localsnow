@@ -6,6 +6,7 @@ import { db } from "$lib/server/db";
 import { eq } from "drizzle-orm";
 import { instructorGoogleTokens } from "$src/lib/server/db/schema";
 import { WorkingHoursService } from "$src/features/Availability/lib/workingHoursService";
+import { hasInstructorRole } from "$src/lib/utils/roles";
 
 const workingHoursService = new WorkingHoursService();
 
@@ -13,7 +14,7 @@ export const load: PageServerLoad = async (event) => {
     const user = requireAuth(event, 'Login to access availability settings');
     
     // Only instructors can access
-    if (user.role !== 'instructor-independent' && user.role !== 'instructor-school') {
+    if (!hasInstructorRole(user)) {
         redirect(302, '/dashboard');
     }
     

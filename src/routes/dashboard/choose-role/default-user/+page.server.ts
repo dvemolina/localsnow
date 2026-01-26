@@ -2,6 +2,9 @@ import { redirect, type Actions } from "@sveltejs/kit";
 import { requireAuth } from "$src/lib/utils/auth";
 import { UserService } from "$src/features/Users/lib/UserService";
 import type { PageServerLoad } from "./$types";
+import { getRoles } from "$src/lib/utils/roles";
+import { db } from "$lib/server/db";
+import { userRoles } from "$src/lib/server/db/schema";
 
 const userService = new UserService();
 
@@ -16,7 +19,7 @@ export const load: PageServerLoad = async (event) => {
     const locale = getLocaleFromPath(event.url.pathname);
 
     // If user already has a role, redirect to dashboard
-    if (user.role) {
+    if (getRoles(user).length > 0) {
         redirect(302, `/${locale}/dashboard`);
     }
 
@@ -33,6 +36,7 @@ export const actions: Actions = {
             role: 'client',
             updatedAt: new Date()
         });
+        await db.insert(userRoles).values({ userId: user.id, role: 'client' }).onConflictDoNothing();
 
         // Use throw redirect to ensure execution stops
         throw redirect(303, `/${locale}/dashboard`);

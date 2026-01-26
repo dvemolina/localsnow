@@ -9,6 +9,10 @@ import { instructorSignupSchema, type InstructorSignupData } from "$src/features
 import { StorageService } from "$src/lib/server/R2Storage";
 import { InstructorService } from "$src/features/Instructors/lib/instructorService";
 import { validateSessionToken, sessionCookieName } from "$src/lib/server/session";
+import { getRoles } from "$src/lib/utils/roles";
+import { db } from "$src/lib/server/db";
+import { resortRequests } from "$src/lib/server/db/schema";
+import { eq, desc } from "drizzle-orm";
 
 const instructorService = new InstructorService();
 const storageService = new StorageService();
@@ -24,13 +28,20 @@ export const load: PageServerLoad = async (event) => {
     const user = requireAuth(event, 'Login to choose a Role for your account');
     const locale = getLocaleFromPath(event.url.pathname);
 
-    if (user.role) {
+    if (getRoles(user).length > 0) {
         redirect(302, `/${locale}/dashboard`);
     }
 
     const form = await superValidate(zod(instructorSignupSchema));
 
-    return { form }
+    // Check for pending resort requests
+    const pendingResortRequests = await db.query.resortRequests.findMany({
+        where: eq(resortRequests.requesterId, user.id),
+        orderBy: [desc(resortRequests.createdAt)],
+        limit: 5
+    });
+
+    return { form, pendingResortRequests }
 };
 
 export const actions: Actions = {

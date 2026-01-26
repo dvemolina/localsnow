@@ -2,24 +2,26 @@ import { adminUserService } from '$src/features/Admin/lib/adminUserService';
 import { roleTransitionService } from '$src/features/Admin/lib/roleTransitionService';
 import { adminAuditService } from '$src/features/Admin/lib/adminAuditService';
 import { fail, redirect } from '@sveltejs/kit';
+import { hasRole, hasInstructorRole } from '$src/lib/utils/roles';
 import type { PageServerLoad, Actions } from './$types';
 import { db } from '$lib/server/db';
-import { users, schools } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+import { users, schools, userRoles } from '$lib/server/db/schema';
+import { eq, inArray } from 'drizzle-orm';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const userId = parseInt(params.id);
 
-	if (!locals.user || locals.user.role !== 'admin') {
+	if (!locals.user || !hasRole(locals.user, 'admin')) {
 		throw redirect(302, '/admin');
 	}
 
 	// Get user details
-	const user = await adminUserService.getUserById(userId);
+	const userResult = await adminUserService.getUserById(userId);
 
-	if (!user) {
+	if (!userResult) {
 		throw redirect(302, '/admin/users?error=user_not_found');
 	}
+	const { user } = userResult;
 
 	// Get audit logs
 	const auditLogs = await adminAuditService.getRecentLogs(userId, 20);
@@ -30,7 +32,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	// Get role-specific data
 	let roleData = null;
 
-	if (user.role?.includes('instructor')) {
+	if (hasInstructorRole(user)) {
 		// Get instructor-specific data
 		const instructorSports = await db.query.instructorSports.findMany({
 			where: (instructorSports, { eq }) => eq(instructorSports.instructorId, userId),
@@ -51,7 +53,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			sports: instructorSports.map(is => is.sport),
 			resorts: instructorResorts.map(ir => ir.resort)
 		};
-	} else if (user.role === 'school-admin') {
+	} else if (hasRole(user, 'school-admin')) {
 		// Get school data
 		const school = await db.query.schools.findFirst({
 			where: eq(schools.ownerUserId, userId)
@@ -77,24 +79,25 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 	// Get potential school transfer targets (other users who could become school owners)
 	let potentialSchoolOwners = [];
-	if (user.role === 'school-admin' && roleData?.school) {
-		potentialSchoolOwners = await db.query.users.findMany({
-			where: (users, { and, ne, or, eq }) =>
-				and(
-					ne(users.id, userId),
-					or(
-						eq(users.role, 'school-admin'),
-						eq(users.role, 'admin')
-					)
-				),
-			columns: {
-				id: true,
-				name: true,
-				lastName: true,
-				email: true,
-				role: true
-			}
-		});
+	if (hasRole(user, 'school-admin') && roleData?.school) {
+		const ownerCandidates = await db
+			.select({ userId: userRoles.userId })
+			.from(userRoles)
+			.where(inArray(userRoles.role, ['school-admin', 'admin']));
+
+		const candidateIds = ownerCandidates.map(row => row.userId).filter(id => id !== userId);
+		if (candidateIds.length > 0) {
+			potentialSchoolOwners = await db.query.users.findMany({
+				where: (users) => inArray(users.id, candidateIds),
+				columns: {
+					id: true,
+					name: true,
+					lastName: true,
+					email: true,
+					role: true
+				}
+			});
+		}
 	}
 
 	return {
@@ -107,11 +110,61 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 };
 
 export const actions: Actions = {
+	addRole: async (event) => {
+		const { request, params, locals } = event;
+		if (!locals.user || !hasRole(locals.user, 'admin')) {
+			return fail(403, { error: 'Unauthorized' });
+		}
+
+		const formData = await request.formData();
+		const role = formData.get('role') as string;
+		const userId = parseInt(params.id);
+
+		if (!role) {
+			return fail(400, { error: 'Role is required' });
+		}
+
+		const result = await adminUserService.addUserRole(userId, role, locals.user.id, event);
+
+		if (!result.success) {
+			return fail(400, { error: result.error || 'Failed to add role' });
+		}
+
+		return {
+			success: true,
+			message: 'Role added successfully'
+		};
+	},
+	removeRole: async (event) => {
+		const { request, params, locals } = event;
+		if (!locals.user || !hasRole(locals.user, 'admin')) {
+			return fail(403, { error: 'Unauthorized' });
+		}
+
+		const formData = await request.formData();
+		const role = formData.get('role') as string;
+		const userId = parseInt(params.id);
+
+		if (!role) {
+			return fail(400, { error: 'Role is required' });
+		}
+
+		const result = await adminUserService.removeUserRole(userId, role, locals.user.id, event);
+
+		if (!result.success) {
+			return fail(400, { error: result.error || 'Failed to remove role' });
+		}
+
+		return {
+			success: true,
+			message: 'Role removed successfully'
+		};
+	},
 	/**
 	 * Preview what will happen if role is changed
 	 */
 	previewRoleChange: async ({ request, params, locals }) => {
-		if (!locals.user || locals.user.role !== 'admin') {
+		if (!locals.user || !hasRole(locals.user, 'admin')) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -142,7 +195,7 @@ export const actions: Actions = {
 	 * Execute role change
 	 */
 	changeRole: async ({ request, params, locals }) => {
-		if (!locals.user || locals.user.role !== 'admin') {
+		if (!locals.user || !hasRole(locals.user, 'admin')) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -184,7 +237,7 @@ export const actions: Actions = {
 	 * Restore previous role
 	 */
 	restoreRole: async ({ request, params, locals }) => {
-		if (!locals.user || locals.user.role !== 'admin') {
+		if (!locals.user || !hasRole(locals.user, 'admin')) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -209,7 +262,7 @@ export const actions: Actions = {
 	 * Transfer school ownership
 	 */
 	transferSchool: async ({ request, params, locals }) => {
-		if (!locals.user || locals.user.role !== 'admin') {
+		if (!locals.user || !hasRole(locals.user, 'admin')) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -235,7 +288,7 @@ export const actions: Actions = {
 	 * Suspend user
 	 */
 	suspend: async ({ request, params, locals }) => {
-		if (!locals.user || locals.user.role !== 'admin') {
+		if (!locals.user || !hasRole(locals.user, 'admin')) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -261,7 +314,7 @@ export const actions: Actions = {
 	 * Unsuspend user
 	 */
 	unsuspend: async ({ request, params, locals }) => {
-		if (!locals.user || locals.user.role !== 'admin') {
+		if (!locals.user || !hasRole(locals.user, 'admin')) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 

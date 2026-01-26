@@ -5,6 +5,7 @@
 	import { route } from '$lib/i18n/routeHelpers';
 	import { t } from '$lib/i18n/i18n';
 	import LanguageSwitch from '$lib/components/shared/LanguageSwitch.svelte';
+	import { hasRole } from '$lib/utils/roles';
 	let { user } = $props()
 
 	const userItems = $derived([
@@ -119,6 +120,31 @@
 		}
 	]);
 
+	const adminItems = $derived([
+		{
+			title: $t('admin_panel') || 'Admin Panel',
+			url: '/admin',
+			icon: '/icons/certificate.svg'
+		}
+	]);
+
+	const navItems = $derived(() => {
+		const items = [];
+
+		if (hasRole(user, 'client')) items.push(...userItems);
+		if (hasRole(user, 'instructor-independent')) items.push(...instructorItems);
+		if (hasRole(user, 'instructor-school')) items.push(...instructorSchoolItems);
+		if (hasRole(user, 'school-admin')) items.push(...schoolAdminItems);
+		if (hasRole(user, 'admin')) items.push(...adminItems);
+
+		const seen = new Set();
+		return items.filter(item => {
+			if (seen.has(item.url)) return false;
+			seen.add(item.url);
+			return true;
+		});
+	});
+
 	const sidebar = Sidebar.useSidebar();
 
 	function handleClick() {
@@ -151,59 +177,18 @@
 		<Sidebar.GroupLabel>{$t('sidebar_application')}</Sidebar.GroupLabel>
 		<Sidebar.GroupContent>
 			<Sidebar.Menu>
-				{#if user.role === "client"}
-					{#each userItems as item (item.url)}
-						<Sidebar.MenuItem>
-							<Sidebar.MenuButton>
-								{#snippet child({ props })}
-									<a href={route(item.url)} {...props} onclick={handleClick}>
-										<img src={item.icon} alt={item.title} class="size-5" />
-										<span>{item.title}</span>
-									</a>
-								{/snippet}
-							</Sidebar.MenuButton>
-						</Sidebar.MenuItem>
-					{/each}
-				{:else if user.role === "instructor-independent"}
-					{#each instructorItems as item (item.url)}
-						<Sidebar.MenuItem>
-							<Sidebar.MenuButton>
-								{#snippet child({ props })}
-									<a href={route(item.url)} {...props} onclick={handleClick}>
-										<img src={item.icon} alt={item.title} class="size-5" />
-										<span>{item.title}</span>
-									</a>
-								{/snippet}
-							</Sidebar.MenuButton>
-						</Sidebar.MenuItem>
-					{/each}
-				{:else if user.role === "instructor-school"}
-					{#each instructorSchoolItems as item (item.url)}
-						<Sidebar.MenuItem>
-							<Sidebar.MenuButton>
-								{#snippet child({ props })}
-									<a href={route(item.url)} {...props} onclick={handleClick}>
-										<img src={item.icon} alt={item.title} class="size-5" />
-										<span>{item.title}</span>
-									</a>
-								{/snippet}
-							</Sidebar.MenuButton>
-						</Sidebar.MenuItem>
-					{/each}
-				{:else if user.role === "school-admin"}
-					{#each schoolAdminItems as item (item.url)}
-						<Sidebar.MenuItem>
-							<Sidebar.MenuButton>
-								{#snippet child({ props })}
-									<a href={route(item.url)} {...props} onclick={handleClick}>
-										<img src={item.icon} alt={item.title} class="size-5" />
-										<span>{item.title}</span>
-									</a>
-								{/snippet}
-							</Sidebar.MenuButton>
-						</Sidebar.MenuItem>
-					{/each}
-				{/if}
+				{#each navItems as item (item.url)}
+					<Sidebar.MenuItem>
+						<Sidebar.MenuButton>
+							{#snippet child({ props })}
+								<a href={route(item.url)} {...props} onclick={handleClick}>
+									<img src={item.icon} alt={item.title} class="size-5" />
+									<span>{item.title}</span>
+								</a>
+							{/snippet}
+						</Sidebar.MenuButton>
+					</Sidebar.MenuItem>
+				{/each}
 			</Sidebar.Menu>
 		</Sidebar.GroupContent>
 		<Sidebar.Group />

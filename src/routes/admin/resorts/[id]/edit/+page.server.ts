@@ -3,6 +3,7 @@ import { resorts, countries, regions } from '$lib/server/db/schema';
 import { StorageService } from '$lib/server/R2Storage';
 import { eq } from 'drizzle-orm';
 import { error, fail, redirect } from '@sveltejs/kit';
+import { hasRole } from '$src/lib/utils/roles';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -148,7 +149,7 @@ export const actions: Actions = {
 	},
 
 	delete: async ({ params, locals }) => {
-		if (!locals.user || locals.user.role !== 'admin') {
+		if (!locals.user || !hasRole(locals.user, 'admin')) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 

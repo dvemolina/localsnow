@@ -1,7 +1,7 @@
 // src/features/Admin/lib/adminInstructorService.ts
 import { db } from '$lib/server/db';
-import { users, instructorResorts, instructorSports, bookingRequests, instructorReviews } from '$lib/server/db/schema';
-import { eq, and, or, like, sql, count, avg } from 'drizzle-orm';
+import { users, instructorResorts, instructorSports, bookingRequests, instructorReviews, userRoles } from '$lib/server/db/schema';
+import { eq, and, or, like, sql, count, avg, inArray } from 'drizzle-orm';
 import { adminAuditService } from './adminAuditService';
 
 interface InstructorFilters {
@@ -19,12 +19,27 @@ export const adminInstructorService = {
 	async getAllInstructors(filters: InstructorFilters = {}, page: number = 1, pageSize: number = 50) {
 		const offset = (page - 1) * pageSize;
 
+		const roleUserIds = await db
+			.select({ userId: userRoles.userId })
+			.from(userRoles)
+			.where(inArray(userRoles.role, ['instructor-independent', 'instructor-school']));
+
+		const instructorIds = roleUserIds.map(row => row.userId);
+		if (instructorIds.length === 0) {
+			return {
+				instructors: [],
+				pagination: {
+					page,
+					pageSize,
+					total: 0,
+					totalPages: 0
+				}
+			};
+		}
+
 		// Build where conditions
 		const conditions: any[] = [
-			or(
-				eq(users.role, 'instructor-independent'),
-				eq(users.role, 'instructor-school')
-			)
+			inArray(users.id, instructorIds)
 		];
 
 		if (filters.search) {
@@ -115,6 +130,16 @@ export const adminInstructorService = {
 	 * Get single instructor details
 	 */
 	async getInstructorById(instructorId: number) {
+		const roleMatch = await db
+			.select({ role: userRoles.role })
+			.from(userRoles)
+			.where(and(
+				eq(userRoles.userId, instructorId),
+				inArray(userRoles.role, ['instructor-independent', 'instructor-school'])
+			));
+
+		if (roleMatch.length === 0) return null;
+
 		const instructor = await db.query.users.findFirst({
 			where: eq(users.id, instructorId),
 			with: {

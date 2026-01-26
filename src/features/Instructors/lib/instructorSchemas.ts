@@ -48,7 +48,7 @@ const documentFileSchema = z
 
 // Instructor signup schema
 export const instructorSignupSchema = z.object({
-	resort: z.coerce.number().min(1, "Choose the Resort where you teach"),
+	resort: z.coerce.number().min(0, "Choose the Resort where you teach").optional(),
 	instructorType: z.enum(['instructor-independent', 'instructor-school']),
 	profileImage: imageFileSchema,
 	qualification: documentFileSchema,
@@ -66,7 +66,7 @@ export const instructorProfileSchema = z.object({
 	bio: z.string().optional(),
 	professionalCountryCode: z.coerce.number().min(1, 'Choose Country Phone Prefix'),
 	professionalPhone: z.string().nonempty("Insert Professional Contact Phone"),
-	resort: z.coerce.number().min(1, "Choose the Resort where you teach"),
+	resort: z.coerce.number().min(0, "Choose the Resort where you teach").optional(),
 	sports: z.array(z.number()).min(1, 'Select at least one sport'),
 	spokenLanguages: z.array(z.string()).min(1, 'Select at least one language'),
 	profileImage: imageFileSchema,
@@ -79,7 +79,7 @@ export type InstructorProfileSchema = typeof instructorProfileSchema;
 // Form submission data types
 export interface InstructorSignupData {
 	userId: number;
-	resort: number;
+	resort?: number;
 	instructorType: 'instructor-independent' | 'instructor-school';
 	profileImageUrl?: string | null;
 	qualificationUrl?: string | null;
@@ -96,7 +96,7 @@ export interface InstructorProfileData {
 	bio?: string;
 	professionalCountryCode: number;
 	professionalPhone: string;
-	resort: number;
+	resort?: number;
 	sports: number[];
 	spokenLanguages: string[];
 	profileImageUrl?: string | null;

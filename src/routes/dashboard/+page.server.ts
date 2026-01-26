@@ -3,6 +3,7 @@ import { requireAuth } from "$src/lib/utils/auth";
 import type { PageServerLoad } from "./$types";
 import { getMonthlyVisits } from "$src/features/Dashboard/lib/utils";
 import { LeadService } from "$src/features/Leads/lib/leadService";
+import { hasInstructorRole } from "$src/lib/utils/roles";
 
 const leadService = new LeadService();
 
@@ -14,7 +15,7 @@ export const load: PageServerLoad = async (event) => {
     let recentLeads = null;
 
     // Get profile visits and lead data for instructors
-    if (user.role === 'instructor-independent' || user.role === 'instructor-school') {
+    if (hasInstructorRole(user)) {
         try {
             profileVisits = await getMonthlyVisits(user.id);
         } catch (error) {

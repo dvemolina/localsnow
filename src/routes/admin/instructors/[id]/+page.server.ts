@@ -1,6 +1,7 @@
 // src/routes/admin/instructors/[id]/+page.server.ts
 import { adminInstructorService } from '$src/features/Admin/lib/adminInstructorService';
 import { error, fail } from '@sveltejs/kit';
+import { hasRole } from '$src/lib/utils/roles';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -23,7 +24,7 @@ export const actions: Actions = {
 	verify: async ({ params, locals, request }) => {
 		const instructorId = parseInt(params.id);
 
-		if (!locals.user || locals.user.role !== 'admin') {
+		if (!locals.user || !hasRole(locals.user, 'admin')) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -41,7 +42,7 @@ export const actions: Actions = {
 		const reason = formData.get('reason') as string;
 		const instructorId = parseInt(params.id);
 
-		if (!locals.user || locals.user.role !== 'admin') {
+		if (!locals.user || !hasRole(locals.user, 'admin')) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -64,7 +65,7 @@ export const actions: Actions = {
 		const reason = formData.get('reason') as string;
 		const instructorId = parseInt(params.id);
 
-		if (!locals.user || locals.user.role !== 'admin') {
+		if (!locals.user || !hasRole(locals.user, 'admin')) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -85,7 +86,7 @@ export const actions: Actions = {
 	unsuspend: async ({ params, locals, request }) => {
 		const instructorId = parseInt(params.id);
 
-		if (!locals.user || locals.user.role !== 'admin') {
+		if (!locals.user || !hasRole(locals.user, 'admin')) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 

@@ -13,7 +13,9 @@ import { schoolProfileSchema } from "$src/features/Schools/lib/validations/schoo
 import { SchoolService } from "$src/features/Schools/lib/schoolService";
 import { StorageService } from "$src/lib/server/R2Storage";
 import { db } from "$lib/server/db";
-import { countries, regions } from "$lib/server/db/schema";
+import { countries, regions, resortRequests } from "$lib/server/db/schema";
+import { hasInstructorRole, hasRole } from "$src/lib/utils/roles";
+import { eq, desc } from "drizzle-orm";
 
 const userService = new UserService();
 const instructorService = new InstructorService();
@@ -28,6 +30,10 @@ export const load: PageServerLoad = async (event) => {
     // Fetch full user data
     const fullUser = await userService.getUserById(user.id);
     if (!fullUser) redirect(302, '/login');
+    const userWithRoles = {
+        ...fullUser,
+        roles: user.roles && user.roles.length > 0 ? user.roles : user.role ? [user.role] : []
+    };
     
     // Pre-populate forms with existing user data
     const userForm = await superValidate(
@@ -43,7 +49,7 @@ export const load: PageServerLoad = async (event) => {
 
     // For instructors, pre-populate instructor form
     let instructorForm = null;
-    if (user.role === 'instructor-independent' || user.role === 'instructor-school') {
+    if (hasInstructorRole(user)) {
         const instructorData = await instructorService.getInstructorWithRelations(user.id);
 
         instructorForm = await superValidate(
@@ -61,7 +67,7 @@ export const load: PageServerLoad = async (event) => {
 
     // For school admins, pre-populate school form
     let schoolForm = null;
-    if (user.role === 'school-admin') {
+    if (hasRole(user, 'school-admin')) {
         const school = await schoolService.getSchoolByOwner(user.id);
 
         if (school) {
@@ -89,13 +95,24 @@ export const load: PageServerLoad = async (event) => {
         orderBy: (regions, { asc }) => [asc(regions.region)]
     });
 
+    // Fetch pending resort requests for instructors
+    let pendingResortRequests = [];
+    if (hasInstructorRole(user)) {
+        pendingResortRequests = await db.query.resortRequests.findMany({
+            where: eq(resortRequests.requesterId, user.id),
+            orderBy: [desc(resortRequests.createdAt)],
+            limit: 5
+        });
+    }
+
     return {
         userForm,
         instructorForm,
         schoolForm,
-        user: fullUser,
+        user: userWithRoles,
         countries: allCountries,
-        regions: allRegions
+        regions: allRegions,
+        pendingResortRequests
     };
 };
 
@@ -149,7 +166,7 @@ export const actions: Actions = {
     instructorProfile: async (event) => {
     const user = event.locals.user;
     if (!user) redirect(302, '/login');
-    if (user.role !== 'instructor-independent' && user.role !== 'instructor-school') {
+    if (!hasInstructorRole(user)) {
         return fail(403, { message: 'Not authorized' });
     }
 
@@ -217,7 +234,7 @@ export const actions: Actions = {
     schoolProfile: async (event) => {
         const user = event.locals.user;
         if (!user) redirect(302, '/login');
-        if (user.role !== 'school-admin') {
+        if (!hasRole(user, 'school-admin')) {
             return fail(403, { message: 'Not authorized' });
         }
 

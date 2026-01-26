@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { pgTable, text, integer, timestamp, varchar, uuid, boolean, pgEnum, numeric, serial, decimal } from 'drizzle-orm/pg-core';
+import { pgTable, text, integer, timestamp, varchar, uuid, boolean, pgEnum, numeric, serial, decimal, uniqueIndex } from 'drizzle-orm/pg-core';
 
 export const userRoleEnum = pgEnum('user_role', ['admin', 'instructor-independent','instructor-school', 'school-admin', 'client']);
 export const sportsEnum = pgEnum('sport', ['Ski', 'Snowboard', 'Telemark'])
@@ -43,6 +43,16 @@ export const users = pgTable('users', {
 	roleChangeCount: integer('role_change_count').default(0),
 	...timestamps
 });
+
+// --- User Roles (multi-role support) ---
+export const userRoles = pgTable('user_roles', {
+	id: serial('id').primaryKey(),
+	userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	role: userRoleEnum('role').notNull(),
+	createdAt: timestamp('created_at').defaultNow().notNull()
+}, (table) => ({
+	userRoleUnique: uniqueIndex('user_roles_user_id_role_unique').on(table.userId, table.role)
+}));
 // --- Sports ---
 export const sports = pgTable('sports', {
 	uuid: uuid('uuid').defaultRandom().unique().notNull(),

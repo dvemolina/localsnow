@@ -1,6 +1,7 @@
 import type { RequestHandler } from './$types';
 import { json, error } from '@sveltejs/kit';
 import { InstructorService } from '$src/features/Instructors/lib/instructorService';
+import { hasInstructorRole, hasRole } from '$src/lib/utils/roles';
 
 const instructorService = new InstructorService();
 
@@ -17,12 +18,12 @@ export const POST: RequestHandler = async (event) => {
     }
 
     // Check authorization - only the instructor themselves or admin can publish/unpublish
-    if (user.id !== instructorId && user.role !== 'admin') {
+    if (user.id !== instructorId && !hasRole(user, 'admin')) {
         throw error(403, 'Forbidden');
     }
 
     // Verify user is an instructor
-    if (!user.role?.includes('instructor') && user.role !== 'admin') {
+    if (!hasInstructorRole(user) && !hasRole(user, 'admin')) {
         throw error(403, 'Only instructors can publish profiles');
     }
 

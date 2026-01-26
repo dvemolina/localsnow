@@ -2,6 +2,7 @@ import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { LeadService } from '$src/features/Leads/lib/leadService';
 import { LessonService } from '$src/features/Lessons/lib/lessonService';
+import { hasInstructorRole } from '$src/lib/utils/roles';
 
 const leadService = new LeadService();
 const lessonService = new LessonService();
@@ -14,7 +15,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	}
 
 	// Only instructors can access leads
-	if (user.role !== 'instructor-independent' && user.role !== 'instructor-school') {
+	if (!hasInstructorRole(user)) {
 		throw redirect(302, '/dashboard');
 	}
 

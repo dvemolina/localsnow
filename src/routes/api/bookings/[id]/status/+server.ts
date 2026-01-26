@@ -1,6 +1,7 @@
 import type { RequestHandler } from './$types';
 import { json, error } from '@sveltejs/kit';
 import { BookingRequestService } from '$src/features/Bookings/lib/bookingRequestService';
+import { hasInstructorRole } from '$src/lib/utils/roles';
 
 const bookingService = new BookingRequestService();
 
@@ -10,7 +11,7 @@ export const PATCH: RequestHandler = async (event) => {
 		throw error(401, 'Unauthorized');
 	}
 
-	if (user.role !== 'instructor-independent' && user.role !== 'instructor-school') {
+	if (!hasInstructorRole(user)) {
 		throw error(403, 'Only instructors can update booking status');
 	}
 

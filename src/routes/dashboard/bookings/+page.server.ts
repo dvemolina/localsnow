@@ -3,6 +3,7 @@ import { redirect, fail, type Actions } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { BookingRequestService } from "$src/features/Bookings/lib/bookingRequestService";
 import { LessonService } from "$src/features/Lessons/lib/lessonService";
+import { hasInstructorRole } from "$src/lib/utils/roles";
 
 const bookingService = new BookingRequestService();
 const lessonService = new LessonService();
@@ -11,7 +12,7 @@ export const load: PageServerLoad = async (event) => {
     const user = requireAuth(event, 'Login to access bookings');
 
     // Only instructors can access
-    if (user.role !== 'instructor-independent' && user.role !== 'instructor-school') {
+    if (!hasInstructorRole(user)) {
         redirect(302, '/dashboard');
     }
 
@@ -51,7 +52,7 @@ export const actions: Actions = {
     acceptBooking: async (event) => {
         const user = requireAuth(event, 'Session expired. Please login again.');
         
-        if (user.role !== 'instructor-independent' && user.role !== 'instructor-school') {
+        if (!hasInstructorRole(user)) {
             return fail(403, { message: 'Not authorized' });
         }
         
@@ -74,7 +75,7 @@ export const actions: Actions = {
     rejectBooking: async (event) => {
         const user = requireAuth(event, 'Session expired. Please login again.');
 
-        if (user.role !== 'instructor-independent' && user.role !== 'instructor-school') {
+        if (!hasInstructorRole(user)) {
             return fail(403, { message: 'Not authorized' });
         }
 

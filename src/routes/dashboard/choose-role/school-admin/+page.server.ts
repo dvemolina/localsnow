@@ -8,6 +8,7 @@ import { getClientIP, requireAuth } from "$src/lib/utils/auth";
 import { redirect, type Actions } from "@sveltejs/kit";
 import { SchoolService } from "$src/features/Schools/lib/schoolService";
 import { slugifyString } from "$src/lib/utils/generics";
+import { getRoles } from "$src/lib/utils/roles";
 
 const schoolService = new SchoolService()
 const storageService = new StorageService();
@@ -23,7 +24,7 @@ export const load: PageServerLoad = async (event) => {
     const user = requireAuth(event, 'Login to choose a Role for your account');
     const locale = getLocaleFromPath(event.url.pathname);
 
-    if (user.role) {
+    if (getRoles(user).length > 0) {
         redirect(302, `/${locale}/dashboard`);
     }
 

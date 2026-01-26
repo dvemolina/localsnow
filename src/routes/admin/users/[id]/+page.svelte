@@ -15,7 +15,8 @@
 	const { user, auditLogs, restorableTransitions, roleData, potentialSchoolOwners } = data;
 
 	// State management
-	let selectedRole = $state<string>(user.role || '');
+	let selectedRole = $state<string>(user.role || user.roles?.[0] || '');
+	let addRoleValue = $state<string>('');
 	let preview = $state<any>(null);
 	let showPreview = $state(false);
 	let showConfirmDialog = $state(false);
@@ -36,6 +37,9 @@
 		{ value: 'school-admin', label: 'School Admin' },
 		{ value: 'admin', label: 'Admin' }
 	];
+
+	const userRoles = $derived(user.roles && user.roles.length > 0 ? user.roles : user.role ? [user.role] : []);
+	const availableRoles = $derived(roleOptions.filter((role) => !userRoles.includes(role.value)));
 
 	function getRoleBadgeVariant(role: string | null) {
 		if (!role) return 'secondary';
@@ -119,6 +123,26 @@
 					</Badge>
 				</div>
 				<div>
+					<p class="text-sm font-medium text-muted-foreground">Roles</p>
+					{#if userRoles.length > 0}
+						<div class="flex flex-wrap gap-2">
+							{#each userRoles as role}
+								<form method="POST" action="?/removeRole" use:enhance>
+									<input type="hidden" name="role" value={role} />
+									<Badge variant={getRoleBadgeVariant(role)} class="flex items-center gap-2">
+										{role}
+										<Button type="submit" variant="ghost" size="icon" class="h-5 w-5 p-0">
+											×
+										</Button>
+									</Badge>
+								</form>
+							{/each}
+						</div>
+					{:else}
+						<Badge variant="outline">No roles assigned</Badge>
+					{/if}
+				</div>
+				<div>
 					<p class="text-sm font-medium text-muted-foreground">Status</p>
 					<div class="flex gap-2">
 						{#if user.isSuspended}
@@ -176,9 +200,9 @@
 				<div>
 					<Label for="role">Select New Role</Label>
 					<Select.Root
-						selected={{ value: selectedRole, label: roleOptions.find((r) => r.value === selectedRole)?.label || '' }}
-						onSelectedChange={(v) => {
-							selectedRole = v?.value || '';
+						type="single"
+						bind:value={selectedRole}
+						onSelectedChange={() => {
 							showPreview = false;
 							preview = null;
 						}}
@@ -309,7 +333,7 @@
 	</Card>
 
 	<!-- School Transfer Card (if user is school-admin) -->
-	{#if user.role === 'school-admin' && roleData?.school && potentialSchoolOwners.length > 0}
+	{#if userRoles.includes('school-admin') && roleData?.school && potentialSchoolOwners.length > 0}
 		<Card>
 			<CardHeader>
 				<CardTitle>School Ownership Transfer</CardTitle>
@@ -330,12 +354,7 @@
 
 				<div>
 					<Label for="newOwner">Select New Owner</Label>
-					<Select.Root
-						selected={{ value: selectedNewOwner, label: potentialSchoolOwners.find((u) => u.id.toString() === selectedNewOwner)?.name || '' }}
-						onSelectedChange={(v) => {
-							selectedNewOwner = v?.value || '';
-						}}
-					>
+					<Select.Root type="single" bind:value={selectedNewOwner}>
 						<Select.Trigger class="w-full">
 							<Select.Value placeholder="Select a new owner" />
 						</Select.Trigger>
@@ -579,3 +598,24 @@
 		</AlertDialog.Footer>
 	</AlertDialog.Content>
 </AlertDialog.Root>
+			<div class="space-y-4">
+				<div>
+					<Label for="addRole">Add Additional Role</Label>
+					<form method="POST" action="?/addRole" use:enhance>
+						<div class="flex flex-col gap-3 md:flex-row">
+							<Select.Root type="single" bind:value={addRoleValue}>
+								<Select.Trigger class="w-full">
+									<Select.Value placeholder="Select a role to add" />
+								</Select.Trigger>
+								<Select.Content>
+									{#each availableRoles as role}
+										<Select.Item value={role.value}>{role.label}</Select.Item>
+									{/each}
+								</Select.Content>
+							</Select.Root>
+							<input type="hidden" name="role" value={addRoleValue} />
+							<Button type="submit" variant="outline" disabled={!addRoleValue}>Add Role</Button>
+						</div>
+					</form>
+				</div>
+			</div>

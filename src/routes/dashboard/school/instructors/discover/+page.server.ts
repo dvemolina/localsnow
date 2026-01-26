@@ -2,7 +2,7 @@ import type { PageServerLoad, Actions } from './$types';
 import { SchoolInstructorService } from '$src/features/Schools/lib/schoolInstructorService';
 import { SchoolRepository } from '$src/features/Schools/lib/schoolRepository';
 import { db } from '$lib/server/db';
-import { users, instructorResorts, instructorSports, sports, resorts, schoolInstructors } from '$lib/server/db/schema';
+import { users, instructorResorts, instructorSports, sports, resorts, schoolInstructors, userRoles } from '$lib/server/db/schema';
 import { eq, and, inArray, or, isNull } from 'drizzle-orm';
 import { fail } from '@sveltejs/kit';
 
@@ -20,13 +20,14 @@ export const load: PageServerLoad = async ({ parent, url }) => {
 			resort: resorts
 		})
 		.from(users)
+		.leftJoin(userRoles, eq(users.id, userRoles.userId))
 		.leftJoin(instructorResorts, eq(users.id, instructorResorts.instructorId))
 		.leftJoin(resorts, eq(instructorResorts.resortId, resorts.id))
 		.leftJoin(instructorSports, eq(users.id, instructorSports.instructorId))
 		.leftJoin(sports, eq(instructorSports.sportId, sports.id))
 		.where(
 			and(
-				eq(users.role, 'instructor-independent'),
+				eq(userRoles.role, 'instructor-independent'),
 				eq(users.isVerified, true),
 				inArray(instructorResorts.resortId, schoolResorts)
 			)

@@ -8,6 +8,7 @@ import { requireAuth } from "$src/lib/utils/auth";
 import { db } from '$lib/server/db';
 import { groupPricingTiers, durationPackages, promoCodes } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
+import { hasInstructorRole } from "$src/lib/utils/roles";
 
 const lessonService = new LessonService();
 
@@ -23,7 +24,7 @@ export const load: PageServerLoad = async (event) => {
     let durationPackagesList: any[] = [];
     let promoCodesList: any[] = [];
 
-    if (user.role === 'instructor-independent' || user.role === 'instructor-school') {
+    if (hasInstructorRole(user)) {
         try {
             const lessons = await lessonService.listLessonsByInstructor(user.id);
             baseLesson = lessons.find(lesson => lesson.isBaseLesson) ?? null;
@@ -55,7 +56,7 @@ export const actions: Actions = {
         const user = requireAuth(event, 'Session expired. Please login again.');
 
         // Only instructors can create base lessons
-        if (user.role !== 'instructor-independent' && user.role !== 'instructor-school') {
+        if (!hasInstructorRole(user)) {
             return fail(403, { message: 'Only instructors can create lessons' });
         }
 

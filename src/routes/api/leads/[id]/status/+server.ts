@@ -1,6 +1,7 @@
 import type { RequestHandler } from './$types';
 import { json, error } from '@sveltejs/kit';
 import { LeadService } from '$src/features/Leads/lib/leadService';
+import { hasInstructorRole } from '$src/lib/utils/roles';
 
 const leadService = new LeadService();
 
@@ -12,7 +13,7 @@ export const PATCH: RequestHandler = async (event) => {
 	}
 
 	// Only instructors can update lead status
-	if (user.role !== 'instructor-independent' && user.role !== 'instructor-school') {
+	if (!hasInstructorRole(user)) {
 		throw error(403, 'Only instructors can update lead status');
 	}
 

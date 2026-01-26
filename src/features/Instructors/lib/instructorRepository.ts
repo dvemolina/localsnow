@@ -1,5 +1,5 @@
 import { db } from "$lib/server/db/index";
-import { users, instructorSports, instructorResorts, lessons, lessonSports as lessonSportsTable, resorts, schoolInstructors, schools } from "$src/lib/server/db/schema";
+import { users, instructorSports, instructorResorts, lessons, lessonSports as lessonSportsTable, resorts, schoolInstructors, schools, userRoles } from "$src/lib/server/db/schema";
 import type { InsertUser, User } from "$src/lib/server/db/schema";
 import { eq, and, or } from "drizzle-orm";
 import type { InstructorSignupData } from "./instructorSchemas";
@@ -9,7 +9,7 @@ import { getSportIdBySlug } from "$src/features/Sports/lib/sportsConstants";
 
 export interface InstructorData {
     userId: number;
-    resort: number;
+    resort?: number;
     instructorType?: 'instructor-independent' | 'instructor-school';
     profileImageUrl?: string | null;
     qualificationUrl?: string | null;
@@ -42,15 +42,25 @@ export class InstructorRepository {
                 .where(eq(users.id, instructorData.userId))
                 .returning();
 
+            await tx
+                .insert(userRoles)
+                .values({
+                    userId: instructorData.userId,
+                    role: instructorData.instructorType
+                })
+                .onConflictDoNothing();
+
             if (!updatedUser[0]) {
                 throw new Error('Failed to update user as instructor');
             }
 
-            // Insert instructor-resort relationship
-            await tx.insert(instructorResorts).values({
-                instructorId: instructorData.userId,
-                resortId: instructorData.resort
-            });
+            // Insert instructor-resort relationship (only if resort is provided)
+            if (instructorData.resort && instructorData.resort > 0) {
+                await tx.insert(instructorResorts).values({
+                    instructorId: instructorData.userId,
+                    resortId: instructorData.resort
+                });
+            }
 
             // Insert instructor-sports relationships
             const sportsRelations = instructorData.sports.map(sportId => ({
@@ -69,8 +79,34 @@ export class InstructorRepository {
     async getInstructorById(instructorId: number, role?: InstructorData["instructorType"]): Promise<User | null> {
         const conditions = [eq(users.id, instructorId)];
 
+        let instructorRole: InstructorData["instructorType"] | null = null;
+
         if (role !== undefined) {
-            conditions.push(eq(users.role, role));
+            const matchingRoles = await db
+                .select({ role: userRoles.role })
+                .from(userRoles)
+                .where(and(eq(userRoles.userId, instructorId), eq(userRoles.role, role)));
+
+            if (matchingRoles.length === 0) {
+                return null;
+            }
+            instructorRole = matchingRoles[0].role as InstructorData["instructorType"];
+        } else {
+            const instructorRoles = await db
+                .select({ role: userRoles.role })
+                .from(userRoles)
+                .where(and(
+                    eq(userRoles.userId, instructorId),
+                    or(
+                        eq(userRoles.role, 'instructor-independent'),
+                        eq(userRoles.role, 'instructor-school')
+                    )
+                ));
+
+            if (instructorRoles.length === 0) {
+                return null;
+            }
+            instructorRole = instructorRoles[0].role as InstructorData["instructorType"];
         }
 
         const result = await db
@@ -78,7 +114,9 @@ export class InstructorRepository {
             .from(users)
             .where(and(...conditions));
 
-        return result[0] ?? null;
+        const user = result[0] ?? null;
+        if (!user) return null;
+        return { ...user, role: instructorRole ?? user.role };
     }
 
     async getInstructorSports(instructorId: number): Promise<number[]> {
@@ -125,12 +163,12 @@ export class InstructorRepository {
                 .where(eq(users.id, instructorId))
                 .returning();
 
-            // Update resort relationship if provided
-            if (updateData.resort) {
+            // Update resort relationship if provided (only if resort > 0)
+            if (updateData.resort && updateData.resort > 0) {
                 await tx
                     .delete(instructorResorts)
                     .where(eq(instructorResorts.instructorId, instructorId));
-                
+
                 await tx.insert(instructorResorts).values({
                     instructorId: instructorId,
                     resortId: updateData.resort
@@ -167,10 +205,27 @@ export class InstructorRepository {
                 .where(eq(instructorResorts.instructorId, instructorId));
 
             // Reset user role and instructor-specific fields
+            await tx
+                .delete(userRoles)
+                .where(and(
+                    eq(userRoles.userId, instructorId),
+                    or(
+                        eq(userRoles.role, 'instructor-independent'),
+                        eq(userRoles.role, 'instructor-school')
+                    )
+                ));
+
+            const remainingRoles = await tx
+                .select({ role: userRoles.role })
+                .from(userRoles)
+                .where(eq(userRoles.userId, instructorId));
+
+            const nextPrimaryRole = remainingRoles[0]?.role ?? null;
+
             const result = await tx
                 .update(users)
                 .set({
-                    role: null,
+                    role: nextPrimaryRole,
                     profileImageUrl: '/local-snow-head.png',
                     qualificationUrl: null,
                     bio: null,
@@ -221,7 +276,7 @@ export class InstructorRepository {
                     bio: users.bio,
                     phone: users.phone,
                     countryCode: users.countryCode,
-                    role: users.role,
+                    role: userRoles.role,
                     qualificationUrl: users.qualificationUrl,
                     spokenLanguages: users.spokenLanguages,
                     isVerified: users.isVerified,
@@ -233,7 +288,8 @@ export class InstructorRepository {
                     schoolName: schools.name,
                     schoolSlug: schools.slug
                 })
-                .from(users);
+                .from(users)
+                .innerJoin(userRoles, eq(users.id, userRoles.userId));
 
             // Use INNER JOIN for sports if filtering by sport, otherwise LEFT JOIN
             if (sportIdNumeric) {
@@ -275,12 +331,12 @@ export class InstructorRepository {
 
             // Filter by instructor type if specified, otherwise get both types
             if (filters.instructorType) {
-                conditions.push(eq(users.role, filters.instructorType));
+                conditions.push(eq(userRoles.role, filters.instructorType));
             } else {
                 conditions.push(
                     or(
-                        eq(users.role, 'instructor-independent'),
-                        eq(users.role, 'instructor-school')
+                        eq(userRoles.role, 'instructor-independent'),
+                        eq(userRoles.role, 'instructor-school')
                     )
                 );
             }

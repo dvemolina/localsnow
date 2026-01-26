@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db';
-import { users, roleTransitionArchive, roleTransitionBlocks, bookingRequests, schools, schoolInstructors, instructorSports, instructorResorts, schoolAdmins } from '$lib/server/db/schema';
+import { users, userRoles, roleTransitionArchive, roleTransitionBlocks, bookingRequests, schools, schoolInstructors, instructorSports, instructorResorts, schoolAdmins } from '$lib/server/db/schema';
 import { eq, and, inArray, isNull, or } from 'drizzle-orm';
 import { adminAuditService } from './adminAuditService';
 import type { RequestEvent } from '@sveltejs/kit';
@@ -377,6 +377,17 @@ export const roleTransitionService = {
 					})
 					.where(eq(users.id, userId));
 
+				if (newRole) {
+					await tx.insert(userRoles)
+						.values({ userId, role: newRole })
+						.onConflictDoNothing();
+				}
+
+				if (oldRole && oldRole !== newRole) {
+					await tx.delete(userRoles)
+						.where(and(eq(userRoles.userId, userId), eq(userRoles.role, oldRole)));
+				}
+
 				// Log the action
 				await adminAuditService.logAction({
 					adminId,
@@ -471,6 +482,17 @@ export const roleTransitionService = {
 					roleChangeCount: (archivedUser.roleChangeCount || 0) + 1
 				})
 				.where(eq(users.id, archive.userId));
+
+			if (archive.fromRole) {
+				await tx.insert(userRoles)
+					.values({ userId: archive.userId, role: archive.fromRole })
+					.onConflictDoNothing();
+			}
+
+			if (archive.toRole) {
+				await tx.delete(userRoles)
+					.where(and(eq(userRoles.userId, archive.userId), eq(userRoles.role, archive.toRole)));
+			}
 
 			// Restore instructor relationships if applicable
 			if (archive.fromRole?.includes('instructor')) {
@@ -575,6 +597,10 @@ export const roleTransitionService = {
 			await tx.update(users)
 				.set({ role: 'school-admin' })
 				.where(eq(users.id, newOwnerId));
+
+			await tx.insert(userRoles)
+				.values({ userId: newOwnerId, role: 'school-admin' })
+				.onConflictDoNothing();
 
 			// Log the action
 			await adminAuditService.logAction({

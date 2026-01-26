@@ -2,11 +2,12 @@
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
 	import AppSidebar from "$src/features/Dashboard/components/AppSidebar.svelte";
 	import { t } from '$lib/i18n/i18n';
+	import { getRoles } from '$lib/utils/roles';
 	let { data, children } = $props();
 	let user = $state(data.user);
 </script>
 
-{#if !user.role}
+{#if getRoles(user).length === 0}
 	{@render children?.()}
 {:else}
 

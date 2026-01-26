@@ -1,7 +1,7 @@
 // src/features/Admin/lib/adminStatsService.ts
 import { db } from '$lib/server/db';
-import { users, bookingRequests, instructorReviews, clientDeposits, leadPayments } from '$lib/server/db/schema';
-import { sql, eq, count, sum, and, gte } from 'drizzle-orm';
+import { users, bookingRequests, instructorReviews, clientDeposits, leadPayments, userRoles } from '$lib/server/db/schema';
+import { sql, eq, count, sum, and, gte, inArray } from 'drizzle-orm';
 
 export const adminStatsService = {
 	/**
@@ -11,11 +11,11 @@ export const adminStatsService = {
 		// Total users by role
 		const userStats = await db
 			.select({
-				role: users.role,
+				role: userRoles.role,
 				count: count()
 			})
-			.from(users)
-			.groupBy(users.role);
+			.from(userRoles)
+			.groupBy(userRoles.role);
 
 		// Total instructors (verified vs unverified)
 		const instructorStats = await db
@@ -24,9 +24,8 @@ export const adminStatsService = {
 				count: count()
 			})
 			.from(users)
-			.where(
-				sql`${users.role} IN ('instructor-independent', 'instructor-school')`
-			)
+			.innerJoin(userRoles, eq(userRoles.userId, users.id))
+			.where(inArray(userRoles.role, ['instructor-independent', 'instructor-school']))
 			.groupBy(users.isVerified);
 
 		// Booking statistics by status
@@ -96,27 +95,24 @@ export const adminStatsService = {
 	 * Get pending verifications that need admin action
 	 */
 	async getPendingVerifications() {
-		const pendingInstructors = await db.query.users.findMany({
-			where: (users, { and, eq, or, isNotNull }) =>
-				and(
-					or(
-						eq(users.role, 'instructor-independent'),
-						eq(users.role, 'instructor-school')
-					),
-					eq(users.isVerified, false),
-					isNotNull(users.qualificationUrl) // Has uploaded certification
-				),
-			columns: {
-				id: true,
-				name: true,
-				lastName: true,
-				email: true,
-				qualificationUrl: true,
-				createdAt: true
-			},
-			limit: 10,
-			orderBy: (users, { asc }) => [asc(users.createdAt)]
-		});
+		const pendingInstructors = await db
+			.select({
+				id: users.id,
+				name: users.name,
+				lastName: users.lastName,
+				email: users.email,
+				qualificationUrl: users.qualificationUrl,
+				createdAt: users.createdAt
+			})
+			.from(users)
+			.innerJoin(userRoles, eq(userRoles.userId, users.id))
+			.where(and(
+				inArray(userRoles.role, ['instructor-independent', 'instructor-school']),
+				eq(users.isVerified, false),
+				sql`${users.qualificationUrl} IS NOT NULL`
+			))
+			.limit(10)
+			.orderBy(users.createdAt);
 
 		return pendingInstructors;
 	},

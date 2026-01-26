@@ -11,11 +11,13 @@
 	let {
 		open = $bindable(false),
 		countries,
-		regions
+		regions,
+		onSuccess
 	}: {
 		open?: boolean;
 		countries: Country[];
 		regions: Region[];
+		onSuccess?: () => void;
 	} = $props();
 
 	let isSubmitting = $state(false);
@@ -76,6 +78,8 @@
 				open = false;
 				// Reset form
 				form.reset();
+				// Call success callback if provided
+				if (onSuccess) onSuccess();
 			} else {
 				const error = await response.json();
 				toast.error($t('resort_request_error'));
@@ -90,8 +94,8 @@
 	}
 </script>
 
-<Dialog.Root bind:open>
-	<Dialog.Content class="max-w-lg">
+<Dialog.Root bind:open modal={true}>
+	<Dialog.Content class="max-h-[90vh] overflow-y-auto max-w-lg" onInteractOutside={(e) => e.preventDefault()}>
 		<Dialog.Header>
 			<Dialog.Title>{$t('resort_request_modal_title')}</Dialog.Title>
 			<Dialog.Description>

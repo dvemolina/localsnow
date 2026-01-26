@@ -4,6 +4,7 @@ import { db } from '$lib/server/db';
 import { resortRequests } from '$lib/server/db/schema';
 import { resortRequestSchema } from '$src/features/Resorts/lib/resortSchemas';
 import { EmailService } from '$lib/server/email/service';
+import { hasAnyRole } from '$src/lib/utils/roles';
 
 const emailService = new EmailService();
 
@@ -15,11 +16,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	}
 
 	// Only allow instructors to request resorts
-	if (
-		user.role !== 'instructor-independent' &&
-		user.role !== 'instructor-school' &&
-		user.role !== 'school-admin'
-	) {
+	if (!hasAnyRole(user, ['instructor-independent', 'instructor-school', 'school-admin'])) {
 		return json({ error: 'Only instructors can request new resorts' }, { status: 403 });
 	}
 

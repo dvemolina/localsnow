@@ -4,6 +4,7 @@ import { SchoolService } from '$src/features/Schools/lib/schoolService';
 import { db } from '$lib/server/db';
 import { schools, schoolResorts, resorts, regions, countries, schoolInstructors, users } from '$lib/server/db/schema';
 import { eq, and } from 'drizzle-orm';
+import { hasRole } from '$src/lib/utils/roles';
 
 const schoolService = new SchoolService();
 
@@ -24,7 +25,7 @@ export const load: PageServerLoad = async (event) => {
 
 		// Check if profile is published (only admins or the owner can view unpublished)
 		const isOwner = event.locals.user?.id === school.ownerUserId;
-		const isAdmin = event.locals.user?.role === 'admin';
+		const isAdmin = hasRole(event.locals.user, 'admin');
 		if (!school.isPublished && !isOwner && !isAdmin) {
 			throw error(404, 'School not found');
 		}

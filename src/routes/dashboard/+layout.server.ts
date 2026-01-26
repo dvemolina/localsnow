@@ -2,6 +2,7 @@
 import { requireAuth } from "$src/lib/utils/auth";
 import { redirect } from "@sveltejs/kit";
 import type { LayoutServerLoad } from "./$types";
+import { getRoles } from "$src/lib/utils/roles";
 
 // Helper to get locale from URL path
 function getLocaleFromPath(pathname: string): string {
@@ -18,7 +19,7 @@ export const load: LayoutServerLoad = async (event) => {
     const pathname = event.url.pathname;
     const isChooseRolePath = pathname.includes('/dashboard/choose-role') || pathname.includes('/panel/elegir-rol');
 
-    if (!user.role && !isChooseRolePath) {
+    if (getRoles(user).length === 0 && !isChooseRolePath) {
         const locale = getLocaleFromPath(pathname);
         redirect(302, `/${locale}/dashboard/choose-role`);
     }

@@ -58,7 +58,15 @@ export async function validateSessionToken(token: string) {
 			.where(eq(table.session.id, session.id));
 	}
 
-	return { session, user };
+	const roleRows = await db
+		.select({ role: table.userRoles.role })
+		.from(table.userRoles)
+		.where(eq(table.userRoles.userId, user.id));
+
+	const roles = roleRows.map(row => row.role);
+	const resolvedRoles = roles.length > 0 ? roles : (user.role ? [user.role] : []);
+
+	return { session, user: { ...user, roles: resolvedRoles } };
 }
 
 export type SessionValidationResult = Awaited<ReturnType<typeof validateSessionToken>>;

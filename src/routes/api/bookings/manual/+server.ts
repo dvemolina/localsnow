@@ -4,6 +4,7 @@ import { db } from '$lib/server/db';
 import { bookingRequests } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { ExpiringTokenBucket } from '$lib/server/rate-limit';
+import { hasInstructorRole } from '$src/lib/utils/roles';
 
 // Rate limiting: 50 manual bookings per day per instructor
 const manualBookingBucket = new ExpiringTokenBucket<number>(50, 86400);
@@ -17,7 +18,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	}
 
 	// Only instructors can add manual bookings
-	if (user.role !== 'instructor-independent' && user.role !== 'instructor-school') {
+	if (!hasInstructorRole(user)) {
 		return json({ error: 'Forbidden: Only instructors can add manual bookings' }, { status: 403 });
 	}
 

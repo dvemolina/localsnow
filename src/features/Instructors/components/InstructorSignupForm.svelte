@@ -20,13 +20,46 @@
 	import InstructorTypeSelect from '$src/lib/components/shared/InstructorTypeSelect.svelte';
 	import { route } from '$lib/i18n/routeHelpers';
 	import { t } from '$lib/i18n/i18n';
-	let { data }: { data: { form: SuperValidated<Infer<InstructorSignupSchema>> } } = $props();
+	import ResortRequestModal from '$src/features/Resorts/components/ResortRequestModal.svelte';
+	import * as Alert from '$src/lib/components/ui/alert';
+	import { Button } from '$src/lib/components/ui/button';
+	import { InfoCircle } from 'svelte-radix';
+	import type { ResortRequest } from '$lib/server/db/schema';
+
+	let { data }: {
+		data: {
+			form: SuperValidated<Infer<InstructorSignupSchema>>;
+			pendingResortRequests?: ResortRequest[];
+		}
+	} = $props();
 
 	const form = superForm(data.form, {
 		validators: zodClient(instructorSignupSchema)
 	});
 
 	const { form: formData, enhance } = form;
+
+	// Resort request state
+	let showResortModal = $state(false);
+	let resortRequestSubmitted = $state(false);
+	let countries = $state([]);
+	let regions = $state([]);
+
+	// Load countries and regions for resort request modal
+	onMount(async () => {
+		const [countriesRes, regionsRes] = await Promise.all([
+			fetch('/api/countries'),
+			fetch('/api/regions')
+		]);
+
+		if (countriesRes.ok) countries = await countriesRes.json();
+		if (regionsRes.ok) regions = await regionsRes.json();
+	});
+
+	function handleResortRequestSuccess() {
+		resortRequestSubmitted = true;
+		$formData.resort = 0; // Allow form submission with 0 resort
+	}
 
 	//Creation of File Proxies with SuperForms
 	const profileImageProxy = fileProxy(form, 'profileImage');
@@ -75,7 +108,29 @@
 	class="flex flex-col gap-4"
 	onsubmit={() => console.log('Submitting')}
 >
-	<SearchResort {form} name="resort" />
+	{#if resortRequestSubmitted || (data.pendingResortRequests && data.pendingResortRequests.some(r => r.status === 'pending'))}
+		<Alert.Root variant="info">
+			<InfoCircle class="h-4 w-4" />
+			<Alert.Title>{$t('resort_request_pending_title')}</Alert.Title>
+			<Alert.Description>
+				{$t('resort_request_pending_description')}
+			</Alert.Description>
+		</Alert.Root>
+	{/if}
+
+	<div class="flex flex-col gap-2">
+		<SearchResort {form} name="resort" />
+		<p class="text-sm text-muted-foreground">
+			{$t('resort_request_cant_find_text')}
+			<Button variant="link" class="h-auto p-0 text-sm" onclick={() => (showResortModal = true)}>
+				{$t('resort_request_add_button')}
+			</Button>
+			{#if resortRequestSubmitted}
+				<span class="text-green-600">✓ {$t('resort_request_submitted')}</span>
+			{/if}
+		</p>
+	</div>
+
 	<InstructorTypeSelect {form} name="instructorType" />
 	
 	<Form.Field {form} name="profileImage" class="w-full">
@@ -190,5 +245,12 @@
 		<Form.Button type="submit">{$t('common_submit')}</Form.Button>
 	</div>
 </form>
+
+<ResortRequestModal
+	bind:open={showResortModal}
+	{countries}
+	{regions}
+	onSuccess={handleResortRequestSuccess}
+/>
 
 <SuperDebug data={$formData} />

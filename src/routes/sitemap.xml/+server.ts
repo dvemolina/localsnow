@@ -1,8 +1,8 @@
 // src/routes/sitemap.xml/+server.ts
 import { getAllResortSportCombinations } from '$src/lib/server/services/seoLandingService';
 import { db } from '$src/lib/server/db';
-import { users, resorts, regions, countries, schools } from '$src/lib/server/db/schema';
-import { eq, and } from 'drizzle-orm';
+import { users, resorts, regions, countries, schools, userRoles } from '$src/lib/server/db/schema';
+import { eq, and, inArray } from 'drizzle-orm';
 import type { RequestHandler } from './$types';
 import { generateInstructorSlug } from '$lib/utils/slug';
 
@@ -62,24 +62,20 @@ export const GET: RequestHandler = async () => {
 				id: users.id,
 				name: users.name,
 				lastName: users.lastName,
-				updatedAt: users.updatedAt,
-				role: users.role
+				updatedAt: users.updatedAt
 			})
 			.from(users)
+			.innerJoin(userRoles, eq(userRoles.userId, users.id))
 			.where(
 				and(
 					eq(users.isVerified, true),
-					eq(users.accountStatus, 'active')
+					eq(users.accountStatus, 'active'),
+					inArray(userRoles.role, ['instructor-independent', 'instructor-school'])
 				)
 			)
 			.limit(1000); // Limit to prevent performance issues
 
-		// Filter for instructor roles only
-		const instructorProfiles = instructors.filter(
-			user => user.role === 'instructor-independent' || user.role === 'instructor-school'
-		);
-
-		instructorProfiles.forEach((instructor) => {
+		instructors.forEach((instructor) => {
 			const lastmod = instructor.updatedAt
 				? new Date(instructor.updatedAt).toISOString().split('T')[0]
 				: undefined;

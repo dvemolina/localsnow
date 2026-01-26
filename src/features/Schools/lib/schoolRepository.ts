@@ -1,5 +1,5 @@
 import { db } from "$lib/server/db/index";
-import { schools, schoolResorts, schoolAdmins, users, type InsertSchool, type School } from "$src/lib/server/db/schema";
+import { schools, schoolResorts, schoolAdmins, users, userRoles, type InsertSchool, type School } from "$src/lib/server/db/schema";
 import { eq, and } from "drizzle-orm";
 import type { SchoolSignupData } from "./validations/schoolSchemas";
 
@@ -34,6 +34,14 @@ export class SchoolRepository {
                     updatedAt: new Date()
                 })
                 .where(eq(users.id, schoolData.ownerUserId));
+
+            await tx
+                .insert(userRoles)
+                .values({
+                    userId: schoolData.ownerUserId,
+                    role: 'school-admin'
+                })
+                .onConflictDoNothing();
 
             // Add owner as school admin with isOwner flag
             await tx.insert(schoolAdmins).values({
@@ -167,9 +175,23 @@ export class SchoolRepository {
             // Reset owner's role
             if (result.length > 0) {
                 await tx
+                    .delete(userRoles)
+                    .where(and(
+                        eq(userRoles.userId, school[0].ownerUserId),
+                        eq(userRoles.role, 'school-admin')
+                    ));
+
+                const remainingRoles = await tx
+                    .select({ role: userRoles.role })
+                    .from(userRoles)
+                    .where(eq(userRoles.userId, school[0].ownerUserId));
+
+                const nextPrimaryRole = remainingRoles[0]?.role ?? null;
+
+                await tx
                     .update(users)
                     .set({
-                        role: null,
+                        role: nextPrimaryRole,
                         updatedAt: new Date()
                     })
                     .where(eq(users.id, school[0].ownerUserId));
