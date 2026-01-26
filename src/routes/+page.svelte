@@ -26,28 +26,28 @@
 			slug: 'baqueira-beret',
 			region: 'Pyrenees, Spain',
 			description: $t('home_resort_descriptions_baqueira'),
-			image: '/ski-instructor-powder.webp'
+			image: 'https://assets.localsnow.org/resorts/baqueira-beret'
 		},
 		{
 			name: 'Verbier',
 			slug: 'verbier',
 			region: 'Alps, Switzerland',
 			description: $t('home_resort_descriptions_verbier'),
-			image: '/ski-instructor-turn.webp'
+			image: 'https://assets.localsnow.org/resorts/verbier'
 		},
 		{
 			name: 'Cerro Catedral',
 			slug: 'cerro-catedral',
 			region: 'Patagonia, Argentina',
 			description: $t('home_resort_descriptions_cerro_catedral'),
-			image: '/catedral.webp'
+			image: 'https://assets.localsnow.org/resorts/cerro-catedral'
 		},
 		{
 			name: 'Niseko',
 			slug: 'niseko-moiwa-ski-resort',
 			region: 'Hokkaido, Japan',
 			description: $t('home_resort_descriptions_niseko'),
-			image: '/ski-instructor-powder.webp'
+			image: 'https://assets.localsnow.org/resorts/niseko-united'
 		}
 	]);
 
