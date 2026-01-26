@@ -53,6 +53,9 @@ importers:
       sharp:
         specifier: ^0.34.1
         version: 0.34.1
+      slugify:
+        specifier: ^1.6.6
+        version: 1.6.6
       stripe:
         specifier: ^19.2.0
         version: 19.2.0(@types/node@22.13.14)
@@ -4173,6 +4176,10 @@ packages:
   sirv@3.0.2:
     resolution: {integrity: sha512-2wcC/oGxHis/BoHkkPwldgiPSYcpZK3JU28WoMVv55yHJgcZ8rlXvuG9iZggz+sU1d4bRgIGASwyWqjxu3FM0g==}
     engines: {node: '>=18'}
+
+  slugify@1.6.6:
+    resolution: {integrity: sha512-h+z7HKHYXj6wJU+AnS/+IH8Uh9fdcX1Lrhg1/VMdf9PwoBQXFcXiAdsy2tSK0P6gKwJLXp02r90ahUCqHk9rrw==}
+    engines: {node: '>=8.0.0'}
 
   sorcery@1.0.0:
     resolution: {integrity: sha512-5ay9oJE+7sNmhzl3YNG18jEEEf4AOQCM/FAqR5wMmzqd1FtRorFbJXn3w3SKOhbiQaVgHM+Q1lszZspjri7bpA==}
@@ -8830,6 +8837,8 @@ snapshots:
       '@polka/url': 1.0.0-next.29
       mrmime: 2.0.1
       totalist: 3.0.1
+
+  slugify@1.6.6: {}
 
   sorcery@1.0.0:
     dependencies:

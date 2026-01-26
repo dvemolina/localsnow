@@ -337,6 +337,13 @@
       "when": 1769437134016,
       "tag": "0047_first_scourge",
       "breakpoints": true
+    },
+    {
+      "idx": 48,
+      "version": "7",
+      "when": 1769438278835,
+      "tag": "0048_nosy_big_bertha",
+      "breakpoints": true
     }
   ]
 }

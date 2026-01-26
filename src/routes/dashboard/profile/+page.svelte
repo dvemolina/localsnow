@@ -161,6 +161,8 @@
 					<InstructorProfileForm
 	instructorForm={data.instructorForm}
 	currentProfileImageUrl={data.user.profileImageUrl}
+	countries={data.countries}
+	regions={data.regions}
 />
 				</div>
 			</Tabs.Content>

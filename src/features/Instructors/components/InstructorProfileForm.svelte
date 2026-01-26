@@ -13,19 +13,29 @@
 	import * as Accordion from '$src/lib/components/ui/accordion';
 	import { instructorProfileSchema, type InstructorProfileSchema } from '../lib/instructorSchemas';
 	import SearchResort from '$src/features/Resorts/components/SearchResort.svelte';
+	import ResortRequestModal from '$src/features/Resorts/components/ResortRequestModal.svelte';
 	import SportsCheckboxes from '$src/features/Sports/components/SportsCheckboxes.svelte';
 	import LanguageCheckboxes from '$src/lib/components/shared/LanguageCheckboxes.svelte';
 	import { onDestroy, onMount } from 'svelte';
 	import CountryCodeSelect from '$src/lib/components/shared/CountryCodeSelect.svelte';
 	import { toast } from 'svelte-sonner';
 	import { t } from '$lib/i18n/i18n';
+	import type { Country, Region } from '$lib/server/db/schema';
+
 	let {
 		instructorForm,
-		currentProfileImageUrl
+		currentProfileImageUrl,
+		countries = [],
+		regions = []
 	}: {
 		instructorForm: SuperValidated<Infer<InstructorProfileSchema>>;
 		currentProfileImageUrl?: string | null;
+		countries?: Country[];
+		regions?: Region[];
 	} = $props();
+
+	// Resort request modal state
+	let resortRequestModalOpen = $state(false);
 
 	const form = superForm(instructorForm, {
 		validators: zodClient(instructorProfileSchema),
@@ -175,7 +185,21 @@
 			</Accordion.Trigger>
 			<Accordion.Content class="space-y-4 pt-4">
 				<!-- Resort -->
-				<SearchResort {form} name="resort" label={$t('instructor_form_primary_resort')} />
+				<div class="space-y-2">
+					<SearchResort {form} name="resort" label={$t('instructor_form_primary_resort')} />
+					<Button
+						type="button"
+						variant="outline"
+						size="sm"
+						class="w-full sm:w-auto"
+						onclick={() => (resortRequestModalOpen = true)}
+					>
+						<svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+						</svg>
+						Can't find your resort? Request to add it
+					</Button>
+				</div>
 
 				<!-- Sports -->
 				<SportsCheckboxes {form} name="sports" />
@@ -263,3 +287,6 @@
 		</Button>
 	</div>
 </form>
+
+<!-- Resort Request Modal -->
+<ResortRequestModal bind:open={resortRequestModalOpen} {countries} {regions} />

@@ -38,6 +38,11 @@
 			icon: '/icons/ski-resort.svg'
 		},
 		{
+			title: $t('admin_sidebar_resort_requests'),
+			url: '/admin/resort-requests',
+			icon: '/icons/notebook.svg'
+		},
+		{
 			title: $t('admin_sidebar_sports'),
 			url: '/admin/sports',
 			icon: '/icons/service.svg'

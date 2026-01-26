@@ -9,9 +9,10 @@ import type { SendEmailOptions, Locale } from './types';
 
 export class EmailService {
 	/**
-	 * Internal method to send email via webhook
+	 * Send email via webhook
+	 * Can be used for custom email sending beyond templated emails
 	 */
-	private async send(options: SendEmailOptions): Promise<void> {
+	async send(options: SendEmailOptions): Promise<void> {
 		// Basic email validation
 		if (!options.to || !options.to.includes('@')) {
 			throw new Error('Invalid email address');

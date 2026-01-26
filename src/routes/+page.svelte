@@ -19,34 +19,35 @@
 	const currentLocale = $derived(extractLocale($page.url.pathname).locale || 'en');
 
 	// Top resorts for homepage - use $derived for translation reactivity
+	// Showcasing global coverage across continents
 	const topResorts = $derived([
 		{
-			name: 'Baqueira Beret',
+			name: 'Baqueira-Beret',
 			slug: 'baqueira-beret',
-			region: 'Pyrenees, Catalonia',
+			region: 'Pyrenees, Spain',
 			description: $t('home_resort_descriptions_baqueira'),
 			image: '/ski-instructor-powder.webp'
 		},
 		{
-			name: 'Formigal-Panticosa',
-			slug: 'formigal-panticosa',
-			region: 'Pyrenees, Aragón',
-			description: $t('home_resort_descriptions_formigal'),
+			name: 'Verbier',
+			slug: 'verbier',
+			region: 'Swiss Alps, Switzerland',
+			description: $t('home_resort_descriptions_verbier'),
 			image: '/ski-instructor-turn.webp'
 		},
 		{
-			name: 'Cerler',
-			slug: 'cerler',
-			region: 'Pyrenees, Huesca',
-			description: $t('home_resort_descriptions_cerler'),
-			image: '/zermatt.webp'
+			name: 'Cerro Catedral',
+			slug: 'cerro-catedral',
+			region: 'Patagonia, Argentina',
+			description: $t('home_resort_descriptions_cerro_catedral'),
+			image: '/catedral.webp'
 		},
 		{
-			name: 'Sierra Nevada',
-			slug: 'sierra-nevada',
-			region: 'Granada, Andalusia',
-			description: $t('home_resort_descriptions_sierra_nevada'),
-			image: '/catedral.webp'
+			name: 'Niseko',
+			slug: 'niseko-moiwa-ski-resort',
+			region: 'Hokkaido, Japan',
+			description: $t('home_resort_descriptions_niseko'),
+			image: '/ski-instructor-powder.webp'
 		}
 	]);
 

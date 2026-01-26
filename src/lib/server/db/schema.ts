@@ -89,6 +89,31 @@ export const resorts = pgTable('resorts', {
 	...timestamps
 });
 
+// Resort Requests - Instructors can request new resorts to be added
+export const resortRequestStatusEnum = pgEnum('resort_request_status', ['pending', 'approved', 'rejected']);
+
+export const resortRequests = pgTable('resort_requests', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	uuid: uuid('uuid').defaultRandom().unique().notNull(),
+	// Requester info
+	requesterId: integer('requester_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	requesterEmail: varchar('requester_email', { length: 255 }).notNull(),
+	requesterName: varchar('requester_name', { length: 100 }).notNull(),
+	// Resort details
+	resortName: varchar('resort_name', { length: 100 }).notNull(),
+	countryId: integer('country_id').references(() => countries.id, { onDelete: 'set null' }),
+	regionId: integer('region_id').references(() => regions.id, { onDelete: 'set null' }),
+	website: varchar('website', { length: 255 }),
+	additionalInfo: text('additional_info'), // Any extra details from the instructor
+	// Status and processing
+	status: resortRequestStatusEnum('status').notNull().default('pending'),
+	reviewedByAdminId: integer('reviewed_by_admin_id').references(() => users.id, { onDelete: 'set null' }),
+	reviewedAt: timestamp('reviewed_at'),
+	rejectionReason: text('rejection_reason'), // If rejected, why
+	createdResortId: integer('created_resort_id').references(() => resorts.id, { onDelete: 'set null' }), // Link to created resort if approved
+	...timestamps
+});
+
 
 // --- Schools ---
 export const schools = pgTable('schools', {
@@ -692,7 +717,32 @@ export const resortsRelations = relations(resorts, ({ one, many }) => ({
 		fields: [resorts.regionId],
 		references: [regions.id]
 	}),
-	instructors: many(instructorResorts)
+	instructors: many(instructorResorts),
+	resortRequests: many(resortRequests)
+}));
+
+// Resort Requests relations
+export const resortRequestsRelations = relations(resortRequests, ({ one }) => ({
+	requester: one(users, {
+		fields: [resortRequests.requesterId],
+		references: [users.id]
+	}),
+	country: one(countries, {
+		fields: [resortRequests.countryId],
+		references: [countries.id]
+	}),
+	region: one(regions, {
+		fields: [resortRequests.regionId],
+		references: [regions.id]
+	}),
+	reviewedByAdmin: one(users, {
+		fields: [resortRequests.reviewedByAdminId],
+		references: [users.id]
+	}),
+	createdResort: one(resorts, {
+		fields: [resortRequests.createdResortId],
+		references: [resorts.id]
+	})
 }));
 
 // Regions relations
@@ -810,6 +860,9 @@ export type InsertCountry = typeof countries.$inferInsert;
 //Regions
 export type Region = typeof regions.$inferSelect;
 export type InsertRegion = typeof regions.$inferInsert;
+//Resorts
+export type Resort = typeof resorts.$inferSelect;
+export type InsertResort = typeof resorts.$inferInsert;
 
 //Pricing
 export type ConditionalPricing = typeof conditionalPricing.$inferSelect;
@@ -828,3 +881,7 @@ export type InstructorCalendarBlock = typeof instructorCalendarBlocks.$inferSele
 export type InsertInstructorCalendarBlock = typeof instructorCalendarBlocks.$inferInsert;
 export type InstructorGoogleToken = typeof instructorGoogleTokens.$inferSelect;
 export type InsertInstructorGoogleToken = typeof instructorGoogleTokens.$inferInsert;
+
+// Resort Requests
+export type ResortRequest = typeof resortRequests.$inferSelect;
+export type InsertResortRequest = typeof resortRequests.$inferInsert;

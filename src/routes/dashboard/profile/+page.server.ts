@@ -12,6 +12,8 @@ import { InstructorService } from "$src/features/Instructors/lib/instructorServi
 import { schoolProfileSchema } from "$src/features/Schools/lib/validations/schoolSchemas";
 import { SchoolService } from "$src/features/Schools/lib/schoolService";
 import { StorageService } from "$src/lib/server/R2Storage";
+import { db } from "$lib/server/db";
+import { countries, regions } from "$lib/server/db/schema";
 
 const userService = new UserService();
 const instructorService = new InstructorService();
@@ -78,11 +80,22 @@ export const load: PageServerLoad = async (event) => {
         }
     }
 
+    // Load countries and regions for resort request form
+    const allCountries = await db.query.countries.findMany({
+        orderBy: (countries, { asc }) => [asc(countries.country)]
+    });
+
+    const allRegions = await db.query.regions.findMany({
+        orderBy: (regions, { asc }) => [asc(regions.region)]
+    });
+
     return {
         userForm,
         instructorForm,
         schoolForm,
-        user: fullUser
+        user: fullUser,
+        countries: allCountries,
+        regions: allRegions
     };
 };
 
