@@ -1,9 +1,26 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { getResortDetails } from '$src/lib/server/services/seoLandingService';
+import { extractLocale, type Locale } from '$lib/i18n/routes';
+import { route } from '$lib/i18n/routeHelpers';
+import en from '$lib/i18n/translations/en.json';
+import es from '$lib/i18n/translations/es.json';
 
-export const load: PageServerLoad = async ({ params }) => {
+const translationsByLocale: Record<Locale, Record<string, string>> = { en, es };
+
+function translate(locale: Locale, key: string, values?: Record<string, string | number>) {
+	const template = translationsByLocale[locale]?.[key] ?? translationsByLocale.en?.[key] ?? key;
+	if (!values) return template;
+	return Object.entries(values).reduce(
+		(result, [name, value]) => result.replace(new RegExp(`\\{${name}\\}`, 'g'), String(value)),
+		template
+	);
+}
+
+export const load: PageServerLoad = async ({ params, url }) => {
 	const { country, region, resort } = params;
+	const { locale } = extractLocale(url.pathname);
+	const currentLocale = (locale || 'en') as Locale;
 
 	const resortData = await getResortDetails(country, region, resort);
 
@@ -14,17 +31,30 @@ export const load: PageServerLoad = async ({ params }) => {
 	const { resort: resortInfo, location, sportsAvailable, nearbyResorts } = resortData;
 
 	// SEO metadata
-	const title = `${resortInfo.name} Ski Resort | Find Instructors & Book Lessons`;
-	const description = `Discover ${resortInfo.name} in ${location.region?.region || location.country.country}. ${resortInfo.minElevation && resortInfo.maxElevation ? `Slopes from ${resortInfo.minElevation}m to ${resortInfo.maxElevation}m.` : ''} Book professional ski and snowboard instructors for private lessons.`;
+	const elevationText = resortInfo.minElevation && resortInfo.maxElevation
+		? `${translate(currentLocale, 'resort_page_seo_elevation', {
+				min: resortInfo.minElevation,
+				max: resortInfo.maxElevation
+			})} `
+		: '';
+	const title = translate(currentLocale, 'resort_page_seo_title', {
+		resort: resortInfo.name
+	});
+	const description = translate(currentLocale, 'resort_page_seo_description', {
+		resort: resortInfo.name,
+		region: location.region?.region || location.country.country,
+		elevation: elevationText
+	});
 
-	const canonicalUrl = `https://localsnow.com/resorts/${country}/${region}/${resort}`;
+	const resortsBase = route('/resorts', currentLocale);
+	const canonicalUrl = `${url.origin}${resortsBase}/${country}/${region}/${resort}`;
 
 	// Breadcrumbs
 	const breadcrumbs = [
-		{ name: 'Home', url: 'https://localsnow.com' },
-		{ name: 'Resorts', url: 'https://localsnow.com/resorts' },
-		{ name: location.country.country, url: `https://localsnow.com/resorts/${country}` },
-		{ name: location.region?.region || location.country.country, url: `https://localsnow.com/resorts/${country}/${region}` },
+		{ name: translate(currentLocale, 'nav_home'), url: `${url.origin}${route('/', currentLocale)}` },
+		{ name: translate(currentLocale, 'nav_resorts'), url: `${url.origin}${resortsBase}` },
+		{ name: location.country.country, url: `${url.origin}${resortsBase}/${country}` },
+		{ name: location.region?.region || location.country.country, url: `${url.origin}${resortsBase}/${country}/${region}` },
 		{ name: resortInfo.name, url: canonicalUrl }
 	];
 

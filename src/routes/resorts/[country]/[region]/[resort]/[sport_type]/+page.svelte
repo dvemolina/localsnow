@@ -6,6 +6,7 @@
 	import { page } from '$app/stores';
 	import Breadcrumb from '$lib/components/shared/Breadcrumb.svelte';
 	import InstructorCard from '$src/features/Instructors/components/InstructorCard.svelte'
+	import { t } from '$lib/i18n/i18n';
 
 	let { data } = $props();
 	const { landingData, seo } = data;
@@ -53,7 +54,7 @@
 	<!-- Header -->
 	<div class="mb-6">
 		<h1 class="title2 mb-2">
-			{sport.sport} Instructors in {location.resort?.name}
+			{$t('resort_sport_page_title', { values: { sport: sport.sport, resort: location.resort?.name } })}
 		</h1>
 		<div class="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
 			<div class="flex items-center gap-1.5">
@@ -74,7 +75,7 @@
 					class="flex items-center gap-1.5 hover:text-foreground"
 				>
 					<ExternalLink class="h-4 w-4" />
-					<span>Website</span>
+					<span>{$t('resort_page_official_website')}</span>
 				</a>
 			{/if}
 		</div>
@@ -84,9 +85,11 @@
 	<div class="mb-6">
 		<p class="text-sm text-muted-foreground">
 			{#if totalInstructors > 0}
-				{totalInstructors} verified {totalInstructors === 1 ? 'instructor' : 'instructors'} available
+				{totalInstructors === 1
+					? $t('resort_sport_page_results_single', { values: { count: totalInstructors } })
+					: $t('resort_sport_page_results_plural', { values: { count: totalInstructors } })}
 			{:else}
-				No instructors available yet
+				{$t('resort_sport_page_results_none')}
 			{/if}
 		</p>
 	</div>
@@ -103,10 +106,11 @@
 		<div class="mb-8">
 			<Card>
 				<CardContent class="p-8 text-center">
-					<h3 class="mb-2 font-semibold">No Instructors Available Yet</h3>
+					<h3 class="mb-2 font-semibold">{$t('resort_sport_page_empty_title')}</h3>
 					<p class="text-sm text-muted-foreground">
-						We're currently onboarding instructors in this area. Check back soon or
-						<a href="/contact" class="text-primary hover:underline">contact us</a> if you're an instructor.
+						{$t('resort_sport_page_empty_desc')}
+						<a href="/contact" class="text-primary hover:underline">{$t('resort_sport_page_empty_contact')}</a>
+						{$t('resort_sport_page_empty_desc_suffix')}
 					</p>
 				</CardContent>
 			</Card>
@@ -117,15 +121,19 @@
 	<div class="mb-8">
 		<Card>
 			<CardHeader>
-				<CardTitle>About {location.resort?.name}</CardTitle>
+				<CardTitle>{$t('resort_page_about_title', { values: { resort: location.resort?.name } })}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<p class="text-muted-foreground">
-					{location.resort?.name} is a premier destination for {sport.sport.toLowerCase()} enthusiasts.
+					{$t('resort_sport_page_about_intro', {
+						values: { resort: location.resort?.name, sport: sport.sport.toLowerCase() }
+					})}
 					{#if location.resort?.minElevation && location.resort?.maxElevation}
-						With slopes ranging from {location.resort.minElevation}m to {location.resort.maxElevation}m,
+						{$t('resort_page_fallback_elevation', {
+							values: { min: location.resort.minElevation, max: location.resort.maxElevation }
+						})}
 					{/if}
-					the resort offers terrain suitable for all skill levels. Book professional lessons with verified instructors.
+					{$t('resort_sport_page_about_outro')}
 				</p>
 			</CardContent>
 		</Card>
@@ -135,7 +143,9 @@
 	{#if relatedResorts && relatedResorts.length > 0}
 		<div class="mb-8">
 			<h2 class="mb-4 text-xl font-semibold">
-				Other Resorts in {location.region?.region || location.country.country}
+				{$t('resort_page_other_resorts_title', {
+					values: { region: location.region?.region || location.country.country }
+				})}
 			</h2>
 			<div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
 				{#each relatedResorts as related}
@@ -150,7 +160,7 @@
 									{related.name}
 								</h3>
 								<p class="text-sm text-muted-foreground">
-									{sport.sport} Instructors →
+									{$t('resort_sport_page_related_label', { values: { sport: sport.sport } })}
 								</p>
 							</CardContent>
 						</Card>
@@ -162,16 +172,17 @@
 
 	<!-- FAQ Section -->
 	<div>
-		<h2 class="mb-4 text-xl font-semibold">Frequently Asked Questions</h2>
+		<h2 class="mb-4 text-xl font-semibold">{$t('resort_sport_page_faq_title')}</h2>
 		<div class="space-y-3">
 			<Card>
 				<CardContent class="p-4">
 					<h3 class="mb-2 font-semibold text-sm">
-						How do I book a {sport.sport.toLowerCase()} lesson in {location.resort?.name}?
+						{$t('resort_sport_page_faq_booking_q', {
+							values: { sport: sport.sport.toLowerCase(), resort: location.resort?.name }
+						})}
 					</h3>
 					<p class="text-sm text-muted-foreground">
-						Browse verified instructors above, view their profiles to check availability,
-						and submit a booking request. Instructors respond within 24 hours.
+						{$t('resort_sport_page_faq_booking_a')}
 					</p>
 				</CardContent>
 			</Card>
@@ -179,11 +190,10 @@
 			<Card>
 				<CardContent class="p-4">
 					<h3 class="mb-2 font-semibold text-sm">
-						Are all instructors certified?
+						{$t('resort_sport_page_faq_certified_q')}
 					</h3>
 					<p class="text-sm text-muted-foreground">
-						Yes, all instructors with the "Verified" badge have been verified by LocalSnow.
-						We review certifications before approving profiles.
+						{$t('resort_sport_page_faq_certified_a')}
 					</p>
 				</CardContent>
 			</Card>
@@ -191,11 +201,10 @@
 			<Card>
 				<CardContent class="p-4">
 					<h3 class="mb-2 font-semibold text-sm">
-						What should I bring to my lesson?
+						{$t('resort_sport_page_faq_bring_q')}
 					</h3>
 					<p class="text-sm text-muted-foreground">
-						Bring your ski pass, appropriate clothing, and personal equipment.
-						Your instructor can advise on equipment rentals if needed.
+						{$t('resort_sport_page_faq_bring_a')}
 					</p>
 				</CardContent>
 			</Card>

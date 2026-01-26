@@ -20,6 +20,9 @@
 	const reviews = data.reviews;
 	const reviewStats = data.reviewStats;
 
+	// Get return URL from query params for filter preservation
+	const returnTo = $derived(page.url.searchParams.get('returnTo') || '/instructors');
+
 	const isAuthenticated = !!data.user; // Will be true if user exists
 	const isIndependent = instructor.role === 'instructor-independent';
 
@@ -71,6 +74,38 @@
 					priceCurrency: data.baseLesson.currency || 'EUR',
 					unitText: 'per hour'
 				}
+			}
+		})
+	};
+
+	// Service schema for SEO
+	const serviceSchema = {
+		'@context': 'https://schema.org',
+		'@type': 'Service',
+		serviceType: sports.map(s => `${s.sport} Instruction`).join(', ') || 'Ski Instruction',
+		name: `${sports.map(s => s.sport).join(' & ')} Lessons`,
+		description: instructor.bio || `Professional ${sports.map(s => s.sport.toLowerCase()).join(' and ')} instruction for all skill levels`,
+		provider: {
+			'@type': 'Person',
+			name: instructorFullName,
+			url: profileUrl
+		},
+		...(resorts.length > 0 && {
+			areaServed: resorts.map(resort => ({
+				'@type': 'City',
+				name: resort.name
+			}))
+		}),
+		...(data.baseLesson && {
+			offers: {
+				'@type': 'Offer',
+				priceSpecification: {
+					'@type': 'UnitPriceSpecification',
+					price: data.baseLesson.basePrice,
+					priceCurrency: data.baseLesson.currency || 'EUR',
+					unitText: 'per hour'
+				},
+				availability: 'https://schema.org/InStock'
 			}
 		})
 	};
@@ -165,6 +200,9 @@
 		{JSON.stringify(personSchema)}
 	</script>
 	<script type="application/ld+json">
+		{JSON.stringify(serviceSchema)}
+	</script>
+	<script type="application/ld+json">
 		{JSON.stringify(organizationSchema)}
 	</script>
 	<script type="application/ld+json">
@@ -182,8 +220,8 @@
 <section class="w-full">
 	<!-- Back Button -->
 	<div class="mb-6">
-		<a 
-			href="/instructors" 
+		<a
+			href={returnTo}
 			class="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
 		>
 			<svg
