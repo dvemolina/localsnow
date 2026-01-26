@@ -16,6 +16,11 @@
 	let isHero: boolean = props.isHero ?? false;
 
 	const formStore = form.form; //the reactive store for form values
+
+	// Debug: Log when sport value changes
+	$effect(() => {
+		console.log(`⚽ [SportSelect ${name}] Value changed:`, $formStore[name]);
+	});
 </script>
 
 <Form.Field {form} {name} class="h-ful w-full">

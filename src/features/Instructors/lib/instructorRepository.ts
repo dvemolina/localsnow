@@ -3,6 +3,7 @@ import { users, instructorSports, instructorResorts, lessons, lessonSports as le
 import type { InsertUser, User } from "$src/lib/server/db/schema";
 import { eq, and, or } from "drizzle-orm";
 import type { InstructorSignupData } from "./instructorSchemas";
+import { getSportIdBySlug } from "$src/features/Sports/lib/sportsConstants";
 
 
 
@@ -185,7 +186,7 @@ export class InstructorRepository {
 
     async searchInstructors(filters: {
         resortId?: number;
-        sportId?: number;
+        sportId?: number | string; // Can be numeric ID or slug string
         searchQuery?: string;
         language?: string;
         priceMin?: number;
@@ -195,6 +196,19 @@ export class InstructorRepository {
         schoolId?: number;
         sortBy?: string;
     }) {
+        console.log('👨‍🏫 [InstructorRepository] searchInstructors called with filters:', filters);
+
+        // Convert sport slug to ID if it's a string
+        let sportIdNumeric: number | undefined;
+        if (filters.sportId) {
+            if (typeof filters.sportId === 'string') {
+                sportIdNumeric = getSportIdBySlug(filters.sportId);
+                console.log(`🔄 [InstructorRepository] Converted sport slug "${filters.sportId}" to ID: ${sportIdNumeric}`);
+            } else {
+                sportIdNumeric = filters.sportId;
+            }
+        }
+
         try {
             let query = db
                 .select({
@@ -255,6 +269,24 @@ export class InstructorRepository {
             // Filter by resort
             if (filters.resortId) {
                 conditions.push(eq(instructorResorts.resortId, filters.resortId));
+
+                // DEBUG: Check what resorts instructors are actually linked to
+                const debugResorts = await db
+                    .select({
+                        instructorId: instructorResorts.instructorId,
+                        resortId: instructorResorts.resortId,
+                        resortName: resorts.name
+                    })
+                    .from(instructorResorts)
+                    .leftJoin(resorts, eq(instructorResorts.resortId, resorts.id))
+                    .limit(20);
+                console.log(`🔍 [DEBUG] Sample instructor_resorts associations:`, debugResorts);
+
+                const resortsForThisId = await db
+                    .select({ instructorId: instructorResorts.instructorId })
+                    .from(instructorResorts)
+                    .where(eq(instructorResorts.resortId, filters.resortId));
+                console.log(`🔍 [DEBUG] Instructors linked to resortId ${filters.resortId}:`, resortsForThisId.length);
             }
 
             // Filter by school
@@ -265,8 +297,17 @@ export class InstructorRepository {
 
             query = query.where(and(...conditions));
 
+            console.log('🔍 [InstructorRepository] Executing query with conditions:', {
+                conditionsCount: conditions.length,
+                hasResortFilter: !!filters.resortId,
+                hasSportFilter: !!sportIdNumeric,
+                hasSchoolFilter: !!filters.schoolId
+            });
+
             // Execute query
             const results = await query;
+
+            console.log('📥 [InstructorRepository] Raw query results:', { count: results.length });
 
             // Group by instructor ID to handle multiple sports/resorts
             const instructorsMap = new Map();
@@ -311,19 +352,32 @@ export class InstructorRepository {
 
             let instructorsList = Array.from(instructorsMap.values());
 
+            console.log('📦 [InstructorRepository] After grouping:', { count: instructorsList.length });
+
             // Filter by sport if specified
-            if (filters.sportId) {
+            if (sportIdNumeric) {
+                const beforeCount = instructorsList.length;
                 instructorsList = instructorsList.filter(instructor =>
-                    instructor.sports.includes(filters.sportId)
+                    instructor.sports.includes(sportIdNumeric)
                 );
+                console.log(`🏂 [InstructorRepository] After sport filter (${sportIdNumeric}):`, {
+                    before: beforeCount,
+                    after: instructorsList.length,
+                    exampleSports: instructorsList.length > 0 ? instructorsList[0].sports : 'none'
+                });
             }
 
             // Filter by language if specified
             if (filters.language) {
+                const beforeCount = instructorsList.length;
                 instructorsList = instructorsList.filter(instructor =>
                     instructor.spokenLanguages &&
                     instructor.spokenLanguages.includes(filters.language)
                 );
+                console.log(`🗣️ [InstructorRepository] After language filter (${filters.language}):`, {
+                    before: beforeCount,
+                    after: instructorsList.length
+                });
             }
 
             // Basic sorting (name-based only, price and rating sorting happens in page.server after fetching lessons)
@@ -332,6 +386,11 @@ export class InstructorRepository {
             } else if (filters.sortBy === 'name_desc') {
                 instructorsList.sort((a, b) => b.name.localeCompare(a.name));
             }
+
+            console.log('✅ [InstructorRepository] Final results:', {
+                count: instructorsList.length,
+                instructors: instructorsList.map(i => `${i.name} ${i.lastName}`)
+            });
 
             return instructorsList;
         } catch (error) {

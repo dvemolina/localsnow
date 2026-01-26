@@ -1,5 +1,5 @@
 <script lang="ts">
-	let { score = 5 } = $props();
+	let { score } = $props();
 </script>
 
 <div class="flex flex-row justify-center items-center rounded-md bg-yellow-200/75 pl-1 gap">

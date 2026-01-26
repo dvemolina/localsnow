@@ -56,15 +56,32 @@
     }
   }
 
-  onMount(() => {
-    // Load existing resort if form has a value
-    const resortId = formData ? $formData[name] : null;
+  // Reactively load resort when form value changes (Svelte 5 $effect)
+  $effect(() => {
+    // Watch for changes to the form value
+    const resortId = $formData[name];
+
+    console.log(`🏔️ [SearchResort ${name}] Form value changed:`, {
+      resortId,
+      mode,
+      currentSelection: selectedResort?.id,
+      currentQuery: query
+    });
+
+    // Only fetch resort data when form has a valid ID
+    // Do NOT clear state here - let user input be the source of truth for query
     if (mode === 'form' && resortId && resortId > 0) {
-      fetchResortById(resortId);
+      // Only fetch if we haven't already loaded this resort
+      if (!selectedResort || selectedResort.id !== resortId) {
+        console.log(`📡 [SearchResort ${name}] Fetching resort ID:`, resortId);
+        fetchResortById(resortId);
+      }
     }
   });
 
   async function fetchSuggestions(q: string) {
+    console.log(`🔎 [SearchResort ${name}] Fetching suggestions for:`, { q, countryId });
+
     abortController?.abort();
     abortController = new AbortController();
 
@@ -75,51 +92,73 @@
         queryParams += `&countryId=${countryId}`;
       }
 
-      const res = await fetch(`/api/search-suggestions?${queryParams}`, {
+      const url = `/api/search-suggestions?${queryParams}`;
+      console.log(`📡 [SearchResort ${name}] Fetching:`, url);
+
+      const res = await fetch(url, {
         signal: abortController.signal
       });
+
+      console.log(`📥 [SearchResort ${name}] Response:`, { ok: res.ok, status: res.status });
+
       if (res.ok) {
         const data: Resort[] = await res.json();
+        console.log(`✅ [SearchResort ${name}] Got ${data.length} suggestions:`, data);
         suggestions = data;
         isOpen = data.length > 0;
         highlightedIndex = -1;
       } else {
+        console.warn(`❌ [SearchResort ${name}] Fetch failed:`, res.status, res.statusText);
         suggestions = [];
         isOpen = false;
       }
     } catch (e: any) {
-      if (e.name !== 'AbortError') console.error(e);
+      if (e.name !== 'AbortError') {
+        console.error(`💥 [SearchResort ${name}] Fetch error:`, e);
+      }
       suggestions = [];
       isOpen = false;
     }
   }
 
-  function onInput(event: Event) {
-    query = (event.target as HTMLInputElement).value;
+  function onInput() {
+    // Note: bind:value automatically updates query, so we don't set it manually here
+    console.log(`⌨️ [SearchResort ${name}] User typed:`, query);
     selectedResort = null; // Clear selection when typing
-    
+
+    // Clear form value when user starts typing (they're entering a new search)
+    if ($formData[name]) {
+      $formData[name] = undefined;
+    }
+
     if (debounceTimeout) clearTimeout(debounceTimeout);
 
     if (query.length >= 2) {
+      console.log(`⏱️ [SearchResort ${name}] Debouncing search for:`, query);
       debounceTimeout = setTimeout(() => fetchSuggestions(query), 200);
     } else {
+      console.log(`❌ [SearchResort ${name}] Query too short (${query.length} chars)`);
       suggestions = [];
       isOpen = false;
     }
   }
 
   function selectResort(resort: Resort) {
+    console.log(`✅ [SearchResort ${name}] Resort selected:`, resort);
+
     selectedResort = resort;
     query = resort.name;
     isOpen = false;
     suggestions = [];
-    
+
     if (mode === 'form') {
       const resortId = Number(resort.id);
+      console.log(`💾 [SearchResort ${name}] Setting form value to:`, resortId);
       if (!isNaN(resortId)) {
         $formData[name] = resortId;
+        console.log(`✅ [SearchResort ${name}] Form data updated:`, $formData[name]);
       } else {
-        console.error('Invalid resort ID:', resort.id);
+        console.error(`❌ [SearchResort ${name}] Invalid resort ID:`, resort.id);
         $formData[name] = 0;
       }
     } else {

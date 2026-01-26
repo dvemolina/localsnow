@@ -11,25 +11,32 @@ export const load: PageServerLoad = async ({ url }) => {
 	const verifiedOnly = url.searchParams.get('verifiedOnly') === 'true';
 	const sortBy = url.searchParams.get('sortBy');
 
+	// Check if any filters are active (prompt-first UX)
+	const hasFilters = !!(resortIdParam || verifiedOnly || sortBy);
+
 	try {
-		// Build WHERE conditions array for proper filtering
-		const conditions: any[] = [eq(schools.isPublished, true)];
+		// If no filters applied, return empty array (prompt-first UX like Yelp/Airbnb)
+		let schoolsData = [];
 
-		// Add verified filter if requested
-		if (verifiedOnly) {
-			conditions.push(eq(schools.isVerified, true));
-		}
+		if (hasFilters) {
+			// Build WHERE conditions array for proper filtering
+			const conditions: any[] = [eq(schools.isPublished, true)];
 
-		// Add resort filter if provided
-		if (resortIdParam) {
-			const resortId = Number(resortIdParam);
-			if (!isNaN(resortId)) {
-				conditions.push(eq(schoolResorts.resortId, resortId));
+			// Add verified filter if requested
+			if (verifiedOnly) {
+				conditions.push(eq(schools.isVerified, true));
 			}
-		}
 
-		// Execute query with all conditions applied at once
-		let schoolsData = await db
+			// Add resort filter if provided
+			if (resortIdParam) {
+				const resortId = Number(resortIdParam);
+				if (!isNaN(resortId)) {
+					conditions.push(eq(schoolResorts.resortId, resortId));
+				}
+			}
+
+			// Execute query with all conditions applied at once
+			schoolsData = await db
 			.select({
 				id: schools.id,
 				uuid: schools.uuid,
@@ -56,27 +63,36 @@ export const load: PageServerLoad = async ({ url }) => {
 			.innerJoin(countries, eq(resorts.countryId, countries.id))
 			.where(and(...conditions));
 
-		// Sort schools
-		if (sortBy === 'name_asc') {
-			schoolsData.sort((a, b) => a.name.localeCompare(b.name));
-		} else if (sortBy === 'name_desc') {
-			schoolsData.sort((a, b) => b.name.localeCompare(a.name));
+			// Sort schools
+			if (sortBy === 'name_asc') {
+				schoolsData.sort((a, b) => a.name.localeCompare(b.name));
+			} else if (sortBy === 'name_desc') {
+				schoolsData.sort((a, b) => b.name.localeCompare(a.name));
+			}
 		}
+
+		// Parse resort ID to number for client form
+		const parsedResortId = resortIdParam ? Number(resortIdParam) : undefined;
+		const validResortId = parsedResortId && !isNaN(parsedResortId) ? parsedResortId : undefined;
 
 		return {
 			schools: schoolsData,
+			hasFilters,
 			filters: {
-				resort: resortIdParam,
+				resort: validResortId, // Pass parsed number, not string
 				verifiedOnly: verifiedOnly ? 'true' : null,
 				sortBy: sortBy
 			}
 		};
 	} catch (error) {
 		console.error('Error loading schools:', error);
+		const parsedResortId = resortIdParam ? Number(resortIdParam) : undefined;
+		const validResortId = parsedResortId && !isNaN(parsedResortId) ? parsedResortId : undefined;
 		return {
 			schools: [],
+			hasFilters,
 			filters: {
-				resort: resortIdParam,
+				resort: validResortId,
 				verifiedOnly: verifiedOnly ? 'true' : null,
 				sortBy: sortBy
 			}

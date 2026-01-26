@@ -1,7 +1,7 @@
 // src/routes/sitemap.xml/+server.ts
 import { getAllResortSportCombinations } from '$src/lib/server/services/seoLandingService';
 import { db } from '$src/lib/server/db';
-import { users, resorts, regions, countries } from '$src/lib/server/db/schema';
+import { users, resorts, regions, countries, schools } from '$src/lib/server/db/schema';
 import { eq, and } from 'drizzle-orm';
 import type { RequestHandler } from './$types';
 import { generateInstructorSlug } from '$lib/utils/slug';
@@ -34,6 +34,7 @@ export const GET: RequestHandler = async () => {
 		const staticPages = [
 			{ url: '', priority: '1.0', changefreq: 'daily' }, // Homepage
 			{ url: '/instructors', priority: '0.9', changefreq: 'daily' },
+			{ url: '/schools', priority: '0.9', changefreq: 'daily' },
 			{ url: '/resorts', priority: '0.8', changefreq: 'weekly' },
 			{ url: '/how-it-works', priority: '0.7', changefreq: 'monthly' },
 			{ url: '/about', priority: '0.6', changefreq: 'monthly' },
@@ -93,6 +94,27 @@ export const GET: RequestHandler = async () => {
 			);
 		});
 
+		// 3b. School profiles (dynamic, high priority)
+		const schoolProfiles = await db
+			.select({
+				slug: schools.slug,
+				name: schools.name
+			})
+			.from(schools)
+			.where(eq(schools.isPublished, true))
+			.limit(1000); // Limit to prevent performance issues
+
+		schoolProfiles.forEach((school) => {
+			urls.push(
+				urlEntry(
+					`${SITE_URL}/schools/${school.slug}`,
+					'0.8',
+					'weekly',
+					today
+				)
+			);
+		});
+
 		// 4. Resort hierarchy pages (dynamic, hierarchical priority)
 		// Get all countries
 		const allCountries = await db
@@ -148,11 +170,34 @@ export const GET: RequestHandler = async () => {
 
 		allResorts.forEach((resort) => {
 			const regionPath = resort.regionSlug ? `/${resort.regionSlug}` : '';
+			const baseResortUrl = `${SITE_URL}/resorts/${resort.countrySlug}${regionPath}/${resort.resortSlug}`;
+
+			// Resort main page
 			urls.push(
 				urlEntry(
-					`${SITE_URL}/resorts/${resort.countrySlug}${regionPath}/${resort.resortSlug}`,
+					baseResortUrl,
 					'0.8',
 					'weekly',
+					today
+				)
+			);
+
+			// Resort instructors page (all instructors at this resort)
+			urls.push(
+				urlEntry(
+					`${baseResortUrl}/instructors`,
+					'0.85',
+					'daily',
+					today
+				)
+			);
+
+			// Resort schools page (all schools at this resort)
+			urls.push(
+				urlEntry(
+					`${baseResortUrl}/schools`,
+					'0.85',
+					'daily',
 					today
 				)
 			);
