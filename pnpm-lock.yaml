@@ -59,6 +59,9 @@ importers:
       stripe:
         specifier: ^19.2.0
         version: 19.2.0(@types/node@22.13.14)
+      svelte-radix:
+        specifier: ^3.0.2
+        version: 3.0.2(svelte@5.41.3)
       svelte-sonner:
         specifier: ^1.0.2
         version: 1.0.2(svelte@5.41.3)
@@ -4282,6 +4285,11 @@ packages:
     peerDependenciesMeta:
       svelte:
         optional: true
+
+  svelte-radix@3.0.2:
+    resolution: {integrity: sha512-SuetgquobI9z+VE89PLjyCDalaiuWhZ4DjmqpuBjNIb3/uRG9ffv07Q2VAhks4plC7idxx1f808W6q+OWZ1BVQ==}
+    peerDependencies:
+      svelte: ^5.0.0
 
   svelte-sonner@1.0.2:
     resolution: {integrity: sha512-hoidgv7hrk3XNZzjXj6/frsvZOiUOtf7Tn2du/hTu1G9PchJGEoy4EpIKyfhVKBiBrxaNFaYPFxN4pHLHCoe/w==}
@@ -8935,6 +8943,10 @@ snapshots:
       postcss: 8.5.3
       postcss-scss: 4.0.9(postcss@8.5.3)
     optionalDependencies:
+      svelte: 5.41.3
+
+  svelte-radix@3.0.2(svelte@5.41.3):
+    dependencies:
       svelte: 5.41.3
 
   svelte-sonner@1.0.2(svelte@5.41.3):

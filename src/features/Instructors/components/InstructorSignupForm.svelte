@@ -14,16 +14,15 @@
 	import SearchResort from '$src/features/Resorts/components/SearchResort.svelte';
 	import SportsCheckboxes from '$src/features/Sports/components/SportsCheckboxes.svelte';
 	import LanguageCheckboxes from '$src/lib/components/shared/LanguageCheckboxes.svelte';
-	import { onDestroy } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import CurrencySelect from '$src/lib/components/shared/CurrencySelect.svelte';
 	import CountryCodeSelect from '$src/lib/components/shared/CountryCodeSelect.svelte';
 	import InstructorTypeSelect from '$src/lib/components/shared/InstructorTypeSelect.svelte';
 	import { route } from '$lib/i18n/routeHelpers';
 	import { t } from '$lib/i18n/i18n';
 	import ResortRequestModal from '$src/features/Resorts/components/ResortRequestModal.svelte';
-	import * as Alert from '$src/lib/components/ui/alert';
 	import { Button } from '$src/lib/components/ui/button';
-	import { InfoCircle } from 'svelte-radix';
+	import { InfoCircled } from 'svelte-radix';
 	import type { ResortRequest } from '$lib/server/db/schema';
 
 	let { data }: {
@@ -109,13 +108,15 @@
 	onsubmit={() => console.log('Submitting')}
 >
 	{#if resortRequestSubmitted || (data.pendingResortRequests && data.pendingResortRequests.some(r => r.status === 'pending'))}
-		<Alert.Root variant="info">
-			<InfoCircle class="h-4 w-4" />
-			<Alert.Title>{$t('resort_request_pending_title')}</Alert.Title>
-			<Alert.Description>
-				{$t('resort_request_pending_description')}
-			</Alert.Description>
-		</Alert.Root>
+		<div class="flex items-start gap-3 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950">
+			<InfoCircled class="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
+			<div class="flex-1">
+				<h3 class="font-semibold text-blue-900 dark:text-blue-100">{$t('resort_request_pending_title')}</h3>
+				<p class="mt-1 text-sm text-blue-800 dark:text-blue-200">
+					{$t('resort_request_pending_description')}
+				</p>
+			</div>
+		</div>
 	{/if}
 
 	<div class="flex flex-col gap-2">

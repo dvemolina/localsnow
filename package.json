@@ -100,6 +100,7 @@
 		"sharp": "^0.34.1",
 		"slugify": "^1.6.6",
 		"stripe": "^19.2.0",
+		"svelte-radix": "^3.0.2",
 		"svelte-sonner": "^1.0.2",
 		"sveltekit-i18n": "^2.4.2",
 		"vaul-svelte": "1.0.0-next.7"
