@@ -177,7 +177,7 @@
 		<Sidebar.GroupLabel>{$t('sidebar_application')}</Sidebar.GroupLabel>
 		<Sidebar.GroupContent>
 			<Sidebar.Menu>
-				{#each navItems as item (item.url)}
+				{#each navItems() as item (item.url)}
 					<Sidebar.MenuItem>
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}
