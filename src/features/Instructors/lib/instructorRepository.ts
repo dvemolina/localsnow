@@ -196,20 +196,21 @@ export class InstructorRepository {
         schoolId?: number;
         sortBy?: string;
     }) {
-        console.log('👨‍🏫 [InstructorRepository] searchInstructors called with filters:', filters);
-
         // Convert sport slug to ID if it's a string
         let sportIdNumeric: number | undefined;
         if (filters.sportId) {
             if (typeof filters.sportId === 'string') {
                 sportIdNumeric = getSportIdBySlug(filters.sportId);
-                console.log(`🔄 [InstructorRepository] Converted sport slug "${filters.sportId}" to ID: ${sportIdNumeric}`);
             } else {
                 sportIdNumeric = filters.sportId;
             }
         }
 
         try {
+            // CRITICAL FIX: Use INNER JOIN when filtering by resort/sport/school
+            // This ensures only instructors with matching associations are returned
+            // LEFT JOIN would return ALL instructors, even those without the filtered resort/sport
+
             let query = db
                 .select({
                     id: users.id,
@@ -232,16 +233,42 @@ export class InstructorRepository {
                     schoolName: schools.name,
                     schoolSlug: schools.slug
                 })
-                .from(users)
-                .leftJoin(instructorSports, eq(users.id, instructorSports.instructorId))
-                .leftJoin(instructorResorts, eq(users.id, instructorResorts.instructorId))
-                .leftJoin(schoolInstructors, and(
-                    eq(users.id, schoolInstructors.instructorId),
-                    eq(schoolInstructors.isAcceptedBySchool, true),
-                    eq(schoolInstructors.isActive, true)
-                ))
-                .leftJoin(schools, eq(schoolInstructors.schoolId, schools.id))
-                .$dynamic();
+                .from(users);
+
+            // Use INNER JOIN for sports if filtering by sport, otherwise LEFT JOIN
+            if (sportIdNumeric) {
+                query = query.innerJoin(instructorSports, eq(users.id, instructorSports.instructorId));
+            } else {
+                query = query.leftJoin(instructorSports, eq(users.id, instructorSports.instructorId));
+            }
+
+            // Use INNER JOIN for resorts if filtering by resort, otherwise LEFT JOIN
+            if (filters.resortId) {
+                query = query.innerJoin(instructorResorts, eq(users.id, instructorResorts.instructorId));
+            } else {
+                query = query.leftJoin(instructorResorts, eq(users.id, instructorResorts.instructorId));
+            }
+
+            // Use INNER JOIN for schools if filtering by school, otherwise LEFT JOIN
+            if (filters.schoolId) {
+                query = query
+                    .innerJoin(schoolInstructors, and(
+                        eq(users.id, schoolInstructors.instructorId),
+                        eq(schoolInstructors.isAcceptedBySchool, true),
+                        eq(schoolInstructors.isActive, true)
+                    ))
+                    .innerJoin(schools, eq(schoolInstructors.schoolId, schools.id));
+            } else {
+                query = query
+                    .leftJoin(schoolInstructors, and(
+                        eq(users.id, schoolInstructors.instructorId),
+                        eq(schoolInstructors.isAcceptedBySchool, true),
+                        eq(schoolInstructors.isActive, true)
+                    ))
+                    .leftJoin(schools, eq(schoolInstructors.schoolId, schools.id));
+            }
+
+            query = query.$dynamic();
 
             // Build WHERE conditions
             const conditions: any[] = [];
@@ -269,24 +296,6 @@ export class InstructorRepository {
             // Filter by resort
             if (filters.resortId) {
                 conditions.push(eq(instructorResorts.resortId, filters.resortId));
-
-                // DEBUG: Check what resorts instructors are actually linked to
-                const debugResorts = await db
-                    .select({
-                        instructorId: instructorResorts.instructorId,
-                        resortId: instructorResorts.resortId,
-                        resortName: resorts.name
-                    })
-                    .from(instructorResorts)
-                    .leftJoin(resorts, eq(instructorResorts.resortId, resorts.id))
-                    .limit(20);
-                console.log(`🔍 [DEBUG] Sample instructor_resorts associations:`, debugResorts);
-
-                const resortsForThisId = await db
-                    .select({ instructorId: instructorResorts.instructorId })
-                    .from(instructorResorts)
-                    .where(eq(instructorResorts.resortId, filters.resortId));
-                console.log(`🔍 [DEBUG] Instructors linked to resortId ${filters.resortId}:`, resortsForThisId.length);
             }
 
             // Filter by school
@@ -297,17 +306,8 @@ export class InstructorRepository {
 
             query = query.where(and(...conditions));
 
-            console.log('🔍 [InstructorRepository] Executing query with conditions:', {
-                conditionsCount: conditions.length,
-                hasResortFilter: !!filters.resortId,
-                hasSportFilter: !!sportIdNumeric,
-                hasSchoolFilter: !!filters.schoolId
-            });
-
             // Execute query
             const results = await query;
-
-            console.log('📥 [InstructorRepository] Raw query results:', { count: results.length });
 
             // Group by instructor ID to handle multiple sports/resorts
             const instructorsMap = new Map();
@@ -352,32 +352,19 @@ export class InstructorRepository {
 
             let instructorsList = Array.from(instructorsMap.values());
 
-            console.log('📦 [InstructorRepository] After grouping:', { count: instructorsList.length });
-
             // Filter by sport if specified
             if (sportIdNumeric) {
-                const beforeCount = instructorsList.length;
                 instructorsList = instructorsList.filter(instructor =>
                     instructor.sports.includes(sportIdNumeric)
                 );
-                console.log(`🏂 [InstructorRepository] After sport filter (${sportIdNumeric}):`, {
-                    before: beforeCount,
-                    after: instructorsList.length,
-                    exampleSports: instructorsList.length > 0 ? instructorsList[0].sports : 'none'
-                });
             }
 
             // Filter by language if specified
             if (filters.language) {
-                const beforeCount = instructorsList.length;
                 instructorsList = instructorsList.filter(instructor =>
                     instructor.spokenLanguages &&
                     instructor.spokenLanguages.includes(filters.language)
                 );
-                console.log(`🗣️ [InstructorRepository] After language filter (${filters.language}):`, {
-                    before: beforeCount,
-                    after: instructorsList.length
-                });
             }
 
             // Basic sorting (name-based only, price and rating sorting happens in page.server after fetching lessons)
@@ -386,11 +373,6 @@ export class InstructorRepository {
             } else if (filters.sortBy === 'name_desc') {
                 instructorsList.sort((a, b) => b.name.localeCompare(a.name));
             }
-
-            console.log('✅ [InstructorRepository] Final results:', {
-                count: instructorsList.length,
-                instructors: instructorsList.map(i => `${i.name} ${i.lastName}`)
-            });
 
             return instructorsList;
         } catch (error) {

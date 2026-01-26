@@ -7,7 +7,7 @@
 	}>();
 </script>
 
-<div class="search-type-toggle flex gap-2 rounded-lg bg-muted/50 p-1">
+<div class="search-type-toggle flex gap-2 rounded-lg bg-muted/50 p-1 ">
 	<button
 		type="button"
 		class="flex-1 rounded-md px-4 py-2 text-sm font-medium transition-all {value ===
@@ -22,7 +22,7 @@
 		<div class="flex items-center justify-center gap-2">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
-				class="size-4"
+				class="size-4 hidden sm:flex"
 				viewBox="0 0 24 24"
 				fill="none"
 				stroke="currentColor"
@@ -52,7 +52,7 @@
 		<div class="flex items-center justify-center gap-2">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
-				class="size-4"
+				class="size-4 hidden sm:flex"
 				viewBox="0 0 24 24"
 				fill="none"
 				stroke="currentColor"

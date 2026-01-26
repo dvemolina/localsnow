@@ -260,7 +260,7 @@
 				<div class="flex items-center justify-center gap-2 flex-col-reverse">
 					<h1 class="title3">
 						{instructor.name}
-						{`${instructor.lastName[0]}.`}
+						{instructor.lastName}
 					</h1>
 
 					<!-- Star Rating - Show actual rating if reviews exist -->

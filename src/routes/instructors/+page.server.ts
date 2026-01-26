@@ -23,8 +23,6 @@ export const load: PageServerLoad = async ({ url }) => {
     const schoolId = url.searchParams.get('school');
     const sortBy = url.searchParams.get('sortBy');
 
-    console.log('🔍 [Instructors Page Load] URL params:', { resortId, sportId, searchQuery });
-
     // Check if any filters are active (prompt-first UX)
     const hasFilters = !!(resortId || sportId || searchQuery || language || priceMin || priceMax || instructorType || verifiedOnly || schoolId || sortBy);
 
@@ -158,12 +156,6 @@ export const load: PageServerLoad = async ({ url }) => {
                 sortBy: sortBy
             }
         };
-
-        console.log('✅ [Instructors Page] Returning to client:', {
-            hasFilters: result.hasFilters,
-            filters: result.filters,
-            instructorCount: result.instructors.length
-        });
 
         return result;
     } catch (error) {
