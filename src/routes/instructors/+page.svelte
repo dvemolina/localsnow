@@ -165,7 +165,7 @@
 		'@context': 'https://schema.org',
 		'@type': 'ItemList',
 		name: 'Ski and Snowboard Instructors',
-		description: 'Browse certified ski and snowboard instructors at top Spanish resorts',
+		description: 'Browse certified ski and snowboard instructors at top resorts worldwide',
 		numberOfItems: data.instructors.length,
 		itemListElement: data.instructors.slice(0, 20).map((instructor, index) => ({
 			'@type': 'ListItem',
@@ -188,7 +188,7 @@
 		name: 'Local Snow',
 		url: 'https://localsnow.org',
 		logo: 'https://localsnow.org/local-snow-head.png',
-		description: 'Free directory of independent ski and snowboard instructors in Spain',
+		description: 'Free directory of independent ski and snowboard instructors worldwide',
 		sameAs: []
 	};
 

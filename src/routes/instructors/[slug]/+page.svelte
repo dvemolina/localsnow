@@ -43,7 +43,7 @@
 		'@type': 'Person',
 		name: instructorFullName,
 		jobTitle: isIndependent ? 'Independent Ski Instructor' : 'Ski Instructor',
-		description: instructor.bio || `Professional ski instructor at ${resorts.length > 0 ? resorts[0].name : 'Spanish ski resorts'}`,
+		description: instructor.bio || `Professional ski instructor at ${resorts.length > 0 ? resorts[0].name : 'ski resorts worldwide'}`,
 		image: instructorImageUrl,
 		url: profileUrl,
 		...(reviewStats && reviewStats.totalReviews > 0 && {
@@ -117,7 +117,7 @@
 		name: 'Local Snow',
 		url: 'https://localsnow.org',
 		logo: 'https://localsnow.org/local-snow-head.png',
-		description: 'Free directory of independent ski and snowboard instructors in Spain',
+		description: 'Free directory of independent ski and snowboard instructors worldwide',
 		sameAs: []
 	};
 

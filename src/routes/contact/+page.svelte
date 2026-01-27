@@ -13,10 +13,10 @@
 			email: contactEmail,
 			url: 'https://localsnow.org',
 			description:
-				'Platform connecting ski and snowboard instructors with clients at Spanish resorts',
+				'Global platform connecting ski and snowboard instructors with clients at resorts worldwide',
 			areaServed: {
-				'@type': 'Country',
-				name: 'Spain'
+				'@type': 'Place',
+				name: 'Worldwide'
 			}
 		}
 	};

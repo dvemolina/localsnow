@@ -216,8 +216,8 @@
 	"reviews_rating": "Rating",
 	"reviews_comment": "Comment",
 	"reviews_thank_you": "Thank you for your review!",
-	"seo_meta_home_title": "Local Snow | Curated Directory of Ski Instructors in Spain",
-	"seo_meta_home_description": "A trusted directory of ski and snowboard instructors across Spain. Browse profiles, check specialties and languages, and send lesson requests directly. Free to use at 25+ Spanish resorts including Baqueira, Formigal, Cerler, and Sierra Nevada.",
+	"seo_meta_home_title": "Local Snow | Global Directory of Ski & Snowboard Instructors",
+	"seo_meta_home_description": "A trusted directory of ski and snowboard instructors worldwide. Browse profiles across resorts globally, check specialties and languages, and send lesson requests directly. Free to use, zero platform fees.",
 	"seo_meta_instructors_title": "Browse Ski & Snowboard Instructors | Local Snow Directory",
 	"seo_meta_instructors_description": "Browse our curated directory of certified ski and snowboard instructors. Filter by resort, language, specialty, and availability. Connect directly with local professionals.",
 	"seo_meta_how_it_works_title": "How LocalSnow Works | Free Instructor Directory",
@@ -349,7 +349,7 @@
 	"about_contact_p2": "That's it. No manifesto, no corporate mission statement. Just trying to do better.",
 	"about_contact_create_profile": "create a profile",
 	"about_contact_email": "admin@localsnow.org",
-	"about_intro": "Local Snow is a free directory connecting clients with independent ski and snowboard instructors across Spain.",
+	"about_intro": "Local Snow is a free directory connecting clients with independent ski and snowboard instructors worldwide.",
 	"about_mission_title": "Our Mission",
 	"about_mission_text": "We believe ski lessons should be accessible without booking fees or commissions. Our platform lets instructors set their own prices and keep 100% of their lesson fees.",
 	"about_how_different_title": "How We're Different",
@@ -1238,7 +1238,7 @@
 	"contact_page_benefit_4": "Free directory listing - manage your profile at no cost",
 	"contact_page_join_button": "List Your Profile",
 	"contact_page_clients_title": "For Clients",
-	"contact_page_clients_desc": "Looking for ski or snowboard instructors at Spanish resorts?",
+	"contact_page_clients_desc": "Looking for ski or snowboard instructors at resorts worldwide?",
 	"contact_page_find_button": "Browse Directory",
 	"contact_page_support_title": "Support",
 	"contact_page_support_desc": "Need help with a lesson request or have technical issues? Email us at {email} and we'll respond within 24 hours.",
@@ -1482,4 +1482,6 @@
 	"resort_request_pending_description": "Your resort request is being reviewed (typically 24-48 hours). You can complete your profile now, but it won't be visible to students until your resort is approved and assigned.",
 	"resort_request_cant_find_text": "Can't find your resort?",
 	"resort_request_add_button": "Request to add it",
-	"resort_request_submitted": "Request submitted"}
+	"resort_request_submitted": "Request submitted",
+	"sidebar_schools": "School"	
+}

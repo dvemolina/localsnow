@@ -89,10 +89,4 @@
 	{#if noindex}
 		<meta name="robots" content="noindex, nofollow" />
 	{/if}
-
-	<!-- Geographic targeting for Spain-focused SEO -->
-	{#if currentLocale === 'es'}
-		<meta name="geo.region" content="ES" />
-		<meta name="geo.placename" content="Spain" />
-	{/if}
 </svelte:head>
