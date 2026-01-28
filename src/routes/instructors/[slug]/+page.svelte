@@ -19,6 +19,7 @@
 	const resorts = data.resorts;
 	const reviews = data.reviews;
 	const reviewStats = data.reviewStats;
+	const school = data.school;
 
 	// Get return URL from query params for filter preservation
 	const returnTo = $derived(page.url.searchParams.get('returnTo') || '/instructors');
@@ -46,6 +47,14 @@
 		description: instructor.bio || `Professional ski instructor at ${resorts.length > 0 ? resorts[0].name : 'ski resorts worldwide'}`,
 		image: instructorImageUrl,
 		url: profileUrl,
+		...(school && {
+			worksFor: {
+				'@type': 'Organization',
+				name: school.name,
+				url: `https://localsnow.org/schools/${school.slug}`,
+				...(school.logo && { logo: school.logo })
+			}
+		}),
 		...(reviewStats && reviewStats.totalReviews > 0 && {
 			aggregateRating: {
 				'@type': 'AggregateRating',
@@ -280,12 +289,59 @@
 					{/if}
 				</div>
 					
-				<!-- Instructor Type Badge -->
+				<!-- Instructor Type / School Affiliation -->
 				<div class="mt-4">
-					{#if isIndependent}
-						<Badge variant="secondary" class="text-sm">{$t('badge_independent_instructor')}</Badge>
+					{#if school}
+						<!-- School Affiliation Card -->
+						<a
+							href="/schools/{school.slug}"
+							class="flex items-center gap-3 rounded-lg border border-border bg-muted/50 p-3 transition-colors hover:bg-muted hover:border-primary/30"
+						>
+							{#if school.logo}
+								<img
+									src={school.logo}
+									alt={school.name}
+									class="size-10 rounded-md object-cover border border-border"
+								/>
+							{:else}
+								<div class="flex size-10 items-center justify-center rounded-md bg-primary/10 border border-border">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="size-5 text-primary"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+										/>
+									</svg>
+								</div>
+							{/if}
+							<div class="flex flex-col items-start">
+								<span class="text-xs text-muted-foreground">{$t('instructor_affiliated_with') || 'Affiliated with'}</span>
+								<span class="text-sm font-medium">{school.name}</span>
+							</div>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="ml-auto size-4 text-muted-foreground"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M9 5l7 7-7 7"
+								/>
+							</svg>
+						</a>
 					{:else}
-						<Badge variant="secondary" class="text-sm">{$t('badge_school_instructor')}</Badge>
+						<Badge variant="secondary" class="text-sm">{$t('badge_independent_instructor')}</Badge>
 					{/if}
 				</div>
 			</div>

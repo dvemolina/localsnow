@@ -7,6 +7,7 @@ import { BookingRequestService } from '$src/features/Bookings/lib/bookingRequest
 import { UserService } from '$src/features/Users/lib/UserService';
 import { SportsService } from '$src/features/Sports/lib/sportsService';
 import { ReviewService } from '$src/features/Reviews/lib/reviewService';
+import { SchoolInstructorService } from '$src/features/Schools/lib/schoolInstructorService';
 import { trackProfileVisit } from '$src/features/Dashboard/lib/utils';
 import { getClientIP } from '$src/lib/utils/auth';
 import { sendBookingNotificationToInstructor, sendBookingConfirmationToClient } from '$src/lib/server/webhooks/n8n/email-n8n';
@@ -19,6 +20,7 @@ const bookingRequestService = new BookingRequestService();
 const userService = new UserService();
 const sportsService = new SportsService();
 const reviewService = new ReviewService();
+const schoolInstructorService = new SchoolInstructorService();
 
 export const load: PageServerLoad = async (event) => {
     // Parse slug to extract instructor ID
@@ -68,12 +70,13 @@ export const load: PageServerLoad = async (event) => {
     }
 
     try {
-        // Get sports, resorts, and reviews in parallel
-        const [sportIds, resorts, reviews, reviewStats] = await Promise.all([
+        // Get sports, resorts, reviews, and school in parallel
+        const [sportIds, resorts, reviews, reviewStats, school] = await Promise.all([
             instructorService.getInstructorSports(instructorId),
             instructorService.getInstructorResorts(instructorId),
             reviewService.getInstructorReviews(instructorId, 10, 0),
-            reviewService.getInstructorStats(instructorId)
+            reviewService.getInstructorStats(instructorId),
+            schoolInstructorService.getInstructorSchool(instructorId)
         ]);
 
         // Get sport names from IDs
@@ -115,7 +118,8 @@ export const load: PageServerLoad = async (event) => {
             resorts,
             reviews,
             reviewStats,
-            user: completeUser
+            user: completeUser,
+            school
         };
     } catch (err) {
         console.error('Error loading instructor profile:', err);
