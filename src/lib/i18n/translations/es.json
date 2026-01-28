@@ -1861,5 +1861,15 @@
 	"resort_request_cant_find_text": "¿No encuentras tu estación?",
 	"resort_request_add_button": "Solicitar añadirla",
 	"resort_request_submitted": "Solicitud enviada",
-	"sidebar_schools": "Escuela"
+	"sidebar_schools": "Escuela",
+	"leads_page_title": "Consultas de Contacto",
+	"leads_page_subtitle": "Gestiona solicitudes de contacto de potenciales clientes",
+	"stats_total_inquiries": "Consultas Totales",
+	"stats_new": "Nuevas",
+	"stats_contacted": "Contactadas",
+	"stats_converted": "Convertidas",
+	"leads_empty_state_title": "No se encontraron consultas",
+	"leads_empty_state_all": "Cuando los clientes te contacten desde tu perfil, aparecerán aquí",
+	"leads_empty_state_filtered": "No hay consultas para este filtro",
+	"label_anonymous": "Anónimo"
 }

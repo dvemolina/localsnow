@@ -1484,5 +1484,15 @@
 	"resort_request_cant_find_text": "Can't find your resort?",
 	"resort_request_add_button": "Request to add it",
 	"resort_request_submitted": "Request submitted",
-	"sidebar_schools": "School"	
+	"sidebar_schools": "School",
+	"leads_page_title": "Contact Inquiries",
+	"leads_page_subtitle": "Manage contact requests from potential clients",
+	"stats_total_inquiries": "Total Inquiries",
+	"stats_new": "New",
+	"stats_contacted": "Contacted",
+	"stats_converted": "Converted",
+	"leads_empty_state_title": "No inquiries found",
+	"leads_empty_state_all": "When clients contact you through your profile, they will appear here",
+	"leads_empty_state_filtered": "No inquiries for this filter",
+	"label_anonymous": "Anonymous"
 }
