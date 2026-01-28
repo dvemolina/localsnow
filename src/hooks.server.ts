@@ -121,6 +121,28 @@ const i18nHandle: Handle = async ({ event, resolve }) => {
 	});
 };
 
+const securityHeadersHandle: Handle = async ({ event, resolve }) => {
+	const response = await resolve(event);
+	const csp = response.headers.get('content-security-policy');
+
+	if (csp) {
+		const directives = csp.split(';').map((part) => part.trim()).filter(Boolean);
+		const imgSrcIndex = directives.findIndex((directive) => directive.startsWith('img-src'));
+
+		if (imgSrcIndex >= 0) {
+			if (!directives[imgSrcIndex].includes('blob:')) {
+				directives[imgSrcIndex] = `${directives[imgSrcIndex]} blob:`;
+			}
+		} else {
+			directives.push("img-src 'self' data: https: blob:");
+		}
+
+		response.headers.set('content-security-policy', directives.join('; '));
+	}
+
+	return response;
+};
+
 if (process.env.NODE_ENV === 'production') {
 	const { valid, missing } = validateConfig();
 	if (!valid) {
@@ -132,6 +154,6 @@ if (process.env.NODE_ENV === 'production') {
 
 export const handle: Handle = sequence(
 	Sentry.sentryHandle(),
-	sequence(rateLimitHandle, languageHandle, i18nHandle, handleAuth)
+	sequence(rateLimitHandle, languageHandle, i18nHandle, handleAuth, securityHeadersHandle)
 );
 export const handleError = Sentry.handleErrorWithSentry();
