@@ -11,7 +11,7 @@ import { R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME, 
  * @throws Error if the URL is relative
  */
 function validateAbsoluteUrl(url: string, context: string): void {
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    if (!url.startsWith('http://assets') && !url.startsWith('https://assets')) {
         console.error(`[StorageService] Invalid URL detected in ${context}:`, url);
         console.error(`[StorageService] R2_PUBLIC_URL is: "${R2_PUBLIC_URL}"`);
         throw new Error(
