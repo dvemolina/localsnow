@@ -1,17 +1,21 @@
 import { redirect, fail } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 import { BookingRequestService } from '$src/features/Bookings/lib/bookingRequestService';
+import { requireAuth } from '$src/lib/utils/auth';
+import { hasRole } from '$src/lib/utils/roles';
 
 const bookingService = new BookingRequestService();
 
-export const load: PageServerLoad = async ({ locals }) => {
-    if (!locals.user) {
-        redirect(302, '/login');
+export const load: PageServerLoad = async (event) => {
+    const user = requireAuth(event, 'Login to access your bookings');
+
+    if (!hasRole(user, 'client')) {
+        redirect(302, '/dashboard');
     }
 
     // Use user ID (preferred) with email fallback for backward compatibility
-    const clientUserId = locals.user.id;
-    const clientEmail = locals.user.email;
+    const clientUserId = user.id;
+    const clientEmail = user.email;
     const bookingRequests = await bookingService.getBookingRequestsByClient(clientUserId, clientEmail);
 
     // Get counts for filtering
@@ -30,20 +34,21 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-    cancel: async ({ request, locals }) => {
-        if (!locals.user) {
-            return fail(401, { error: 'Unauthorized' });
+    cancel: async (event) => {
+        const user = requireAuth(event, 'Session expired. Please login again.');
+        if (!hasRole(user, 'client')) {
+            return fail(403, { error: 'Not authorized' });
         }
 
-        const formData = await request.formData();
+        const formData = await event.request.formData();
         const bookingRequestId = parseInt(formData.get('bookingRequestId') as string);
 
         try {
             // Use user ID (preferred) with email fallback
             const result = await bookingService.cancelBookingRequest(
                 bookingRequestId,
-                locals.user.id,
-                locals.user.email
+                user.id,
+                user.email
             );
 
             // Build detailed success message

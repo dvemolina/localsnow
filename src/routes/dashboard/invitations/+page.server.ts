@@ -5,14 +5,14 @@ import { SchoolInstructorService } from "$src/features/Schools/lib/schoolInstruc
 import { db } from "$src/lib/server/db/index.js";
 import { schools, users } from "$src/lib/server/db/schema.js";
 import { eq } from "drizzle-orm";
-import { hasInstructorRole } from "$src/lib/utils/roles";
+import { hasRole } from "$src/lib/utils/roles";
 
 const schoolInstructorService = new SchoolInstructorService();
 
 export const load: PageServerLoad = async (event) => {
     const user = requireAuth(event, 'Login to access dashboard');
 
-    if (!hasInstructorRole(user)) {
+    if (!hasRole(user, 'instructor-school')) {
         redirect(302, '/dashboard');
     }
 
@@ -32,7 +32,7 @@ export const actions: Actions = {
     acceptInvitation: async (event) => {
         const user = requireAuth(event, 'Login to accept');
 
-        if (!hasInstructorRole(user)) {
+        if (!hasRole(user, 'instructor-school')) {
             return fail(403, { message: 'Not authorized' });
         }
 
@@ -82,7 +82,7 @@ export const actions: Actions = {
     rejectInvitation: async (event) => {
         const user = requireAuth(event, 'Login to reject');
 
-        if (!hasInstructorRole(user)) {
+        if (!hasRole(user, 'instructor-school')) {
             return fail(403, { message: 'Not authorized' });
         }
 
