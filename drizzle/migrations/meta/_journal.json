@@ -379,6 +379,13 @@
       "when": 1769626540860,
       "tag": "0053_shallow_scalphunter",
       "breakpoints": true
+    },
+    {
+      "idx": 54,
+      "version": "7",
+      "when": 1769627581250,
+      "tag": "0054_tough_captain_midlands",
+      "breakpoints": true
     }
   ]
 }

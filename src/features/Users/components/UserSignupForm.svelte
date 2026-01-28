@@ -9,6 +9,9 @@
 	import { Label } from '$src/lib/components/ui/label';
 	import { t } from '$lib/i18n/i18n';
 	import { route } from '$lib/i18n/routeHelpers';
+	import { PUBLIC_TURNSTILE_SITE_KEY } from '$env/static/public';
+	import { onMount } from 'svelte';
+
 	let { data }: { data: { form: SuperValidated<Infer<UserSignupSchema>> } } = $props();
 
 	const form = superForm(data.form, {
@@ -16,6 +19,50 @@
 	});
 
 	const { form: formData, enhance } = form;
+
+	let turnstileToken = $state('');
+	let turnstileWidgetId: string | null = null;
+
+	onMount(() => {
+		// Load Turnstile script if not already loaded
+		if (!document.getElementById('cf-turnstile-script')) {
+			const script = document.createElement('script');
+			script.id = 'cf-turnstile-script';
+			script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad';
+			script.async = true;
+			script.defer = true;
+			document.head.appendChild(script);
+		}
+
+		// Define callback for when Turnstile is ready
+		(window as any).onTurnstileLoad = () => {
+			if ((window as any).turnstile && PUBLIC_TURNSTILE_SITE_KEY) {
+				turnstileWidgetId = (window as any).turnstile.render('#turnstile-widget', {
+					sitekey: PUBLIC_TURNSTILE_SITE_KEY,
+					callback: (token: string) => {
+						turnstileToken = token;
+					}
+				});
+			}
+		};
+
+		// If Turnstile is already loaded, render immediately
+		if ((window as any).turnstile && PUBLIC_TURNSTILE_SITE_KEY) {
+			turnstileWidgetId = (window as any).turnstile.render('#turnstile-widget', {
+				sitekey: PUBLIC_TURNSTILE_SITE_KEY,
+				callback: (token: string) => {
+					turnstileToken = token;
+				}
+			});
+		}
+
+		return () => {
+			// Cleanup widget on unmount
+			if (turnstileWidgetId && (window as any).turnstile) {
+				(window as any).turnstile.remove(turnstileWidgetId);
+			}
+		};
+	});
 </script>
 
 
@@ -94,9 +141,13 @@
 			</Form.Control>
 			<Form.FieldErrors />
 		</Form.Field>
-	
+
+	<!-- Cloudflare Turnstile Widget -->
+	<div id="turnstile-widget" class="mt-4"></div>
+	<input type="hidden" name="cf-turnstile-response" value={turnstileToken} />
+
     <div class="flex flex-row gap-2 items-center justify-center w-full mt-6">
-        <Form.Button>{$t('common_submit')}</Form.Button>
+        <Form.Button disabled={!turnstileToken}>{$t('common_submit')}</Form.Button>
         <a href={route('/login')} class="text-sm {buttonVariants({ variant: "outline-solid" })}">{$t('login_already_have_account')}</a>
     </div>
 </form>

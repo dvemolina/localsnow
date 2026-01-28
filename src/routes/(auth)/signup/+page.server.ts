@@ -8,6 +8,7 @@ import { RefillingTokenBucket } from "$src/lib/server/rate-limit.js";
 import { createSession, generateSessionToken, setSessionTokenCookie } from "$src/lib/server/session.js";
 import { getClientIP } from "$src/lib/utils/auth.js";
 import { sendSignupEmail } from "$src/lib/server/webhooks/n8n/email-n8n.js";
+import { TURNSTILE_SECRET_KEY } from "$src/lib/server/config.js";
 
 const userService = new UserService()
 const ipBucket = new RefillingTokenBucket<string>(3, 10);
@@ -30,6 +31,23 @@ export const load: PageServerLoad = async (event) => {
     return { form }
 };
 
+async function verifyTurnstileToken(token: string, ip: string | null): Promise<boolean> {
+    const formData = new FormData();
+    formData.append('secret', TURNSTILE_SECRET_KEY);
+    formData.append('response', token);
+    if (ip) {
+        formData.append('remoteip', ip);
+    }
+
+    const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+        method: 'POST',
+        body: formData
+    });
+
+    const result = await response.json();
+    return result.success === true;
+}
+
 export const actions: Actions = {
     default: async (event) => {
 
@@ -39,6 +57,25 @@ export const actions: Actions = {
                 message: "Too many requests"
             });
         }
+
+        // Clone the request to read form data for Turnstile, then pass original to superValidate
+        const clonedRequest = event.request.clone();
+        const formData = await clonedRequest.formData();
+        const turnstileToken = formData.get('cf-turnstile-response') as string;
+
+        if (!turnstileToken) {
+            return fail(400, {
+                message: "Please complete the security check"
+            });
+        }
+
+        const turnstileValid = await verifyTurnstileToken(turnstileToken, clientIP);
+        if (!turnstileValid) {
+            return fail(400, {
+                message: "Security verification failed. Please try again."
+            });
+        }
+
         const form = await superValidate(event.request, zod(userSignupSchema));
         
         if (!form.valid) {

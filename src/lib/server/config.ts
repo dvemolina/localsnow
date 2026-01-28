@@ -64,6 +64,9 @@ export const R2_ACCESS_KEY_ID = getSecret('R2_ACCESS_KEY_ID');
 export const R2_SECRET_ACCESS_KEY = getSecret('R2_SECRET_ACCESS_KEY');
 export const R2_BUCKET_NAME = getSecret('R2_BUCKET_NAME', 'localsnow-uploads');
 
+// Cloudflare Turnstile (bot protection)
+export const TURNSTILE_SECRET_KEY = getSecret('TURNSTILE_SECRET_KEY');
+
 // Cron Job Authentication
 export const CRON_SECRET = getSecret('CRON_SECRET');
 
