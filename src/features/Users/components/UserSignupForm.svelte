@@ -9,8 +9,10 @@
 	import { Label } from '$src/lib/components/ui/label';
 	import { t } from '$lib/i18n/i18n';
 	import { route } from '$lib/i18n/routeHelpers';
-	import { PUBLIC_TURNSTILE_SITE_KEY } from '$env/static/public';
 	import { onMount } from 'svelte';
+
+	// Public key - safe to hardcode (visible in browser anyway)
+	const TURNSTILE_SITE_KEY = '0x4AAAAAACVEKmU4M7Fnn1Lh';
 
 	let { data }: { data: { form: SuperValidated<Infer<UserSignupSchema>> } } = $props();
 
@@ -36,9 +38,9 @@
 
 		// Define callback for when Turnstile is ready
 		(window as any).onTurnstileLoad = () => {
-			if ((window as any).turnstile && PUBLIC_TURNSTILE_SITE_KEY) {
+			if ((window as any).turnstile && TURNSTILE_SITE_KEY) {
 				turnstileWidgetId = (window as any).turnstile.render('#turnstile-widget', {
-					sitekey: PUBLIC_TURNSTILE_SITE_KEY,
+					sitekey: TURNSTILE_SITE_KEY,
 					callback: (token: string) => {
 						turnstileToken = token;
 					}
@@ -47,9 +49,9 @@
 		};
 
 		// If Turnstile is already loaded, render immediately
-		if ((window as any).turnstile && PUBLIC_TURNSTILE_SITE_KEY) {
+		if ((window as any).turnstile && TURNSTILE_SITE_KEY) {
 			turnstileWidgetId = (window as any).turnstile.render('#turnstile-widget', {
-				sitekey: PUBLIC_TURNSTILE_SITE_KEY,
+				sitekey: TURNSTILE_SITE_KEY,
 				callback: (token: string) => {
 					turnstileToken = token;
 				}
