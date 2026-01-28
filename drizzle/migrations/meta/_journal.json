@@ -351,6 +351,13 @@
       "when": 1769450652650,
       "tag": "0049_secret_stick",
       "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "7",
+      "when": 1769584548697,
+      "tag": "0050_outgoing_steel_serpent",
+      "breakpoints": true
     }
   ]
 }

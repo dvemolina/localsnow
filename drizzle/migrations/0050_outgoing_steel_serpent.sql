@@ -1,0 +1,1 @@
+ALTER TABLE "school_admins" ADD COLUMN IF NOT EXISTS "is_owner" boolean DEFAULT false;
