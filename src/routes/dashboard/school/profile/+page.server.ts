@@ -55,7 +55,7 @@ const updateSchoolProfile: Actions["schoolProfile"] = async (event) => {
             if (form.data.logo && form.data.logo.size > 0) {
                 const logoArrayBuffer = await form.data.logo.arrayBuffer();
                 const logoBuffer = Buffer.from(logoArrayBuffer);
-                logoUrl = await storageService.uploadSchoolLogo(logoBuffer, school.id);
+                logoUrl = await storageService.uploadSchoolLogo(logoBuffer, school.name, user.id);
             }
 
             // Update school profile
