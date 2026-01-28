@@ -6,10 +6,33 @@ import { R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME, 
 //CREATE SERVICE/REPOSITORY IN USER/INSTRUCTOR TO UPLOAD THE IMAGE / QUALIFICATION
 //USE UUID FOR THE FILENAME IN THE REPO
 
+/**
+ * Validates that a URL is absolute (contains a protocol and domain)
+ * @throws Error if the URL is relative
+ */
+function validateAbsoluteUrl(url: string, context: string): void {
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        console.error(`[StorageService] Invalid URL detected in ${context}:`, url);
+        console.error(`[StorageService] R2_PUBLIC_URL is: "${R2_PUBLIC_URL}"`);
+        throw new Error(
+            `Invalid ${context}: URL must be absolute (starting with http:// or https://). ` +
+            `Check that R2_PUBLIC_URL environment variable is properly configured.`
+        );
+    }
+}
+
 export class StorageService {
     private s3Client: S3Client;
 
     constructor() {
+        // Validate R2_PUBLIC_URL is properly configured
+        if (!R2_PUBLIC_URL || !R2_PUBLIC_URL.startsWith('http')) {
+            console.error('[StorageService] R2_PUBLIC_URL is not properly configured:', R2_PUBLIC_URL);
+            console.warn(
+                '[StorageService] R2_PUBLIC_URL must be set to a full URL (e.g., https://assets.localsnow.org). ' +
+                'Profile images will not work correctly without this.'
+            );
+        }
 
         this.s3Client = new S3Client({
             region: 'auto',
@@ -40,7 +63,8 @@ export class StorageService {
                 })
             );
 
-            const profileImageUrl = `${R2_PUBLIC_URL}/${fileName}`
+            const profileImageUrl = `${R2_PUBLIC_URL}/${fileName}`;
+            validateAbsoluteUrl(profileImageUrl, 'profile image URL');
             return profileImageUrl;
         } catch (error) {
             console.error('Error uploading to R2:', error);
@@ -68,7 +92,9 @@ export class StorageService {
             );
 
             // Return the public URL of the uploaded image
-            return `${R2_PUBLIC_URL}/${fileName}`;
+            const logoUrl = `${R2_PUBLIC_URL}/${fileName}`;
+            validateAbsoluteUrl(logoUrl, 'school logo URL');
+            return logoUrl;
         } catch (error) {
             console.error('Error uploading to R2:', error);
             throw new Error('Failed to upload image');
@@ -102,7 +128,9 @@ export class StorageService {
             );
 
             // Return the public URL of the uploaded PDF
-            return `${R2_PUBLIC_URL}/${finalFileName}`;
+            const qualificationUrl = `${R2_PUBLIC_URL}/${finalFileName}`;
+            validateAbsoluteUrl(qualificationUrl, 'qualification PDF URL');
+            return qualificationUrl;
         } catch (error) {
             console.error('Error uploading PDF to R2:', error);
             throw new Error('Failed to upload qualification document');
@@ -128,7 +156,9 @@ export class StorageService {
                 })
             );
 
-            return `${R2_PUBLIC_URL}/${fileName}`;
+            const resortImageUrl = `${R2_PUBLIC_URL}/${fileName}`;
+            validateAbsoluteUrl(resortImageUrl, 'resort image URL');
+            return resortImageUrl;
         } catch (error) {
             console.error('Error uploading resort image to R2:', error);
             throw new Error('Failed to upload resort image');
