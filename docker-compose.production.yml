@@ -219,7 +219,7 @@ services:
         - "traefik.http.middlewares.localsnow-security.headers.referrerPolicy=strict-origin-when-cross-origin"
 
         # Content Security Policy (CSP)
-        - "traefik.http.middlewares.localsnow-security.headers.contentSecurityPolicy=default-src 'self'; script-src 'self' 'unsafe-inline' https://js.stripe.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.stripe.com; frame-src https://js.stripe.com;"
+        - "traefik.http.middlewares.localsnow-security.headers.contentSecurityPolicy=default-src 'self'; script-src 'self' 'unsafe-inline' https://js.stripe.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data:; connect-src 'self' https://api.stripe.com; frame-src https://js.stripe.com;"
 
         # WWW Redirect Middleware (redirect www to non-www)
         - "traefik.http.middlewares.localsnow-www-redirect.redirectregex.regex=^https://www\\.localsnow\\.org/(.*)"
