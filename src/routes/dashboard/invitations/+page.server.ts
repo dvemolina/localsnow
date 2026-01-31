@@ -1,20 +1,15 @@
-import { requireAuth } from "$src/lib/utils/auth.js";
 import type { PageServerLoad, Actions } from "./$types.js";
-import { fail, redirect } from "@sveltejs/kit";
+import { fail } from "@sveltejs/kit";
 import { SchoolInstructorService } from "$src/features/Schools/lib/schoolInstructorService.js";
 import { db } from "$src/lib/server/db/index.js";
 import { schools, users } from "$src/lib/server/db/schema.js";
 import { eq } from "drizzle-orm";
-import { hasRole } from "$src/lib/utils/roles";
+import { requireDashboardRole } from "$src/lib/utils/dashboardAuth";
 
 const schoolInstructorService = new SchoolInstructorService();
 
 export const load: PageServerLoad = async (event) => {
-    const user = requireAuth(event, 'Login to access dashboard');
-
-    if (!hasRole(user, 'instructor-school')) {
-        redirect(302, '/dashboard');
-    }
+    const user = requireDashboardRole(event, ['instructor-school'], 'Login to access dashboard');
 
     // Get pending invitations (schools that invited the instructor)
     const invitations = await schoolInstructorService.getPendingInvitations(user.id);
@@ -30,11 +25,7 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
     acceptInvitation: async (event) => {
-        const user = requireAuth(event, 'Login to accept');
-
-        if (!hasRole(user, 'instructor-school')) {
-            return fail(403, { message: 'Not authorized' });
-        }
+        const user = requireDashboardRole(event, ['instructor-school'], 'Login to accept');
 
         const formData = await event.request.formData();
         const schoolId = parseInt(formData.get('schoolId') as string);
@@ -80,11 +71,7 @@ export const actions: Actions = {
     },
 
     rejectInvitation: async (event) => {
-        const user = requireAuth(event, 'Login to reject');
-
-        if (!hasRole(user, 'instructor-school')) {
-            return fail(403, { message: 'Not authorized' });
-        }
+        const user = requireDashboardRole(event, ['instructor-school'], 'Login to reject');
 
         const formData = await event.request.formData();
         const schoolId = parseInt(formData.get('schoolId') as string);

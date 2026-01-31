@@ -1,17 +1,12 @@
-import { redirect, fail } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 import { BookingRequestService } from '$src/features/Bookings/lib/bookingRequestService';
-import { requireAuth } from '$src/lib/utils/auth';
-import { hasRole } from '$src/lib/utils/roles';
+import { requireDashboardRole } from '$src/lib/utils/dashboardAuth';
 
 const bookingService = new BookingRequestService();
 
 export const load: PageServerLoad = async (event) => {
-    const user = requireAuth(event, 'Login to access your bookings');
-
-    if (!hasRole(user, 'client')) {
-        redirect(302, '/dashboard');
-    }
+    const user = requireDashboardRole(event, ['client'], 'Login to access your bookings');
 
     // Use user ID (preferred) with email fallback for backward compatibility
     const clientUserId = user.id;
@@ -35,10 +30,7 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
     cancel: async (event) => {
-        const user = requireAuth(event, 'Session expired. Please login again.');
-        if (!hasRole(user, 'client')) {
-            return fail(403, { error: 'Not authorized' });
-        }
+        const user = requireDashboardRole(event, ['client'], 'Session expired. Please login again.');
 
         const formData = await event.request.formData();
         const bookingRequestId = parseInt(formData.get('bookingRequestId') as string);

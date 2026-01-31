@@ -1,22 +1,19 @@
-import { requireAuth } from "$src/lib/utils/auth";
-import { redirect } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { isCalendarConnected } from "$lib/server/google/oauth";
 import { db } from "$lib/server/db";
 import { eq } from "drizzle-orm";
 import { instructorGoogleTokens } from "$src/lib/server/db/schema";
 import { WorkingHoursService } from "$src/features/Availability/lib/workingHoursService";
-import { hasInstructorRole } from "$src/lib/utils/roles";
+import { requireDashboardRole } from "$src/lib/utils/dashboardAuth";
 
 const workingHoursService = new WorkingHoursService();
 
 export const load: PageServerLoad = async (event) => {
-    const user = requireAuth(event, 'Login to access availability settings');
-    
-    // Only instructors can access
-    if (!hasInstructorRole(user)) {
-        redirect(302, '/dashboard');
-    }
+    const user = requireDashboardRole(
+        event,
+        ['instructor-independent', 'instructor-school'],
+        'Login to access availability settings'
+    );
     
     // Check connection status
     const connected = await isCalendarConnected(user.id);

@@ -1,20 +1,15 @@
-import { requireAuth } from "$src/lib/utils/auth.js";
 import type { PageServerLoad, Actions } from "./$types.js";
-import { fail, redirect } from "@sveltejs/kit";
+import { fail } from "@sveltejs/kit";
 import { db } from "$src/lib/server/db/index.js";
 import { schools, schoolResorts, instructorResorts, schoolInstructors, schoolAdmins, users } from "$src/lib/server/db/schema.js";
 import { eq, and, inArray, notInArray } from "drizzle-orm";
 import { SchoolInstructorService } from "$src/features/Schools/lib/schoolInstructorService.js";
-import { hasRole } from "$src/lib/utils/roles";
+import { requireDashboardRole } from "$src/lib/utils/dashboardAuth";
 
 const schoolInstructorService = new SchoolInstructorService();
 
 export const load: PageServerLoad = async (event) => {
-    const user = requireAuth(event, 'Login to access dashboard');
-
-    if (!hasRole(user, 'instructor-school')) {
-        redirect(302, '/dashboard');
-    }
+    const user = requireDashboardRole(event, ['instructor-school'], 'Login to access dashboard');
 
     // Get instructor's resorts
     const instructorResortsData = await db
@@ -89,11 +84,7 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
     apply: async (event) => {
-        const user = requireAuth(event, 'Login to apply');
-
-        if (!hasRole(user, 'instructor-school')) {
-            return fail(403, { message: 'Not authorized' });
-        }
+        const user = requireDashboardRole(event, ['instructor-school'], 'Login to apply');
 
         const formData = await event.request.formData();
         const schoolId = parseInt(formData.get('schoolId') as string);

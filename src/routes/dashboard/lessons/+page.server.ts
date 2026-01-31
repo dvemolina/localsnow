@@ -1,23 +1,18 @@
 import { superValidate } from "sveltekit-superforms";
 import type { PageServerLoad, Actions } from "./$types";
 import { zod } from "sveltekit-superforms/adapters";
-import { fail, redirect } from "@sveltejs/kit";
+import { fail } from "@sveltejs/kit";
 import { lessonSchema } from "$src/features/Lessons/lib/lessonSchema";
 import { LessonService } from "$src/features/Lessons/lib/lessonService";
-import { requireAuth } from "$src/lib/utils/auth";
 import { db } from '$lib/server/db';
 import { groupPricingTiers, durationPackages, promoCodes } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
-import { hasRole } from "$src/lib/utils/roles";
+import { requireDashboardRole } from "$src/lib/utils/dashboardAuth";
 
 const lessonService = new LessonService();
 
 export const load: PageServerLoad = async (event) => {
-    const user = requireAuth(event, 'Login to access lessons');
-
-    if (!hasRole(user, 'instructor-independent')) {
-        redirect(302, '/dashboard');
-    }
+    const user = requireDashboardRole(event, ['instructor-independent'], 'Login to access lessons');
     
     const lessonForm = await superValidate(zod(lessonSchema));
     
@@ -28,22 +23,20 @@ export const load: PageServerLoad = async (event) => {
     let durationPackagesList: any[] = [];
     let promoCodesList: any[] = [];
 
-    if (hasRole(user, 'instructor-independent')) {
-        try {
-            const lessons = await lessonService.listLessonsByInstructor(user.id);
-            baseLesson = lessons.find(lesson => lesson.isBaseLesson) ?? null;
-            
-            if (baseLesson) {
-                // Load new pricing structures
-                [groupTiers, durationPackagesList, promoCodesList] = await Promise.all([
-                    db.select().from(groupPricingTiers).where(eq(groupPricingTiers.lessonId, baseLesson.id)),
-                    db.select().from(durationPackages).where(eq(durationPackages.lessonId, baseLesson.id)),
-                    db.select().from(promoCodes).where(eq(promoCodes.lessonId, baseLesson.id))
-                ]);
-            }
-        } catch (error) {
-            console.error('Error fetching lessons and pricing:', error);
+    try {
+        const lessons = await lessonService.listLessonsByInstructor(user.id);
+        baseLesson = lessons.find(lesson => lesson.isBaseLesson) ?? null;
+        
+        if (baseLesson) {
+            // Load new pricing structures
+            [groupTiers, durationPackagesList, promoCodesList] = await Promise.all([
+                db.select().from(groupPricingTiers).where(eq(groupPricingTiers.lessonId, baseLesson.id)),
+                db.select().from(durationPackages).where(eq(durationPackages.lessonId, baseLesson.id)),
+                db.select().from(promoCodes).where(eq(promoCodes.lessonId, baseLesson.id))
+            ]);
         }
+    } catch (error) {
+        console.error('Error fetching lessons and pricing:', error);
     }
 
     return { 
@@ -57,12 +50,11 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
     saveBaseLesson: async (event) => {
-        const user = requireAuth(event, 'Session expired. Please login again.');
-
-        // Only instructors can create base lessons
-        if (!hasRole(user, 'instructor-independent')) {
-            return fail(403, { message: 'Only instructors can create lessons' });
-        }
+        const user = requireDashboardRole(
+            event,
+            ['instructor-independent'],
+            'Session expired. Please login again.'
+        );
 
         const form = await superValidate(event.request, zod(lessonSchema));
 
@@ -108,10 +100,11 @@ export const actions: Actions = {
     // ADD these new actions to your existing +page.server.ts:
 
 createGroupTier: async (event) => {
-    const user = requireAuth(event, 'Session expired. Please login again.');
-    if (!hasRole(user, 'instructor-independent')) {
-        return fail(403, { message: 'Only independent instructors can manage lessons' });
-    }
+    const user = requireDashboardRole(
+        event,
+        ['instructor-independent'],
+        'Session expired. Please login again.'
+    );
 
     const formData = await event.request.formData();
     const lessonId = parseInt(formData.get('lessonId') as string);
@@ -134,10 +127,11 @@ createGroupTier: async (event) => {
 },
 
 updateGroupTier: async (event) => {
-    const user = requireAuth(event, 'Session expired. Please login again.');
-    if (!hasRole(user, 'instructor-independent')) {
-        return fail(403, { message: 'Only independent instructors can manage lessons' });
-    }
+    const user = requireDashboardRole(
+        event,
+        ['instructor-independent'],
+        'Session expired. Please login again.'
+    );
 
     const formData = await event.request.formData();
     const tierId = parseInt(formData.get('tierId') as string);
@@ -157,10 +151,11 @@ updateGroupTier: async (event) => {
 },
 
 deleteGroupTier: async (event) => {
-    const user = requireAuth(event, 'Session expired. Please login again.');
-    if (!hasRole(user, 'instructor-independent')) {
-        return fail(403, { message: 'Only independent instructors can manage lessons' });
-    }
+    const user = requireDashboardRole(
+        event,
+        ['instructor-independent'],
+        'Session expired. Please login again.'
+    );
 
     const formData = await event.request.formData();
     const tierId = parseInt(formData.get('tierId') as string);
@@ -175,10 +170,11 @@ deleteGroupTier: async (event) => {
 },
 
 createDurationPackage: async (event) => {
-    const user = requireAuth(event, 'Session expired. Please login again.');
-    if (!hasRole(user, 'instructor-independent')) {
-        return fail(403, { message: 'Only independent instructors can manage lessons' });
-    }
+    const user = requireDashboardRole(
+        event,
+        ['instructor-independent'],
+        'Session expired. Please login again.'
+    );
 
     const formData = await event.request.formData();
     const lessonId = parseInt(formData.get('lessonId') as string);
@@ -202,10 +198,11 @@ createDurationPackage: async (event) => {
 },
 
 updateDurationPackage: async (event) => {
-    const user = requireAuth(event, 'Session expired. Please login again.');
-    if (!hasRole(user, 'instructor-independent')) {
-        return fail(403, { message: 'Only independent instructors can manage lessons' });
-    }
+    const user = requireDashboardRole(
+        event,
+        ['instructor-independent'],
+        'Session expired. Please login again.'
+    );
 
     const formData = await event.request.formData();
     const packageId = parseInt(formData.get('packageId') as string);
@@ -228,10 +225,11 @@ updateDurationPackage: async (event) => {
 },
 
 deleteDurationPackage: async (event) => {
-    const user = requireAuth(event, 'Session expired. Please login again.');
-    if (!hasRole(user, 'instructor-independent')) {
-        return fail(403, { message: 'Only independent instructors can manage lessons' });
-    }
+    const user = requireDashboardRole(
+        event,
+        ['instructor-independent'],
+        'Session expired. Please login again.'
+    );
 
     const formData = await event.request.formData();
     const packageId = parseInt(formData.get('packageId') as string);
@@ -246,10 +244,11 @@ deleteDurationPackage: async (event) => {
 },
 
 createPromoCode: async (event) => {
-    const user = requireAuth(event, 'Session expired. Please login again.');
-    if (!hasRole(user, 'instructor-independent')) {
-        return fail(403, { message: 'Only independent instructors can manage lessons' });
-    }
+    const user = requireDashboardRole(
+        event,
+        ['instructor-independent'],
+        'Session expired. Please login again.'
+    );
 
     const formData = await event.request.formData();
     const lessonId = parseInt(formData.get('lessonId') as string);
@@ -276,10 +275,11 @@ createPromoCode: async (event) => {
 },
 
 updatePromoCode: async (event) => {
-    const user = requireAuth(event, 'Session expired. Please login again.');
-    if (!hasRole(user, 'instructor-independent')) {
-        return fail(403, { message: 'Only independent instructors can manage lessons' });
-    }
+    const user = requireDashboardRole(
+        event,
+        ['instructor-independent'],
+        'Session expired. Please login again.'
+    );
 
     const formData = await event.request.formData();
     const promoId = parseInt(formData.get('promoId') as string);
@@ -306,10 +306,11 @@ updatePromoCode: async (event) => {
 },
 
 deletePromoCode: async (event) => {
-    const user = requireAuth(event, 'Session expired. Please login again.');
-    if (!hasRole(user, 'instructor-independent')) {
-        return fail(403, { message: 'Only independent instructors can manage lessons' });
-    }
+    const user = requireDashboardRole(
+        event,
+        ['instructor-independent'],
+        'Session expired. Please login again.'
+    );
 
     const formData = await event.request.formData();
     const promoId = parseInt(formData.get('promoId') as string);

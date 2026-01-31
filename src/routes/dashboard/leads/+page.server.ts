@@ -1,26 +1,20 @@
-import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { LeadService } from '$src/features/Leads/lib/leadService';
 import { LessonService } from '$src/features/Lessons/lib/lessonService';
-import { hasInstructorRole } from '$src/lib/utils/roles';
+import { requireDashboardRole } from '$src/lib/utils/dashboardAuth';
 
 const leadService = new LeadService();
 const lessonService = new LessonService();
 
-export const load: PageServerLoad = async ({ locals, url }) => {
-	const user = locals.user;
-
-	if (!user) {
-		throw redirect(302, '/auth/login');
-	}
-
-	// Only instructors can access leads
-	if (!hasInstructorRole(user)) {
-		throw redirect(302, '/dashboard');
-	}
+export const load: PageServerLoad = async (event) => {
+	const user = requireDashboardRole(
+		event,
+		['instructor-independent', 'instructor-school'],
+		'Login to access leads'
+	);
 
 	// Get filter from URL
-	const statusFilter = url.searchParams.get('status') || 'all';
+	const statusFilter = event.url.searchParams.get('status') || 'all';
 
 	try {
 		// Fetch all leads for this instructor and their lessons (for lead-to-booking conversion)

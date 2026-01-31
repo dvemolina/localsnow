@@ -1,20 +1,18 @@
-import { requireAuth } from "$src/lib/utils/auth";
-import { redirect, fail, type Actions } from "@sveltejs/kit";
+import { fail, type Actions } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { BookingRequestService } from "$src/features/Bookings/lib/bookingRequestService";
 import { LessonService } from "$src/features/Lessons/lib/lessonService";
-import { hasInstructorRole } from "$src/lib/utils/roles";
+import { requireDashboardRole } from "$src/lib/utils/dashboardAuth";
 
 const bookingService = new BookingRequestService();
 const lessonService = new LessonService();
 
 export const load: PageServerLoad = async (event) => {
-    const user = requireAuth(event, 'Login to access bookings');
-
-    // Only instructors can access
-    if (!hasInstructorRole(user)) {
-        redirect(302, '/dashboard');
-    }
+    const user = requireDashboardRole(
+        event,
+        ['instructor-independent', 'instructor-school'],
+        'Login to access bookings'
+    );
 
     const statusFilter = event.url.searchParams.get('status') || 'all';
     const sourceFilter = event.url.searchParams.get('source') || 'all';
@@ -50,11 +48,11 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
     acceptBooking: async (event) => {
-        const user = requireAuth(event, 'Session expired. Please login again.');
-        
-        if (!hasInstructorRole(user)) {
-            return fail(403, { message: 'Not authorized' });
-        }
+        const user = requireDashboardRole(
+            event,
+            ['instructor-independent', 'instructor-school'],
+            'Session expired. Please login again.'
+        );
         
         const formData = await event.request.formData();
         const bookingId = parseInt(formData.get('bookingId') as string);
@@ -73,11 +71,11 @@ export const actions: Actions = {
     },
     
     rejectBooking: async (event) => {
-        const user = requireAuth(event, 'Session expired. Please login again.');
-
-        if (!hasInstructorRole(user)) {
-            return fail(403, { message: 'Not authorized' });
-        }
+        const user = requireDashboardRole(
+            event,
+            ['instructor-independent', 'instructor-school'],
+            'Session expired. Please login again.'
+        );
 
         const formData = await event.request.formData();
         const bookingId = parseInt(formData.get('bookingId') as string);

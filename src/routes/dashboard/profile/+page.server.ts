@@ -6,7 +6,7 @@ import { fail, setError, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 import { UserService } from "$src/features/Users/lib/UserService";
 import { RefillingTokenBucket } from "$src/lib/server/rate-limit";
-import { getClientIP, requireAuth } from "$src/lib/utils/auth";
+import { getClientIP } from "$src/lib/utils/auth";
 import { instructorProfileSchema } from "$src/features/Instructors/lib/instructorSchemas";
 import { InstructorService } from "$src/features/Instructors/lib/instructorService";
 import { schoolProfileSchema } from "$src/features/Schools/lib/validations/schoolSchemas";
@@ -14,7 +14,8 @@ import { SchoolService } from "$src/features/Schools/lib/schoolService";
 import { StorageService } from "$src/lib/server/R2Storage";
 import { db } from "$lib/server/db";
 import { countries, regions, resortRequests } from "$lib/server/db/schema";
-import { hasAnyRole, hasInstructorRole, hasRole } from "$src/lib/utils/roles";
+import { hasInstructorRole, hasRole } from "$src/lib/utils/roles";
+import { requireDashboardRole } from "$src/lib/utils/dashboardAuth";
 import { eq, desc } from "drizzle-orm";
 
 const userService = new UserService();
@@ -24,11 +25,11 @@ const storageService = new StorageService();
 const ipBucket = new RefillingTokenBucket<string>(5, 60); // 5 requests per minute
  
 export const load: PageServerLoad = async (event) => {
-    const user = requireAuth(event, 'Login to access your profile');
-
-    if (!hasAnyRole(user, ['client', 'instructor-independent', 'instructor-school'])) {
-        redirect(302, '/dashboard');
-    }
+    const user = requireDashboardRole(
+        event,
+        ['client', 'instructor-independent', 'instructor-school'],
+        'Login to access your profile'
+    );
     
     // Fetch full user data
     const fullUser = await userService.getUserById(user.id);
@@ -121,10 +122,11 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
     userProfile: async (event) => {
-        const user = requireAuth(event, 'Session expired. Please login again.');
-        if (!hasAnyRole(user, ['client', 'instructor-independent', 'instructor-school'])) {
-            return fail(403, { message: 'Not authorized' });
-        }
+        const user = requireDashboardRole(
+            event,
+            ['client', 'instructor-independent', 'instructor-school'],
+            'Session expired. Please login again.'
+        );
 
         // Rate limiting
         const clientIP = getClientIP(event);
@@ -169,11 +171,11 @@ export const actions: Actions = {
     },
 
     instructorProfile: async (event) => {
-    const user = requireAuth(event, 'Session expired. Please login again.');
-    if (!hasInstructorRole(user)) {
-        return fail(403, { message: 'Not authorized' });
-    }
-
+    const user = requireDashboardRole(
+        event,
+        ['instructor-independent', 'instructor-school'],
+        'Session expired. Please login again.'
+    );
     // Rate limiting
     const clientIP = getClientIP(event);
     if (clientIP !== null && !ipBucket.consume(clientIP, 1)) {
@@ -236,10 +238,11 @@ export const actions: Actions = {
 },
 
     schoolProfile: async (event) => {
-        const user = requireAuth(event, 'Session expired. Please login again.');
-        if (!hasRole(user, 'school-admin')) {
-            return fail(403, { message: 'Not authorized' });
-        }
+        const user = requireDashboardRole(
+            event,
+            ['school-admin'],
+            'Session expired. Please login again.'
+        );
 
         // Rate limiting
         const clientIP = getClientIP(event);
