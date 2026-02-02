@@ -75,7 +75,7 @@
 
 	// Function to check if path is active
 	function isActive(url: string): boolean {
-		const currentPath = get(page).url.pathname;
+		const currentPath = page.url.pathname;
 		return currentPath === url || currentPath.startsWith(url + '/');
 	}
 </script>
