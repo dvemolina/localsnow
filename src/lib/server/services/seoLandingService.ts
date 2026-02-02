@@ -752,7 +752,6 @@ export async function getResortInstructors(
     .where(
       and(
         inArray(users.id, ids),
-        eq(users.isVerified, true),
         eq(users.isPublished, true)
       )
     );

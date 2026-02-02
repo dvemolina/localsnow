@@ -3,7 +3,7 @@
 	import { Badge, badgeVariants } from '$src/lib/components/ui/badge';
 	import { Button } from '$src/lib/components/ui/button';
 	import { route } from '$lib/i18n/routeHelpers';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	let { schoolData, preserveFilters = false } = $props<{
 		schoolData: {
@@ -23,7 +23,7 @@
 
 	// Build href with optional filter preservation - Properly reactive with Svelte 5
 	// Extract search params reactively so $derived tracks changes
-	const currentSearchParams = $derived($page.url.searchParams.toString());
+	const currentSearchParams = $derived(page.url.searchParams.toString());
 	const href = $derived(
 		preserveFilters && currentSearchParams
 			? `${route(`/schools/${schoolData.slug}`)}?returnTo=${encodeURIComponent(`/schools?${currentSearchParams}`)}`

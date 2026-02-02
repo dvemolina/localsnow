@@ -3,20 +3,31 @@
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { Button } from '$src/lib/components/ui/button';
 	import * as Card from '$src/lib/components/ui/card';
-	import { route } from '$lib/i18n/routeHelpers';
-	import { page } from '$app/stores';
+	import { getAlternateUrls, route } from '$lib/i18n/routeHelpers';
+	import { page } from '$app/state';
+	import { extractLocale, type Locale } from '$lib/i18n/routes';
 
 	let { data } = $props();
+	const PRIMARY_ORIGIN = 'https://localsnow.org';
+	const currentLocale = $derived((extractLocale(page.url.pathname).locale || 'en') as Locale);
+	const schoolsBase = $derived(route('/schools', currentLocale));
+	const instructorsBase = $derived(route('/instructors', currentLocale));
 
 	const school = data.school;
 	const resorts = data.resorts;
 	const instructors = data.instructors;
 
 	// Get return URL from query params for filter preservation
-	const returnTo = $derived($page.url.searchParams.get('returnTo') || route('/schools'));
+	const returnTo = $derived(page.url.searchParams.get('returnTo') || route('/schools', currentLocale));
 
 	// Construct profile URL
-	const profileUrl = `https://localsnow.org/schools/${school.slug}`;
+	const canonicalPath = $derived(`${schoolsBase}/${school.slug}`);
+	const profileUrl = $derived(`${PRIMARY_ORIGIN}${canonicalPath}`);
+	const alternates = $derived(getAlternateUrls(canonicalPath).map((alt) => ({
+		locale: alt.locale,
+		url: `${PRIMARY_ORIGIN}${alt.url}`
+	})));
+	const defaultAlternate = $derived(alternates.find((alt) => alt.locale === 'en'));
 	const schoolImageUrl = school.logo || 'https://localsnow.org/local-snow-head.png';
 
 	// Create meta description
@@ -67,7 +78,7 @@
 		...(instructors.length > 0 && {
 			member: instructors.slice(0, 10).map(instructor => ({
 				'@type': 'Person',
-				'@id': `https://localsnow.org/instructors/${instructor.id}-${instructor.name.toLowerCase()}-${instructor.lastName.toLowerCase()}`,
+				'@id': `${PRIMARY_ORIGIN}${instructorsBase}/${instructor.id}-${instructor.name.toLowerCase()}-${instructor.lastName.toLowerCase()}`,
 				name: `${instructor.name} ${instructor.lastName.charAt(0)}.`,
 				jobTitle: 'Ski Instructor'
 			}))
@@ -94,13 +105,13 @@
 				'@type': 'ListItem',
 				position: 1,
 				name: 'Home',
-				item: 'https://localsnow.org'
+				item: `${PRIMARY_ORIGIN}${route('/', currentLocale)}`
 			},
 			{
 				'@type': 'ListItem',
 				position: 2,
 				name: 'Schools',
-				item: 'https://localsnow.org/schools'
+				item: `${PRIMARY_ORIGIN}${schoolsBase}`
 			},
 			{
 				'@type': 'ListItem',
@@ -130,17 +141,19 @@
 	<meta name="twitter:image" content={schoolImageUrl} />
 
 	<!-- Structured Data -->
-	<script type="application/ld+json">
-		{JSON.stringify(organizationSchemaForSchool)}
-	</script>
-	<script type="application/ld+json">
-		{JSON.stringify(localSnowSchema)}
-	</script>
-	<script type="application/ld+json">
-		{JSON.stringify(breadcrumbSchema)}
-	</script>
+	{@html `<script type="application/ld+json">${JSON.stringify(
+		organizationSchemaForSchool
+	)}<\/script>`}
+	{@html `<script type="application/ld+json">${JSON.stringify(localSnowSchema)}<\/script>`}
+	{@html `<script type="application/ld+json">${JSON.stringify(breadcrumbSchema)}<\/script>`}
 
 	<link rel="canonical" href={profileUrl} />
+	{#each alternates as alt}
+		<link rel="alternate" hreflang={alt.locale} href={alt.url} />
+	{/each}
+	{#if defaultAlternate}
+		<link rel="alternate" hreflang="x-default" href={defaultAlternate.url} />
+	{/if}
 </svelte:head>
 
 <section class="w-full max-w-6xl mx-auto">

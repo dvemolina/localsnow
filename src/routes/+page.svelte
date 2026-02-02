@@ -7,16 +7,24 @@
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { t } from '$lib/i18n/i18n';
-	import { route } from '$lib/i18n/routeHelpers';
-	import { page } from '$app/stores';
-	import { extractLocale } from '$lib/i18n/routes';
+	import { getAlternateUrls, route } from '$lib/i18n/routeHelpers';
+	import { page } from '$app/state';
+	import { extractLocale, type Locale } from '$lib/i18n/routes';
 	let { data } = $props();
+	const PRIMARY_ORIGIN = 'https://localsnow.org';
 
 	// Search type state for toggle
 	let searchType = $state<'instructors' | 'schools'>('instructors');
 
 	// Get current locale for form submission
-	const currentLocale = $derived(extractLocale($page.url.pathname).locale || 'en');
+	const currentLocale = $derived((extractLocale(page.url.pathname).locale || 'en') as Locale);
+	const canonicalPath = $derived(route('/', currentLocale));
+	const canonicalUrl = $derived(`${PRIMARY_ORIGIN}${canonicalPath}`);
+	const alternates = $derived(getAlternateUrls(canonicalPath).map((alt) => ({
+		locale: alt.locale,
+		url: `${PRIMARY_ORIGIN}${alt.url}`
+	})));
+	const defaultAlternate = $derived(alternates.find((alt) => alt.locale === 'en'));
 
 	// Top resorts for homepage - use $derived for translation reactivity
 	// Showcasing global coverage across continents
@@ -98,7 +106,7 @@
 	<!-- Open Graph -->
 	<meta property="og:title" content={$t('seo_meta_home_title')} />
 	<meta property="og:description" content={$t('seo_meta_home_description')} />
-	<meta property="og:url" content="https://localsnow.org/" />
+	<meta property="og:url" content={canonicalUrl} />
 	<meta property="og:image" content="https://localsnow.org/ski-instructor-powder.webp" />
 	<meta property="og:image:alt" content="Ski instructor teaching in powder snow" />
 	<meta property="og:image:width" content="1200" />
@@ -109,13 +117,15 @@
 	<meta name="twitter:description" content={$t('seo_meta_home_description')} />
 	<meta name="twitter:image" content="https://localsnow.org/ski-instructor-powder.webp" />
 
-	<script type="application/ld+json">
-      {JSON.stringify(websiteSchema)}
-	</script>
-	<script type="application/ld+json">
-      {JSON.stringify(organizationSchema)}
-	</script>
-	<link rel="canonical" href="https://localsnow.org/" />
+	{@html `<script type="application/ld+json">${JSON.stringify(websiteSchema)}<\/script>`}
+	{@html `<script type="application/ld+json">${JSON.stringify(organizationSchema)}<\/script>`}
+	<link rel="canonical" href={canonicalUrl} />
+	{#each alternates as alt}
+		<link rel="alternate" hreflang={alt.locale} href={alt.url} />
+	{/each}
+	{#if defaultAlternate}
+		<link rel="alternate" hreflang="x-default" href={defaultAlternate.url} />
+	{/if}
 </svelte:head>
 
 <section class="hero relative h-full w-full" itemscope itemtype="http://schema.org/WPHeader">

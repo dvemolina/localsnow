@@ -2,7 +2,7 @@
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { isMobile } from '$src/lib/hooks/is-mobile.svelte';
 	import { get } from 'svelte/store';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { route } from '$lib/i18n/routeHelpers';
 	import { t } from '$lib/i18n/i18n';
 	import LanguageSwitch from '$lib/components/shared/LanguageSwitch.svelte';
@@ -16,6 +16,11 @@
 			title: $t('admin_sidebar_instructors'),
 			url: '/admin/instructors',
 			icon: '/icons/service.svg'
+		},
+		{
+			title: $t('admin_sidebar_schools'),
+			url: '/admin/schools',
+			icon: '/icons/ski-resort.svg'
 		},
 		{
 			title: $t('admin_sidebar_bookings'),

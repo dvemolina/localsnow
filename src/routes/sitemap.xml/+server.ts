@@ -7,19 +7,32 @@ import type { RequestHandler } from './$types';
 import { generateInstructorSlug } from '$lib/utils/slug';
 
 const SITE_URL = 'https://localsnow.org';
+const DEFAULT_LOCALE = 'en';
+const SUPPORTED_LOCALES = ['en', 'es'];
 
-// Helper function to generate URL entry
-function urlEntry(loc: string, priority: string, changefreq: string, lastmod?: string): string {
+function buildLocalizedUrl(path: string, locale: string): string {
+	const normalizedPath = path
+		? path.startsWith('/') ? path : `/${path}`
+		: '/';
+	return normalizedPath === '/'
+		? `${SITE_URL}/${locale}/`
+		: `${SITE_URL}/${locale}${normalizedPath}`;
+}
+
+// Helper function to generate URL entry (path without locale)
+function urlEntry(path: string, priority: string, changefreq: string, lastmod?: string): string {
 	const lastmodTag = lastmod ? `<lastmod>${lastmod}</lastmod>` : '';
+	const loc = buildLocalizedUrl(path, DEFAULT_LOCALE);
 	return `
   <url>
     <loc>${loc}</loc>
     ${lastmodTag}
     <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="${loc.replace(SITE_URL, `${SITE_URL}/en`)}" />
-    <xhtml:link rel="alternate" hreflang="es" href="${loc.replace(SITE_URL, `${SITE_URL}/es`)}" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="${loc.replace(SITE_URL, `${SITE_URL}/en`)}" />
+    ${SUPPORTED_LOCALES.map((locale) => (
+		`<xhtml:link rel="alternate" hreflang="${locale}" href="${buildLocalizedUrl(path, locale)}" />`
+	)).join('\n    ')}
+    <xhtml:link rel="alternate" hreflang="x-default" href="${buildLocalizedUrl(path, DEFAULT_LOCALE)}" />
   </url>`;
 }
 
@@ -42,7 +55,7 @@ export const GET: RequestHandler = async () => {
 		];
 
 		staticPages.forEach((page) => {
-			urls.push(urlEntry(`${SITE_URL}${page.url}`, page.priority, page.changefreq, today));
+			urls.push(urlEntry(page.url, page.priority, page.changefreq, today));
 		});
 
 		// 2. Legal pages (lower priority)
@@ -53,7 +66,7 @@ export const GET: RequestHandler = async () => {
 		];
 
 		legalPages.forEach((page) => {
-			urls.push(urlEntry(`${SITE_URL}${page.url}`, page.priority, page.changefreq));
+			urls.push(urlEntry(page.url, page.priority, page.changefreq));
 		});
 
 		// 3. Instructor profiles (dynamic, high priority)
@@ -82,7 +95,7 @@ export const GET: RequestHandler = async () => {
 			const instructorSlug = generateInstructorSlug(instructor.id, instructor.name, instructor.lastName);
 			urls.push(
 				urlEntry(
-					`${SITE_URL}/instructors/${instructorSlug}`,
+					`/instructors/${instructorSlug}`,
 					'0.8',
 					'weekly',
 					lastmod
@@ -103,7 +116,7 @@ export const GET: RequestHandler = async () => {
 		schoolProfiles.forEach((school) => {
 			urls.push(
 				urlEntry(
-					`${SITE_URL}/schools/${school.slug}`,
+					`/schools/${school.slug}`,
 					'0.8',
 					'weekly',
 					today
@@ -123,7 +136,7 @@ export const GET: RequestHandler = async () => {
 		allCountries.forEach((country) => {
 			urls.push(
 				urlEntry(
-					`${SITE_URL}/resorts/${country.countrySlug}`,
+					`/resorts/${country.countrySlug}`,
 					'0.7',
 					'weekly',
 					today
@@ -144,7 +157,7 @@ export const GET: RequestHandler = async () => {
 		allRegions.forEach((region) => {
 			urls.push(
 				urlEntry(
-					`${SITE_URL}/resorts/${region.countrySlug}/${region.regionSlug}`,
+					`/resorts/${region.countrySlug}/${region.regionSlug}`,
 					'0.7',
 					'weekly',
 					today
@@ -166,7 +179,7 @@ export const GET: RequestHandler = async () => {
 
 		allResorts.forEach((resort) => {
 			const regionPath = resort.regionSlug ? `/${resort.regionSlug}` : '';
-			const baseResortUrl = `${SITE_URL}/resorts/${resort.countrySlug}${regionPath}/${resort.resortSlug}`;
+			const baseResortUrl = `/resorts/${resort.countrySlug}${regionPath}/${resort.resortSlug}`;
 
 			// Resort main page
 			urls.push(
@@ -207,7 +220,7 @@ export const GET: RequestHandler = async () => {
 			const sportPath = combo.sportSlug === 'ski' ? 'ski-instructors' : 'snowboard-instructors';
 			urls.push(
 				urlEntry(
-					`${SITE_URL}/resorts/${combo.countrySlug}${regionPath}/${combo.resortSlug}/${sportPath}`,
+					`/resorts/${combo.countrySlug}${regionPath}/${combo.resortSlug}/${sportPath}`,
 					'0.9',
 					'daily',
 					today

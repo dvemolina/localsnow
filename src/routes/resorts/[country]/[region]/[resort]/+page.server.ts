@@ -2,11 +2,12 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { getResortDetails } from '$src/lib/server/services/seoLandingService';
 import { extractLocale, type Locale } from '$lib/i18n/routes';
-import { route } from '$lib/i18n/routeHelpers';
+import { getAlternateUrls, route } from '$lib/i18n/routeHelpers';
 import en from '$lib/i18n/translations/en.json';
 import es from '$lib/i18n/translations/es.json';
 
 const translationsByLocale: Record<Locale, Record<string, string>> = { en, es };
+const PRIMARY_ORIGIN = 'https://localsnow.org';
 
 function translate(locale: Locale, key: string, values?: Record<string, string | number>) {
 	const template = translationsByLocale[locale]?.[key] ?? translationsByLocale.en?.[key] ?? key;
@@ -47,14 +48,19 @@ export const load: PageServerLoad = async ({ params, url }) => {
 	});
 
 	const resortsBase = route('/resorts', currentLocale);
-	const canonicalUrl = `${url.origin}${resortsBase}/${country}/${region}/${resort}`;
+	const canonicalPath = `${resortsBase}/${country}/${region}/${resort}`;
+	const canonicalUrl = `${PRIMARY_ORIGIN}${canonicalPath}`;
+	const alternates = getAlternateUrls(canonicalPath).map((alt) => ({
+		locale: alt.locale,
+		url: `${PRIMARY_ORIGIN}${alt.url}`
+	}));
 
 	// Breadcrumbs
 	const breadcrumbs = [
-		{ name: translate(currentLocale, 'nav_home'), url: `${url.origin}${route('/', currentLocale)}` },
-		{ name: translate(currentLocale, 'nav_resorts'), url: `${url.origin}${resortsBase}` },
-		{ name: location.country.country, url: `${url.origin}${resortsBase}/${country}` },
-		{ name: location.region?.region || location.country.country, url: `${url.origin}${resortsBase}/${country}/${region}` },
+		{ name: translate(currentLocale, 'nav_home'), url: `${PRIMARY_ORIGIN}${route('/', currentLocale)}` },
+		{ name: translate(currentLocale, 'nav_resorts'), url: `${PRIMARY_ORIGIN}${resortsBase}` },
+		{ name: location.country.country, url: `${PRIMARY_ORIGIN}${resortsBase}/${country}` },
+		{ name: location.region?.region || location.country.country, url: `${PRIMARY_ORIGIN}${resortsBase}/${country}/${region}` },
 		{ name: resortInfo.name, url: canonicalUrl }
 	];
 
@@ -95,6 +101,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
 			title,
 			description,
 			canonicalUrl,
+			alternates,
 			breadcrumbs,
 			structuredData,
 			openGraph: {
@@ -102,7 +109,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
 				description,
 				url: canonicalUrl,
 				type: 'website',
-				image: 'https://localsnow.com/og-image.jpg'
+				image: 'https://localsnow.org/og-image.jpg'
 			}
 		}
 	};

@@ -1,8 +1,12 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { getResortSchools, getFAQsByEntity } from '$src/lib/server/services/seoLandingService';
+import { extractLocale, type Locale } from '$lib/i18n/routes';
+import { getAlternateUrls, route } from '$lib/i18n/routeHelpers';
 
-export const load: PageServerLoad = async ({ params }) => {
+const PRIMARY_ORIGIN = 'https://localsnow.org';
+
+export const load: PageServerLoad = async ({ params, url }) => {
 	const { country, region, resort } = params;
 
 	const resortData = await getResortSchools(country, region, resort);
@@ -20,15 +24,23 @@ export const load: PageServerLoad = async ({ params }) => {
 	const title = `Ski Schools in ${location.resort?.name} | Professional Instruction & Group Lessons`;
 	const description = `Discover ${totalSchools} professional ski and snowboard schools in ${location.resort?.name}, ${location.region?.region || location.country.country}. Find the perfect ski school for group lessons, kids programs, and beginner courses.`;
 
-	const canonicalUrl = `https://localsnow.org/resorts/${country}/${region}/${resort}/schools`;
+	const { locale } = extractLocale(url.pathname);
+	const currentLocale = (locale || 'en') as Locale;
+	const resortsBase = route('/resorts', currentLocale);
+	const canonicalPath = `${resortsBase}/${country}/${region}/${resort}/schools`;
+	const canonicalUrl = `${PRIMARY_ORIGIN}${canonicalPath}`;
+	const alternates = getAlternateUrls(canonicalPath).map((alt) => ({
+		locale: alt.locale,
+		url: `${PRIMARY_ORIGIN}${alt.url}`
+	}));
 
 	// Breadcrumbs
 	const breadcrumbs = [
-		{ name: 'Home', url: 'https://localsnow.org' },
-		{ name: 'Resorts', url: 'https://localsnow.org/resorts' },
-		{ name: location.country.country, url: `https://localsnow.org/resorts/${country}` },
-		{ name: location.region?.region || location.country.country, url: `https://localsnow.org/resorts/${country}/${region}` },
-		{ name: location.resort?.name!, url: `https://localsnow.org/resorts/${country}/${region}/${resort}` },
+		{ name: 'Home', url: `${PRIMARY_ORIGIN}${route('/', currentLocale)}` },
+		{ name: 'Resorts', url: `${PRIMARY_ORIGIN}${resortsBase}` },
+		{ name: location.country.country, url: `${PRIMARY_ORIGIN}${resortsBase}/${country}` },
+		{ name: location.region?.region || location.country.country, url: `${PRIMARY_ORIGIN}${resortsBase}/${country}/${region}` },
+		{ name: location.resort?.name!, url: `${PRIMARY_ORIGIN}${resortsBase}/${country}/${region}/${resort}` },
 		{ name: 'Schools', url: canonicalUrl }
 	];
 
@@ -83,6 +95,7 @@ export const load: PageServerLoad = async ({ params }) => {
 			title,
 			description,
 			canonicalUrl,
+			alternates,
 			breadcrumbs,
 			structuredData,
 			faqSchema,

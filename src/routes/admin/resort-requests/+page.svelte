@@ -7,7 +7,7 @@
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Label } from '$lib/components/ui/label';
 	import { toast } from 'svelte-sonner';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 
 	let { data, form } = $props();
@@ -58,7 +58,7 @@
 	}
 
 	function changeStatusFilter(status: string | null) {
-		const url = new URL($page.url);
+		const url = new URL(page.url);
 		if (status) {
 			url.searchParams.set('status', status);
 		} else {
@@ -269,7 +269,7 @@
 						variant="outline"
 						size="sm"
 						onclick={() => {
-							const url = new URL($page.url);
+							const url = new URL(page.url);
 							url.searchParams.set('page', String(data.pagination.page - 1));
 							goto(url.toString());
 						}}
@@ -282,7 +282,7 @@
 						variant="outline"
 						size="sm"
 						onclick={() => {
-							const url = new URL($page.url);
+							const url = new URL(page.url);
 							url.searchParams.set('page', String(data.pagination.page + 1));
 							goto(url.toString());
 						}}

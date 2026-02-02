@@ -11,8 +11,21 @@
 	import { Label } from '$src/lib/components/ui/label';
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { t } from '$lib/i18n/i18n';
+	import { page } from '$app/state';
+	import { extractLocale, type Locale } from '$lib/i18n/routes';
+	import { getAlternateUrls, route } from '$lib/i18n/routeHelpers';
 
 	let { data } = $props();
+	const PRIMARY_ORIGIN = 'https://localsnow.org';
+	const currentLocale = $derived((extractLocale(page.url.pathname).locale || 'en') as Locale);
+	const schoolsBase = $derived(route('/schools', currentLocale));
+	const canonicalPath = $derived(schoolsBase);
+	const canonicalUrl = $derived(`${PRIMARY_ORIGIN}${canonicalPath}`);
+	const alternates = $derived(getAlternateUrls(canonicalPath).map((alt) => ({
+		locale: alt.locale,
+		url: `${PRIMARY_ORIGIN}${alt.url}`
+	})));
+	const defaultAlternate = $derived(alternates.find((alt) => alt.locale === 'en'));
 
 	// Filter schema for the search form
 	const filterSchema = z.object({
@@ -87,7 +100,7 @@
 			item: {
 				'@type': 'Organization',
 				name: school.name,
-				url: `https://localsnow.org/schools/${school.slug}`
+				url: `${PRIMARY_ORIGIN}${schoolsBase}/${school.slug}`
 			}
 		}))
 	};
@@ -112,13 +125,13 @@
 				'@type': 'ListItem',
 				position: 1,
 				name: 'Home',
-				item: 'https://localsnow.org'
+				item: `${PRIMARY_ORIGIN}${route('/', currentLocale)}`
 			},
 			{
 				'@type': 'ListItem',
 				position: 2,
 				name: 'Schools',
-				item: 'https://localsnow.org/schools'
+				item: canonicalUrl
 			}
 		]
 	};
@@ -137,10 +150,12 @@
 		property="og:description"
 		content="Find certified ski and snowboard schools at top resorts worldwide."
 	/>
-	<meta property="og:url" content="https://localsnow.org/schools" />
+	<meta property="og:url" content={canonicalUrl} />
 	<meta property="og:image" content="https://localsnow.org/ski-instructor-turn.webp" />
+	<meta property="og:type" content="website" />
 
 	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content="Ski & Snowboard Schools Directory | LocalSnow" />
 	<meta
 		name="twitter:description"
@@ -149,18 +164,18 @@
 	<meta name="twitter:image" content="https://localsnow.org/ski-instructor-turn.webp" />
 
 	<!-- Structured Data -->
-	<script type="application/ld+json">
-		{JSON.stringify(itemListSchema)}
-	</script>
-	<script type="application/ld+json">
-		{JSON.stringify(organizationSchema)}
-	</script>
-	<script type="application/ld+json">
-		{JSON.stringify(breadcrumbSchema)}
-	</script>
+	{@html `<script type="application/ld+json">${JSON.stringify(itemListSchema)}<\/script>`}
+	{@html `<script type="application/ld+json">${JSON.stringify(organizationSchema)}<\/script>`}
+	{@html `<script type="application/ld+json">${JSON.stringify(breadcrumbSchema)}<\/script>`}
 
 	<!-- Canonical tag: always point to clean URL without query params -->
-	<link rel="canonical" href="https://localsnow.org/schools" />
+	<link rel="canonical" href={canonicalUrl} />
+	{#each alternates as alt}
+		<link rel="alternate" hreflang={alt.locale} href={alt.url} />
+	{/each}
+	{#if defaultAlternate}
+		<link rel="alternate" hreflang="x-default" href={defaultAlternate.url} />
+	{/if}
 </svelte:head>
 
 <section class="w-full">

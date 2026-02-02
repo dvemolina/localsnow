@@ -2,8 +2,12 @@ import type { PageServerLoad } from './$types';
 import { db } from '$src/lib/server/db/index';
 import { resorts, countries, regions, users, instructorResorts, userRoles } from '$src/lib/server/db/schema';
 import { eq, sql, isNull, and, desc, inArray } from 'drizzle-orm';
+import { extractLocale, type Locale } from '$lib/i18n/routes';
+import { getAlternateUrls, route } from '$lib/i18n/routeHelpers';
 
-export const load: PageServerLoad = async () => {
+const PRIMARY_ORIGIN = 'https://localsnow.org';
+
+export const load: PageServerLoad = async ({ url }) => {
 	// Show ALL resorts worldwide that have at least 1 active instructor
 	const resortsWithInstructors = await db
 		.select({
@@ -99,13 +103,23 @@ export const load: PageServerLoad = async () => {
 	// Sort regions by total instructor count (highest first)
 	regionsArray.sort((a, b) => b.totalInstructors - a.totalInstructors);
 
+	const { locale } = extractLocale(url.pathname);
+	const currentLocale = (locale || 'en') as Locale;
+	const canonicalPath = route('/resorts', currentLocale);
+	const canonicalUrl = `${PRIMARY_ORIGIN}${canonicalPath}`;
+	const alternates = getAlternateUrls(canonicalPath).map((alt) => ({
+		locale: alt.locale,
+		url: `${PRIMARY_ORIGIN}${alt.url}`
+	}));
+
 	return {
 		resortsByCountry: regionsArray, // Keep variable name for compatibility
 		totalResorts: resortsWithInstructors.length,
 		seo: {
 			title: 'Ski Resorts Worldwide | Find Instructors at Top Ski Resorts',
 			description: `Browse ${resortsWithInstructors.length} ski resorts worldwide. Find professional ski and snowboard instructors at top resorts around the world.`,
-			canonicalUrl: 'https://localsnow.com/resorts'
+			canonicalUrl,
+			alternates
 		}
 	};
 };

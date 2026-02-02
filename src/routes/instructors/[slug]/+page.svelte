@@ -1,6 +1,7 @@
 <!-- src/routes/instructors/[slug]/+page.svelte -->
 <script lang="ts">
 	import StarScore from '$src/lib/components/shared/StarScore.svelte';
+	import VerificationBadge from '$src/lib/components/shared/VerificationBadge.svelte';
 	import * as Avatar from '$src/lib/components/ui/avatar';
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { Button } from '$src/lib/components/ui/button';
@@ -11,8 +12,12 @@
 	import { goto } from '$app/navigation';
 	import { t } from '$lib/i18n/i18n';
 	import { generateInstructorSlug } from '$lib/utils/slug';
+	import { extractLocale, type Locale } from '$lib/i18n/routes';
+	import { getAlternateUrls, route } from '$lib/i18n/routeHelpers';
 	let { data } = $props();
 	let showContactModal = $state(false);
+	const PRIMARY_ORIGIN = 'https://localsnow.org';
+	const currentLocale = $derived((extractLocale(page.url.pathname).locale || 'en') as Locale);
 
 	const instructor = data.instructor;
 	const sports = data.sports;
@@ -22,14 +27,22 @@
 	const school = data.school;
 
 	// Get return URL from query params for filter preservation
-	const returnTo = $derived(page.url.searchParams.get('returnTo') || '/instructors');
+	const returnTo = $derived(page.url.searchParams.get('returnTo') || route('/instructors', currentLocale));
 
 	const isAuthenticated = !!data.user; // Will be true if user exists
 	const isIndependent = instructor.role === 'instructor-independent';
 
 	// Construct profile URL with slug
 	const instructorSlug = generateInstructorSlug(instructor.id, instructor.name, instructor.lastName);
-	const profileUrl = `https://localsnow.org/instructors/${instructorSlug}`;
+	const instructorsBase = $derived(route('/instructors', currentLocale));
+	const schoolsBase = $derived(route('/schools', currentLocale));
+	const canonicalPath = $derived(`${instructorsBase}/${instructorSlug}`);
+	const profileUrl = $derived(`${PRIMARY_ORIGIN}${canonicalPath}`);
+	const alternates = $derived(getAlternateUrls(canonicalPath).map((alt) => ({
+		locale: alt.locale,
+		url: `${PRIMARY_ORIGIN}${alt.url}`
+	})));
+	const defaultAlternate = $derived(alternates.find((alt) => alt.locale === 'en'));
 	const instructorFullName = `${instructor.name} ${instructor.lastName.charAt(0)}.`;
 	const instructorImageUrl = instructor.profileImageUrl || 'https://localsnow.org/local-snow-head.png';
 
@@ -51,7 +64,7 @@
 			worksFor: {
 				'@type': 'Organization',
 				name: school.name,
-				url: `https://localsnow.org/schools/${school.slug}`,
+				url: `${PRIMARY_ORIGIN}${schoolsBase}/${school.slug}`,
 				...(school.logo && { logo: school.logo })
 			}
 		}),
@@ -139,13 +152,13 @@
 				'@type': 'ListItem',
 				position: 1,
 				name: 'Home',
-				item: 'https://localsnow.org'
+				item: `${PRIMARY_ORIGIN}${route('/', currentLocale)}`
 			},
 			{
 				'@type': 'ListItem',
 				position: 2,
 				name: 'Instructors',
-				item: 'https://localsnow.org/instructors'
+				item: `${PRIMARY_ORIGIN}${instructorsBase}`
 			},
 			{
 				'@type': 'ListItem',
@@ -191,7 +204,7 @@
 	<meta property="og:description" content={metaDescription} />
 	<meta property="og:url" content={profileUrl} />
 	<meta property="og:image" content={instructorImageUrl} />
-	<meta property="og:image:alt" content="Profile photo of {instructorFullName}" />
+	<meta property="og:image:alt" content={`Profile photo of ${instructorFullName}`} />
 	<meta property="og:type" content="profile" />
 	{#if reviewStats && reviewStats.totalReviews > 0}
 		<meta property="og:rating" content={reviewStats.averageRating.toFixed(1)} />
@@ -205,25 +218,21 @@
 	<meta name="twitter:image" content={instructorImageUrl} />
 
 	<!-- Structured Data -->
-	<script type="application/ld+json">
-		{JSON.stringify(personSchema)}
-	</script>
-	<script type="application/ld+json">
-		{JSON.stringify(serviceSchema)}
-	</script>
-	<script type="application/ld+json">
-		{JSON.stringify(organizationSchema)}
-	</script>
-	<script type="application/ld+json">
-		{JSON.stringify(breadcrumbSchema)}
-	</script>
+	{@html `<script type="application/ld+json">${JSON.stringify(personSchema)}<\/script>`}
+	{@html `<script type="application/ld+json">${JSON.stringify(serviceSchema)}<\/script>`}
+	{@html `<script type="application/ld+json">${JSON.stringify(organizationSchema)}<\/script>`}
+	{@html `<script type="application/ld+json">${JSON.stringify(breadcrumbSchema)}<\/script>`}
 	{#each reviewSchemas as reviewSchema}
-		<script type="application/ld+json">
-			{JSON.stringify(reviewSchema)}
-		</script>
+		{@html `<script type="application/ld+json">${JSON.stringify(reviewSchema)}<\/script>`}
 	{/each}
 
 	<link rel="canonical" href={profileUrl} />
+	{#each alternates as alt}
+		<link rel="alternate" hreflang={alt.locale} href={alt.url} />
+	{/each}
+	{#if defaultAlternate}
+		<link rel="alternate" hreflang="x-default" href={defaultAlternate.url} />
+	{/if}
 </svelte:head>
 
 <section class="w-full">
@@ -267,10 +276,13 @@
 
 			<div class="text-center">
 				<div class="flex items-center justify-center gap-2 flex-col-reverse">
-					<h1 class="title3">
-						{instructor.name}
-						{instructor.lastName}
-					</h1>
+					<div class="flex items-center gap-2">
+						<h1 class="title3">
+							{instructor.name}
+							{instructor.lastName}
+						</h1>
+						<VerificationBadge isVerified={instructor.isVerified} size="lg" />
+					</div>
 
 					<!-- Star Rating - Show actual rating if reviews exist -->
 					{#if reviewStats && reviewStats.totalReviews > 0}
@@ -371,10 +383,6 @@
 
 			<!-- Quick Info Box -->
 			<div class="mt-4 w-full space-y-3 rounded-lg bg-muted p-4">
-				<div class="flex items-center gap-2">
-					<img src="/icons/certificate.svg" alt="Certification" class="size-5" />
-					<span class="text-sm font-medium">{$t('instructor_verified_badge')}</span>
-				</div>
 				<div class="flex items-center gap-2">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"

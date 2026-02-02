@@ -1,7 +1,19 @@
 <script lang="ts">
 	import { t } from '$lib/i18n/i18n';
 	import { get } from 'svelte/store';
-	import { route } from '$lib/i18n/routeHelpers';
+	import { getAlternateUrls, route } from '$lib/i18n/routeHelpers';
+	import { page } from '$app/state';
+	import { extractLocale, type Locale } from '$lib/i18n/routes';
+
+	const PRIMARY_ORIGIN = 'https://localsnow.org';
+	const currentLocale = $derived((extractLocale(page.url.pathname).locale || 'en') as Locale);
+	const canonicalPath = $derived(route('/how-it-works', currentLocale));
+	const canonicalUrl = $derived(`${PRIMARY_ORIGIN}${canonicalPath}`);
+	const alternates = $derived(getAlternateUrls(canonicalPath).map((alt) => ({
+		locale: alt.locale,
+		url: `${PRIMARY_ORIGIN}${alt.url}`
+	})));
+	const defaultAlternate = $derived(alternates.find((alt) => alt.locale === 'en'));
 
 	// FAQ Schema for SEO - using get(t) for non-reactive context
 	const faqSchema = {
@@ -65,7 +77,7 @@
 		property="og:description"
 		content={$t('seo_meta_how_it_works_description')}
 	/>
-	<meta property="og:url" content="https://localsnow.org/how-it-works" />
+	<meta property="og:url" content={canonicalUrl} />
 	<meta property="og:image" content="https://localsnow.org/og-image.jpg" />
 	<meta property="og:type" content="website" />
 
@@ -79,11 +91,15 @@
 	<meta name="twitter:image" content="https://localsnow.org/og-image.jpg" />
 
 	<!-- FAQ Schema -->
-	<script type="application/ld+json">
-		{JSON.stringify(faqSchema)}
-	</script>
+	{@html `<script type="application/ld+json">${JSON.stringify(faqSchema)}<\/script>`}
 
-	<link rel="canonical" href="https://localsnow.org/how-it-works" />
+	<link rel="canonical" href={canonicalUrl} />
+	{#each alternates as alt}
+		<link rel="alternate" hreflang={alt.locale} href={alt.url} />
+	{/each}
+	{#if defaultAlternate}
+		<link rel="alternate" hreflang="x-default" href={defaultAlternate.url} />
+	{/if}
 </svelte:head>
 
 <article class="prose prose-sm mx-auto max-w-3xl">

@@ -1,12 +1,16 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { getResortSportInstructors } from '$src/lib/server/services/seoLandingService';
+import { extractLocale, type Locale } from '$lib/i18n/routes';
+import { getAlternateUrls, route } from '$lib/i18n/routeHelpers';
+
+const PRIMARY_ORIGIN = 'https://localsnow.org';
 
 // Force the page to re-run the load function when params change
 export const ssr = true;
 export const csr = true;
 
-export const load: PageServerLoad = async ({ params, depends }) => {
+export const load: PageServerLoad = async ({ params, depends, url }) => {
 	// This tells SvelteKit to re-run this function when these params change
 	depends(`resort:${params.resort}`);
 	depends(`sport:${params.sport_type}`);
@@ -45,15 +49,23 @@ export const load: PageServerLoad = async ({ params, depends }) => {
 	const description = `Find and book professional ${sportName.toLowerCase()} instructors in ${resortName}, ${regionName || countryName}. ${landingData.totalInstructors} verified instructors available for private lessons.`;
 
 	// Canonical URL
-	const canonicalUrl = `https://localsnow.com/resorts/${country}/${region}/${resort}/${sport_type}`;
+	const { locale } = extractLocale(url.pathname);
+	const currentLocale = (locale || 'en') as Locale;
+	const resortsBase = route('/resorts', currentLocale);
+	const canonicalPath = `${resortsBase}/${country}/${region}/${resort}/${sport_type}`;
+	const canonicalUrl = `${PRIMARY_ORIGIN}${canonicalPath}`;
+	const alternates = getAlternateUrls(canonicalPath).map((alt) => ({
+		locale: alt.locale,
+		url: `${PRIMARY_ORIGIN}${alt.url}`
+	}));
 
 	// Breadcrumb structured data
 	const breadcrumbs = [
-		{ name: 'Home', url: 'https://localsnow.com' },
-		{ name: 'Resorts', url: 'https://localsnow.com/resorts' },
-		{ name: countryName, url: `https://localsnow.com/resorts/${country}` },
-		{ name: regionName || countryName, url: `https://localsnow.com/resorts/${country}/${region}` },
-		{ name: resortName!, url: `https://localsnow.com/resorts/${country}/${region}/${resort}` },
+		{ name: 'Home', url: `${PRIMARY_ORIGIN}${route('/', currentLocale)}` },
+		{ name: 'Resorts', url: `${PRIMARY_ORIGIN}${resortsBase}` },
+		{ name: countryName, url: `${PRIMARY_ORIGIN}${resortsBase}/${country}` },
+		{ name: regionName || countryName, url: `${PRIMARY_ORIGIN}${resortsBase}/${country}/${region}` },
+		{ name: resortName!, url: `${PRIMARY_ORIGIN}${resortsBase}/${country}/${region}/${resort}` },
 		{ name: `${sportName} Instructors`, url: canonicalUrl }
 	];
 
@@ -89,6 +101,7 @@ export const load: PageServerLoad = async ({ params, depends }) => {
 			title,
 			description,
 			canonicalUrl,
+			alternates,
 			breadcrumbs,
 			structuredData,
 			openGraph: {
@@ -96,7 +109,7 @@ export const load: PageServerLoad = async ({ params, depends }) => {
 				description,
 				url: canonicalUrl,
 				type: 'website',
-				image: 'https://localsnow.com/og-image.jpg' // TODO: Generate dynamic OG images
+				image: 'https://localsnow.org/og-image.jpg' // TODO: Generate dynamic OG images
 			}
 		}
 	};

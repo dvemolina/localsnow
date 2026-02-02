@@ -339,7 +339,7 @@ Already excellent - implemented in:
    - Appropriate structured data
 
 2. **Template to follow:**
-```svelte
+```text
 <svelte:head>
 	<title>{m.page_title()}</title>
 	<meta name="description" content={m.page_description()} />

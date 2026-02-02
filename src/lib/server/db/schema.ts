@@ -138,7 +138,10 @@ export const schools = pgTable('schools', {
 	schoolPhone: varchar('school_phone', { length: 50 }),
 	logo: varchar('logo', { length: 255 }),
 	isPublished: boolean('is_published').default(true),
-	isVerified: boolean('is_verified').default(false)
+	isVerified: boolean('is_verified').default(false),
+	isSuspended: boolean('is_suspended').default(false),
+	suspensionReason: text('suspension_reason'),
+	suspendedAt: timestamp('suspended_at', { withTimezone: true })
 });
 
 // --- Booking Requests ---
@@ -840,6 +843,66 @@ export const lessonsRelations = relations(lessons, ({ one, many }) => ({
 		references: [schools.id]
 	}),
 	sports: many(lessonSports)
+}));
+
+// Schools relations
+export const schoolsRelations = relations(schools, ({ one, many }) => ({
+	owner: one(users, {
+		fields: [schools.ownerUserId],
+		references: [users.id]
+	}),
+	resorts: many(schoolResorts),
+	sports: many(schoolSports),
+	admins: many(schoolAdmins),
+	instructors: many(schoolInstructors)
+}));
+
+// School Resorts relations
+export const schoolResortsRelations = relations(schoolResorts, ({ one }) => ({
+	school: one(schools, {
+		fields: [schoolResorts.schoolId],
+		references: [schools.id]
+	}),
+	resort: one(resorts, {
+		fields: [schoolResorts.resortId],
+		references: [resorts.id]
+	})
+}));
+
+// School Sports relations
+export const schoolSportsRelations = relations(schoolSports, ({ one }) => ({
+	school: one(schools, {
+		fields: [schoolSports.schoolId],
+		references: [schools.id]
+	}),
+	sport: one(sports, {
+		fields: [schoolSports.sportId],
+		references: [sports.id]
+	})
+}));
+
+// School Admins relations
+export const schoolAdminsRelations = relations(schoolAdmins, ({ one }) => ({
+	school: one(schools, {
+		fields: [schoolAdmins.schoolId],
+		references: [schools.id]
+	}),
+	user: one(users, {
+		fields: [schoolAdmins.userId],
+		references: [users.id]
+	})
+}));
+
+// School Instructors relations
+export const schoolInstructorsRelations = relations(schoolInstructors, ({ one }) => ({
+	school: one(schools, {
+		fields: [schoolInstructors.schoolId],
+		references: [schools.id]
+	}),
+	instructor: one(users, {
+		fields: [schoolInstructors.instructorId],
+		references: [users.id]
+	})
 }));
 
 // Type exports

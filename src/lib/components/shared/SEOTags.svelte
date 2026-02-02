@@ -9,7 +9,7 @@
 	 *   <SEOTags title="About Us" description="Learn about Local Snow" />
 	 */
 
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { getAlternateUrls, getCanonicalUrl } from '$lib/i18n/routeHelpers';
 	import { extractLocale, type Locale } from '$lib/i18n/routes';
 
@@ -24,10 +24,10 @@
 
 	let { title, description, keywords, image, noindex = false, canonical }: Props = $props();
 
-	const currentLocale = $derived((extractLocale($page.url.pathname).locale || 'en') as Locale);
-	const currentUrl = $derived($page.url);
+	const currentLocale = $derived((extractLocale(page.url.pathname).locale || 'en') as Locale);
+	const currentUrl = $derived(page.url);
 	const canonicalUrl = $derived(canonical || getCanonicalUrl(currentUrl, currentLocale));
-	const alternateUrls = $derived(getAlternateUrls($page.url.pathname));
+	const alternateUrls = $derived(getAlternateUrls(page.url.pathname));
 
 	// Build full page title
 	const fullTitle = $derived(title ? `${title} | Local Snow` : 'Local Snow');

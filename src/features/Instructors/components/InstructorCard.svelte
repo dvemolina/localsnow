@@ -5,7 +5,7 @@
 	import { Button } from '$src/lib/components/ui/button';
 	import { generateInstructorSlug } from '$lib/utils/slug';
 	import { t } from '$lib/i18n/i18n';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	let { instructorData, baseLesson = null, preserveFilters = false } = $props();
 
@@ -36,7 +36,7 @@
 
 	// Build href with optional filter preservation - Properly reactive with Svelte 5
 	// Extract search params reactively so $derived tracks changes
-	const currentSearchParams = $derived($page.url.searchParams.toString());
+	const currentSearchParams = $derived(page.url.searchParams.toString());
 	const href = $derived(
 		preserveFilters && currentSearchParams
 			? `/instructors/${instructorSlug}?returnTo=${encodeURIComponent(`/instructors?${currentSearchParams}`)}`

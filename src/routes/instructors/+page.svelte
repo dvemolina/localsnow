@@ -19,7 +19,20 @@
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { t } from '$lib/i18n/i18n';
 	import { generateInstructorSlug } from '$lib/utils/slug';
+	import { page } from '$app/state';
+	import { extractLocale, type Locale } from '$lib/i18n/routes';
+	import { getAlternateUrls, route } from '$lib/i18n/routeHelpers';
 	let { data } = $props();
+	const PRIMARY_ORIGIN = 'https://localsnow.org';
+	const currentLocale = $derived((extractLocale(page.url.pathname).locale || 'en') as Locale);
+	const instructorsBase = $derived(route('/instructors', currentLocale));
+	const canonicalPath = $derived(instructorsBase);
+	const canonicalUrl = $derived(`${PRIMARY_ORIGIN}${canonicalPath}`);
+	const alternates = $derived(getAlternateUrls(canonicalPath).map((alt) => ({
+		locale: alt.locale,
+		url: `${PRIMARY_ORIGIN}${alt.url}`
+	})));
+	const defaultAlternate = $derived(alternates.find((alt) => alt.locale === 'en'));
 
 	// Comprehensive filter schema for the search form
 	const filterSchema = z.object({
@@ -176,7 +189,7 @@
 				jobTitle: instructor.role?.includes('independent')
 					? 'Independent Ski Instructor'
 					: 'Ski Instructor',
-				url: `https://localsnow.org/instructors/${generateInstructorSlug(instructor.id, instructor.name, instructor.lastName)}`
+				url: `${PRIMARY_ORIGIN}${instructorsBase}/${generateInstructorSlug(instructor.id, instructor.name, instructor.lastName)}`
 			}
 		}))
 	};
@@ -201,13 +214,13 @@
 				'@type': 'ListItem',
 				position: 1,
 				name: 'Home',
-				item: 'https://localsnow.org'
+				item: `${PRIMARY_ORIGIN}${route('/', currentLocale)}`
 			},
 			{
 				'@type': 'ListItem',
 				position: 2,
 				name: 'Instructors',
-				item: 'https://localsnow.org/instructors'
+				item: canonicalUrl
 			}
 		]
 	};
@@ -223,27 +236,29 @@
 	<!-- Open Graph -->
 	<meta property="og:title" content={$t('seo_meta_instructors_title')} />
 	<meta property="og:description" content={$t('seo_meta_instructors_description')} />
-	<meta property="og:url" content="https://localsnow.org/instructors" />
+	<meta property="og:url" content={canonicalUrl} />
 	<meta property="og:image" content="https://localsnow.org/ski-instructor-turn.webp" />
+	<meta property="og:type" content="website" />
 
 	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content={$t('seo_meta_instructors_title')} />
 	<meta name="twitter:description" content={$t('seo_meta_instructors_description')} />
 	<meta name="twitter:image" content="https://localsnow.org/ski-instructor-turn.webp" />
 
 	<!-- Structured Data -->
-	<script type="application/ld+json">
-		{JSON.stringify(itemListSchema)}
-	</script>
-	<script type="application/ld+json">
-		{JSON.stringify(organizationSchema)}
-	</script>
-	<script type="application/ld+json">
-		{JSON.stringify(breadcrumbSchema)}
-	</script>
+	{@html `<script type="application/ld+json">${JSON.stringify(itemListSchema)}<\/script>`}
+	{@html `<script type="application/ld+json">${JSON.stringify(organizationSchema)}<\/script>`}
+	{@html `<script type="application/ld+json">${JSON.stringify(breadcrumbSchema)}<\/script>`}
 
 	<!-- Canonical tag: always point to clean URL without query params -->
-	<link rel="canonical" href="https://localsnow.org/instructors" />
+	<link rel="canonical" href={canonicalUrl} />
+	{#each alternates as alt}
+		<link rel="alternate" hreflang={alt.locale} href={alt.url} />
+	{/each}
+	{#if defaultAlternate}
+		<link rel="alternate" hreflang="x-default" href={defaultAlternate.url} />
+	{/if}
 </svelte:head>
 
 <section class="w-full">

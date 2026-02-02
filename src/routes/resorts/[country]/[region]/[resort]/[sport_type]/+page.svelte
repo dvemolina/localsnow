@@ -3,17 +3,17 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { MapPin, Mountain, ExternalLink } from '@lucide/svelte';
-	import { page } from '$app/stores';
 	import Breadcrumb from '$lib/components/shared/Breadcrumb.svelte';
-	import InstructorCard from '$src/features/Instructors/components/InstructorCard.svelte'
+	import InstructorCard from '$src/features/Instructors/components/InstructorCard.svelte';
 	import { t } from '$lib/i18n/i18n';
 
 	let { data } = $props();
 	const { landingData, seo } = data;
 	const { location, sport, instructors, relatedResorts, totalInstructors } = landingData;
+	const defaultAlternate = seo.alternates?.find((alt) => alt.locale === 'en');
 
 	const breadcrumbItems = seo.breadcrumbs.map((crumb) => ({
-		href: crumb.url.replace('https://localsnow.com', ''),
+		href: crumb.url.replace('https://localsnow.org', ''),
 		label: crumb.name
 	}));
 </script>
@@ -22,6 +22,14 @@
 	<title>{seo.title}</title>
 	<meta name="description" content={seo.description} />
 	<link rel="canonical" href={seo.canonicalUrl} />
+	{#if seo.alternates}
+		{#each seo.alternates as alt}
+			<link rel="alternate" hreflang={alt.locale} href={alt.url} />
+		{/each}
+		{#if defaultAlternate}
+			<link rel="alternate" hreflang="x-default" href={defaultAlternate.url} />
+		{/if}
+	{/if}
 
 	<!-- Open Graph -->
 	<meta property="og:title" content={seo.openGraph.title} />

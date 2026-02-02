@@ -1,18 +1,16 @@
 <script lang="ts">
-	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { MapPin, Mountain, ExternalLink, ArrowRight } from '@lucide/svelte';
-	import { page } from '$app/stores';
-	import Breadcrumb from '$lib/components/shared/Breadcrumb.svelte';
 	import { t } from '$lib/i18n/i18n';
 	import { formatMessage } from '$lib/i18n/format';
 
 	let { data } = $props();
 	const { resort, location, sportsAvailable, nearbyResorts, seo } = data;
+	const defaultAlternate = seo.alternates?.find((alt) => alt.locale === 'en');
 
 	const breadcrumbItems = seo.breadcrumbs.map((crumb) => ({
-		href: crumb.url.replace('https://localsnow.com', ''),
+		href: crumb.url.replace('https://localsnow.org', ''),
 		label: crumb.name
 	}));
 
@@ -22,6 +20,14 @@
 	<title>{seo.title}</title>
 	<meta name="description" content={seo.description} />
 	<link rel="canonical" href={seo.canonicalUrl} />
+	{#if seo.alternates}
+		{#each seo.alternates as alt}
+			<link rel="alternate" hreflang={alt.locale} href={alt.url} />
+		{/each}
+		{#if defaultAlternate}
+			<link rel="alternate" hreflang="x-default" href={defaultAlternate.url} />
+		{/if}
+	{/if}
 
 	<!-- Open Graph -->
 	<meta property="og:title" content={seo.openGraph.title} />
@@ -97,14 +103,14 @@
 	<!-- Find Instructors & Schools Section -->
 	<div class="mb-8 grid gap-4 md:grid-cols-2">
 		<!-- All Instructors Card -->
-		<Card class="border-2 border-primary/20">
+		<Card class="border-2 border-primary/20 flex h-full flex-col">
 			<CardHeader>
 				<CardTitle class="flex items-center gap-2">
 					<ArrowRight class="h-5 w-5 text-primary" />
 					{$t('resort_page_all_instructors_title')}
 				</CardTitle>
 			</CardHeader>
-			<CardContent>
+			<CardContent class="flex flex-1 flex-col justify-end">
 				<p class="mb-4 text-sm text-muted-foreground">
 					{formatMessage($t('resort_page_all_instructors_desc'), { resort: resort.name })}
 				</p>
@@ -119,14 +125,14 @@
 		</Card>
 
 		<!-- All Schools Card -->
-		<Card class="border-2 border-primary/20">
+		<Card class="border-2 border-primary/20 flex h-full flex-col">
 			<CardHeader>
 				<CardTitle class="flex items-center gap-2">
 					<ArrowRight class="h-5 w-5 text-primary" />
 					{$t('resort_page_ski_schools_title')}
 				</CardTitle>
 			</CardHeader>
-			<CardContent>
+			<CardContent class="flex flex-1 flex-col justify-end">
 				<p class="mb-4 text-sm text-muted-foreground">
 					{formatMessage($t('resort_page_ski_schools_desc'), { resort: resort.name })}
 				</p>

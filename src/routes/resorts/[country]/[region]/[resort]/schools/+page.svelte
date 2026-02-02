@@ -4,12 +4,12 @@
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import * as Avatar from '$src/lib/components/ui/avatar';
 	import { MapPin, Mountain, ExternalLink, Building2, Check } from '@lucide/svelte';
-	import { page } from '$app/stores';
 	import Breadcrumb from '$lib/components/shared/Breadcrumb.svelte';
 	import * as Accordion from '$lib/components/ui/accordion';
 
 	let { data } = $props();
 	const { location, schools, totalSchools, faqs, seo } = data;
+	const defaultAlternate = seo.alternates?.find((alt) => alt.locale === 'en');
 
 	const breadcrumbItems = seo.breadcrumbs.map((crumb) => ({
 		href: crumb.url.replace('https://localsnow.org', ''),
@@ -21,6 +21,14 @@
 	<title>{seo.title}</title>
 	<meta name="description" content={seo.description} />
 	<link rel="canonical" href={seo.canonicalUrl} />
+	{#if seo.alternates}
+		{#each seo.alternates as alt}
+			<link rel="alternate" hreflang={alt.locale} href={alt.url} />
+		{/each}
+		{#if defaultAlternate}
+			<link rel="alternate" hreflang="x-default" href={defaultAlternate.url} />
+		{/if}
+	{/if}
 
 	<!-- Open Graph -->
 	<meta property="og:title" content={seo.openGraph.title} />

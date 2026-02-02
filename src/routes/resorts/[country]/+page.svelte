@@ -4,12 +4,21 @@
 
   let { data } = $props();
   const { countryData, seo } = data;
+  const defaultAlternate = seo.alternates?.find((alt) => alt.locale === 'en');
 </script>
 
 <svelte:head>
   <title>{seo.title}</title>
   <meta name="description" content={seo.description} />
   <link rel="canonical" href={seo.canonicalUrl} />
+  {#if seo.alternates}
+    {#each seo.alternates as alt}
+      <link rel="alternate" hreflang={alt.locale} href={alt.url} />
+    {/each}
+    {#if defaultAlternate}
+      <link rel="alternate" hreflang="x-default" href={defaultAlternate.url} />
+    {/if}
+  {/if}
 
   <!-- Open Graph -->
   <meta property="og:type" content={seo.openGraph.type} />

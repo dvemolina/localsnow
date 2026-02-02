@@ -1,5 +1,19 @@
 <script lang="ts">
-	import { t } from '$lib/i18n/i18n';</script>
+	import { t } from '$lib/i18n/i18n';
+	import { page } from '$app/state';
+	import { extractLocale, type Locale } from '$lib/i18n/routes';
+	import { getAlternateUrls, route } from '$lib/i18n/routeHelpers';
+
+	const PRIMARY_ORIGIN = 'https://localsnow.org';
+	const currentLocale = $derived((extractLocale(page.url.pathname).locale || 'en') as Locale);
+	const canonicalPath = $derived(route('/about', currentLocale));
+	const canonicalUrl = $derived(`${PRIMARY_ORIGIN}${canonicalPath}`);
+	const alternates = $derived(getAlternateUrls(canonicalPath).map((alt) => ({
+		locale: alt.locale,
+		url: `${PRIMARY_ORIGIN}${alt.url}`
+	})));
+	const defaultAlternate = $derived(alternates.find((alt) => alt.locale === 'en'));
+</script>
 
 <svelte:head>
 	<title>{$t('about_title')} | Local Snow</title>
@@ -8,7 +22,7 @@
 	<!-- Open Graph -->
 	<meta property="og:title" content="{$t('about_title')} | Local Snow" />
 	<meta property="og:description" content={$t('about_meta_description')} />
-	<meta property="og:url" content="https://localsnow.org/about" />
+	<meta property="og:url" content={canonicalUrl} />
 	<meta property="og:image" content="https://localsnow.org/og-image.jpg" />
 	<meta property="og:type" content="website" />
 
@@ -18,7 +32,13 @@
 	<meta name="twitter:description" content={$t('about_meta_description')} />
 	<meta name="twitter:image" content="https://localsnow.org/og-image.jpg" />
 
-	<link rel="canonical" href="https://localsnow.org/about" />
+	<link rel="canonical" href={canonicalUrl} />
+	{#each alternates as alt}
+		<link rel="alternate" hreflang={alt.locale} href={alt.url} />
+	{/each}
+	{#if defaultAlternate}
+		<link rel="alternate" hreflang="x-default" href={defaultAlternate.url} />
+	{/if}
 </svelte:head>
 
 <article class="prose prose-sm mx-auto max-w-2xl">
