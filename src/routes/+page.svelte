@@ -3,7 +3,6 @@
 	import { heroResortSearchSchema } from '$src/features/Resorts/lib/resortSchemas';
 	import SportSelect from '$src/features/Resorts/components/SportSelect.svelte';
 	import SearchTypeToggle from '$src/lib/components/shared/SearchTypeToggle.svelte';
-	import FeaturedSchools from '$src/features/Schools/components/FeaturedSchools.svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { t } from '$lib/i18n/i18n';
@@ -241,11 +240,6 @@
 		</div>
 	</div>
 </section>
-
-<!-- Featured Schools Section -->
-{#if data.featuredSchools && data.featuredSchools.length > 0}
-	<FeaturedSchools schools={data.featuredSchools} />
-{/if}
 
 <!-- Top Resorts Section -->
 <section class="section">
