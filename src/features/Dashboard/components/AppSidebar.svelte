@@ -160,11 +160,11 @@
 <Sidebar.Root class="bg-background">
 	<Sidebar.Header class="bg-white">
 		<a href={route('/')} class="group flex flex-row items-center justify-center gap-1">
-			<div class="m-1 size-12 overflow-hidden object-cover">
+			<div class="m-1 flex size-12 items-center justify-center overflow-hidden border-0 object-cover">
 				<img
 					src="/localsnow-logo-h-black.png"
 					alt="Local Snow Logo"
-					class="opacity-85 group-hover:opacity-100 group-focus:opacity-100"
+					class="mx-auto opacity-85 group-hover:opacity-100 group-focus:opacity-100"
 				/>
 			</div>
 			<p class="title4 mt-0 text-foreground/85 transition-all group-hover:text-foreground">

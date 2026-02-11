@@ -27,7 +27,7 @@
 		class="grey-section mt-4 flex w-full max-w-4xl flex-col sm:flex-row items-center justify-between gap-8 rounded-md border border-border/50 bg-card p-6 shadow-xs sm:my-4 sm:p-12"
 	>
 		<div class="flex max-w-64 flex-col items-center justify-center gap-2 text-center">
-			<img src="/localsnow-logo-v-black.png" alt="Local Snow Ski Instructor Logo" class="w-36" />
+			<img src="/localsnow-logo-v-black.png" alt="Local Snow Ski Instructor Logo" class="w-36 opacity-75" />
 			<h3 class="title4">{$t('footer_tagline')}</h3>
 		</div>
 

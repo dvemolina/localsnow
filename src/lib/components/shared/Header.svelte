@@ -118,19 +118,16 @@
 	>
 		<div class="flex w-full max-w-[685px] flex-row gap-2 items-center justify-center">
 			<div
-				class="header flex w-full flex-row items-center justify-evenly gap-4 pr-4 rounded-full shadow-xs border border-border bg-card sm:gap-12"
+				class="header py-3 flex w-full flex-row items-center justify-evenly gap-4 px-4 rounded-full shadow-xs border border-border bg-card sm:gap-12"
 			>
 				<a href={route('/')} class="group flex flex-row items-center justify-center">
-					<div class="m-1 size-12 overflow-hidden rounded-full object-cover">
+					<div class="m-1 flex items-center justify-center overflow-hidden border-0 object-cover">
 						<img
 							src="/localsnow-logo-h-black.png"
 							alt="Local Snow Logo"
-							class="opacity-85 group-hover:opacity-100 group-focus:opacity-100 p-1"
+							class="mx-auto max-w-40 p-1 opacity-75 group-hover:opacity-90 group-focus:opacity-90"
 						/>
 					</div>
-					<p class="title4 mt-0 text-foreground/85 transition-all group-hover:text-foreground">
-						localsnow
-					</p>
 				</a>
 
 				<!-- Desktop Navigation -->
@@ -264,16 +261,13 @@
 
 					<nav class="flex flex-col items-center justify-center space-y-8 mb-8">
 						<a href={route('/')} class="group flex flex-row items-center justify-center gap-1">
-							<div class="m-1 size-12 overflow-hidden object-cover">
+							<div class="m-1 flex size-12 items-center justify-center overflow-hidden border-0 object-cover">
 								<img
 									src="/localsnow-logo-h-black.png"
 									alt="Local Snow Logo"
-									class="opacity-85 group-hover:opacity-100 group-focus:opacity-100"
+									class="mx-auto max-w-40 opacity-75 group-hover:opacity-90 group-focus:opacity-90"
 								/>
 							</div>
-							<p class="title4 mt-0 text-foreground/85 transition-all group-hover:text-foreground">
-								localsnow
-							</p>
 						</a>
 
 						<ul class="flex flex-col items-center gap-4">
