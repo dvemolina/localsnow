@@ -138,7 +138,7 @@
 		'@type': 'Organization',
 		name: 'Local Snow',
 		url: 'https://localsnow.org',
-		logo: 'https://localsnow.org/local-snow-head.png',
+		logo: 'https://localsnow.org/localsnow-logo-v.png',
 		description: 'Free directory of independent ski and snowboard instructors worldwide',
 		sameAs: []
 	};

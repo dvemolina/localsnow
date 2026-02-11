@@ -78,7 +78,7 @@
 		'@type': 'Organization',
 		name: 'Local Snow',
 		url: 'https://localsnow.org',
-		logo: 'https://localsnow.org/local-snow-head.png',
+		logo: 'https://localsnow.org/localsnow-logo-v.png',
 		description:
 			'Curated directory of ski and snowboard instructors worldwide. Browse profiles by resort, specialty, and language. Send lesson requests and connect directly. Zero platform fees, community-driven, built for local discovery.',
 		email: 'admin@localsnow.org',
