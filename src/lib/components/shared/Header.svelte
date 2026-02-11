@@ -123,7 +123,7 @@
 				<a href={route('/')} class="group flex flex-row items-center justify-center">
 					<div class="m-1 size-12 overflow-hidden rounded-full object-cover">
 						<img
-							src="/localsnow-logo-h.png"
+							src="/localsnow-logo-h-black.png"
 							alt="Local Snow Logo"
 							class="opacity-85 group-hover:opacity-100 group-focus:opacity-100 p-1"
 						/>
@@ -266,7 +266,7 @@
 						<a href={route('/')} class="group flex flex-row items-center justify-center gap-1">
 							<div class="m-1 size-12 overflow-hidden object-cover">
 								<img
-									src="/localsnow-logo-h.png"
+									src="/localsnow-logo-h-black.png"
 									alt="Local Snow Logo"
 									class="opacity-85 group-hover:opacity-100 group-focus:opacity-100"
 								/>
