@@ -155,7 +155,7 @@
 						<Badge variant="secondary">
 							{resort.name}
 							<span class="ml-1 text-xs text-muted-foreground">
-								({resort.region.region}, {resort.country.country})
+								({resort.region?.region}, {resort.country?.country})
 							</span>
 						</Badge>
 					{:else}

@@ -137,6 +137,17 @@ const securityHeadersHandle: Handle = async ({ event, resolve }) => {
 			directives.push("img-src 'self' data: https: blob:");
 		}
 
+		// Allow Sentry to send error reports
+		const connectSrcIndex = directives.findIndex((directive) => directive.startsWith('connect-src'));
+		const sentryDomain = '*.ingest.de.sentry.io';
+		if (connectSrcIndex >= 0) {
+			if (!directives[connectSrcIndex].includes(sentryDomain)) {
+				directives[connectSrcIndex] = `${directives[connectSrcIndex]} ${sentryDomain}`;
+			}
+		} else {
+			directives.push(`connect-src 'self' ${sentryDomain}`);
+		}
+
 		response.headers.set('content-security-policy', directives.join('; '));
 	}
 
