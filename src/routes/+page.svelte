@@ -27,7 +27,8 @@
 	);
 	const defaultAlternate = $derived(alternates.find((alt) => alt.locale === 'en'));
 
-	// Top Spain resorts for homepage - use $derived for translation reactivity
+	// Top resorts for homepage - use $derived for translation reactivity
+	// Showcasing global coverage across continents
 	const topResorts = $derived([
 		{
 			name: 'Baqueira-Beret',
@@ -37,25 +38,25 @@
 			image: 'https://assets.localsnow.org/resorts/baqueira-beret'
 		},
 		{
-			name: 'Formigal-Panticosa',
-			slug: 'formigal-panticosa',
-			region: $t('home_resort_regions_formigal'),
-			description: $t('home_resort_descriptions_formigal'),
-			image: 'https://assets.localsnow.org/resorts/formigal-panticosa'
+			name: 'Verbier',
+			slug: 'verbier',
+			region: $t('home_resort_regions_verbier'),
+			description: $t('home_resort_descriptions_verbier'),
+			image: 'https://assets.localsnow.org/resorts/verbier'
 		},
 		{
-			name: 'Cerler',
-			slug: 'cerler',
-			region: $t('home_resort_regions_cerler'),
-			description: $t('home_resort_descriptions_cerler'),
-			image: 'https://assets.localsnow.org/resorts/cerler'
+			name: 'Cerro Catedral',
+			slug: 'cerro-catedral',
+			region: $t('home_resort_regions_cerro_catedral'),
+			description: $t('home_resort_descriptions_cerro_catedral'),
+			image: 'https://assets.localsnow.org/resorts/cerro-catedral'
 		},
 		{
-			name: 'Valdesqui',
-			slug: 'valdesqui',
-			region: $t('home_resort_regions_valdesqui'),
-			description: $t('home_resort_descriptions_valdesqui'),
-			image: 'https://assets.localsnow.org/resorts/valdesqui'
+			name: 'Niseko',
+			slug: 'niseko-moiwa-ski-resort',
+			region: $t('home_resort_regions_niseko'),
+			description: $t('home_resort_descriptions_niseko'),
+			image: 'https://assets.localsnow.org/resorts/niseko-united'
 		}
 	]);
 
