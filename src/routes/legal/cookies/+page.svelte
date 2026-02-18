@@ -1,5 +1,5 @@
 <script lang="ts">
-	const lastUpdated = '2025-11-11';
+	const lastUpdated = '2026-02-15';
 </script>
 
 <svelte:head>
@@ -10,9 +10,9 @@
 	/>
 </svelte:head>
 
-<article class="prose prose-sm mx-auto max-w-3xl dark:prose-invert">
+<article class="prose prose-sm dark:prose-invert mx-auto max-w-3xl">
 	<h1 class="title2">Cookie Policy</h1>
-	<p class="text-sm text-muted-foreground">Last updated: {lastUpdated}</p>
+	<p class="text-muted-foreground text-sm">Last updated: {lastUpdated}</p>
 
 	<section>
 		<h2 class="title3">1. Introduction</h2>
@@ -21,8 +21,8 @@
 			tracking technologies on our website at <strong>localsnow.org</strong> (the "Platform").
 		</p>
 		<p>
-			By using our Platform, you consent to the use of cookies as described in this policy. You
-			can control cookie settings through your browser or our cookie consent banner.
+			By using our Platform, you consent to the use of cookies as described in this policy. You can
+			control cookie settings through your browser or our cookie consent banner.
 		</p>
 	</section>
 
@@ -30,8 +30,8 @@
 		<h2 class="title3">2. What Are Cookies?</h2>
 		<p>
 			Cookies are small text files stored on your device (computer, smartphone, tablet) when you
-			visit a website. They help websites remember your preferences, recognize you on return
-			visits, and provide a better user experience.
+			visit a website. They help websites remember your preferences, recognize you on return visits,
+			and provide a better user experience.
 		</p>
 		<p>Cookies can be:</p>
 		<ul>
@@ -70,73 +70,58 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td><code>auth_session</code></td>
+					<td><code>auth-session</code></td>
 					<td>Authentication session management; keeps you logged in</td>
 					<td>30 days</td>
 				</tr>
 				<tr>
-					<td><code>cookie_consent</code></td>
-					<td>Stores your cookie consent preferences</td>
+					<td><code>locale</code></td>
+					<td>Stores your selected language (English or Spanish)</td>
 					<td>1 year</td>
 				</tr>
 				<tr>
-					<td><code>csrf_token</code></td>
-					<td>Security token to prevent cross-site request forgery attacks</td>
-					<td>Session</td>
+					<td><code>cookie_consent</code></td>
+					<td>Stores your consent choice for optional first-party measurement</td>
+					<td>1 year</td>
+				</tr>
+				<tr>
+					<td><code>cookie_consent_date</code></td>
+					<td>Stores when your latest consent decision was saved</td>
+					<td>1 year</td>
+				</tr>
+				<tr>
+					<td
+						><code>google_oauth_state</code>, <code>google_code_verifier</code>,
+						<code>oauth_return_to</code></td
+					>
+					<td>Temporary cookies required to complete secure Google sign-in</td>
+					<td>10 minutes</td>
 				</tr>
 			</tbody>
 		</table>
 		<p>
-			<strong>Legal Basis:</strong> These cookies are necessary for the performance of our contract
-			with you (GDPR Article 6(1)(b)).
+			<strong>Legal Basis:</strong> These cookies are necessary for the performance of our contract with
+			you (GDPR Article 6(1)(b)).
 		</p>
 
 		<h3 class="title4">3.2 Functional Cookies</h3>
 		<p>
-			These cookies enhance functionality and personalization but are not strictly necessary. They
-			remember your preferences and settings.
-		</p>
-		<table>
-			<thead>
-				<tr>
-					<th>Cookie Name</th>
-					<th>Purpose</th>
-					<th>Duration</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td><code>theme_preference</code></td>
-					<td>Remembers your light/dark mode preference</td>
-					<td>1 year</td>
-				</tr>
-				<tr>
-					<td><code>language_preference</code></td>
-					<td>Stores your preferred language for the interface</td>
-					<td>1 year</td>
-				</tr>
-				<tr>
-					<td><code>search_filters</code></td>
-					<td>Remembers your last used search filters for convenience</td>
-					<td>30 days</td>
-				</tr>
-			</tbody>
-		</table>
-		<p>
-			<strong>Legal Basis:</strong> Your consent (GDPR Article 6(1)(a)). You can withdraw consent
-			at any time.
+			At this time, we do not set a separate functional-cookie category beyond the essential cookies
+			listed above.
 		</p>
 
-		<h3 class="title4">3.3 Analytics Cookies (Currently Not Implemented)</h3>
+		<h3 class="title4">3.3 First-Party Measurement (No Analytics Cookies)</h3>
 		<p>
-			We currently do not use analytics cookies. If we implement analytics in the future (e.g.,
-			Google Analytics), we will:
+			We do not use third-party analytics cookies. Instead, we use consent-aware first-party
+			server-side event logs to measure and improve core marketplace flows (for example: instructor
+			signup completion and lesson request submission).
 		</p>
 		<ul>
-			<li>Update this Cookie Policy</li>
-			<li>Request your explicit consent via the cookie banner</li>
-			<li>Allow you to opt-out at any time</li>
-			<li>Anonymize IP addresses to protect privacy</li>
+			<li>
+				These events are recorded only when you choose "Accept measurement" in the cookie banner
+			</li>
+			<li>Choosing "Essential only" means these optional measurement events are not recorded</li>
+			<li>We do not use this data for behavioral advertising</li>
 		</ul>
 
 		<h3 class="title4">3.4 Advertising Cookies (Not Used)</h3>
@@ -198,10 +183,8 @@
 				<strong>SameSite Protection:</strong> Cookies use SameSite attribute to prevent CSRF attacks
 			</li>
 			<li>
-				<strong>IP Anonymization:</strong> Profile view tracking uses SHA-256 hashed IP addresses
-			</li>
-			<li>
-				<strong>No Cross-Site Tracking:</strong> We do not track you across other websites
+				<strong>No Cross-Site Tracking:</strong> We do not track you across other websites or sell your
+				data
 			</li>
 		</ul>
 	</section>
@@ -210,17 +193,17 @@
 		<h2 class="title3">6. Managing Your Cookie Preferences</h2>
 
 		<h3 class="title4">6.1 Cookie Consent Banner</h3>
-		<p>
-			When you first visit our Platform, you'll see a cookie consent banner allowing you to:
-		</p>
+		<p>When you first visit our Platform, you'll see a cookie consent banner allowing you to:</p>
 		<ul>
-			<li><strong>Accept All:</strong> Consent to all cookies (essential and functional)</li>
-			<li><strong>Reject Non-Essential:</strong> Use only strictly necessary cookies</li>
+			<li><strong>Accept measurement:</strong> Allow optional first-party measurement events</li>
 			<li>
-				<strong>Customize:</strong> Choose which categories of cookies to accept (if available)
+				<strong>Essential only:</strong> Use only essential cookies and disable optional measurement
 			</li>
 		</ul>
-		<p>You can change your preferences at any time by clicking "Cookie Settings" in the footer.</p>
+		<p>
+			You can change your choice any time by clearing your cookies/local storage and selecting again
+			in the banner.
+		</p>
 
 		<h3 class="title4">6.2 Browser Settings</h3>
 		<p>You can also manage cookies through your browser settings:</p>
@@ -239,20 +222,22 @@
 			</li>
 		</ul>
 		<p>
-			<strong>Note:</strong> Blocking essential cookies will prevent you from logging in and using
-			core Platform features.
+			<strong>Note:</strong> Blocking essential cookies will prevent you from logging in and using core
+			Platform features.
 		</p>
 
 		<h3 class="title4">6.3 Do Not Track (DNT)</h3>
 		<p>
-			We respect browser Do Not Track signals. If your browser sends a DNT signal, we will not set
-			non-essential cookies without your explicit consent.
+			We currently rely on your cookie-banner selection for optional measurement controls. Browser
+			Do Not Track signals are not used as a standalone consent mechanism.
 		</p>
 	</section>
 
 	<section>
 		<h2 class="title3">7. Cookie Retention and Deletion</h2>
-		<p>Cookies are retained for the durations specified in the tables above. You can delete cookies:</p>
+		<p>
+			Cookies are retained for the durations specified in the tables above. You can delete cookies:
+		</p>
 		<ul>
 			<li>
 				<strong>Manually:</strong> Clear cookies through your browser settings at any time
@@ -264,8 +249,7 @@
 				<strong>On Logout:</strong> Authentication cookies are cleared when you log out
 			</li>
 			<li>
-				<strong>On Account Deletion:</strong> We invalidate all your cookies when you delete your
-				account
+				<strong>On Account Deletion:</strong> We invalidate all your cookies when you delete your account
 			</li>
 		</ul>
 	</section>
@@ -292,9 +276,8 @@
 			browsers. You can manage cookies through your mobile browser settings.
 		</p>
 		<p>
-			<strong>Note:</strong> We do not currently have native mobile apps. If we develop apps in the
-			future, they may use similar technologies (e.g., local storage) that will be disclosed in updated
-			policies.
+			<strong>Note:</strong> We do not currently have native mobile apps. If we develop apps in the future,
+			they may use similar technologies (e.g., local storage) that will be disclosed in updated policies.
 		</p>
 	</section>
 
@@ -325,12 +308,18 @@
 		</p>
 	</section>
 
-	<section class="mt-8 rounded-lg border border-border bg-muted p-4">
+	<section class="border-border bg-muted mt-8 rounded-lg border p-4">
 		<h3 class="mb-2 text-sm font-semibold">Cookie Policy Summary</h3>
 		<ul class="text-sm">
-			<li><strong>Essential Cookies:</strong> Authentication, security, session management (always active)</li>
-			<li><strong>Functional Cookies:</strong> Preferences, settings (requires consent)</li>
-			<li><strong>Analytics:</strong> Not currently used; will require consent if implemented</li>
+			<li>
+				<strong>Essential Cookies:</strong> Authentication, security, session management (always active)
+			</li>
+			<li>
+				<strong>Functional Cookies:</strong> No separate functional-cookie category at this time
+			</li>
+			<li>
+				<strong>Measurement:</strong> Optional first-party server-side events, controlled by consent
+			</li>
 			<li><strong>Advertising:</strong> Not used at all; we don't track for ads</li>
 			<li>
 				<strong>Third Parties:</strong> Only Stripe (payments) and Google (OAuth/Calendar) with their

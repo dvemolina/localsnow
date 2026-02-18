@@ -44,6 +44,10 @@ export const routeTranslations = {
 		en: '/instructors',
 		es: '/instructores'
 	},
+	'/schools': {
+		en: '/schools',
+		es: '/escuelas'
+	},
 
 	// Resorts
 	'/resorts': {

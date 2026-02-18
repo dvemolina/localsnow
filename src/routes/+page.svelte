@@ -19,42 +19,43 @@
 	const currentLocale = $derived((extractLocale(page.url.pathname).locale || 'en') as Locale);
 	const canonicalPath = $derived(route('/', currentLocale));
 	const canonicalUrl = $derived(`${PRIMARY_ORIGIN}${canonicalPath}`);
-	const alternates = $derived(getAlternateUrls(canonicalPath).map((alt) => ({
-		locale: alt.locale,
-		url: `${PRIMARY_ORIGIN}${alt.url}`
-	})));
+	const alternates = $derived(
+		getAlternateUrls(canonicalPath).map((alt) => ({
+			locale: alt.locale,
+			url: `${PRIMARY_ORIGIN}${alt.url}`
+		}))
+	);
 	const defaultAlternate = $derived(alternates.find((alt) => alt.locale === 'en'));
 
-	// Top resorts for homepage - use $derived for translation reactivity
-	// Showcasing global coverage across continents
+	// Top Spain resorts for homepage - use $derived for translation reactivity
 	const topResorts = $derived([
 		{
 			name: 'Baqueira-Beret',
 			slug: 'baqueira-beret',
-			region: 'Pyrenees, Spain',
+			region: $t('home_resort_regions_baqueira'),
 			description: $t('home_resort_descriptions_baqueira'),
 			image: 'https://assets.localsnow.org/resorts/baqueira-beret'
 		},
 		{
-			name: 'Verbier',
-			slug: 'verbier',
-			region: 'Alps, Switzerland',
-			description: $t('home_resort_descriptions_verbier'),
-			image: 'https://assets.localsnow.org/resorts/verbier'
+			name: 'Formigal-Panticosa',
+			slug: 'formigal-panticosa',
+			region: $t('home_resort_regions_formigal'),
+			description: $t('home_resort_descriptions_formigal'),
+			image: 'https://assets.localsnow.org/resorts/formigal-panticosa'
 		},
 		{
-			name: 'Cerro Catedral',
-			slug: 'cerro-catedral',
-			region: 'Patagonia, Argentina',
-			description: $t('home_resort_descriptions_cerro_catedral'),
-			image: 'https://assets.localsnow.org/resorts/cerro-catedral'
+			name: 'Cerler',
+			slug: 'cerler',
+			region: $t('home_resort_regions_cerler'),
+			description: $t('home_resort_descriptions_cerler'),
+			image: 'https://assets.localsnow.org/resorts/cerler'
 		},
 		{
-			name: 'Niseko',
-			slug: 'niseko-moiwa-ski-resort',
-			region: 'Hokkaido, Japan',
-			description: $t('home_resort_descriptions_niseko'),
-			image: 'https://assets.localsnow.org/resorts/niseko-united'
+			name: 'Valdesqui',
+			slug: 'valdesqui',
+			region: $t('home_resort_regions_valdesqui'),
+			description: $t('home_resort_descriptions_valdesqui'),
+			image: 'https://assets.localsnow.org/resorts/valdesqui'
 		}
 	]);
 
@@ -97,10 +98,7 @@
 
 <svelte:head>
 	<title>{$t('seo_meta_home_title')}</title>
-	<meta
-		name="description"
-		content={$t('seo_meta_home_description')}
-	/>
+	<meta name="description" content={$t('seo_meta_home_description')} />
 
 	<!-- Open Graph -->
 	<meta property="og:title" content={$t('seo_meta_home_title')} />
@@ -157,7 +155,7 @@
 			>
 				{$t('home_hero_title')}
 			</h1>
-			<div class="flex align-bottom h-full flex-col justify-center">
+			<div class="flex h-full flex-col justify-center align-bottom">
 				<p class="text-shadow mb-6 max-w-[600px] text-lg text-white sm:text-xl md:text-2xl">
 					{$t('home_hero_subtitle')}
 				</p>
@@ -195,11 +193,26 @@
 </section>
 
 <!-- Free Forever Banner -->
-<section class="bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-500 px-5 py-10 mt-12 rounded-md shadow-sm">
+<section
+	class="mt-12 rounded-md border-2 border-green-500 bg-gradient-to-r from-green-50 to-blue-50 px-5 py-10 shadow-sm"
+>
 	<div class="container">
 		<div class="mx-auto max-w-4xl text-center">
-			<div class="mb-4 inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-bold text-green-900">
-				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-green-600"><polyline points="20 6 9 17 4 12"></polyline></svg>
+			<div
+				class="mb-4 inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-bold text-green-900"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="16"
+					height="16"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="3"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="text-green-600"><polyline points="20 6 9 17 4 12"></polyline></svg
+				>
 				{$t('home_free_banner_badge')}
 			</div>
 
@@ -207,26 +220,34 @@
 				{$t('home_free_banner_title')}
 			</h2>
 
-			<p class="mb-6 text-lg text-gray-700 leading-relaxed max-w-2xl mx-auto">
+			<p class="mx-auto mb-6 max-w-2xl text-lg leading-relaxed text-gray-700">
 				{$t('home_free_banner_description')}
 			</p>
 
-			<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 p-4">
-				<div class="flex flex-col items-center gap-2 rounded-lg bg-white border-2 border-green-200 px-4 py-4 shadow-sm">
+			<div class="mt-8 grid grid-cols-1 gap-4 p-4 md:grid-cols-3">
+				<div
+					class="flex flex-col items-center gap-2 rounded-lg border-2 border-green-200 bg-white px-4 py-4 shadow-sm"
+				>
 					<div class="text-center">
-						<div class="text-2xl font-bold text-green-900">{$t('home_free_banner_booking_fees')}</div>
+						<div class="text-2xl font-bold text-green-900">
+							{$t('home_free_banner_booking_fees')}
+						</div>
 						<div class="text-sm text-gray-600">{$t('home_free_banner_booking_fees_label')}</div>
 					</div>
 				</div>
 
-				<div class="flex flex-col items-center gap-2 rounded-lg bg-white border-2 border-green-200 px-4 py-4 shadow-sm">
+				<div
+					class="flex flex-col items-center gap-2 rounded-lg border-2 border-green-200 bg-white px-4 py-4 shadow-sm"
+				>
 					<div class="text-center">
 						<div class="text-2xl font-bold text-green-900">{$t('home_free_banner_commission')}</div>
 						<div class="text-sm text-gray-600">{$t('home_free_banner_commission_label')}</div>
 					</div>
 				</div>
 
-				<div class="flex flex-col items-center gap-2 rounded-lg bg-white border-2 border-green-200 px-4 py-4 shadow-sm">
+				<div
+					class="flex flex-col items-center gap-2 rounded-lg border-2 border-green-200 bg-white px-4 py-4 shadow-sm"
+				>
 					<div class="text-center">
 						<div class="text-2xl font-bold text-green-900">{$t('home_free_banner_unlimited')}</div>
 						<div class="text-sm text-gray-600">{$t('home_free_banner_unlimited_label')}</div>
@@ -249,8 +270,8 @@
 	<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
 		{#each topResorts as resort}
 			<a
-				href={route(`/instructors?resort=${resort.slug}`)}
-				class="resort-card group relative overflow-hidden rounded-lg border border-border shadow-lg transition-all hover:shadow-xl"
+				href={route('/instructors', currentLocale, { resort: resort.slug })}
+				class="resort-card group border-border relative overflow-hidden rounded-lg border shadow-lg transition-all hover:shadow-xl"
 			>
 				<!-- Background Image -->
 				<div class="absolute inset-0">
@@ -259,9 +280,15 @@
 						alt={resort.name}
 						class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
 						loading="lazy"
+						onerror={(event) => {
+							const target = event.currentTarget as HTMLImageElement;
+							target.src = 'https://assets.localsnow.org/resorts/default-resort-landscape.webp';
+						}}
 					/>
 					<!-- Gradient Overlay for better text readability -->
-					<div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/15"></div>
+					<div
+						class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/15"
+					></div>
 				</div>
 
 				<!-- Content -->
@@ -269,7 +296,9 @@
 					<h3 class="mb-2 text-xl font-bold drop-shadow-lg">{resort.name}</h3>
 					<p class="mb-1 text-sm text-white/95 drop-shadow-md">{resort.region}</p>
 					<p class="mb-4 text-sm text-white/85 drop-shadow-md">{resort.description}</p>
-					<span class="inline-flex items-center font-semibold text-white transition-transform group-hover:translate-x-1">
+					<span
+						class="inline-flex items-center font-semibold text-white transition-transform group-hover:translate-x-1"
+					>
 						{$t('home_resorts_view_instructors')} →
 					</span>
 				</div>
@@ -278,7 +307,10 @@
 	</div>
 
 	<div class="mt-8 text-center">
-		<a href={route('/resorts')} class="bg-primary inline-block rounded-md px-6 py-3 font-medium text-white">
+		<a
+			href={route('/resorts')}
+			class="bg-primary inline-block rounded-md px-6 py-3 font-medium text-white"
+		>
 			{$t('home_resorts_view_all')}
 		</a>
 	</div>
@@ -329,7 +361,7 @@
 	<div class="mt-10 text-center">
 		<a
 			href={route('/how-it-works')}
-			class="inline-block rounded-md border border-primary px-6 py-3 font-medium text-primary transition-all hover:bg-primary hover:text-white"
+			class="border-primary text-primary hover:bg-primary inline-block rounded-md border px-6 py-3 font-medium transition-all hover:text-white"
 		>
 			{$t('home_how_it_works_cta')} →
 		</a>
@@ -337,66 +369,129 @@
 </section>
 
 <!-- Why We're Free Section -->
-<section class="section  py-16 rounded-lg">
+<section class="section rounded-lg py-16">
 	<div class="container max-w-4xl">
-		<div class="text-center mb-10">
+		<div class="mb-10 text-center">
 			<h2 class="mb-4 text-3xl font-bold text-gray-900">{$t('home_why_free_title')}</h2>
 			<p class="text-xl text-gray-600">
 				{$t('home_why_free_subtitle')}
 			</p>
 		</div>
 
-		<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-			<div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+		<div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+			<div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
 				<div class="flex items-start gap-4">
-					<div class="bg-red-100 rounded-full p-3 flex-shrink-0">
-						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-600"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+					<div class="flex-shrink-0 rounded-full bg-red-100 p-3">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="text-red-600"
+							><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"
+							></line><line x1="9" y1="9" x2="15" y2="15"></line></svg
+						>
 					</div>
 					<div>
-						<h3 class="font-bold text-lg mb-2 text-gray-900">{$t('home_why_free_problem_title')}</h3>
-						<p class="text-gray-600 text-sm leading-relaxed">
+						<h3 class="mb-2 text-lg font-bold text-gray-900">
+							{$t('home_why_free_problem_title')}
+						</h3>
+						<p class="text-sm leading-relaxed text-gray-600">
 							{$t('home_why_free_problem_desc')}
 						</p>
 					</div>
 				</div>
 			</div>
 
-			<div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+			<div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
 				<div class="flex items-start gap-4">
-					<div class="bg-green-100 rounded-full p-3 flex-shrink-0">
-						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600"><polyline points="20 6 9 17 4 12"></polyline></svg>
+					<div class="flex-shrink-0 rounded-full bg-green-100 p-3">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="text-green-600"><polyline points="20 6 9 17 4 12"></polyline></svg
+						>
 					</div>
 					<div>
-						<h3 class="font-bold text-lg mb-2 text-gray-900">{$t('home_why_free_solution_title')}</h3>
-						<p class="text-gray-600 text-sm leading-relaxed">
+						<h3 class="mb-2 text-lg font-bold text-gray-900">
+							{$t('home_why_free_solution_title')}
+						</h3>
+						<p class="text-sm leading-relaxed text-gray-600">
 							{$t('home_why_free_solution_desc')}
 						</p>
 					</div>
 				</div>
 			</div>
 
-			<div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+			<div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
 				<div class="flex items-start gap-4">
-					<div class="bg-blue-100 rounded-full p-3 flex-shrink-0">
-						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-600"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+					<div class="flex-shrink-0 rounded-full bg-blue-100 p-3">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="text-blue-600"
+							><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle
+								cx="9"
+								cy="7"
+								r="4"
+							></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path
+								d="M16 3.13a4 4 0 0 1 0 7.75"
+							></path></svg
+						>
 					</div>
 					<div>
-						<h3 class="font-bold text-lg mb-2 text-gray-900">{$t('home_why_free_community_title')}</h3>
-						<p class="text-gray-600 text-sm leading-relaxed">
+						<h3 class="mb-2 text-lg font-bold text-gray-900">
+							{$t('home_why_free_community_title')}
+						</h3>
+						<p class="text-sm leading-relaxed text-gray-600">
 							{$t('home_why_free_community_desc')}
 						</p>
 					</div>
 				</div>
 			</div>
 
-			<div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+			<div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
 				<div class="flex items-start gap-4">
-					<div class="bg-purple-100 rounded-full p-3 flex-shrink-0">
-						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-600"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+					<div class="flex-shrink-0 rounded-full bg-purple-100 p-3">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="text-purple-600"
+							><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"
+							></polyline></svg
+						>
 					</div>
 					<div>
-						<h3 class="font-bold text-lg mb-2 text-gray-900">{$t('home_why_free_forever_title')}</h3>
-						<p class="text-gray-600 text-sm leading-relaxed">
+						<h3 class="mb-2 text-lg font-bold text-gray-900">
+							{$t('home_why_free_forever_title')}
+						</h3>
+						<p class="text-sm leading-relaxed text-gray-600">
 							{$t('home_why_free_forever_desc')}
 						</p>
 					</div>
@@ -404,8 +499,8 @@
 			</div>
 		</div>
 
-		<div class="mt-10 text-center bg-white rounded-lg p-6 border-2 border-green-500 shadow-sm">
-			<p class="text-gray-700 text-lg mb-2">
+		<div class="mt-10 rounded-lg border-2 border-green-500 bg-white p-6 text-center shadow-sm">
+			<p class="mb-2 text-lg text-gray-700">
 				<strong>{$t('home_why_free_sound_good_title')}</strong>
 			</p>
 			<p class="text-gray-600">
@@ -425,7 +520,7 @@
 	</div>
 
 	<div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-		<div class="rounded-lg border border-border bg-card p-6 text-center shadow-sm">
+		<div class="border-border bg-card rounded-lg border p-6 text-center shadow-sm">
 			<div
 				class="bg-primary/10 text-primary mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full"
 			>
@@ -450,7 +545,7 @@
 			</p>
 		</div>
 
-		<div class="rounded-lg border border-border bg-card p-6 text-center shadow-sm">
+		<div class="border-border bg-card rounded-lg border p-6 text-center shadow-sm">
 			<div
 				class="bg-primary/10 text-primary mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full"
 			>
@@ -475,7 +570,7 @@
 			</p>
 		</div>
 
-		<div class="rounded-lg border border-border bg-card p-6 text-center shadow-sm">
+		<div class="border-border bg-card rounded-lg border p-6 text-center shadow-sm">
 			<div
 				class="bg-primary/10 text-primary mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full"
 			>
@@ -529,7 +624,7 @@
 		</a>
 		<a
 			href={route('/signup')}
-			class="inline-block rounded-md border border-border bg-card px-8 py-3 font-semibold shadow-sm transition-all hover:shadow-md"
+			class="border-border bg-card inline-block rounded-md border px-8 py-3 font-semibold shadow-sm transition-all hover:shadow-md"
 		>
 			{$t('home_cta_list_instructor')}
 		</a>

@@ -5,6 +5,7 @@ import { getClientIP } from '$lib/utils/auth';
 import { LeadService } from '$src/features/Leads/lib/leadService';
 import { InstructorService } from '$src/features/Instructors/lib/instructorService';
 import { sendInstructorContactForm } from '$lib/server/webhooks/n8n/email-n8n';
+import { funnelEventService } from '$lib/server/services/funnelEventService';
 
 const leadService = new LeadService();
 const instructorService = new InstructorService();
@@ -32,7 +33,15 @@ export const POST: RequestHandler = async (event) => {
 	try {
 		// Parse request body
 		const body = await event.request.json();
-		const { clientName, clientEmail, clientPhone, message, preferredDates, numberOfStudents, skillLevel } = body;
+		const {
+			clientName,
+			clientEmail,
+			clientPhone,
+			message,
+			preferredDates,
+			numberOfStudents,
+			skillLevel
+		} = body;
 
 		// Validate required fields
 		if (!clientEmail || typeof clientEmail !== 'string') {
@@ -86,6 +95,22 @@ export const POST: RequestHandler = async (event) => {
 
 		// Consume rate limit token after successful processing
 		contactFormBucket.consume(clientIP, 1);
+
+		await funnelEventService.track(event, {
+			eventType: 'demand.contact_lead_submitted',
+			funnel: 'demand',
+			stage: 'lead_submitted',
+			userId: event.locals.user?.id ?? null,
+			entityType: 'instructor_lead',
+			entityId: lead.id,
+			metadata: {
+				instructorId,
+				numberOfStudents: numberOfStudents ?? null,
+				skillLevel: skillLevel ?? null,
+				hasPhone: Boolean(clientPhone),
+				hasPreferredDates: Boolean(preferredDates)
+			}
+		});
 
 		return json({
 			success: true,

@@ -125,7 +125,7 @@
 						<img
 							src="/localsnow-logo-h-black.png"
 							alt="Local Snow Logo"
-							class="mx-auto max-w-40 p-1 opacity-75 group-hover:opacity-90 group-focus:opacity-90"
+							class="mx-auto max-w-38 p-1 opacity-75 group-hover:opacity-90 group-focus:opacity-90"
 						/>
 					</div>
 				</a>
@@ -265,7 +265,7 @@
 								<img
 									src="/localsnow-logo-h-black.png"
 									alt="Local Snow Logo"
-									class="mx-auto max-w-40 opacity-75 group-hover:opacity-90 group-focus:opacity-90"
+									class="mx-auto max-w-38 opacity-75 group-hover:opacity-90 group-focus:opacity-90"
 								/>
 							</div>
 						</a>

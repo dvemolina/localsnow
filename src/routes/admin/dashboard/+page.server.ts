@@ -3,8 +3,18 @@ import { adminStatsService } from '$src/features/Admin/lib/adminStatsService';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-	const [stats, pendingVerifications, recentBookings, recentReviews, suspendedUsers] = await Promise.all([
+	const [
+		stats,
+		businessKpis,
+		funnelMetrics,
+		pendingVerifications,
+		recentBookings,
+		recentReviews,
+		suspendedUsers
+	] = await Promise.all([
 		adminStatsService.getPlatformStats(),
+		adminStatsService.getBusinessKpis(),
+		adminStatsService.getFunnelMetrics(30),
 		adminStatsService.getPendingVerifications(),
 		adminStatsService.getRecentBookings(10),
 		adminStatsService.getRecentReviews(5),
@@ -13,6 +23,8 @@ export const load: PageServerLoad = async () => {
 
 	return {
 		stats,
+		businessKpis,
+		funnelMetrics,
 		pendingVerifications,
 		recentBookings,
 		recentReviews,

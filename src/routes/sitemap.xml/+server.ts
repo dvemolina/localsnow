@@ -5,18 +5,35 @@ import { users, resorts, regions, countries, schools, userRoles } from '$src/lib
 import { eq, and, inArray } from 'drizzle-orm';
 import type { RequestHandler } from './$types';
 import { generateInstructorSlug } from '$lib/utils/slug';
+import { routeTranslations, type Locale } from '$lib/i18n/routes';
 
 const SITE_URL = 'https://localsnow.org';
-const DEFAULT_LOCALE = 'en';
-const SUPPORTED_LOCALES = ['en', 'es'];
+const DEFAULT_LOCALE: Locale = 'en';
+const SUPPORTED_LOCALES: Locale[] = ['en', 'es'];
 
-function buildLocalizedUrl(path: string, locale: string): string {
-	const normalizedPath = path
-		? path.startsWith('/') ? path : `/${path}`
-		: '/';
-	return normalizedPath === '/'
-		? `${SITE_URL}/${locale}/`
-		: `${SITE_URL}/${locale}${normalizedPath}`;
+const ROUTE_KEYS = Object.keys(routeTranslations).sort((a, b) => b.length - a.length);
+
+function localizePath(path: string, locale: Locale): string {
+	const normalizedPath = path ? (path.startsWith('/') ? path : `/${path}`) : '/';
+
+	if (normalizedPath === '/') {
+		return `/${locale}/`;
+	}
+
+	for (const routeKey of ROUTE_KEYS) {
+		if (normalizedPath === routeKey || normalizedPath.startsWith(`${routeKey}/`)) {
+			const localizedBase = routeTranslations[routeKey as keyof typeof routeTranslations][locale];
+			const suffix = normalizedPath.slice(routeKey.length);
+			return `/${locale}${localizedBase}${suffix}`;
+		}
+	}
+
+	// Fallback for non-translated paths.
+	return `/${locale}${normalizedPath}`;
+}
+
+function buildLocalizedUrl(path: string, locale: Locale): string {
+	return `${SITE_URL}${localizePath(path, locale)}`;
 }
 
 // Helper function to generate URL entry (path without locale)
@@ -29,9 +46,10 @@ function urlEntry(path: string, priority: string, changefreq: string, lastmod?: 
     ${lastmodTag}
     <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>
-    ${SUPPORTED_LOCALES.map((locale) => (
-		`<xhtml:link rel="alternate" hreflang="${locale}" href="${buildLocalizedUrl(path, locale)}" />`
-	)).join('\n    ')}
+    ${SUPPORTED_LOCALES.map(
+			(locale) =>
+				`<xhtml:link rel="alternate" hreflang="${locale}" href="${buildLocalizedUrl(path, locale)}" />`
+		).join('\n    ')}
     <xhtml:link rel="alternate" hreflang="x-default" href="${buildLocalizedUrl(path, DEFAULT_LOCALE)}" />
   </url>`;
 }
@@ -41,14 +59,15 @@ export const GET: RequestHandler = async () => {
 		// Get current date for lastmod
 		const today = new Date().toISOString().split('T')[0];
 
-		let urls: string[] = [];
+		const urls: string[] = [];
 
 		// 1. Static pages (high priority)
 		const staticPages = [
-			{ url: '', priority: '1.0', changefreq: 'daily' }, // Homepage
+			{ url: '/', priority: '1.0', changefreq: 'daily' }, // Homepage
 			{ url: '/instructors', priority: '0.9', changefreq: 'daily' },
 			{ url: '/schools', priority: '0.9', changefreq: 'daily' },
 			{ url: '/resorts', priority: '0.8', changefreq: 'weekly' },
+			{ url: '/signup', priority: '0.8', changefreq: 'weekly' },
 			{ url: '/how-it-works', priority: '0.7', changefreq: 'monthly' },
 			{ url: '/about', priority: '0.6', changefreq: 'monthly' },
 			{ url: '/contact', priority: '0.6', changefreq: 'monthly' }
@@ -92,15 +111,12 @@ export const GET: RequestHandler = async () => {
 			const lastmod = instructor.updatedAt
 				? new Date(instructor.updatedAt).toISOString().split('T')[0]
 				: undefined;
-			const instructorSlug = generateInstructorSlug(instructor.id, instructor.name, instructor.lastName);
-			urls.push(
-				urlEntry(
-					`/instructors/${instructorSlug}`,
-					'0.8',
-					'weekly',
-					lastmod
-				)
+			const instructorSlug = generateInstructorSlug(
+				instructor.id,
+				instructor.name,
+				instructor.lastName
 			);
+			urls.push(urlEntry(`/instructors/${instructorSlug}`, '0.8', 'weekly', lastmod));
 		});
 
 		// 3b. School profiles (dynamic, high priority)
@@ -114,14 +130,7 @@ export const GET: RequestHandler = async () => {
 			.limit(1000); // Limit to prevent performance issues
 
 		schoolProfiles.forEach((school) => {
-			urls.push(
-				urlEntry(
-					`/schools/${school.slug}`,
-					'0.8',
-					'weekly',
-					today
-				)
-			);
+			urls.push(urlEntry(`/schools/${school.slug}`, '0.8', 'weekly', today));
 		});
 
 		// 4. Resort hierarchy pages (dynamic, hierarchical priority)
@@ -134,14 +143,7 @@ export const GET: RequestHandler = async () => {
 			.groupBy(countries.countrySlug);
 
 		allCountries.forEach((country) => {
-			urls.push(
-				urlEntry(
-					`/resorts/${country.countrySlug}`,
-					'0.7',
-					'weekly',
-					today
-				)
-			);
+			urls.push(urlEntry(`/resorts/${country.countrySlug}`, '0.7', 'weekly', today));
 		});
 
 		// Get all regions
@@ -156,12 +158,7 @@ export const GET: RequestHandler = async () => {
 
 		allRegions.forEach((region) => {
 			urls.push(
-				urlEntry(
-					`/resorts/${region.countrySlug}/${region.regionSlug}`,
-					'0.7',
-					'weekly',
-					today
-				)
+				urlEntry(`/resorts/${region.countrySlug}/${region.regionSlug}`, '0.7', 'weekly', today)
 			);
 		});
 
@@ -182,34 +179,13 @@ export const GET: RequestHandler = async () => {
 			const baseResortUrl = `/resorts/${resort.countrySlug}${regionPath}/${resort.resortSlug}`;
 
 			// Resort main page
-			urls.push(
-				urlEntry(
-					baseResortUrl,
-					'0.8',
-					'weekly',
-					today
-				)
-			);
+			urls.push(urlEntry(baseResortUrl, '0.8', 'weekly', today));
 
 			// Resort instructors page (all instructors at this resort)
-			urls.push(
-				urlEntry(
-					`${baseResortUrl}/instructors`,
-					'0.85',
-					'daily',
-					today
-				)
-			);
+			urls.push(urlEntry(`${baseResortUrl}/instructors`, '0.85', 'daily', today));
 
 			// Resort schools page (all schools at this resort)
-			urls.push(
-				urlEntry(
-					`${baseResortUrl}/schools`,
-					'0.85',
-					'daily',
-					today
-				)
-			);
+			urls.push(urlEntry(`${baseResortUrl}/schools`, '0.85', 'daily', today));
 		});
 
 		// 5. Resort + Sport combinations (highest priority for conversions)
@@ -217,7 +193,7 @@ export const GET: RequestHandler = async () => {
 
 		resortSportCombinations.forEach((combo) => {
 			const regionPath = combo.regionSlug ? `/${combo.regionSlug}` : '';
-			const sportPath = combo.sportSlug === 'ski' ? 'ski-instructors' : 'snowboard-instructors';
+			const sportPath = `${combo.sportSlug}-instructors`;
 			urls.push(
 				urlEntry(
 					`/resorts/${combo.countrySlug}${regionPath}/${combo.resortSlug}/${sportPath}`,

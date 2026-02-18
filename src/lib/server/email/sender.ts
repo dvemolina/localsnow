@@ -16,8 +16,16 @@ function sleep(ms: number): Promise<void> {
  * Send email via n8n webhook with retry logic and timeout
  */
 export async function sendViaWebhook(payload: N8NPayload): Promise<void> {
-	const url = `${emailConfig.n8nWebhookUrl}${emailConfig.n8nWebhookPath}`;
+	const baseUrl = emailConfig.n8nWebhookUrl.replace(/\/+$/, '');
+	const webhookPath = emailConfig.n8nWebhookPath.startsWith('/')
+		? emailConfig.n8nWebhookPath
+		: `/${emailConfig.n8nWebhookPath}`;
+	const url = `${baseUrl}${webhookPath}`;
 	let lastError: Error | null = null;
+
+	if (!emailConfig.n8nSecret) {
+		console.warn('[EMAIL] EMAIL_HEADER_SECRET is empty. n8n may reject webhook requests.');
+	}
 
 	for (let attempt = 1; attempt <= emailConfig.retryAttempts; attempt++) {
 		try {

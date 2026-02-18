@@ -1,39 +1,74 @@
 import { relations } from 'drizzle-orm';
-import { pgTable, text, integer, timestamp, varchar, uuid, boolean, pgEnum, numeric, serial, decimal, uniqueIndex } from 'drizzle-orm/pg-core';
+import {
+	pgTable,
+	text,
+	integer,
+	timestamp,
+	varchar,
+	uuid,
+	boolean,
+	pgEnum,
+	numeric,
+	serial,
+	decimal,
+	uniqueIndex
+} from 'drizzle-orm/pg-core';
 
-export const userRoleEnum = pgEnum('user_role', ['admin', 'instructor-independent','instructor-school', 'school-admin', 'client']);
-export const sportsEnum = pgEnum('sport', ['Ski', 'Snowboard', 'Telemark'])
+export const userRoleEnum = pgEnum('user_role', [
+	'admin',
+	'instructor-independent',
+	'instructor-school',
+	'school-admin',
+	'client'
+]);
+export const sportsEnum = pgEnum('sport', ['Ski', 'Snowboard', 'Telemark']);
 export const sportSlugEnum = pgEnum('sport_slug', ['ski', 'snowboard', 'telemark']);
-export const modalitySlugEnum = pgEnum('modality_slug', ['piste', 'off-piste', 'freeride', 'freestyle', 'touring', 'adaptive']);
+export const modalitySlugEnum = pgEnum('modality_slug', [
+	'piste',
+	'off-piste',
+	'freeride',
+	'freestyle',
+	'touring',
+	'adaptive'
+]);
 export const pricingModeEnum = pgEnum('pricing_mode', ['per_hour', 'per_session', 'per_day']);
-export const bookingStatusEnum = pgEnum('status', ['pending', 'viewed', 'accepted', 'rejected', 'cancelled', 'expired', 'completed', 'no_show']);
+export const bookingStatusEnum = pgEnum('status', [
+	'pending',
+	'viewed',
+	'accepted',
+	'rejected',
+	'cancelled',
+	'expired',
+	'completed',
+	'no_show'
+]);
 export const bookingSourceEnum = pgEnum('booking_source', ['platform', 'manual']);
 
 export const timestamps = {
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at'),
-    deletedAt: timestamp('deleted_at'),
-}
+	createdAt: timestamp('created_at').defaultNow().notNull(),
+	updatedAt: timestamp('updated_at'),
+	deletedAt: timestamp('deleted_at')
+};
 // --- Users ---
 export const users = pgTable('users', {
-    uuid: uuid('uuid').defaultRandom().unique().notNull(),
-    id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	uuid: uuid('uuid').defaultRandom().unique().notNull(),
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
 	googleId: varchar('google_id').unique(),
-    name: varchar('name', { length: 100 }).notNull(),
+	name: varchar('name', { length: 100 }).notNull(),
 	lastName: varchar('last_name', { length: 100 }).notNull(),
 	username: varchar('username', { length: 50 }),
-    email: varchar('email', { length: 255 }).notNull().unique(),
-    passwordHash: varchar('password_hash', { length: 255 }),
-    role: userRoleEnum('role'), 
-    bio: text('bio'),
-    profileImageUrl: varchar('profile_image_url', { length: 255 }). default('/local-snow-head.png'),
-	countryCode: varchar('country_code', { length: 4}),
-    phone: varchar('phone', { length: 50 }),
-	professionalCountryCode: varchar('professional_country_code', { length: 4}),
+	email: varchar('email', { length: 255 }).notNull().unique(),
+	passwordHash: varchar('password_hash', { length: 255 }),
+	role: userRoleEnum('role'),
+	bio: text('bio'),
+	profileImageUrl: varchar('profile_image_url', { length: 255 }).default('/local-snow-head.png'),
+	countryCode: varchar('country_code', { length: 4 }),
+	phone: varchar('phone', { length: 50 }),
+	professionalCountryCode: varchar('professional_country_code', { length: 4 }),
 	professionalPhone: varchar('professional_phone', { length: 50 }),
 	qualificationUrl: varchar('qualification_url', { length: 255 }),
 	spokenLanguages: text('spoken_languages').array(),
-    isVerified: boolean('is_verified').default(false),
+	isVerified: boolean('is_verified').default(false),
 	isPublished: boolean('is_published').default(false),
 	acceptedTerms: boolean('accepted_terms').notNull().default(false),
 	isSuspended: boolean('is_suspended').default(false),
@@ -45,14 +80,20 @@ export const users = pgTable('users', {
 });
 
 // --- User Roles (multi-role support) ---
-export const userRoles = pgTable('user_roles', {
-	id: serial('id').primaryKey(),
-	userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-	role: userRoleEnum('role').notNull(),
-	createdAt: timestamp('created_at').defaultNow().notNull()
-}, (table) => ({
-	userRoleUnique: uniqueIndex('user_roles_user_id_role_unique').on(table.userId, table.role)
-}));
+export const userRoles = pgTable(
+	'user_roles',
+	{
+		id: serial('id').primaryKey(),
+		userId: integer('user_id')
+			.notNull()
+			.references(() => users.id, { onDelete: 'cascade' }),
+		role: userRoleEnum('role').notNull(),
+		createdAt: timestamp('created_at').defaultNow().notNull()
+	},
+	(table) => ({
+		userRoleUnique: uniqueIndex('user_roles_user_id_role_unique').on(table.userId, table.role)
+	})
+);
 // --- Sports ---
 export const sports = pgTable('sports', {
 	uuid: uuid('uuid').defaultRandom().unique().notNull(),
@@ -65,17 +106,19 @@ export const sports = pgTable('sports', {
 export const countries = pgTable('countries', {
 	uuid: uuid('uuid').defaultRandom().unique().notNull(),
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
-	country: varchar('country', { length: 100} ).notNull(),
-	countryCode: varchar('country_code', { length: 4}).notNull(),
-	countrySlug: varchar('country_slug', { length: 100}).notNull().unique()
+	country: varchar('country', { length: 100 }).notNull(),
+	countryCode: varchar('country_code', { length: 4 }).notNull(),
+	countrySlug: varchar('country_slug', { length: 100 }).notNull().unique()
 });
 
 export const regions = pgTable('regions', {
 	uuid: uuid('uuid').defaultRandom().unique().notNull(),
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
-	countryId: integer('country_id').notNull().references(() => countries.id),
-	region: varchar('region', { length: 100} ).notNull(),
-	regionSlug: varchar('region_slug', { length: 100}).notNull().unique(),
+	countryId: integer('country_id')
+		.notNull()
+		.references(() => countries.id),
+	region: varchar('region', { length: 100 }).notNull(),
+	regionSlug: varchar('region_slug', { length: 100 }).notNull().unique()
 });
 
 export const resorts = pgTable('resorts', {
@@ -94,19 +137,24 @@ export const resorts = pgTable('resorts', {
 	countryId: integer('country_id')
 		.notNull()
 		.references(() => countries.id, { onDelete: 'cascade' }),
-	regionId: integer('region_id')
-		.references(() => regions.id, { onDelete: 'cascade' }),
+	regionId: integer('region_id').references(() => regions.id, { onDelete: 'cascade' }),
 	...timestamps
 });
 
 // Resort Requests - Instructors can request new resorts to be added
-export const resortRequestStatusEnum = pgEnum('resort_request_status', ['pending', 'approved', 'rejected']);
+export const resortRequestStatusEnum = pgEnum('resort_request_status', [
+	'pending',
+	'approved',
+	'rejected'
+]);
 
 export const resortRequests = pgTable('resort_requests', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
 	uuid: uuid('uuid').defaultRandom().unique().notNull(),
 	// Requester info
-	requesterId: integer('requester_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	requesterId: integer('requester_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
 	requesterEmail: varchar('requester_email', { length: 255 }).notNull(),
 	requesterName: varchar('requester_name', { length: 100 }).notNull(),
 	// Resort details
@@ -117,24 +165,29 @@ export const resortRequests = pgTable('resort_requests', {
 	additionalInfo: text('additional_info'), // Any extra details from the instructor
 	// Status and processing
 	status: resortRequestStatusEnum('status').notNull().default('pending'),
-	reviewedByAdminId: integer('reviewed_by_admin_id').references(() => users.id, { onDelete: 'set null' }),
+	reviewedByAdminId: integer('reviewed_by_admin_id').references(() => users.id, {
+		onDelete: 'set null'
+	}),
 	reviewedAt: timestamp('reviewed_at'),
 	rejectionReason: text('rejection_reason'), // If rejected, why
-	createdResortId: integer('created_resort_id').references(() => resorts.id, { onDelete: 'set null' }), // Link to created resort if approved
+	createdResortId: integer('created_resort_id').references(() => resorts.id, {
+		onDelete: 'set null'
+	}), // Link to created resort if approved
 	...timestamps
 });
-
 
 // --- Schools ---
 export const schools = pgTable('schools', {
 	uuid: uuid('uuid').defaultRandom().unique().notNull(),
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
-	ownerUserId: integer('owner_user_id').notNull().references(() => users.id),
+	ownerUserId: integer('owner_user_id')
+		.notNull()
+		.references(() => users.id),
 	name: varchar('name', { length: 100 }).notNull(),
 	slug: varchar('slug', { length: 100 }).notNull().unique(),
 	bio: text('bio'),
 	schoolEmail: varchar('school_email', { length: 255 }),
-	countryCode: varchar('country_code', { length: 4}).notNull(),
+	countryCode: varchar('country_code', { length: 4 }).notNull(),
 	schoolPhone: varchar('school_phone', { length: 50 }),
 	logo: varchar('logo', { length: 255 }),
 	isPublished: boolean('is_published').default(true),
@@ -146,24 +199,26 @@ export const schools = pgTable('schools', {
 
 // --- Booking Requests ---
 export const bookingRequests = pgTable('booking_requests', {
-    id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
-    uuid: uuid('uuid').defaultRandom().unique().notNull(),
-    instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	uuid: uuid('uuid').defaultRandom().unique().notNull(),
+	instructorId: integer('instructor_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
 	schoolId: integer('school_id').references(() => schools.id, { onDelete: 'set null' }), // If booked through school
 	lessonId: integer('lesson_id').references(() => lessons.id, { onDelete: 'set null' }), // Reference to lesson for manual bookings
 
-    // Client info
-    clientUserId: integer('client_user_id').references(() => users.id, { onDelete: 'set null' }), // Authenticated user reference
-    clientName: varchar('client_name', { length: 100 }).notNull(),
-    clientEmail: varchar('client_email', { length: 255 }),
+	// Client info
+	clientUserId: integer('client_user_id').references(() => users.id, { onDelete: 'set null' }), // Authenticated user reference
+	clientName: varchar('client_name', { length: 100 }).notNull(),
+	clientEmail: varchar('client_email', { length: 255 }),
 	clientCountryCode: varchar('client_country_code', { length: 4 }),
-    clientPhone: varchar('client_phone', { length: 50 }),
+	clientPhone: varchar('client_phone', { length: 50 }),
 
-    // Lesson details
-    numberOfStudents: integer('number_of_students').notNull().default(1),
-    startDate: timestamp('start_date').notNull(),
-    endDate: timestamp('end_date'), // null for single-day bookings
-    hoursPerDay: numeric('hours_per_day', { precision: 4, scale: 1 }).notNull(),
+	// Lesson details
+	numberOfStudents: integer('number_of_students').notNull().default(1),
+	startDate: timestamp('start_date').notNull(),
+	endDate: timestamp('end_date'), // null for single-day bookings
+	hoursPerDay: numeric('hours_per_day', { precision: 4, scale: 1 }).notNull(),
 	timeSlots: text('time_slots'), // JSON array of time slots
 
 	// Additional info
@@ -172,9 +227,9 @@ export const bookingRequests = pgTable('booking_requests', {
 	promoCode: varchar('promo_code', { length: 50 }),
 	bookingIdentifier: varchar('booking_identifier', { length: 100 }), // Internal booking label
 
-    // Pricing estimate (for reference)
-    estimatedPrice: integer('estimated_price'),
-    currency: varchar('currency', { length: 50 }),
+	// Pricing estimate (for reference)
+	estimatedPrice: integer('estimated_price'),
+	currency: varchar('currency', { length: 50 }),
 
 	// Client management fields
 	source: bookingSourceEnum('source').notNull().default('platform'), // platform or manual
@@ -188,11 +243,11 @@ export const bookingRequests = pgTable('booking_requests', {
 	reviewToken: varchar('review_token', { length: 255 }),
 	reviewSubmittedAt: timestamp('review_submitted_at'),
 
-    // Beta launch tracking
-    usedLaunchCode: varchar('used_launch_code', { length: 50 }), // Track if beta code was used
+	// Beta launch tracking
+	usedLaunchCode: varchar('used_launch_code', { length: 50 }), // Track if beta code was used
 
-    status: bookingStatusEnum('status').default('pending'),
-    ...timestamps
+	status: bookingStatusEnum('status').default('pending'),
+	...timestamps
 });
 
 // User Booking Request Limits - Track how many active requests a user has
@@ -220,7 +275,9 @@ export type InsertUserBookingLimit = typeof userBookingLimits.$inferInsert;
 export const instructorReviews = pgTable('instructor_reviews', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
 	uuid: uuid('uuid').defaultRandom().unique().notNull(),
-	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	instructorId: integer('instructor_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
 	reviewerId: integer('reviewer_id').references(() => users.id, { onDelete: 'set null' }), // Optional: if reviewer was logged in
 	bookingId: integer('booking_id').references(() => bookingRequests.id, { onDelete: 'set null' }),
 	reviewerName: varchar('reviewer_name', { length: 100 }), // Public display name for the review
@@ -264,9 +321,8 @@ export const lessons = pgTable('lessons', {
 	schoolId: integer('school_id').references(() => schools.id),
 	isPublished: boolean('is_published').default(true),
 	isBaseLesson: boolean('is_base_lesson').default(false),
-	...timestamps 
+	...timestamps
 });
-
 
 export const pricingModes = pgTable('pricing_modes', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
@@ -279,7 +335,9 @@ export const pricingModes = pgTable('pricing_modes', {
 export const conditionalPricing = pgTable('conditional_pricing', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
 	uuid: uuid('uuid').defaultRandom().unique().notNull(),
-	lessonId: integer('lesson_id').notNull().references(() => lessons.id, { onDelete: 'cascade' }),
+	lessonId: integer('lesson_id')
+		.notNull()
+		.references(() => lessons.id, { onDelete: 'cascade' }),
 	conditionType: varchar('condition_type', { length: 50 }).notNull(), // 'students', 'duration', 'date_range'
 	minValue: integer('min_value'), // e.g., min 2 students, min 2 hours
 	maxValue: integer('max_value'), // e.g., max 10 students, max 8 hours
@@ -310,24 +368,55 @@ export const promotionalPricing = pgTable('promotional_pricing', {
 
 export const profileVisits = pgTable('profile_visits', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
-    instructorId: integer('instructor_id').notNull(),
-    visitorIp: varchar('visitor_ip', { length: 45 }).notNull(),
-    yearMonth: varchar('year_month', { length: 7 }).notNull(),
-    createdAt: timestamp('created_at').defaultNow(),
+	instructorId: integer('instructor_id').notNull(),
+	visitorIp: varchar('visitor_ip', { length: 45 }).notNull(),
+	yearMonth: varchar('year_month', { length: 7 }).notNull(),
+	createdAt: timestamp('created_at').defaultNow()
 });
+
+// Funnel events (first-party, consent-aware measurement)
+export const funnelEvents = pgTable('funnel_events', {
+	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+	uuid: uuid('uuid').defaultRandom().unique().notNull(),
+	eventType: varchar('event_type', { length: 120 }).notNull(),
+	funnel: varchar('funnel', { length: 40 }).notNull(),
+	stage: varchar('stage', { length: 60 }).notNull(),
+	userId: integer('user_id').references(() => users.id, { onDelete: 'set null' }),
+	entityType: varchar('entity_type', { length: 60 }),
+	entityId: integer('entity_id'),
+	sourcePath: varchar('source_path', { length: 500 }),
+	locale: varchar('locale', { length: 5 }),
+	countryCode: varchar('country_code', { length: 8 }),
+	isSpain: boolean('is_spain').notNull().default(false),
+	consentStatus: varchar('consent_status', { length: 20 }).notNull().default('unknown'),
+	metadata: text('metadata'),
+	createdAt: timestamp('created_at').defaultNow().notNull()
+});
+
+export const funnelEventsRelations = relations(funnelEvents, ({ one }) => ({
+	user: one(users, {
+		fields: [funnelEvents.userId],
+		references: [users.id]
+	})
+}));
+
+export type FunnelEvent = typeof funnelEvents.$inferSelect;
+export type InsertFunnelEvent = typeof funnelEvents.$inferInsert;
 
 export const session = pgTable('session', {
 	id: text('id').primaryKey(),
 	userId: integer('user_id')
-	.notNull()
-	.references(() => users.id, { onDelete: 'cascade' }),
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
 	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull()
 });
 
 // Group Pricing Tiers Table
 export const groupPricingTiers = pgTable('group_pricing_tiers', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
-	lessonId: integer('lesson_id').notNull().references(() => lessons.id, { onDelete: 'cascade' }),
+	lessonId: integer('lesson_id')
+		.notNull()
+		.references(() => lessons.id, { onDelete: 'cascade' }),
 	minStudents: integer('min_students').notNull(),
 	maxStudents: integer('max_students').notNull(),
 	pricePerHour: integer('price_per_hour').notNull(),
@@ -337,7 +426,9 @@ export const groupPricingTiers = pgTable('group_pricing_tiers', {
 // Duration Packages Table
 export const durationPackages = pgTable('duration_packages', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
-	lessonId: integer('lesson_id').notNull().references(() => lessons.id, { onDelete: 'cascade' }),
+	lessonId: integer('lesson_id')
+		.notNull()
+		.references(() => lessons.id, { onDelete: 'cascade' }),
 	name: varchar('name', { length: 100 }).notNull(),
 	hours: numeric('hours', { precision: 4, scale: 1 }).notNull(),
 	price: integer('price').notNull(),
@@ -363,8 +454,12 @@ export const promoCodes = pgTable('promo_codes', {
 //Lead Payments
 export const leadPayments = pgTable('lead_payments', {
 	id: serial('id').primaryKey(),
-	bookingRequestId: integer('booking_request_id').notNull().references(() => bookingRequests.id),
-	instructorId: integer('instructor_id').notNull().references(() => users.id),
+	bookingRequestId: integer('booking_request_id')
+		.notNull()
+		.references(() => bookingRequests.id),
+	instructorId: integer('instructor_id')
+		.notNull()
+		.references(() => users.id),
 	amount: decimal('amount', { precision: 10, scale: 2 }).notNull(),
 	currency: varchar('currency', { length: 3 }).notNull().default('EUR'),
 	stripePaymentIntentId: varchar('stripe_payment_intent_id', { length: 255 }),
@@ -391,8 +486,10 @@ export const leadPaymentsRelations = relations(leadPayments, ({ one }) => ({
 export const clientDeposits = pgTable('client_deposits', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
 	uuid: uuid('uuid').defaultRandom().unique().notNull(),
-	bookingRequestId: integer('booking_request_id').notNull().references(() => bookingRequests.id, { onDelete: 'cascade' }),
-    clientEmail: varchar('client_email', { length: 255 }),
+	bookingRequestId: integer('booking_request_id')
+		.notNull()
+		.references(() => bookingRequests.id, { onDelete: 'cascade' }),
+	clientEmail: varchar('client_email', { length: 255 }),
 	amount: decimal('amount', { precision: 10, scale: 2 }).notNull(),
 	currency: varchar('currency', { length: 3 }).notNull().default('EUR'),
 	stripePaymentIntentId: varchar('stripe_payment_intent_id', { length: 255 }),
@@ -432,8 +529,13 @@ export type InsertLaunchCode = typeof launchCodes.$inferInsert;
 export const reviews = pgTable('reviews', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
 	uuid: uuid('uuid').defaultRandom().unique().notNull(),
-	bookingRequestId: integer('booking_request_id').notNull().unique().references(() => bookingRequests.id, { onDelete: 'cascade' }), // One review per booking
-	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	bookingRequestId: integer('booking_request_id')
+		.notNull()
+		.unique()
+		.references(() => bookingRequests.id, { onDelete: 'cascade' }), // One review per booking
+	instructorId: integer('instructor_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
 	clientEmail: varchar('client_email', { length: 255 }).notNull(),
 	rating: integer('rating').notNull(), // 1-5 stars
 	comment: text('comment'),
@@ -459,7 +561,9 @@ export type InsertReview = typeof reviews.$inferInsert;
 export const instructorLeads = pgTable('instructor_leads', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
 	uuid: uuid('uuid').defaultRandom().unique().notNull(),
-	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	instructorId: integer('instructor_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
 	clientName: varchar('client_name', { length: 100 }),
 	clientEmail: varchar('client_email', { length: 255 }).notNull(),
 	clientPhone: varchar('client_phone', { length: 20 }),
@@ -487,11 +591,13 @@ export type InsertInstructorLead = typeof instructorLeads.$inferInsert;
 export const instructorWorkingHours = pgTable('instructor_working_hours', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
 	uuid: uuid('uuid').defaultRandom().unique().notNull(),
-	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	instructorId: integer('instructor_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
 	dayOfWeek: integer('day_of_week').notNull(), // 0=Sunday, 6=Saturday
 	startTime: varchar('start_time', { length: 5 }).notNull(), // "09:00"
 	endTime: varchar('end_time', { length: 5 }).notNull(), // "17:00"
-	seasonStart: timestamp('season_start'), 
+	seasonStart: timestamp('season_start'),
 	seasonEnd: timestamp('season_end'),
 	isActive: boolean('is_active').default(true),
 	...timestamps
@@ -501,12 +607,16 @@ export const instructorWorkingHours = pgTable('instructor_working_hours', {
 export const instructorCalendarBlocks = pgTable('instructor_calendar_blocks', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
 	uuid: uuid('uuid').defaultRandom().unique().notNull(),
-	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	instructorId: integer('instructor_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
 	startDatetime: timestamp('start_datetime').notNull(),
 	endDatetime: timestamp('end_datetime').notNull(),
 	allDay: boolean('all_day').default(false),
 	source: varchar('source', { length: 50 }).notNull(), // 'google_calendar' | 'booking_pending' | 'booking_confirmed' | 'manual'
-	bookingRequestId: integer('booking_request_id').references(() => bookingRequests.id, { onDelete: 'cascade' }),
+	bookingRequestId: integer('booking_request_id').references(() => bookingRequests.id, {
+		onDelete: 'cascade'
+	}),
 	googleEventId: varchar('google_event_id', { length: 255 }),
 	title: varchar('title', { length: 255 }),
 	expiresAt: timestamp('expires_at'), // For pending bookings (48h)
@@ -516,7 +626,10 @@ export const instructorCalendarBlocks = pgTable('instructor_calendar_blocks', {
 // Google OAuth Tokens (encrypted storage)
 export const instructorGoogleTokens = pgTable('instructor_google_tokens', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
-	instructorId: integer('instructor_id').notNull().unique().references(() => users.id, { onDelete: 'cascade' }),
+	instructorId: integer('instructor_id')
+		.notNull()
+		.unique()
+		.references(() => users.id, { onDelete: 'cascade' }),
 	accessToken: text('access_token').notNull(), // Encrypted
 	refreshToken: text('refresh_token').notNull(), // Encrypted
 	tokenExpiry: timestamp('token_expiry').notNull(),
@@ -526,50 +639,81 @@ export const instructorGoogleTokens = pgTable('instructor_google_tokens', {
 	...timestamps
 });
 
-
 // --- Many-to-Many Relationships ---
 
 export const lessonSports = pgTable('lesson_sports', {
-	lessonId: integer('lesson_id').notNull().references(() => lessons.id, { onDelete: 'cascade' }),
-	sportId: integer('sport_id').notNull().references(() => sports.id, { onDelete: 'cascade' })
+	lessonId: integer('lesson_id')
+		.notNull()
+		.references(() => lessons.id, { onDelete: 'cascade' }),
+	sportId: integer('sport_id')
+		.notNull()
+		.references(() => sports.id, { onDelete: 'cascade' })
 });
 
 export const bookingRequestSports = pgTable('booking_request_sports', {
-    bookingRequestId: integer('booking_request_id').notNull().references(() => bookingRequests.id, { onDelete: 'cascade' }),
-    sportId: integer('sport_id').notNull().references(() => sports.id, { onDelete: 'cascade' })
+	bookingRequestId: integer('booking_request_id')
+		.notNull()
+		.references(() => bookingRequests.id, { onDelete: 'cascade' }),
+	sportId: integer('sport_id')
+		.notNull()
+		.references(() => sports.id, { onDelete: 'cascade' })
 });
 
 export const instructorSports = pgTable('instructor_sports', {
-	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-	sportId: integer('sport_id').notNull().references(() => sports.id)
+	instructorId: integer('instructor_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
+	sportId: integer('sport_id')
+		.notNull()
+		.references(() => sports.id)
 });
 
 export const instructorResorts = pgTable('instructor_resorts', {
-	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-	resortId: integer('resort_id').notNull().references(() => resorts.id, { onDelete: 'cascade' })
+	instructorId: integer('instructor_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
+	resortId: integer('resort_id')
+		.notNull()
+		.references(() => resorts.id, { onDelete: 'cascade' })
 });
 
 export const schoolSports = pgTable('school_sports', {
-	schoolId: integer('school_id').notNull().references(() => schools.id, { onDelete: 'cascade' }),
-	sportId: integer('sport_id').notNull().references(() => sports.id, { onDelete: 'cascade' })
+	schoolId: integer('school_id')
+		.notNull()
+		.references(() => schools.id, { onDelete: 'cascade' }),
+	sportId: integer('sport_id')
+		.notNull()
+		.references(() => sports.id, { onDelete: 'cascade' })
 });
 
 export const schoolResorts = pgTable('school_resorts', {
-	schoolId: integer('school_id').notNull().references(() => schools.id, { onDelete: 'cascade' }),
-	resortId: integer('resort_id').notNull().references(() => resorts.id, { onDelete: 'cascade' })
+	schoolId: integer('school_id')
+		.notNull()
+		.references(() => schools.id, { onDelete: 'cascade' }),
+	resortId: integer('resort_id')
+		.notNull()
+		.references(() => resorts.id, { onDelete: 'cascade' })
 });
 
 export const schoolAdmins = pgTable('school_admins', {
-	schoolId: integer('school_id').notNull().references(() => schools.id, { onDelete: 'cascade' }),
-	userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	schoolId: integer('school_id')
+		.notNull()
+		.references(() => schools.id, { onDelete: 'cascade' }),
+	userId: integer('user_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
 	isAccepted: boolean('is_accepted').default(false),
 	isOwner: boolean('is_owner').default(false),
 	...timestamps
 });
 
 export const schoolInstructors = pgTable('school_instructors', {
-	schoolId: integer('school_id').notNull().references(() => schools.id, { onDelete: 'cascade' }),
-	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	schoolId: integer('school_id')
+		.notNull()
+		.references(() => schools.id, { onDelete: 'cascade' }),
+	instructorId: integer('instructor_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
 	requestedBy: varchar('requested_by', { length: 20 }), // 'school' or 'instructor'
 	isAcceptedBySchool: boolean('is_accepted_by_school').default(false),
 	isActive: boolean('is_active').default(true),
@@ -581,7 +725,9 @@ export const schoolInstructors = pgTable('school_instructors', {
 
 export const schoolInstructorHistory = pgTable('school_instructor_history', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
-	instructorId: integer('instructor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	instructorId: integer('instructor_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
 	schoolId: integer('school_id').references(() => schools.id), // Null for independent work
 	startDate: timestamp('start_date').defaultNow().notNull(),
 	endDate: timestamp('end_date'), // Null means still active
@@ -594,7 +740,9 @@ export const schoolInstructorHistory = pgTable('school_instructor_history', {
 export const adminAuditLog = pgTable('admin_audit_log', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
 	uuid: uuid('uuid').defaultRandom().unique().notNull(),
-	adminId: integer('admin_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	adminId: integer('admin_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
 	action: varchar('action', { length: 100 }).notNull(), // 'verify_instructor', 'suspend_user', 'delete_review', etc.
 	targetType: varchar('target_type', { length: 50 }), // 'user', 'booking', 'review', 'resort', etc.
 	targetId: integer('target_id'), // ID of the affected entity
@@ -617,7 +765,9 @@ export type InsertAdminAuditLog = typeof adminAuditLog.$inferInsert;
 // Role Transition Archive - Stores complete snapshots of user state during role transitions
 export const roleTransitionArchive = pgTable('role_transition_archive', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
-	userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	userId: integer('user_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
 	adminId: integer('admin_id').references(() => users.id),
 	fromRole: userRoleEnum('from_role'),
 	toRole: userRoleEnum('to_role').notNull(),
@@ -656,7 +806,9 @@ export type InsertRoleTransitionArchive = typeof roleTransitionArchive.$inferIns
 // Role Transition Blocks - Tracks blocking conditions that prevent role changes
 export const roleTransitionBlocks = pgTable('role_transition_blocks', {
 	id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
-	userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	userId: integer('user_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
 	blockType: varchar('block_type', { length: 50 }).notNull(), // 'active_bookings', 'school_has_instructors', etc.
 	blockData: text('block_data'), // JSON string with details about the block (booking IDs, etc.)
 	resolved: boolean('resolved').default(false),
@@ -919,7 +1071,7 @@ export type InsertUser = typeof users.$inferInsert;
 export type Session = typeof session.$inferSelect;
 
 //School
-export type School = typeof schools.$inferSelect
+export type School = typeof schools.$inferSelect;
 export type InsertSchool = typeof schools.$inferInsert;
 export type SchoolAdmin = typeof schoolAdmins.$inferSelect;
 export type InsertSchoolAdmin = typeof schoolAdmins.$inferInsert;

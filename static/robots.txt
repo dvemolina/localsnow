@@ -8,4 +8,17 @@ Disallow: /oauth/
 Disallow: /booking/
 Disallow: /leads/
 Disallow: /reviews/submit
+Disallow: /en/admin/
+Disallow: /es/admin/
+Disallow: /en/dashboard/
+Disallow: /es/panel/
+Disallow: /en/oauth/
+Disallow: /es/oauth/
+Disallow: /en/booking/
+Disallow: /es/reserva/
+Disallow: /en/leads/
+Disallow: /es/leads/
+Disallow: /en/reviews/submit
+Disallow: /es/resenas/enviar
+Disallow: /es/reviews/submit
 Sitemap: https://localsnow.org/sitemap.xml

@@ -164,7 +164,7 @@
 				<img
 					src="/localsnow-logo-h-black.png"
 					alt="Local Snow Logo"
-					class="mx-auto max-w-43 opacity-75 group-hover:opacity-85 group-focus:opacity-85"
+					class="mx-auto max-w-38 opacity-75 group-hover:opacity-85 group-focus:opacity-85"
 				/>
 			</div>
 		</a>

@@ -6,12 +6,19 @@
 	const contactEmail = 'admin@localsnow.org';
 	const PRIMARY_ORIGIN = 'https://localsnow.org';
 	const currentLocale = $derived((extractLocale(page.url.pathname).locale || 'en') as Locale);
+	const signupPath = $derived(route('/signup', currentLocale));
+	const instructorsPath = $derived(route('/instructors', currentLocale));
+	const howItWorksPath = $derived(route('/how-it-works', currentLocale));
+	const resortsBase = $derived(route('/resorts', currentLocale));
+	const spainResortsPath = $derived(`${resortsBase}/spain`);
 	const canonicalPath = $derived(route('/contact', currentLocale));
 	const canonicalUrl = $derived(`${PRIMARY_ORIGIN}${canonicalPath}`);
-	const alternates = $derived(getAlternateUrls(canonicalPath).map((alt) => ({
-		locale: alt.locale,
-		url: `${PRIMARY_ORIGIN}${alt.url}`
-	})));
+	const alternates = $derived(
+		getAlternateUrls(canonicalPath).map((alt) => ({
+			locale: alt.locale,
+			url: `${PRIMARY_ORIGIN}${alt.url}`
+		}))
+	);
 	const defaultAlternate = $derived(alternates.find((alt) => alt.locale === 'en'));
 
 	// Schema markup for SEO
@@ -24,10 +31,10 @@
 			email: contactEmail,
 			url: 'https://localsnow.org',
 			description:
-				'Global platform connecting ski and snowboard instructors with clients at resorts worldwide',
+				'Spain-first directory connecting ski and snowboard instructors and schools with clients',
 			areaServed: {
 				'@type': 'Place',
-				name: 'Worldwide'
+				name: 'Spain'
 			}
 		}
 	};
@@ -62,18 +69,18 @@
 
 <article class="prose prose-sm mx-auto max-w-3xl">
 	<h1 class="title2">{$t('contact_page_title')}</h1>
-	<p class="text-lg text-muted-foreground">
+	<p class="text-muted-foreground text-lg">
 		{$t('contact_page_subtitle')}
 	</p>
 
 	<!-- General Inquiries Section -->
-	<section class="my-8 rounded-lg border border-border bg-card p-6 shadow-sm">
+	<section class="border-border bg-card my-8 rounded-lg border p-6 shadow-sm">
 		<h2 class="title3 mb-3">{$t('contact_page_general_title')}</h2>
-		<p class="mb-4 text-muted-foreground">{$t('contact_page_general_desc')}</p>
+		<p class="text-muted-foreground mb-4">{$t('contact_page_general_desc')}</p>
 		<div class="flex items-center gap-3">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
-				class="size-5 text-primary"
+				class="text-primary size-5"
 				fill="none"
 				viewBox="0 0 24 24"
 				stroke="currentColor"
@@ -86,7 +93,7 @@
 				/>
 			</svg>
 			<div>
-				<p class="text-sm font-medium text-muted-foreground">{$t('contact_page_email_label')}</p>
+				<p class="text-muted-foreground text-sm font-medium">{$t('contact_page_email_label')}</p>
 				<a href="mailto:{contactEmail}" class="text-primary hover:underline">
 					{contactEmail}
 				</a>
@@ -95,9 +102,9 @@
 	</section>
 
 	<!-- For Instructors Section -->
-	<section class="my-8 rounded-lg border border-border bg-card p-6 shadow-sm">
+	<section class="border-border bg-card my-8 rounded-lg border p-6 shadow-sm">
 		<h2 class="title3 mb-3">{$t('contact_page_instructors_title')}</h2>
-		<p class="mb-4 text-muted-foreground">
+		<p class="text-muted-foreground mb-4">
 			{$t('contact_page_instructors_desc')}
 		</p>
 
@@ -107,7 +114,7 @@
 				<li class="flex items-start gap-2">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
-						class="mt-0.5 size-5 shrink-0 text-primary"
+						class="text-primary mt-0.5 size-5 shrink-0"
 						fill="none"
 						viewBox="0 0 24 24"
 						stroke="currentColor"
@@ -119,12 +126,12 @@
 							d="M5 13l4 4L19 7"
 						/>
 					</svg>
-					<span class="text-sm text-muted-foreground">{$t('contact_page_benefit_1')}</span>
+					<span class="text-muted-foreground text-sm">{$t('contact_page_benefit_1')}</span>
 				</li>
 				<li class="flex items-start gap-2">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
-						class="mt-0.5 size-5 shrink-0 text-primary"
+						class="text-primary mt-0.5 size-5 shrink-0"
 						fill="none"
 						viewBox="0 0 24 24"
 						stroke="currentColor"
@@ -136,12 +143,12 @@
 							d="M5 13l4 4L19 7"
 						/>
 					</svg>
-					<span class="text-sm text-muted-foreground">{$t('contact_page_benefit_2')}</span>
+					<span class="text-muted-foreground text-sm">{$t('contact_page_benefit_2')}</span>
 				</li>
 				<li class="flex items-start gap-2">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
-						class="mt-0.5 size-5 shrink-0 text-primary"
+						class="text-primary mt-0.5 size-5 shrink-0"
 						fill="none"
 						viewBox="0 0 24 24"
 						stroke="currentColor"
@@ -153,12 +160,12 @@
 							d="M5 13l4 4L19 7"
 						/>
 					</svg>
-					<span class="text-sm text-muted-foreground">{$t('contact_page_benefit_3')}</span>
+					<span class="text-muted-foreground text-sm">{$t('contact_page_benefit_3')}</span>
 				</li>
 				<li class="flex items-start gap-2">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
-						class="mt-0.5 size-5 shrink-0 text-primary"
+						class="text-primary mt-0.5 size-5 shrink-0"
 						fill="none"
 						viewBox="0 0 24 24"
 						stroke="currentColor"
@@ -170,35 +177,41 @@
 							d="M5 13l4 4L19 7"
 						/>
 					</svg>
-					<span class="text-sm text-muted-foreground">{$t('contact_page_benefit_4')}</span>
+					<span class="text-muted-foreground text-sm">{$t('contact_page_benefit_4')}</span>
 				</li>
 			</ul>
 		</div>
 
 		<a
-			href={route('/signup')}
-			class="bg-primary inline-block rounded-md px-6 py-3 font-medium text-white hover:bg-primary/90"
+			href={signupPath}
+			class="bg-primary hover:bg-primary/90 inline-block rounded-md px-6 py-3 font-medium text-white"
 		>
 			{$t('contact_page_join_button')}
 		</a>
 	</section>
 
 	<!-- For Clients Section -->
-	<section class="my-8 rounded-lg border border-border bg-card p-6 shadow-sm">
+	<section class="border-border bg-card my-8 rounded-lg border p-6 shadow-sm">
 		<h2 class="title3 mb-3">{$t('contact_page_clients_title')}</h2>
-		<p class="mb-4 text-muted-foreground">
+		<p class="text-muted-foreground mb-4">
 			{$t('contact_page_clients_desc')}
 		</p>
 		<a
-			href={route('/instructors')}
-			class="inline-block rounded-md border border-border bg-card px-6 py-3 font-medium hover:bg-muted"
+			href={instructorsPath}
+			class="border-border bg-card hover:bg-muted inline-block rounded-md border px-6 py-3 font-medium"
 		>
 			{$t('contact_page_find_button')}
+		</a>
+		<a
+			href={spainResortsPath}
+			class="border-border bg-card hover:bg-muted mt-3 ml-0 inline-block rounded-md border px-6 py-3 font-medium sm:mt-0 sm:ml-3"
+		>
+			{$t('instructors_page_prompt_browse_spain')}
 		</a>
 	</section>
 
 	<!-- Support Section -->
-	<section class="my-8 rounded-lg border border-border bg-card p-6 shadow-sm">
+	<section class="border-border bg-card my-8 rounded-lg border p-6 shadow-sm">
 		<h2 class="title3 mb-3">{$t('contact_page_support_title')}</h2>
 		<p class="text-muted-foreground">
 			{@html $t('contact_page_support_desc', {
@@ -210,14 +223,14 @@
 	</section>
 
 	<!-- FAQ Section -->
-	<section class="my-8 rounded-lg border border-border bg-card p-6 shadow-sm">
+	<section class="border-border bg-card my-8 rounded-lg border p-6 shadow-sm">
 		<h2 class="title3 mb-3">{$t('contact_page_faq_title')}</h2>
-		<p class="mb-4 text-muted-foreground">
+		<p class="text-muted-foreground mb-4">
 			{$t('contact_page_faq_cta')}
 		</p>
 		<a
-			href={route('/how-it-works')}
-			class="inline-block rounded-md border border-border bg-card px-6 py-3 font-medium hover:bg-muted"
+			href={howItWorksPath}
+			class="border-border bg-card hover:bg-muted inline-block rounded-md border px-6 py-3 font-medium"
 		>
 			{$t('contact_page_how_it_works_button')}
 		</a>

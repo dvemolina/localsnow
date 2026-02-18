@@ -1,6 +1,17 @@
 // src/features/Admin/lib/adminStatsService.ts
 import { db } from '$lib/server/db';
-import { users, bookingRequests, instructorReviews, clientDeposits, leadPayments, userRoles } from '$lib/server/db/schema';
+import {
+	users,
+	bookingRequests,
+	instructorReviews,
+	clientDeposits,
+	leadPayments,
+	userRoles,
+	instructorResorts,
+	resorts,
+	countries,
+	funnelEvents
+} from '$lib/server/db/schema';
 import { sql, eq, count, sum, and, gte, inArray } from 'drizzle-orm';
 
 export const adminStatsService = {
@@ -92,6 +103,383 @@ export const adminStatsService = {
 	},
 
 	/**
+	 * Business operating KPIs from first-party data (Spain + Global).
+	 * No third-party trackers or analytics cookies are required.
+	 */
+	async getBusinessKpis() {
+		const thirtyDaysAgo = new Date();
+		thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+		const safeDiv = (num: number, den: number) => (den > 0 ? num / den : 0);
+
+		const instructorSignupsGlobalAllTime = await db
+			.select({ count: sql<number>`count(distinct ${users.id})` })
+			.from(users)
+			.innerJoin(userRoles, eq(userRoles.userId, users.id))
+			.where(sql`${userRoles.role} in ('instructor-independent', 'instructor-school')`);
+
+		const instructorSignupsGlobal30d = await db
+			.select({ count: sql<number>`count(distinct ${users.id})` })
+			.from(users)
+			.innerJoin(userRoles, eq(userRoles.userId, users.id))
+			.where(
+				and(
+					sql`${userRoles.role} in ('instructor-independent', 'instructor-school')`,
+					gte(users.createdAt, thirtyDaysAgo)
+				)
+			);
+
+		const instructorSignupsSpainAllTime = await db
+			.select({ count: sql<number>`count(distinct ${users.id})` })
+			.from(users)
+			.innerJoin(userRoles, eq(userRoles.userId, users.id))
+			.leftJoin(instructorResorts, eq(instructorResorts.instructorId, users.id))
+			.leftJoin(resorts, eq(instructorResorts.resortId, resorts.id))
+			.leftJoin(countries, eq(resorts.countryId, countries.id))
+			.where(
+				and(
+					sql`${userRoles.role} in ('instructor-independent', 'instructor-school')`,
+					sql`(
+							upper(cast(${users.countryCode} as text)) = 'ES'
+							or upper(cast(${users.professionalCountryCode} as text)) = 'ES'
+							or ${countries.countrySlug} = 'spain'
+						)`
+				)
+			);
+
+		const instructorSignupsSpain30d = await db
+			.select({ count: sql<number>`count(distinct ${users.id})` })
+			.from(users)
+			.innerJoin(userRoles, eq(userRoles.userId, users.id))
+			.leftJoin(instructorResorts, eq(instructorResorts.instructorId, users.id))
+			.leftJoin(resorts, eq(instructorResorts.resortId, resorts.id))
+			.leftJoin(countries, eq(resorts.countryId, countries.id))
+			.where(
+				and(
+					sql`${userRoles.role} in ('instructor-independent', 'instructor-school')`,
+					gte(users.createdAt, thirtyDaysAgo),
+					sql`(
+							upper(cast(${users.countryCode} as text)) = 'ES'
+							or upper(cast(${users.professionalCountryCode} as text)) = 'ES'
+							or ${countries.countrySlug} = 'spain'
+						)`
+				)
+			);
+
+		const totalRequestsGlobal30d = await db
+			.select({ count: sql<number>`count(distinct ${bookingRequests.id})` })
+			.from(bookingRequests)
+			.where(gte(bookingRequests.createdAt, thirtyDaysAgo));
+
+		const totalRequestsSpain30d = await db
+			.select({ count: sql<number>`count(distinct ${bookingRequests.id})` })
+			.from(bookingRequests)
+			.innerJoin(
+				instructorResorts,
+				eq(instructorResorts.instructorId, bookingRequests.instructorId)
+			)
+			.innerJoin(resorts, eq(instructorResorts.resortId, resorts.id))
+			.innerJoin(countries, eq(resorts.countryId, countries.id))
+			.where(
+				and(eq(countries.countrySlug, 'spain'), gte(bookingRequests.createdAt, thirtyDaysAgo))
+			);
+
+		const qualifiedRequestsGlobalAllTime = await db
+			.select({ count: sql<number>`count(distinct ${bookingRequests.id})` })
+			.from(bookingRequests)
+			.where(
+				and(
+					eq(bookingRequests.contactInfoUnlocked, true),
+					sql`${bookingRequests.status} in ('pending', 'viewed', 'accepted', 'completed', 'no_show')`
+				)
+			);
+
+		const qualifiedRequestsGlobal30d = await db
+			.select({ count: sql<number>`count(distinct ${bookingRequests.id})` })
+			.from(bookingRequests)
+			.where(
+				and(
+					gte(bookingRequests.createdAt, thirtyDaysAgo),
+					eq(bookingRequests.contactInfoUnlocked, true),
+					sql`${bookingRequests.status} in ('pending', 'viewed', 'accepted', 'completed', 'no_show')`
+				)
+			);
+
+		const qualifiedRequestsSpainAllTime = await db
+			.select({ count: sql<number>`count(distinct ${bookingRequests.id})` })
+			.from(bookingRequests)
+			.innerJoin(
+				instructorResorts,
+				eq(instructorResorts.instructorId, bookingRequests.instructorId)
+			)
+			.innerJoin(resorts, eq(instructorResorts.resortId, resorts.id))
+			.innerJoin(countries, eq(resorts.countryId, countries.id))
+			.where(
+				and(
+					eq(countries.countrySlug, 'spain'),
+					eq(bookingRequests.contactInfoUnlocked, true),
+					sql`${bookingRequests.status} in ('pending', 'viewed', 'accepted', 'completed', 'no_show')`
+				)
+			);
+
+		const qualifiedRequestsSpain30d = await db
+			.select({ count: sql<number>`count(distinct ${bookingRequests.id})` })
+			.from(bookingRequests)
+			.innerJoin(
+				instructorResorts,
+				eq(instructorResorts.instructorId, bookingRequests.instructorId)
+			)
+			.innerJoin(resorts, eq(instructorResorts.resortId, resorts.id))
+			.innerJoin(countries, eq(resorts.countryId, countries.id))
+			.where(
+				and(
+					eq(countries.countrySlug, 'spain'),
+					gte(bookingRequests.createdAt, thirtyDaysAgo),
+					eq(bookingRequests.contactInfoUnlocked, true),
+					sql`${bookingRequests.status} in ('pending', 'viewed', 'accepted', 'completed', 'no_show')`
+				)
+			);
+
+		const publishedInstructorsGlobal = await db
+			.select({ count: sql<number>`count(distinct ${users.id})` })
+			.from(users)
+			.innerJoin(userRoles, eq(userRoles.userId, users.id))
+			.where(
+				and(
+					sql`${userRoles.role} in ('instructor-independent', 'instructor-school')`,
+					eq(users.isPublished, true),
+					eq(users.isSuspended, false)
+				)
+			);
+
+		const publishedInstructorsSpain = await db
+			.select({ count: sql<number>`count(distinct ${users.id})` })
+			.from(users)
+			.innerJoin(userRoles, eq(userRoles.userId, users.id))
+			.leftJoin(instructorResorts, eq(instructorResorts.instructorId, users.id))
+			.leftJoin(resorts, eq(instructorResorts.resortId, resorts.id))
+			.leftJoin(countries, eq(resorts.countryId, countries.id))
+			.where(
+				and(
+					sql`${userRoles.role} in ('instructor-independent', 'instructor-school')`,
+					eq(users.isPublished, true),
+					eq(users.isSuspended, false),
+					sql`(
+						upper(cast(${users.countryCode} as text)) = 'ES'
+						or upper(cast(${users.professionalCountryCode} as text)) = 'ES'
+						or ${countries.countrySlug} = 'spain'
+					)`
+				)
+			);
+
+		const instructorSignupsGlobalAllTimeCount = Number(
+			instructorSignupsGlobalAllTime[0]?.count || 0
+		);
+		const instructorSignupsGlobal30dCount = Number(instructorSignupsGlobal30d[0]?.count || 0);
+		const instructorSignupsSpainAllTimeCount = Number(instructorSignupsSpainAllTime[0]?.count || 0);
+		const instructorSignupsSpain30dCount = Number(instructorSignupsSpain30d[0]?.count || 0);
+
+		const totalRequestsGlobal30dCount = Number(totalRequestsGlobal30d[0]?.count || 0);
+		const totalRequestsSpain30dCount = Number(totalRequestsSpain30d[0]?.count || 0);
+
+		const qualifiedRequestsGlobalAllTimeCount = Number(
+			qualifiedRequestsGlobalAllTime[0]?.count || 0
+		);
+		const qualifiedRequestsGlobal30dCount = Number(qualifiedRequestsGlobal30d[0]?.count || 0);
+		const qualifiedRequestsSpainAllTimeCount = Number(qualifiedRequestsSpainAllTime[0]?.count || 0);
+		const qualifiedRequestsSpain30dCount = Number(qualifiedRequestsSpain30d[0]?.count || 0);
+
+		const publishedInstructorsGlobalCount = Number(publishedInstructorsGlobal[0]?.count || 0);
+		const publishedInstructorsSpainCount = Number(publishedInstructorsSpain[0]?.count || 0);
+
+		return {
+			acquisition: {
+				instructorSignups: {
+					global: {
+						allTime: instructorSignupsGlobalAllTimeCount,
+						last30Days: instructorSignupsGlobal30dCount
+					},
+					spain: {
+						allTime: instructorSignupsSpainAllTimeCount,
+						last30Days: instructorSignupsSpain30dCount
+					},
+					spainShareLast30DaysPct: safeDiv(
+						instructorSignupsSpain30dCount,
+						instructorSignupsGlobal30dCount
+					)
+				}
+			},
+			demand: {
+				lessonRequests30Days: {
+					global: totalRequestsGlobal30dCount,
+					spain: totalRequestsSpain30dCount
+				},
+				qualifiedLessonRequests: {
+					global: {
+						allTime: qualifiedRequestsGlobalAllTimeCount,
+						last30Days: qualifiedRequestsGlobal30dCount
+					},
+					spain: {
+						allTime: qualifiedRequestsSpainAllTimeCount,
+						last30Days: qualifiedRequestsSpain30dCount
+					},
+					spainShareLast30DaysPct: safeDiv(
+						qualifiedRequestsSpain30dCount,
+						qualifiedRequestsGlobal30dCount
+					)
+				},
+				qualifiedRate30DaysPct: {
+					global: safeDiv(qualifiedRequestsGlobal30dCount, totalRequestsGlobal30dCount),
+					spain: safeDiv(qualifiedRequestsSpain30dCount, totalRequestsSpain30dCount)
+				},
+				qualifiedRequestsPerPublishedInstructor30Days: {
+					global: safeDiv(qualifiedRequestsGlobal30dCount, publishedInstructorsGlobalCount),
+					spain: safeDiv(qualifiedRequestsSpain30dCount, publishedInstructorsSpainCount)
+				}
+			},
+			supply: {
+				publishedInstructors: {
+					global: publishedInstructorsGlobalCount,
+					spain: publishedInstructorsSpainCount
+				},
+				spainSharePct: safeDiv(publishedInstructorsSpainCount, publishedInstructorsGlobalCount)
+			}
+		};
+	},
+
+	/**
+	 * Consent-aware first-party funnel metrics (Spain + Global)
+	 */
+	async getFunnelMetrics(days: number = 30) {
+		const since = new Date();
+		since.setDate(since.getDate() - days);
+
+		const toInt = (value: unknown) => Number(value ?? 0);
+		const safeDiv = (num: number, den: number) => (den > 0 ? num / den : 0);
+
+		const totalsRows = await db
+			.select({
+				totalEvents: sql<number>`count(*)::int`,
+				totalEventsSpain: sql<number>`count(*) filter (where ${funnelEvents.isSpain} = true)::int`,
+				demandEventsGlobal: sql<number>`count(*) filter (where ${funnelEvents.funnel} = 'demand')::int`,
+				demandEventsSpain: sql<number>`count(*) filter (where ${funnelEvents.funnel} = 'demand' and ${funnelEvents.isSpain} = true)::int`,
+				supplyEventsGlobal: sql<number>`count(*) filter (where ${funnelEvents.funnel} = 'supply')::int`,
+				supplyEventsSpain: sql<number>`count(*) filter (where ${funnelEvents.funnel} = 'supply' and ${funnelEvents.isSpain} = true)::int`,
+				consentAcceptedGlobal: sql<number>`count(*) filter (where ${funnelEvents.consentStatus} = 'accepted')::int`,
+				consentAcceptedSpain: sql<number>`count(*) filter (where ${funnelEvents.consentStatus} = 'accepted' and ${funnelEvents.isSpain} = true)::int`
+			})
+			.from(funnelEvents)
+			.where(gte(funnelEvents.createdAt, since));
+
+		const stageRows = await db
+			.select({
+				funnel: funnelEvents.funnel,
+				stage: funnelEvents.stage,
+				globalCount: sql<number>`count(*)::int`,
+				spainCount: sql<number>`count(*) filter (where ${funnelEvents.isSpain} = true)::int`
+			})
+			.from(funnelEvents)
+			.where(gte(funnelEvents.createdAt, since))
+			.groupBy(funnelEvents.funnel, funnelEvents.stage)
+			.orderBy(funnelEvents.funnel, funnelEvents.stage);
+
+		const eventTypeRows = await db
+			.select({
+				eventType: funnelEvents.eventType,
+				funnel: funnelEvents.funnel,
+				stage: funnelEvents.stage,
+				globalCount: sql<number>`count(*)::int`,
+				spainCount: sql<number>`count(*) filter (where ${funnelEvents.isSpain} = true)::int`,
+				lastSeenAt: sql<string>`max(${funnelEvents.createdAt})::text`
+			})
+			.from(funnelEvents)
+			.where(gte(funnelEvents.createdAt, since))
+			.groupBy(funnelEvents.eventType, funnelEvents.funnel, funnelEvents.stage)
+			.orderBy(sql`count(*) desc`, funnelEvents.eventType)
+			.limit(12);
+
+		const dailyRows = await db
+			.select({
+				day: sql<string>`to_char(date_trunc('day', ${funnelEvents.createdAt}), 'YYYY-MM-DD')`,
+				globalCount: sql<number>`count(*)::int`,
+				spainCount: sql<number>`count(*) filter (where ${funnelEvents.isSpain} = true)::int`,
+				demandGlobal: sql<number>`count(*) filter (where ${funnelEvents.funnel} = 'demand')::int`,
+				demandSpain: sql<number>`count(*) filter (where ${funnelEvents.funnel} = 'demand' and ${funnelEvents.isSpain} = true)::int`,
+				supplyGlobal: sql<number>`count(*) filter (where ${funnelEvents.funnel} = 'supply')::int`,
+				supplySpain: sql<number>`count(*) filter (where ${funnelEvents.funnel} = 'supply' and ${funnelEvents.isSpain} = true)::int`
+			})
+			.from(funnelEvents)
+			.where(gte(funnelEvents.createdAt, since))
+			.groupBy(sql`date_trunc('day', ${funnelEvents.createdAt})`)
+			.orderBy(sql`date_trunc('day', ${funnelEvents.createdAt})`)
+			.limit(Math.min(days, 30));
+
+		const totals = totalsRows[0] ?? {
+			totalEvents: 0,
+			totalEventsSpain: 0,
+			demandEventsGlobal: 0,
+			demandEventsSpain: 0,
+			supplyEventsGlobal: 0,
+			supplyEventsSpain: 0,
+			consentAcceptedGlobal: 0,
+			consentAcceptedSpain: 0
+		};
+
+		const totalEventsGlobal = toInt(totals.totalEvents);
+		const totalEventsSpain = toInt(totals.totalEventsSpain);
+		const demandEventsGlobal = toInt(totals.demandEventsGlobal);
+		const demandEventsSpain = toInt(totals.demandEventsSpain);
+		const supplyEventsGlobal = toInt(totals.supplyEventsGlobal);
+		const supplyEventsSpain = toInt(totals.supplyEventsSpain);
+		const consentAcceptedGlobal = toInt(totals.consentAcceptedGlobal);
+		const consentAcceptedSpain = toInt(totals.consentAcceptedSpain);
+
+		return {
+			windowDays: days,
+			totals: {
+				totalEventsGlobal,
+				totalEventsSpain,
+				totalEventsSpainSharePct: safeDiv(totalEventsSpain, totalEventsGlobal),
+				demandEventsGlobal,
+				demandEventsSpain,
+				demandEventsSpainSharePct: safeDiv(demandEventsSpain, demandEventsGlobal),
+				supplyEventsGlobal,
+				supplyEventsSpain,
+				supplyEventsSpainSharePct: safeDiv(supplyEventsSpain, supplyEventsGlobal),
+				consentAcceptedGlobal,
+				consentAcceptedSpain,
+				consentAcceptanceRateGlobalPct: safeDiv(consentAcceptedGlobal, totalEventsGlobal),
+				consentAcceptanceRateSpainPct: safeDiv(consentAcceptedSpain, totalEventsSpain)
+			},
+			byStage: stageRows.map((row) => ({
+				funnel: row.funnel,
+				stage: row.stage,
+				globalCount: toInt(row.globalCount),
+				spainCount: toInt(row.spainCount),
+				spainSharePct: safeDiv(toInt(row.spainCount), toInt(row.globalCount))
+			})),
+			byEventType: eventTypeRows.map((row) => ({
+				eventType: row.eventType,
+				funnel: row.funnel,
+				stage: row.stage,
+				globalCount: toInt(row.globalCount),
+				spainCount: toInt(row.spainCount),
+				spainSharePct: safeDiv(toInt(row.spainCount), toInt(row.globalCount)),
+				lastSeenAt: row.lastSeenAt
+			})),
+			daily: dailyRows.map((row) => ({
+				day: row.day,
+				globalCount: toInt(row.globalCount),
+				spainCount: toInt(row.spainCount),
+				demandGlobal: toInt(row.demandGlobal),
+				demandSpain: toInt(row.demandSpain),
+				supplyGlobal: toInt(row.supplyGlobal),
+				supplySpain: toInt(row.supplySpain)
+			}))
+		};
+	},
+
+	/**
 	 * Get pending verifications that need admin action
 	 */
 	async getPendingVerifications() {
@@ -106,11 +494,13 @@ export const adminStatsService = {
 			})
 			.from(users)
 			.innerJoin(userRoles, eq(userRoles.userId, users.id))
-			.where(and(
-				inArray(userRoles.role, ['instructor-independent', 'instructor-school']),
-				eq(users.isVerified, false),
-				sql`${users.qualificationUrl} IS NOT NULL`
-			))
+			.where(
+				and(
+					inArray(userRoles.role, ['instructor-independent', 'instructor-school']),
+					eq(users.isVerified, false),
+					sql`${users.qualificationUrl} IS NOT NULL`
+				)
+			)
 			.limit(10)
 			.orderBy(users.createdAt);
 

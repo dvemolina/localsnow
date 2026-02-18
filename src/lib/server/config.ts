@@ -76,6 +76,10 @@ export const CALENDAR_TOKEN_ENCRYPTION_KEY = getSecret('CALENDAR_TOKEN_ENCRYPTIO
 // n8n Email Webhook Authentication
 export const EMAIL_HEADER_SECRET = getSecret('EMAIL_HEADER_SECRET');
 
+// n8n Email Webhook Endpoint
+export const N8N_WEBHOOK_URL = getSecret('N8N_WEBHOOK_URL', 'https://automation.personalflow.net/webhook');
+export const N8N_WEBHOOK_PATH = getSecret('N8N_WEBHOOK_PATH', '/send-email');
+
 // =============================================================================
 // OPTIONAL CONFIGURATION
 // =============================================================================

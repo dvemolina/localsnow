@@ -2,12 +2,12 @@
  * Email service configuration
  */
 
-import { EMAIL_HEADER_SECRET } from '$lib/server/config';
+import { EMAIL_HEADER_SECRET, N8N_WEBHOOK_PATH, N8N_WEBHOOK_URL } from '$lib/server/config';
 
 export const emailConfig = {
 	// n8n webhook configuration
-	n8nWebhookUrl: 'https://automation.personalflow.net/webhook',
-	n8nWebhookPath: '/send-email',
+	n8nWebhookUrl: N8N_WEBHOOK_URL,
+	n8nWebhookPath: N8N_WEBHOOK_PATH,
 	n8nSecret: EMAIL_HEADER_SECRET,
 
 	// Email sender info

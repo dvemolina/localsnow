@@ -64,10 +64,41 @@ export const load: PageServerLoad = async ({ params, depends, url }) => {
 		{ name: 'Home', url: `${PRIMARY_ORIGIN}${route('/', currentLocale)}` },
 		{ name: 'Resorts', url: `${PRIMARY_ORIGIN}${resortsBase}` },
 		{ name: countryName, url: `${PRIMARY_ORIGIN}${resortsBase}/${country}` },
-		{ name: regionName || countryName, url: `${PRIMARY_ORIGIN}${resortsBase}/${country}/${region}` },
+		{
+			name: regionName || countryName,
+			url: `${PRIMARY_ORIGIN}${resortsBase}/${country}/${region}`
+		},
 		{ name: resortName!, url: `${PRIMARY_ORIGIN}${resortsBase}/${country}/${region}/${resort}` },
 		{ name: `${sportName} Instructors`, url: canonicalUrl }
 	];
+
+	// Only emit aggregate rating when real reviews exist.
+	const reviewAggregate = landingData.instructors.reduce(
+		(acc, instructor) => {
+			const stats = instructor.reviewStats;
+			if (!stats || stats.totalReviews <= 0 || stats.averageRating <= 0) {
+				return acc;
+			}
+
+			acc.totalReviews += stats.totalReviews;
+			acc.weightedRatingSum += stats.averageRating * stats.totalReviews;
+			return acc;
+		},
+		{ totalReviews: 0, weightedRatingSum: 0 }
+	);
+
+	const aggregateRating =
+		reviewAggregate.totalReviews > 0
+			? {
+					'@type': 'AggregateRating',
+					ratingValue: Number(
+						(reviewAggregate.weightedRatingSum / reviewAggregate.totalReviews).toFixed(2)
+					),
+					reviewCount: reviewAggregate.totalReviews,
+					bestRating: 5,
+					worstRating: 1
+				}
+			: undefined;
 
 	// LocalBusiness structured data
 	const structuredData = {
@@ -80,19 +111,16 @@ export const load: PageServerLoad = async ({ params, depends, url }) => {
 			addressCountry: location.country.countryCode,
 			addressRegion: regionName
 		},
-		geo: location.resort?.lat && location.resort?.lon ? {
-			'@type': 'GeoCoordinates',
-			latitude: location.resort.lat,
-			longitude: location.resort.lon
-		} : undefined,
+		geo:
+			location.resort?.lat && location.resort?.lon
+				? {
+						'@type': 'GeoCoordinates',
+						latitude: location.resort.lat,
+						longitude: location.resort.lon
+					}
+				: undefined,
 		url: canonicalUrl,
-		aggregateRating: landingData.totalInstructors > 0 ? {
-			'@type': 'AggregateRating',
-			ratingValue: '4.8',
-			reviewCount: landingData.totalInstructors * 3,
-			bestRating: '5',
-			worstRating: '1'
-		} : undefined
+		aggregateRating
 	};
 
 	return {

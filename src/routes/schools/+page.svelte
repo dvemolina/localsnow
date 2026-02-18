@@ -19,12 +19,18 @@
 	const PRIMARY_ORIGIN = 'https://localsnow.org';
 	const currentLocale = $derived((extractLocale(page.url.pathname).locale || 'en') as Locale);
 	const schoolsBase = $derived(route('/schools', currentLocale));
+	const instructorsBase = $derived(route('/instructors', currentLocale));
+	const resortsBase = $derived(route('/resorts', currentLocale));
+	const signupPath = $derived(route('/signup', currentLocale));
+	const spainResortsPath = $derived(`${resortsBase}/spain`);
 	const canonicalPath = $derived(schoolsBase);
 	const canonicalUrl = $derived(`${PRIMARY_ORIGIN}${canonicalPath}`);
-	const alternates = $derived(getAlternateUrls(canonicalPath).map((alt) => ({
-		locale: alt.locale,
-		url: `${PRIMARY_ORIGIN}${alt.url}`
-	})));
+	const alternates = $derived(
+		getAlternateUrls(canonicalPath).map((alt) => ({
+			locale: alt.locale,
+			url: `${PRIMARY_ORIGIN}${alt.url}`
+		}))
+	);
 	const defaultAlternate = $derived(alternates.find((alt) => alt.locale === 'en'));
 
 	// Filter schema for the search form
@@ -59,7 +65,8 @@
 		if ($formData.sortBy) params.set('sortBy', $formData.sortBy);
 		if (verifiedOnly) params.set('verifiedOnly', 'true');
 
-		goto(`/schools?${params.toString()}`);
+		const schoolsUrl = params.toString() ? `${schoolsBase}?${params.toString()}` : schoolsBase;
+		goto(schoolsUrl);
 	}
 
 	// Clear all filters
@@ -67,7 +74,7 @@
 		$formData.resort = undefined;
 		$formData.sortBy = undefined;
 		verifiedOnly = false;
-		goto('/schools');
+		goto(schoolsBase);
 	}
 
 	// Remove individual filter
@@ -92,7 +99,8 @@
 		'@context': 'https://schema.org',
 		'@type': 'ItemList',
 		name: 'Ski and Snowboard Schools',
-		description: 'Browse certified ski and snowboard schools at top resorts worldwide',
+		description:
+			'Browse ski and snowboard schools with strongest coverage in Spain and expanding resort-by-resort',
 		numberOfItems: data.schools.length,
 		itemListElement: data.schools.slice(0, 20).map((school, index) => ({
 			'@type': 'ListItem',
@@ -112,7 +120,7 @@
 		name: 'Local Snow',
 		url: 'https://localsnow.org',
 		logo: 'https://localsnow.org/localsnow-logo-v-black.png',
-		description: 'Free directory of ski and snowboard schools worldwide',
+		description: 'Free directory of ski and snowboard schools with a Spain-first expansion focus',
 		sameAs: []
 	};
 
@@ -138,29 +146,20 @@
 </script>
 
 <svelte:head>
-	<title>Ski & Snowboard Schools Directory | LocalSnow</title>
-	<meta
-		name="description"
-		content="Find certified ski and snowboard schools at top resorts worldwide. Browse profiles, compare services, and connect with professional ski schools."
-	/>
+	<title>{$t('seo_meta_schools_title')}</title>
+	<meta name="description" content={$t('seo_meta_schools_description')} />
 
 	<!-- Open Graph -->
-	<meta property="og:title" content="Ski & Snowboard Schools Directory | LocalSnow" />
-	<meta
-		property="og:description"
-		content="Find certified ski and snowboard schools at top resorts worldwide."
-	/>
+	<meta property="og:title" content={$t('seo_meta_schools_title')} />
+	<meta property="og:description" content={$t('seo_meta_schools_description')} />
 	<meta property="og:url" content={canonicalUrl} />
 	<meta property="og:image" content="https://localsnow.org/ski-instructor-turn.webp" />
 	<meta property="og:type" content="website" />
 
 	<!-- Twitter Card -->
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content="Ski & Snowboard Schools Directory | LocalSnow" />
-	<meta
-		name="twitter:description"
-		content="Find certified ski and snowboard schools at top resorts worldwide."
-	/>
+	<meta name="twitter:title" content={$t('seo_meta_schools_title')} />
+	<meta name="twitter:description" content={$t('seo_meta_schools_description')} />
 	<meta name="twitter:image" content="https://localsnow.org/ski-instructor-turn.webp" />
 
 	<!-- Structured Data -->
@@ -181,31 +180,31 @@
 <section class="w-full">
 	<!-- Header -->
 	<div class="mb-6 text-center">
-		<h1 class="title2 mb-2">Ski & Snowboard Schools</h1>
+		<h1 class="title2 mb-2">{$t('schools_page_title')}</h1>
 		<p class="text-muted-foreground text-sm">
-			Find certified ski and snowboard schools at top resorts worldwide
+			{$t('schools_page_subtitle')}
 		</p>
 	</div>
 
 	<!-- Filters Section -->
-	<div class="mb-6 rounded-lg border border-border bg-card p-4 shadow-sm overflow-visible">
+	<div class="border-border bg-card mb-6 overflow-visible rounded-lg border p-4 shadow-sm">
 		<div class="mb-4 flex items-center justify-between">
-			<h2 class="text-base font-semibold">Filter & Sort</h2>
+			<h2 class="text-base font-semibold">{$t('schools_page_filter_sort')}</h2>
 			{#if hasActiveFilters}
 				<Button type="button" variant="ghost" size="sm" onclick={clearFilters}>
-					Clear All
+					{$t('schools_page_clear_all')}
 				</Button>
 			{/if}
 		</div>
 
 		<!-- Main Filters -->
-		<div class="grid gap-3 md:grid-cols-3 overflow-visible mb-4">
+		<div class="mb-4 grid gap-3 overflow-visible md:grid-cols-3">
 			<SearchResort {form} name="resort" label="Resort" />
 			<SortBySelect {form} name="sortBy" />
 			<div class="flex items-center space-x-2 pt-6">
 				<Checkbox id="verified" bind:checked={verifiedOnly} />
-				<Label for="verified" class="text-sm font-medium leading-none cursor-pointer">
-					Verified Only
+				<Label for="verified" class="cursor-pointer text-sm leading-none font-medium">
+					{$t('schools_page_verified_only')}
 				</Label>
 			</div>
 		</div>
@@ -227,7 +226,7 @@
 						d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
 					/>
 				</svg>
-				Search
+				{$t('schools_page_search')}
 			</Button>
 		</div>
 	</div>
@@ -235,14 +234,14 @@
 	<!-- Active Filters Chips -->
 	{#if hasActiveFilters}
 		<div class="mb-4 flex flex-wrap items-center gap-2">
-			<span class="text-muted-foreground text-sm">Active filters:</span>
+			<span class="text-muted-foreground text-sm">{$t('schools_page_active_filters')}</span>
 			{#if $formData.resort}
 				<Badge variant="secondary" class="gap-1">
 					{getResortName($formData.resort)}
 					<button
 						type="button"
 						onclick={() => removeFilter('resort')}
-						class="ml-1 hover:text-destructive"
+						class="hover:text-destructive ml-1"
 					>
 						×
 					</button>
@@ -250,18 +249,18 @@
 			{/if}
 			{#if verifiedOnly}
 				<Badge variant="secondary" class="gap-1">
-					Verified Only
+					{$t('schools_page_verified_only')}
 					<button
 						type="button"
 						onclick={() => removeFilter('verifiedOnly')}
-						class="ml-1 hover:text-destructive"
+						class="hover:text-destructive ml-1"
 					>
 						×
 					</button>
 				</Badge>
 			{/if}
 			<Button variant="ghost" size="sm" onclick={clearFilters} class="h-6 px-2 text-xs">
-				Clear All
+				{$t('schools_page_clear_all')}
 			</Button>
 		</div>
 	{/if}
@@ -269,7 +268,9 @@
 	<!-- Results Section -->
 	{#if !data.hasFilters}
 		<!-- Prompt-First UI: Show before any search is performed -->
-		<div class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-border bg-muted/30 p-8 sm:p-12 text-center">
+		<div
+			class="border-border bg-muted/30 flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 text-center sm:p-12"
+		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				class="text-primary mb-3 h-12 w-12"
@@ -284,13 +285,20 @@
 					d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
 				/>
 			</svg>
-			<h3 class="mb-2 text-lg font-semibold">Find Ski & Snowboard Schools</h3>
-			<p class="text-muted-foreground text-sm mb-5 max-w-md">
-				Search our directory of certified ski and snowboard schools. Use the filters above to find schools by resort, or browse verified schools only.
+			<h3 class="mb-2 text-lg font-semibold">{$t('schools_page_prompt_title')}</h3>
+			<p class="text-muted-foreground mb-5 max-w-md text-sm">
+				{$t('schools_page_prompt_subtitle')}
 			</p>
 			<div class="flex flex-col gap-2 sm:flex-row">
-				<Button href="/resorts" variant="default" size="sm">Browse by Resort</Button>
-				<Button href="/instructors" variant="outline" size="sm">View Instructors</Button>
+				<Button href={spainResortsPath} variant="default" size="sm"
+					>{$t('schools_page_prompt_browse_spain')}</Button
+				>
+				<Button href={instructorsBase} variant="outline" size="sm"
+					>{$t('schools_page_prompt_view_instructors')}</Button
+				>
+				<Button href={signupPath} variant="outline" size="sm"
+					>{$t('schools_page_prompt_join_school')}</Button
+				>
 			</div>
 		</div>
 	{:else}
@@ -299,18 +307,20 @@
 		<div class="mb-4 flex items-center justify-between">
 			<p class="text-muted-foreground text-sm">
 				{#if data.schools.length === 0}
-					No schools found
+					{$t('schools_page_results_none')}
 				{:else if data.schools.length === 1}
-					1 school found
+					{$t('schools_page_results_one')}
 				{:else}
-					{data.schools.length} schools found
+					{data.schools.length} {$t('schools_page_results_many')}
 				{/if}
 			</p>
 		</div>
 
 		<!-- School Cards Grid or Empty State -->
 		{#if data.schools.length === 0}
-			<div class="flex flex-col items-center justify-center rounded-lg border border-border bg-card p-8 sm:p-12 text-center">
+			<div
+				class="border-border bg-card flex flex-col items-center justify-center rounded-lg border p-8 text-center sm:p-12"
+			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					class="text-muted-foreground mb-3 h-12 w-12"
@@ -325,11 +335,21 @@
 						d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
 					/>
 				</svg>
-				<h3 class="mb-2 text-base font-semibold">No schools match your search</h3>
-				<p class="text-muted-foreground text-sm mb-4">Try adjusting your filters or search criteria to see more results.</p>
-				<div class="flex gap-2">
-					<Button onclick={clearFilters} variant="default" size="sm">Clear all filters</Button>
-					<Button href="/resorts" variant="outline" size="sm">Browse by resort</Button>
+				<h3 class="mb-2 text-base font-semibold">{$t('schools_page_empty_title')}</h3>
+				<p class="text-muted-foreground mb-2 text-sm">{$t('schools_page_empty_subtitle')}</p>
+				<p class="text-muted-foreground mb-4 max-w-md text-xs">
+					{$t('schools_page_empty_low_supply_hint')}
+				</p>
+				<div class="flex flex-col gap-2 sm:flex-row">
+					<Button onclick={clearFilters} variant="default" size="sm"
+						>{$t('schools_page_clear_all')}</Button
+					>
+					<Button href={spainResortsPath} variant="outline" size="sm"
+						>{$t('schools_page_empty_browse_spain')}</Button
+					>
+					<Button href={signupPath} variant="outline" size="sm"
+						>{$t('schools_page_empty_join_school')}</Button
+					>
 				</div>
 			</div>
 		{:else}

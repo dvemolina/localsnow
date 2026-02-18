@@ -1,14 +1,54 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Button } from '$lib/components/ui/button';
+	import { route } from '$lib/i18n/routeHelpers';
+	import { t } from '$lib/i18n/i18n';
 
 	let showBanner = $state(false);
 	let mounted = $state(false);
 
+	const CONSENT_MAX_AGE_SECONDS = 60 * 60 * 24 * 365; // 1 year
+
+	function getCookie(name: string): string | null {
+		const value = `; ${document.cookie}`;
+		const parts = value.split(`; ${name}=`);
+		if (parts.length === 2) {
+			return decodeURIComponent(parts.pop()?.split(';').shift() ?? '');
+		}
+		return null;
+	}
+
+	function getStoredConsent(): 'accepted' | 'rejected' | null {
+		const localStorageValue = localStorage.getItem('cookie_consent');
+		if (localStorageValue === 'accepted' || localStorageValue === 'rejected') {
+			return localStorageValue;
+		}
+
+		const cookieValue = getCookie('cookie_consent');
+		if (cookieValue === 'accepted' || cookieValue === 'rejected') {
+			return cookieValue;
+		}
+
+		return null;
+	}
+
+	function setConsentCookie(name: string, value: string) {
+		const secureAttr = window.location.protocol === 'https:' ? '; Secure' : '';
+		document.cookie = `${name}=${encodeURIComponent(value)}; Path=/; Max-Age=${CONSENT_MAX_AGE_SECONDS}; SameSite=Lax${secureAttr}`;
+	}
+
+	function persistConsent(value: 'accepted' | 'rejected') {
+		const timestamp = new Date().toISOString();
+		localStorage.setItem('cookie_consent', value);
+		localStorage.setItem('cookie_consent_date', timestamp);
+		setConsentCookie('cookie_consent', value);
+		setConsentCookie('cookie_consent_date', timestamp);
+	}
+
 	onMount(() => {
 		mounted = true;
 		// Check if user has already made a choice
-		const consent = localStorage.getItem('cookie_consent');
+		const consent = getStoredConsent();
 		if (!consent) {
 			// Show banner after a short delay for better UX
 			setTimeout(() => {
@@ -18,21 +58,19 @@
 	});
 
 	function acceptCookies() {
-		localStorage.setItem('cookie_consent', 'accepted');
-		localStorage.setItem('cookie_consent_date', new Date().toISOString());
+		persistConsent('accepted');
 		showBanner = false;
 	}
 
 	function rejectCookies() {
-		localStorage.setItem('cookie_consent', 'rejected');
-		localStorage.setItem('cookie_consent_date', new Date().toISOString());
+		persistConsent('rejected');
 		showBanner = false;
 	}
 </script>
 
 {#if mounted && showBanner}
 	<div
-		class="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card shadow-lg transition-transform duration-300"
+		class="border-border bg-card fixed right-0 bottom-0 left-0 z-50 border-t shadow-lg transition-transform duration-300"
 		role="dialog"
 		aria-label="Cookie consent"
 		aria-describedby="cookie-consent-description"
@@ -44,7 +82,7 @@
 					<div class="flex items-start gap-3">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
-							class="mt-0.5 h-5 w-5 flex-shrink-0 text-muted-foreground"
+							class="text-muted-foreground mt-0.5 h-5 w-5 flex-shrink-0"
 							fill="none"
 							viewBox="0 0 24 24"
 							stroke="currentColor"
@@ -57,17 +95,15 @@
 							/>
 						</svg>
 						<div>
-							<p id="cookie-consent-description" class="text-sm text-foreground">
-								We use essential cookies to keep you logged in and make our platform work. We
-								also use optional cookies to remember your preferences. You can choose which
-								cookies to accept.
+							<p id="cookie-consent-description" class="text-foreground text-sm">
+								{$t('cookie_banner_description')}
 								<a
-									href="/legal/cookies"
-									class="underline hover:text-foreground"
+									href={route('/legal/cookies')}
+									class="hover:text-foreground underline"
 									target="_blank"
 									rel="noopener noreferrer"
 								>
-									Learn more in our Cookie Policy
+									{$t('cookie_banner_link')}
 								</a>.
 							</p>
 						</div>
@@ -75,7 +111,7 @@
 				</div>
 
 				<!-- Action Buttons -->
-				<div class="flex flex-col gap-2 sm:flex-row sm:flex-shrink-0">
+				<div class="flex flex-col gap-2 sm:flex-shrink-0 sm:flex-row">
 					<Button
 						type="button"
 						variant="outline"
@@ -83,7 +119,7 @@
 						onclick={rejectCookies}
 						class="w-full sm:w-auto"
 					>
-						Essential Only
+						{$t('cookie_banner_reject')}
 					</Button>
 					<Button
 						type="button"
@@ -92,7 +128,7 @@
 						onclick={acceptCookies}
 						class="w-full sm:w-auto"
 					>
-						Accept All
+						{$t('cookie_banner_accept')}
 					</Button>
 				</div>
 			</div>
