@@ -208,6 +208,41 @@ export async function sendInstructorDeactivated(data: {
 	}
 }
 
+// Instructor Verification Email Notifications
+
+export async function sendInstructorVerifiedEmail(data: {
+	instructorEmail: string;
+	instructorName: string;
+	dashboardUrl?: string;
+}) {
+	try {
+		await emailService.sendInstructorVerified({
+			...data,
+			dashboardUrl: data.dashboardUrl || 'https://localsnow.org/dashboard'
+		});
+	} catch (err) {
+		console.error('Error sending instructor verified email:', err);
+		// Don't throw - graceful degradation
+	}
+}
+
+export async function sendInstructorVerificationRejectedEmail(data: {
+	instructorEmail: string;
+	instructorName: string;
+	reason: string;
+	dashboardUrl?: string;
+}) {
+	try {
+		await emailService.sendInstructorVerificationRejected({
+			...data,
+			dashboardUrl: data.dashboardUrl || 'https://localsnow.org/dashboard/profile'
+		});
+	} catch (err) {
+		console.error('Error sending instructor verification rejected email:', err);
+		// Don't throw - graceful degradation
+	}
+}
+
 // Instructor Contact Form Email Notification
 
 export async function sendInstructorContactForm(data: {

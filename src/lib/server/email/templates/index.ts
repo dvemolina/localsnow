@@ -6,6 +6,10 @@
 export { signupWelcome } from './signup-welcome';
 export { instructorContactForm } from './instructor-contact-form';
 
+// Instructor verification emails
+export { instructorVerified } from './instructor-verified';
+export { instructorRejected } from './instructor-rejected';
+
 // Booking emails
 export { bookingNotificationInstructor } from './booking-notification-instructor';
 export { bookingConfirmationClient } from './booking-confirmation-client';

@@ -3,6 +3,7 @@ import { db } from '$lib/server/db';
 import { users, instructorResorts, instructorSports, bookingRequests, instructorReviews, userRoles } from '$lib/server/db/schema';
 import { eq, and, or, like, sql, count, avg, inArray } from 'drizzle-orm';
 import { adminAuditService } from './adminAuditService';
+import { sendInstructorVerifiedEmail, sendInstructorVerificationRejectedEmail } from '$lib/server/webhooks/n8n/email-n8n';
 
 interface InstructorFilters {
 	search?: string;
@@ -194,6 +195,12 @@ export const adminInstructorService = {
 	 * Verify an instructor
 	 */
 	async verifyInstructor(instructorId: number, adminId: number, event?: any) {
+		// Fetch instructor details for the email
+		const instructor = await db.query.users.findFirst({
+			where: eq(users.id, instructorId),
+			columns: { email: true, name: true }
+		});
+
 		await db
 			.update(users)
 			.set({
@@ -212,6 +219,14 @@ export const adminInstructorService = {
 			event
 		});
 
+		// Send verification email (non-blocking, graceful degradation)
+		if (instructor?.email) {
+			sendInstructorVerifiedEmail({
+				instructorEmail: instructor.email,
+				instructorName: instructor.name || 'Instructor'
+			});
+		}
+
 		return { success: true };
 	},
 
@@ -219,6 +234,12 @@ export const adminInstructorService = {
 	 * Reject instructor verification
 	 */
 	async rejectInstructor(instructorId: number, adminId: number, reason: string, event?: any) {
+		// Fetch instructor details for the email
+		const instructor = await db.query.users.findFirst({
+			where: eq(users.id, instructorId),
+			columns: { email: true, name: true }
+		});
+
 		await db
 			.update(users)
 			.set({
@@ -237,6 +258,15 @@ export const adminInstructorService = {
 			details: { reason },
 			event
 		});
+
+		// Send rejection email (non-blocking, graceful degradation)
+		if (instructor?.email) {
+			sendInstructorVerificationRejectedEmail({
+				instructorEmail: instructor.email,
+				instructorName: instructor.name || 'Instructor',
+				reason
+			});
+		}
 
 		return { success: true };
 	},

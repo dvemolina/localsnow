@@ -34,3 +34,26 @@ export const instructorContactFormSchema = z.object({
 });
 
 export type InstructorContactFormData = z.infer<typeof instructorContactFormSchema>;
+
+/**
+ * Admin verifies an instructor's qualification
+ */
+export const instructorVerifiedSchema = z.object({
+	instructorEmail: z.string().email(),
+	instructorName: z.string().min(1),
+	dashboardUrl: z.string().url()
+});
+
+export type InstructorVerifiedData = z.infer<typeof instructorVerifiedSchema>;
+
+/**
+ * Admin rejects an instructor's qualification
+ */
+export const instructorRejectedSchema = z.object({
+	instructorEmail: z.string().email(),
+	instructorName: z.string().min(1),
+	reason: z.string().min(1),
+	dashboardUrl: z.string().url()
+});
+
+export type InstructorRejectedData = z.infer<typeof instructorRejectedSchema>;

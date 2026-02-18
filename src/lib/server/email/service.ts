@@ -272,6 +272,48 @@ export class EmailService {
 	}
 
 	/**
+	 * Send verification approved notification to instructor
+	 */
+	async sendInstructorVerified(data: unknown, locale?: Locale): Promise<void> {
+		try {
+			const validated = schemas.instructorVerifiedSchema.parse(data);
+			const { subject, html } = templates.instructorVerified(validated, locale);
+
+			await this.send({
+				to: validated.instructorEmail,
+				subject,
+				html,
+				sendTelegram: true,
+				telegramMessage: `✅ Instructor Verified\n- Name: ${validated.instructorName}\n- Email: ${validated.instructorEmail}`
+			});
+		} catch (error) {
+			console.error('[EmailService] Failed to send instructor verified notification:', error);
+			throw error;
+		}
+	}
+
+	/**
+	 * Send verification rejected notification to instructor
+	 */
+	async sendInstructorVerificationRejected(data: unknown, locale?: Locale): Promise<void> {
+		try {
+			const validated = schemas.instructorRejectedSchema.parse(data);
+			const { subject, html } = templates.instructorRejected(validated, locale);
+
+			await this.send({
+				to: validated.instructorEmail,
+				subject,
+				html,
+				sendTelegram: true,
+				telegramMessage: `❌ Instructor Verification Rejected\n- Name: ${validated.instructorName}\n- Reason: ${validated.reason}`
+			});
+		} catch (error) {
+			console.error('[EmailService] Failed to send instructor rejection notification:', error);
+			throw error;
+		}
+	}
+
+	/**
 	 * Send contact form notification to instructor
 	 */
 	async sendInstructorContactForm(data: unknown, locale?: Locale): Promise<void> {
