@@ -28,7 +28,7 @@
 
 	<!-- ── ACTIVE SCHOOL MEMBERSHIP ──────────────────────────────────────────── -->
 	{#if activeSchool}
-		<Card.Root class="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/30">
+		<Card.Root class="border-green-200 bg-green-50 ">
 			<Card.Header>
 				<div class="flex items-center gap-3">
 					{#if activeSchool.schoolLogo}
@@ -46,7 +46,7 @@
 						</div>
 					{/if}
 					<div>
-						<Card.Title class="text-lg text-green-900 dark:text-green-100">
+						<Card.Title class="text-lg text-green-900">
 							{activeSchool.schoolName}
 						</Card.Title>
 						<Badge class="mt-1 bg-green-600 text-white">Active member</Badge>
