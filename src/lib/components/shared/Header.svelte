@@ -125,7 +125,7 @@
 						<img
 							src="/localsnow-logo-h-black.png"
 							alt="Local Snow Logo"
-							class="mx-auto max-w-38 p-1 opacity-75 group-hover:opacity-90 group-focus:opacity-90"
+							class="mx-auto max-w-32 p-1 opacity-75 group-hover:opacity-90 group-focus:opacity-90"
 						/>
 					</div>
 				</a>
@@ -261,11 +261,11 @@
 
 					<nav class="flex flex-col items-center justify-center space-y-8 mb-8">
 						<a href={route('/')} class="group flex flex-row items-center justify-center gap-1">
-							<div class="m-1 flex size-12 items-center justify-center overflow-hidden border-0 object-cover">
+							<div class="m-1 flex size-12 items-center justify-center object-cover">
 								<img
 									src="/localsnow-logo-h-black.png"
 									alt="Local Snow Logo"
-									class="mx-auto max-w-38 opacity-75 group-hover:opacity-90 group-focus:opacity-90"
+									class="mx-auto max-w-32 opacity-75 group-hover:opacity-90 group-focus:opacity-90"
 								/>
 							</div>
 						</a>
