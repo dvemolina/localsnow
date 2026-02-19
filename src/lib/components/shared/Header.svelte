@@ -118,7 +118,7 @@
 	>
 		<div class="flex w-full max-w-[685px] flex-row gap-2 items-center justify-center">
 			<div
-				class="header py-3 flex w-full flex-row items-center justify-evenly gap-4 px-4 rounded-full shadow-xs border border-border bg-card sm:gap-12"
+				class="header py-1 flex w-full flex-row items-center justify-evenly gap-4 px-4 rounded-full shadow-xs border border-border bg-card sm:gap-12"
 			>
 				<a href={route('/')} class="group flex flex-row items-center justify-center">
 					<div class="m-1 flex items-center justify-center overflow-hidden border-0 object-cover">
