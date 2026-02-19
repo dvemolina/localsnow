@@ -24,6 +24,32 @@ export interface InstructorData {
 }
 
 export class InstructorRepository {
+    /**
+     * Minimal role assignment — used by the quick onboarding flow.
+     * Sets the instructor role without requiring any profile fields.
+     */
+    async assignInstructorRole(
+        userId: number,
+        instructorType: 'instructor-independent' | 'instructor-school'
+    ): Promise<User> {
+        return await db.transaction(async (tx) => {
+            const [updatedUser] = await tx
+                .update(users)
+                .set({ role: instructorType, updatedAt: new Date() })
+                .where(eq(users.id, userId))
+                .returning();
+
+            if (!updatedUser) throw new Error('Failed to assign instructor role');
+
+            await tx
+                .insert(userRoles)
+                .values({ userId, role: instructorType })
+                .onConflictDoNothing();
+
+            return updatedUser;
+        });
+    }
+
     async createInstructor(instructorData: InstructorSignupData): Promise<User> {
         return await db.transaction(async (tx) => {
             // Update user with instructor-specific data

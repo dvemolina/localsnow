@@ -73,8 +73,14 @@ export const instructorProfileSchema = z.object({
 	qualification: documentFileSchema
 });
 
+// Minimal schema for the quick role-assignment step (no files, no contact info)
+export const instructorQuickSignupSchema = z.object({
+	instructorType: z.enum(['instructor-independent', 'instructor-school'])
+});
+
 export type InstructorSignupSchema = typeof instructorSignupSchema;
 export type InstructorProfileSchema = typeof instructorProfileSchema;
+export type InstructorQuickSignupSchema = typeof instructorQuickSignupSchema;
 
 // Form submission data types
 export interface InstructorSignupData {

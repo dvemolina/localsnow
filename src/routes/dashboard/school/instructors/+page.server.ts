@@ -1,6 +1,7 @@
 import type { PageServerLoad, Actions } from './$types';
 import { SchoolInstructorService } from '$src/features/Schools/lib/schoolInstructorService';
 import { fail } from '@sveltejs/kit';
+import { requireSchoolAdmin } from '$lib/utils/schoolAuth';
 
 export const load: PageServerLoad = async ({ parent }) => {
 	const { school } = await parent();
@@ -14,9 +15,9 @@ export const load: PageServerLoad = async ({ parent }) => {
 };
 
 export const actions: Actions = {
-	deactivate: async ({ request, parent }) => {
-		const { school } = await parent();
-		const formData = await request.formData();
+	deactivate: async (event) => {
+		const { school } = await requireSchoolAdmin(event);
+		const formData = await event.request.formData();
 		const instructorId = Number(formData.get('instructorId'));
 
 		if (!instructorId) {
@@ -40,9 +41,9 @@ export const actions: Actions = {
 		}
 	},
 
-	reactivate: async ({ request, parent }) => {
-		const { school } = await parent();
-		const formData = await request.formData();
+	reactivate: async (event) => {
+		const { school } = await requireSchoolAdmin(event);
+		const formData = await event.request.formData();
 		const instructorId = Number(formData.get('instructorId'));
 
 		if (!instructorId) {

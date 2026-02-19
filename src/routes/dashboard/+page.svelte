@@ -7,6 +7,7 @@
 	import ProfileVisitsCard from '$src/features/Dashboard/components/ProfileVisitsCard.svelte';
 	import LeadStatsCard from '$src/features/Leads/components/LeadStatsCard.svelte';
 	import RequestsCard from '$src/features/Requests/components/RequestsCard.svelte';
+	import ProfileCompletionCard from '$src/features/Dashboard/components/ProfileCompletionCard.svelte';
 	import { t } from '$lib/i18n/i18n';
 	import { getRoles, hasInstructorRole, hasRole } from '$lib/utils/roles';
 	let { data } = $props();
@@ -77,6 +78,17 @@
 				{$t('dashboard_welcome_subtitle')}
 			</p>
 		</div>
+
+		<!-- Profile Completion Card (instructors, unverified only) -->
+		{#if hasInstructorRole(user) && !user.isVerified && data.profileCompletion}
+			<div class="mb-8">
+				<ProfileCompletionCard
+					completionItems={data.profileCompletion.items}
+					completedCount={data.profileCompletion.completedCount}
+					totalCount={data.profileCompletion.items.length}
+				/>
+			</div>
+		{/if}
 
 		<!-- Stats Overview -->
 		<div class="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -205,47 +217,8 @@
 			</div>
 		{/if}
 
-		<!-- Getting Started (for unverified users) -->
-		{#if !user.isVerified && hasInstructorRole(user)}
-			<Card.Root class="border-yellow-200 bg-yellow-50" >
-				<Card.Header>
-					<Card.Title class="flex items-center gap-2">
-						<svg class="h-5 w-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
-							<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-						</svg>
-						{$t('dashboard_complete_profile')}
-					</Card.Title>
-				</Card.Header>
-				<Card.Content>
-					<p class="mb-4 text-sm text-yellow-800 ">
-						{$t('dashboard_profile_verification_notice')}
-					</p>
-					<ul class="mb-4 space-y-2 text-sm text-yellow-800 ">
-						<li class="flex items-start gap-2">
-							<svg class="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-							</svg>
-							<span>{$t('dashboard_profile_verification_item1')}</span>
-						</li>
-						<li class="flex items-start gap-2">
-							<svg class="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-							</svg>
-							<span>{$t('dashboard_profile_verification_item2')}</span>
-						</li>
-						<li class="flex items-start gap-2">
-							<svg class="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-							</svg>
-							<span>{$t('dashboard_profile_verification_item3')}</span>
-						</li>
-					</ul>
-					<Button onclick={() => goto('/dashboard/profile')} variant="outline" size="sm">
-						{$t('dashboard_go_to_profile_button')}
-					</Button>
-				</Card.Content>
-			</Card.Root>
-		{:else if !user.isVerified && hasRole(user, 'school-admin')}
+		<!-- School admin: complete profile notice -->
+		{#if !user.isVerified && hasRole(user, 'school-admin')}
 			<Card.Root class="border-yellow-200 bg-yellow-50" >
 				<Card.Header>
 					<Card.Title class="flex items-center gap-2">

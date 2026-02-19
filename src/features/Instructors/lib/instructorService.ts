@@ -9,6 +9,18 @@ export class InstructorService {
         this.instructorRepository = new InstructorRepository();
     }
 
+    async assignInstructorRole(
+        userId: number,
+        instructorType: 'instructor-independent' | 'instructor-school'
+    ): Promise<User> {
+        try {
+            return await this.instructorRepository.assignInstructorRole(userId, instructorType);
+        } catch (error) {
+            console.error('Error assigning instructor role:', error);
+            throw new Error('Failed to assign instructor role');
+        }
+    }
+
     async createInstructor(instructorData: InstructorSignupData): Promise<User> {
         try {
             return await this.instructorRepository.createInstructor(instructorData);

@@ -5,6 +5,7 @@ import { db } from '$lib/server/db';
 import { users, instructorResorts, instructorSports, sports, resorts, schoolInstructors, userRoles } from '$lib/server/db/schema';
 import { eq, and, inArray, or, isNull } from 'drizzle-orm';
 import { fail } from '@sveltejs/kit';
+import { requireSchoolAdmin } from '$lib/utils/schoolAuth';
 
 export const load: PageServerLoad = async ({ parent, url }) => {
 	const { school } = await parent();
@@ -89,9 +90,9 @@ export const load: PageServerLoad = async ({ parent, url }) => {
 };
 
 export const actions: Actions = {
-	invite: async ({ request, parent }) => {
-		const { school } = await parent();
-		const formData = await request.formData();
+	invite: async (event) => {
+		const { school } = await requireSchoolAdmin(event);
+		const formData = await event.request.formData();
 		const instructorId = Number(formData.get('instructorId'));
 		const instructorEmail = formData.get('instructorEmail') as string;
 		const instructorName = formData.get('instructorName') as string;
