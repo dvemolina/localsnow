@@ -11,6 +11,33 @@ const schoolInstructorService = new SchoolInstructorService();
 export const load: PageServerLoad = async (event) => {
     const user = requireDashboardRole(event, ['instructor-school'], 'Login to access dashboard');
 
+    // Get instructor's active school membership
+    const activeAssociationRows = await db
+        .select({
+            schoolId: schoolInstructors.schoolId,
+            schoolName: schools.name,
+            schoolSlug: schools.slug,
+            schoolLogo: schools.logo,
+            acceptedAt: schoolInstructors.acceptedAt
+        })
+        .from(schoolInstructors)
+        .innerJoin(schools, eq(schoolInstructors.schoolId, schools.id))
+        .where(
+            and(
+                eq(schoolInstructors.instructorId, user.id),
+                eq(schoolInstructors.isActive, true),
+                eq(schoolInstructors.isAcceptedBySchool, true)
+            )
+        )
+        .limit(1);
+
+    const activeSchool = activeAssociationRows[0] ?? null;
+
+    // If already an active member, no need to load available schools to browse
+    if (activeSchool) {
+        return { activeSchool, schools: [] };
+    }
+
     // Get instructor's resorts
     const instructorResortsData = await db
         .select({ resortId: instructorResorts.resortId })
@@ -20,7 +47,7 @@ export const load: PageServerLoad = async (event) => {
     const resortIds = instructorResortsData.map(r => r.resortId);
 
     if (resortIds.length === 0) {
-        return { schools: [] };
+        return { activeSchool: null, schools: [] };
     }
 
     // Get schools the instructor is already associated with (pending, accepted, or rejected)
@@ -79,7 +106,7 @@ export const load: PageServerLoad = async (event) => {
             );
     }
 
-    return { schools: availableSchools };
+    return { activeSchool: null, schools: availableSchools };
 };
 
 export const actions: Actions = {
