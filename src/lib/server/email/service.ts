@@ -40,7 +40,7 @@ export class EmailService {
 				subject,
 				html,
 				sendTelegram: true,
-				telegramMessage: `🎉 New User Signup\n- Name: ${validated.name}\n- Email: ${validated.email}\n- Beta Code: ${validated.betaCode}`
+				telegramMessage: `🎉 New User Signup\n- Name: ${validated.name}\n- Email: ${validated.email}`
 			});
 		} catch (error) {
 			console.error('[EmailService] Failed to send signup email:', error);
@@ -125,7 +125,10 @@ export class EmailService {
 				telegramMessage: `❌ Booking Cancelled\n- Instructor: ${validated.instructorName}\n- Client: ${validated.clientName}\n- Booking ID: #${validated.bookingRequestId}\n- Dates: ${validated.startDate}${validated.endDate ? ' - ' + validated.endDate : ''}`
 			});
 		} catch (error) {
-			console.error('[EmailService] Failed to send cancellation notification to instructor:', error);
+			console.error(
+				'[EmailService] Failed to send cancellation notification to instructor:',
+				error
+			);
 			throw error;
 		}
 	}

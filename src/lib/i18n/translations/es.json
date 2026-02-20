@@ -752,6 +752,8 @@
 	"schools_button_unsuspend": "Reactivar",
 	"schools_button_publish": "Publicar",
 	"schools_button_unpublish": "Despublicar",
+	"instructors_button_publish": "Publicar",
+	"instructors_button_unpublish": "Despublicar",
 	"schools_button_view_logo": "Ver Logo",
 	"schools_table_resorts": "Estaciones",
 	"schools_table_instructors": "Instructores",

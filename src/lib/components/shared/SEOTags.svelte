@@ -57,7 +57,7 @@
 	<link
 		rel="alternate"
 		hreflang="x-default"
-		href={`${currentUrl.origin}${alternateUrls.find((a) => a.locale === 'en')?.url || '/'}`}
+		href={`${currentUrl.origin}${alternateUrls.find((a) => a.locale === 'en')?.url || '/en'}`}
 	/>
 
 	<!-- Open Graph / Facebook -->

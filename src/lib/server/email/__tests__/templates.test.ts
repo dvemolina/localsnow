@@ -11,27 +11,20 @@ describe('Email Templates', () => {
 		it('should render without errors', () => {
 			const data: schemas.SignupWelcomeData = {
 				name: 'John',
-				email: 'john@example.com',
-				betaCode: 'BETA2025',
-				isBetaLaunch: true,
-				betaValidUntil: '2025-03-31'
+				email: 'john@example.com'
 			};
 
 			const result = templates.signupWelcome(data);
 
 			expect(result.subject).toBeTruthy();
 			expect(result.html).toContain('John');
-			expect(result.html).toContain('BETA2025');
 			expect(result.html).toContain('Welcome to Local Snow');
 		});
 
 		it('should handle different names', () => {
 			const data: schemas.SignupWelcomeData = {
 				name: 'María',
-				email: 'maria@example.com',
-				betaCode: 'BETA2025',
-				isBetaLaunch: true,
-				betaValidUntil: '2025-03-31'
+				email: 'maria@example.com'
 			};
 
 			const result = templates.signupWelcome(data);

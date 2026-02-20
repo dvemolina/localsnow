@@ -3,14 +3,7 @@
  */
 
 import { wrapEmail } from '../base';
-import {
-	header,
-	contentSection,
-	paragraph,
-	heading,
-	actionButtons,
-	alert
-} from '../components';
+import { header, contentSection, paragraph, heading, actionButtons } from '../components';
 import type { EmailTemplate, Locale } from '../types';
 import type { SignupWelcomeData } from '../schemas';
 
@@ -26,17 +19,11 @@ export const signupWelcome: EmailTemplate<SignupWelcomeData> = (data, locale = '
 		${contentSection(`
 			${heading(`Hi ${data.name}! 👋`)}
 
-			${paragraph(
-				`Welcome to Local Snow - the platform connecting winter sports enthusiasts with expert local instructors. We're thrilled to have you join our community!`
-			)}
+				${paragraph(
+					`Welcome to Local Snow - the platform connecting winter sports enthusiasts with expert local instructors. We're thrilled to have you join our community!`
+				)}
 
-			${alert(
-				`<strong>You're part of our Beta Launch!</strong><br><br>
-				Your Beta Code: <strong>${data.betaCode}</strong><br>
-				Valid until: <strong>${data.betaValidUntil}</strong><br><br>
-				As a beta member, you get early access to all features and can help shape the future of Local Snow.`,
-				'info'
-			)}
+				${paragraph(`Local Snow is fully free to use as a directory, and no access code is required.`)}
 
 			${heading('What You Can Do')}
 

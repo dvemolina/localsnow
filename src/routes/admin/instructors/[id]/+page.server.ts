@@ -97,5 +97,37 @@ export const actions: Actions = {
 		);
 
 		return { success: true, message: 'Instructor unsuspended successfully' };
+	},
+
+	publish: async ({ params, locals, request }) => {
+		const instructorId = parseInt(params.id);
+
+		if (!locals.user || !hasRole(locals.user, 'admin')) {
+			return fail(403, { error: 'Unauthorized' });
+		}
+
+		await adminInstructorService.publishInstructor(
+			instructorId,
+			locals.user.id,
+			{ request, getClientAddress: () => null }
+		);
+
+		return { success: true, message: 'Instructor published successfully' };
+	},
+
+	unpublish: async ({ params, locals, request }) => {
+		const instructorId = parseInt(params.id);
+
+		if (!locals.user || !hasRole(locals.user, 'admin')) {
+			return fail(403, { error: 'Unauthorized' });
+		}
+
+		await adminInstructorService.unpublishInstructor(
+			instructorId,
+			locals.user.id,
+			{ request, getClientAddress: () => null }
+		);
+
+		return { success: true, message: 'Instructor unpublished successfully' };
 	}
 };

@@ -57,12 +57,17 @@
 				{:else}
 					<Badge class="bg-yellow-100 text-yellow-800">{$t('status_pending_verification')}</Badge>
 				{/if}
+				{#if data.instructor.isPublished}
+					<Badge variant="outline">{$t('status_published')}</Badge>
+				{:else}
+					<Badge variant="outline" class="bg-gray-100">{$t('status_unpublished')}</Badge>
+				{/if}
 				<Badge variant="outline">{data.instructor.role}</Badge>
 			</div>
 		</div>
 
 		<!-- Action Buttons -->
-		<div class="flex gap-2">
+		<div class="flex gap-2 flex-wrap justify-end">
 			{#if !data.instructor.isVerified && data.instructor.qualificationUrl}
 				<form method="POST" action="?/verify" use:enhance>
 					<Button type="submit" class="bg-green-600 hover:bg-green-700">
@@ -84,6 +89,20 @@
 				<Button variant="destructive" onclick={() => (showSuspendDialog = true)}>
 					{$t('instructors_button_suspend')}
 				</Button>
+			{/if}
+
+			{#if data.instructor.isPublished}
+				<form method="POST" action="?/unpublish" use:enhance>
+					<Button type="submit" variant="outline">
+						{$t('instructors_button_unpublish')}
+					</Button>
+				</form>
+			{:else}
+				<form method="POST" action="?/publish" use:enhance>
+					<Button type="submit" variant="outline">
+						{$t('instructors_button_publish')}
+					</Button>
+				</form>
 			{/if}
 		</div>
 	</div>

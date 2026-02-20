@@ -930,6 +930,8 @@
 	"schools_button_unsuspend": "Unsuspend",
 	"schools_button_publish": "Publish",
 	"schools_button_unpublish": "Unpublish",
+	"instructors_button_publish": "Publish",
+	"instructors_button_unpublish": "Unpublish",
 	"schools_button_view_logo": "View Logo",
 	"schools_table_resorts": "Resorts",
 	"schools_table_instructors": "Instructors",

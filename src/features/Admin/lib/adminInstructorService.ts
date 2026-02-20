@@ -205,6 +205,7 @@ export const adminInstructorService = {
 			.update(users)
 			.set({
 				isVerified: true,
+				isPublished: true,
 				updatedAt: new Date()
 			})
 			.where(eq(users.id, instructorId));
@@ -316,6 +317,46 @@ export const adminInstructorService = {
 		await adminAuditService.logAction({
 			adminId,
 			action: 'unsuspend_instructor',
+			targetType: 'instructor',
+			targetId: instructorId,
+			event
+		});
+
+		return { success: true };
+	},
+
+	/**
+	 * Publish an instructor's profile
+	 */
+	async publishInstructor(instructorId: number, adminId: number, event?: any) {
+		await db
+			.update(users)
+			.set({ isPublished: true })
+			.where(eq(users.id, instructorId));
+
+		await adminAuditService.logAction({
+			adminId,
+			action: 'publish_instructor',
+			targetType: 'instructor',
+			targetId: instructorId,
+			event
+		});
+
+		return { success: true };
+	},
+
+	/**
+	 * Unpublish an instructor's profile
+	 */
+	async unpublishInstructor(instructorId: number, adminId: number, event?: any) {
+		await db
+			.update(users)
+			.set({ isPublished: false })
+			.where(eq(users.id, instructorId));
+
+		await adminAuditService.logAction({
+			adminId,
+			action: 'unpublish_instructor',
 			targetType: 'instructor',
 			targetId: instructorId,
 			event

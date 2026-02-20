@@ -143,7 +143,12 @@ export const pathToRouteKey = (() => {
 		for (const locale of ['en', 'es'] as const) {
 			const path = translations[locale];
 			// Store with locale prefix for lookup
-			map.set(`/${locale}${path}`, key);
+			const localizedPath = `/${locale}${path}`;
+			map.set(localizedPath, key);
+			// Also support locale home without trailing slash (e.g. /en, /es)
+			if (path === '/') {
+				map.set(`/${locale}`, key);
+			}
 			// Also store without locale for base locale
 			if (locale === 'en') {
 				map.set(path, key);

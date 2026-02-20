@@ -11,22 +11,21 @@
 	/>
 </svelte:head>
 
-<article class="prose prose-sm mx-auto max-w-3xl dark:prose-invert">
+<article class="prose prose-sm dark:prose-invert mx-auto max-w-3xl">
 	<h1 class="title2">Privacy Policy</h1>
-	<p class="text-sm text-muted-foreground">Last updated: {lastUpdated}</p>
+	<p class="text-muted-foreground text-sm">Last updated: {lastUpdated}</p>
 
 	<section>
 		<h2 class="title3">1. Introduction</h2>
 		<p>
-			Local Snow ("we," "our," or "us") operates a marketplace platform connecting ski and
-			snowboard instructors with clients worldwide. We are committed to protecting your personal
-			data and respecting your privacy rights in compliance with the General Data Protection
-			Regulation (GDPR), the California Consumer Privacy Act (CCPA), and other applicable data
-			protection laws.
+			Local Snow ("we," "our," or "us") operates a marketplace platform connecting ski and snowboard
+			instructors with clients worldwide. We are committed to protecting your personal data and
+			respecting your privacy rights in compliance with the General Data Protection Regulation
+			(GDPR), the California Consumer Privacy Act (CCPA), and other applicable data protection laws.
 		</p>
 		<p>
-			This Privacy Policy explains how we collect, use, share, and protect your personal
-			information when you use our website at <strong>localsnow.org</strong> (the "Platform").
+			This Privacy Policy explains how we collect, use, share, and protect your personal information
+			when you use our website at <strong>localsnow.org</strong> (the "Platform").
 		</p>
 	</section>
 
@@ -58,12 +57,12 @@
 				<strong>Contact Information:</strong> Phone number (with country code), professional address
 			</li>
 			<li>
-				<strong>Booking Information:</strong> Client name, email, phone number, lesson dates, number of
-				students, skill levels, special requests, estimated pricing
+				<strong>Booking Information:</strong> Client name, email, phone number, lesson dates, number
+				of students, skill levels, special requests, estimated pricing
 			</li>
 			<li>
-				<strong>Payment Information:</strong> Processed securely by Stripe (we do not store full payment
-				card details)
+				<strong>Payment Information:</strong> Local Snow does not process lesson payments and does not
+				store payment card details
 			</li>
 			<li>
 				<strong>Communications:</strong> Messages sent through our platform, email correspondence, booking
@@ -82,8 +81,8 @@
 				settings (see Cookie Policy for details)
 			</li>
 			<li>
-				<strong>Profile Analytics:</strong> Profile views, search appearances, booking request counts (anonymized
-				visitor IP addresses using SHA-256 hashing)
+				<strong>Profile Analytics:</strong> Profile views, search appearances, booking request counts
+				(anonymized visitor IP addresses using SHA-256 hashing)
 			</li>
 		</ul>
 
@@ -97,9 +96,6 @@
 				<strong>Google Calendar:</strong> If you connect your calendar, we access availability data to
 				help manage bookings (requires explicit consent)
 			</li>
-			<li>
-				<strong>Stripe:</strong> Payment processing data, transaction status, payout information for instructors
-			</li>
 		</ul>
 	</section>
 
@@ -111,7 +107,7 @@
 		<ul>
 			<li>
 				<strong>Contract Performance:</strong> To provide our marketplace services, process bookings,
-				and facilitate payments
+				and facilitate direct communication between clients and instructors
 			</li>
 			<li>
 				<strong>Legitimate Interests:</strong> To improve our platform, prevent fraud, ensure security,
@@ -138,16 +134,16 @@
 				match clients with instructors
 			</li>
 			<li>
-				<strong>Booking Processing:</strong> Handle booking requests, process deposits (€15), manage
-				lead fees (€5), send notifications
+				<strong>Booking Processing:</strong> Handle booking requests, share relevant contact information,
+				send notifications
 			</li>
 			<li>
-				<strong>Payment Processing:</strong> Process payments securely through Stripe, manage payouts
-				to instructors, maintain transaction records
+				<strong>Payment Handling:</strong> Local Snow does not process lesson payments; payment terms
+				are agreed directly between clients and instructors
 			</li>
 			<li>
-				<strong>Communications:</strong> Send booking confirmations, payment notifications, platform
-				updates, respond to inquiries
+				<strong>Communications:</strong> Send booking confirmations, platform updates, and responses
+				to inquiries
 			</li>
 			<li>
 				<strong>Analytics and Improvement:</strong> Track profile views, analyze search patterns, improve
@@ -170,23 +166,20 @@
 		<h3 class="title4">5.1 With Other Users</h3>
 		<ul>
 			<li>
-				<strong>Instructor Profiles:</strong> Publicly visible information (name, photo, biography,
-				qualifications, languages, sports, resorts, reviews, base lesson pricing)
+				<strong>Instructor Profiles:</strong> Publicly visible information (name, photo, biography, qualifications,
+				languages, sports, resorts, reviews, base lesson pricing)
 			</li>
 			<li>
-				<strong>Booking Requests:</strong> Your contact information is shared with instructors when
-				you submit a booking request
+				<strong>Booking Requests:</strong> Your contact information is shared with instructors when you
+				submit a booking request
 			</li>
 		</ul>
 
 		<h3 class="title4">5.2 Service Providers</h3>
 		<ul>
 			<li>
-				<strong>Stripe:</strong> Payment processing and payout management
-			</li>
-			<li>
-				<strong>n8n (Self-hosted):</strong> Email notification system for booking confirmations and
-				instructor alerts
+				<strong>n8n (Self-hosted):</strong> Email notification system for booking confirmations and instructor
+				alerts
 			</li>
 			<li>
 				<strong>Cloudflare R2:</strong> File storage for profile photos, qualification documents, and
@@ -224,8 +217,7 @@
 			protection laws as your jurisdiction.
 		</p>
 		<p>
-			For transfers outside the European Economic Area (EEA), we ensure adequate protection
-			through:
+			For transfers outside the European Economic Area (EEA), we ensure adequate protection through:
 		</p>
 		<ul>
 			<li>Standard Contractual Clauses approved by the European Commission</li>
@@ -236,7 +228,10 @@
 
 	<section>
 		<h2 class="title3">7. Data Retention</h2>
-		<p>We retain your personal data for as long as necessary to fulfill the purposes outlined in this policy:</p>
+		<p>
+			We retain your personal data for as long as necessary to fulfill the purposes outlined in this
+			policy:
+		</p>
 		<ul>
 			<li>
 				<strong>Active Accounts:</strong> Data retained while your account remains active
@@ -293,15 +288,15 @@
 		<h3 class="title4">8.2 CCPA Rights (for California Residents)</h3>
 		<ul>
 			<li>
-				<strong>Right to Know:</strong> Request disclosure of personal information collected, used,
-				or shared
+				<strong>Right to Know:</strong> Request disclosure of personal information collected, used, or
+				shared
 			</li>
 			<li>
 				<strong>Right to Delete:</strong> Request deletion of personal information
 			</li>
 			<li>
-				<strong>Right to Opt-Out:</strong> Opt-out of the sale of personal information (note: we do
-				not sell personal data)
+				<strong>Right to Opt-Out:</strong> Opt-out of the sale of personal information (note: we do not
+				sell personal data)
 			</li>
 			<li>
 				<strong>Right to Non-Discrimination:</strong> Equal service regardless of privacy choices
@@ -330,8 +325,7 @@
 				<strong>Authentication:</strong> Secure session management with HTTP-only cookies
 			</li>
 			<li>
-				<strong>Access Controls:</strong> Role-based permissions, rate limiting, and authentication
-				requirements
+				<strong>Access Controls:</strong> Role-based permissions, rate limiting, and authentication requirements
 			</li>
 			<li>
 				<strong>Monitoring:</strong> Automated security monitoring and anomaly detection
@@ -363,15 +357,17 @@
 				>Cookie Policy</a
 			>.
 		</p>
-		<p>You can control cookie preferences through your browser settings or our cookie consent banner.</p>
+		<p>
+			You can control cookie preferences through your browser settings or our cookie consent banner.
+		</p>
 	</section>
 
 	<section>
 		<h2 class="title3">12. Third-Party Links</h2>
 		<p>
-			Our Platform may contain links to third-party websites, including instructor personal
-			websites and social media profiles. We are not responsible for the privacy practices of
-			these external sites. We encourage you to review their privacy policies.
+			Our Platform may contain links to third-party websites, including instructor personal websites
+			and social media profiles. We are not responsible for the privacy practices of these external
+			sites. We encourage you to review their privacy policies.
 		</p>
 	</section>
 
@@ -393,18 +389,21 @@
 
 	<section>
 		<h2 class="title3">14. Contact Us</h2>
-		<p>For questions, concerns, or requests regarding this Privacy Policy or your personal data, please contact us:</p>
+		<p>
+			For questions, concerns, or requests regarding this Privacy Policy or your personal data,
+			please contact us:
+		</p>
 		<p>
 			<strong>Email:</strong> privacy@localsnow.org<br />
 			<strong>Website:</strong> <a href="https://localsnow.org">https://localsnow.org</a>
 		</p>
 		<p>
-			<strong>Data Protection Officer:</strong> For GDPR-related inquiries, you may also contact our Data
-			Protection Officer at dpo@localsnow.org
+			<strong>Data Protection Officer:</strong> For GDPR-related inquiries, you may also contact our
+			Data Protection Officer at dpo@localsnow.org
 		</p>
 	</section>
 
-	<section class="mt-8 rounded-lg border border-border bg-muted p-4">
+	<section class="border-border bg-muted mt-8 rounded-lg border p-4">
 		<h3 class="mb-2 text-sm font-semibold">Summary of Key Points</h3>
 		<ul class="text-sm">
 			<li>We collect information you provide, usage data, and data from third parties</li>

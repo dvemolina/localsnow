@@ -17,7 +17,7 @@ function localizePath(path: string, locale: Locale): string {
 	const normalizedPath = path ? (path.startsWith('/') ? path : `/${path}`) : '/';
 
 	if (normalizedPath === '/') {
-		return `/${locale}/`;
+		return `/${locale}`;
 	}
 
 	for (const routeKey of ROUTE_KEYS) {

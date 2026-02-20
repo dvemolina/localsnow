@@ -33,7 +33,7 @@
 	<link
 		rel="alternate"
 		hreflang="x-default"
-		href={`${page.url.origin}${alternateUrls.find((a) => a.locale === 'en')?.url || '/en/'}`}
+		href={`${page.url.origin}${alternateUrls.find((a) => a.locale === 'en')?.url || '/en'}`}
 	/>
 </svelte:head>
 
@@ -57,6 +57,3 @@
 	{/if}
 	<!-- <ScreenSize />-->
 	<CookieConsent />
-
-
-

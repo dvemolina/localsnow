@@ -1,13 +1,10 @@
 import { emailService } from '$lib/server/email/service';
 
-export async function sendSignupEmail(name: string, email: string, betaCode: string = 'BETA2025') {
+export async function sendSignupEmail(name: string, email: string) {
 	try {
 		await emailService.sendSignupEmail({
 			name,
-			email,
-			betaCode,
-			isBetaLaunch: true,
-			betaValidUntil: '2025-03-31'
+			email
 		});
 	} catch (err) {
 		console.error('Error sending signup email:', err);

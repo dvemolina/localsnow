@@ -7,15 +7,11 @@ import { z } from 'zod';
 
 /**
  * Welcome email sent after signup
- * Based on actual call: sendSignupEmail(name, email, betaCode)
- * Also sends: { name, email, betaCode, isBetaLaunch: true, betaValidUntil: '2025-03-31' }
+ * Based on actual call: sendSignupEmail(name, email)
  */
 export const signupWelcomeSchema = z.object({
 	name: z.string().min(1),
-	email: z.string().email(),
-	betaCode: z.string().default('BETA2025'),
-	isBetaLaunch: z.boolean().default(true),
-	betaValidUntil: z.string().default('2025-03-31')
+	email: z.string().email()
 });
 
 export type SignupWelcomeData = z.infer<typeof signupWelcomeSchema>;

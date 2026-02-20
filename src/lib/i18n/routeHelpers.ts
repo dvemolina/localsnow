@@ -5,7 +5,13 @@
  * throughout the application.
  */
 
-import { getLocalizedPath, shouldTranslatePath, extractLocale, getRouteKey, type Locale } from './routes';
+import {
+	getLocalizedPath,
+	shouldTranslatePath,
+	extractLocale,
+	getRouteKey,
+	type Locale
+} from './routes';
 
 /**
  * Get current locale from browser URL or default to 'en'
@@ -77,7 +83,17 @@ export function route(path: string, locale?: Locale, params?: Record<string, str
 	}
 
 	// Add locale prefix
-	return `/${currentLocale}${finalPath}`;
+	// Use /en and /es (without trailing slash) for locale home URLs.
+	const localizedRoot = `/${currentLocale}`;
+	if (finalPath === '/') {
+		return localizedRoot;
+	}
+	// Preserve query parameters on locale home without introducing /en/?foo=bar
+	if (finalPath.startsWith('/?')) {
+		return `${localizedRoot}${finalPath.slice(1)}`;
+	}
+
+	return `${localizedRoot}${finalPath}`;
 }
 
 /**
@@ -177,7 +193,12 @@ export function isRoute(pathname: string, routeKey: string): boolean {
 	const enPath = getLocalizedPath(routeKey, 'en');
 	const esPath = getLocalizedPath(routeKey, 'es');
 
-	return path === enPath || path === esPath || path.startsWith(enPath + '/') || path.startsWith(esPath + '/');
+	return (
+		path === enPath ||
+		path === esPath ||
+		path.startsWith(enPath + '/') ||
+		path.startsWith(esPath + '/')
+	);
 }
 
 /**

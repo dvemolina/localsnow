@@ -10,20 +10,20 @@
 	/>
 </svelte:head>
 
-<article class="prose prose-sm mx-auto max-w-3xl dark:prose-invert">
+<article class="prose prose-sm dark:prose-invert mx-auto max-w-3xl">
 	<h1 class="title2">Terms of Service</h1>
-	<p class="text-sm text-muted-foreground">Last updated: {lastUpdated}</p>
+	<p class="text-muted-foreground text-sm">Last updated: {lastUpdated}</p>
 
 	<section>
 		<h2 class="title3">1. Agreement to Terms</h2>
 		<p>
 			Welcome to Local Snow. By accessing or using our website at <strong>localsnow.org</strong>
-			(the "Platform"), you agree to be bound by these Terms of Service ("Terms"). If you do not
-			agree to these Terms, you may not use the Platform.
+			(the "Platform"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree
+			to these Terms, you may not use the Platform.
 		</p>
 		<p>
-			These Terms constitute a legally binding agreement between you and Local Snow ("we," "us,"
-			or "our"). Please read them carefully.
+			These Terms constitute a legally binding agreement between you and Local Snow ("we," "us," or
+			"our"). Please read them carefully.
 		</p>
 	</section>
 
@@ -37,13 +37,13 @@
 			<li>Instructors to create professional profiles and list their services</li>
 			<li>Clients to discover, compare, and request lessons from instructors</li>
 			<li>Direct communication between clients and instructors</li>
-			<li>Booking request management and payment processing</li>
+			<li>Booking request management and lesson coordination</li>
 			<li>Review and rating systems</li>
 		</ul>
 		<p>
-			<strong>Important:</strong> Local Snow is a marketplace platform only. We are not a party to
-			the actual service agreement between instructors and clients. We do not employ instructors,
-			and we are not responsible for the actual lessons provided.
+			<strong>Important:</strong> Local Snow is a marketplace platform only. We are not a party to the
+			actual service agreement between instructors and clients. We do not employ instructors, and we
+			are not responsible for the actual lessons provided.
 		</p>
 	</section>
 
@@ -57,8 +57,7 @@
 			<li>Provide accurate and complete information during registration</li>
 		</ul>
 		<p>
-			By using the Platform, you represent and warrant that you meet these eligibility
-			requirements.
+			By using the Platform, you represent and warrant that you meet these eligibility requirements.
 		</p>
 	</section>
 
@@ -87,12 +86,12 @@
 				<strong>Independent Instructor Accounts:</strong> Free accounts for self-employed instructors
 			</li>
 			<li>
-				<strong>School Instructor Accounts:</strong> Free accounts for instructors affiliated with
-				ski schools
+				<strong>School Instructor Accounts:</strong> Free accounts for instructors affiliated with ski
+				schools
 			</li>
 			<li>
-				<strong>School Administrator Accounts:</strong> Accounts for managing ski school operations
-				and instructor teams
+				<strong>School Administrator Accounts:</strong> Accounts for managing ski school operations and
+				instructor teams
 			</li>
 		</ul>
 
@@ -116,7 +115,9 @@
 			<li>Provide accurate and truthful information about qualifications and experience</li>
 			<li>Upload valid certification documents when claiming professional credentials</li>
 			<li>Keep profile information current and up-to-date</li>
-			<li>Accurately represent spoken languages, sports specializations, and resort affiliations</li>
+			<li>
+				Accurately represent spoken languages, sports specializations, and resort affiliations
+			</li>
 			<li>Set fair and transparent pricing for lessons</li>
 		</ul>
 
@@ -160,9 +161,9 @@
 
 		<h3 class="title4">7.1 Booking Requests</h3>
 		<p>
-			Clients submit booking requests through the Platform. Booking requests are not confirmed
-			until the instructor accepts and the client completes payment. Neither party is obligated
-			until both parties have confirmed.
+			Clients submit booking requests through the Platform. Booking requests are not confirmed until
+			the instructor accepts. Lesson details, pricing, and payment are agreed directly between
+			clients and instructors.
 		</p>
 
 		<h3 class="title4">7.2 Pricing Structure</h3>
@@ -174,31 +175,27 @@
 				<strong>Client Booking Fees:</strong> Clients are not charged any booking fees by Local Snow
 			</li>
 			<li>
-				<strong>Lead Fees:</strong> When instructors receive a booking request, they pay a €5 lead
-				fee to access client contact information
+				<strong>Instructor Access Charges:</strong> Instructors are not charged to receive booking requests
+				or access client contact information
 			</li>
 			<li>
-				<strong>Client Deposit:</strong> First-time clients pay a refundable €15 deposit to prevent
-				spam; returned after first successful lesson
+				<strong>Client Upfront Charges:</strong> Clients are not charged by Local Snow to send booking
+				requests
 			</li>
 		</ul>
 
 		<h3 class="title4">7.3 Payment Processing</h3>
 		<ul>
-			<li>All payments are processed securely through Stripe</li>
+			<li>Local Snow does not process lesson payments or hold client funds</li>
 			<li>Lesson fees are paid directly between clients and instructors outside our Platform</li>
-			<li>Lead fees are non-refundable once client contact information is accessed</li>
-			<li>Client deposits are refunded after confirmation of lesson completion</li>
 			<li>Instructors are responsible for their own tax obligations</li>
 		</ul>
 
 		<h3 class="title4">7.4 Refund Policy</h3>
 		<ul>
 			<li>
-				<strong>Lead Fees:</strong> Non-refundable after contact information is accessed
-			</li>
-			<li>
-				<strong>Client Deposits:</strong> Automatically refunded after confirmed lesson completion
+				<strong>Platform Charges:</strong> Local Snow does not charge for booking requests or contact
+				access
 			</li>
 			<li>
 				<strong>Lesson Fees:</strong> Refund disputes are handled directly between clients and instructors;
@@ -209,9 +206,9 @@
 		<h3 class="title4">7.5 Booking Limits</h3>
 		<p>To prevent spam and ensure quality:</p>
 		<ul>
-			<li>Free clients limited to 2 booking requests per 30-day period</li>
-			<li>Paying clients (deposit paid) have unlimited booking requests</li>
-			<li>Limits may be adjusted at our discretion to prevent abuse</li>
+			<li>Clients may be limited to booking requests per 30-day period</li>
+			<li>Limits may be increased for trusted accounts or adjusted to prevent abuse</li>
+			<li>Additional safeguards may be applied at our discretion to protect users</li>
 		</ul>
 	</section>
 
@@ -238,7 +235,7 @@
 			<li>Impersonate others or create fake accounts</li>
 			<li>Use the Platform for illegal activities</li>
 			<li>Harass, abuse, or threaten other users</li>
-			<li>Attempt to circumvent platform fees or payment systems</li>
+			<li>Attempt to circumvent platform safeguards, anti-spam controls, or communication rules</li>
 			<li>Scrape or collect data from the Platform using automated means</li>
 			<li>Reverse engineer, decompile, or hack the Platform</li>
 			<li>Upload malware, viruses, or malicious code</li>
@@ -254,21 +251,21 @@
 		<h3 class="title4">10.1 Platform Content</h3>
 		<p>
 			The Platform, including its design, code, logos, and content (excluding user-generated
-			content), is owned by Local Snow and protected by copyright, trademark, and other
-			intellectual property laws.
+			content), is owned by Local Snow and protected by copyright, trademark, and other intellectual
+			property laws.
 		</p>
 
 		<h3 class="title4">10.2 User-Generated Content</h3>
 		<p>
 			You retain ownership of content you post (profile information, photos, reviews, messages).
-			However, by posting content, you grant us a worldwide, non-exclusive, royalty-free license
-			to use, display, reproduce, and distribute your content to operate and promote the Platform.
+			However, by posting content, you grant us a worldwide, non-exclusive, royalty-free license to
+			use, display, reproduce, and distribute your content to operate and promote the Platform.
 		</p>
 
 		<h3 class="title4">10.3 Trademarks</h3>
 		<p>
-			"Local Snow" and associated logos are trademarks of Local Snow. You may not use our
-			trademarks without prior written permission.
+			"Local Snow" and associated logos are trademarks of Local Snow. You may not use our trademarks
+			without prior written permission.
 		</p>
 	</section>
 
@@ -278,8 +275,8 @@
 		<h3 class="title4">11.1 Platform "As Is"</h3>
 		<p>
 			THE PLATFORM IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EITHER
-			EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-			PURPOSE, OR NON-INFRINGEMENT.
+			EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
+			OR NON-INFRINGEMENT.
 		</p>
 
 		<h3 class="title4">11.2 No Endorsement</h3>
@@ -292,8 +289,8 @@
 		<h3 class="title4">11.3 Third-Party Services</h3>
 		<p>
 			The actual ski and snowboard lessons are provided by independent instructors, not by Local
-			Snow. We are not liable for injuries, accidents, property damage, or other issues arising
-			from lessons.
+			Snow. We are not liable for injuries, accidents, property damage, or other issues arising from
+			lessons.
 		</p>
 
 		<h3 class="title4">11.4 Limitation of Liability</h3>
@@ -305,8 +302,8 @@
 		</p>
 		<p>
 			OUR TOTAL LIABILITY TO YOU FOR ALL CLAIMS ARISING FROM OR RELATED TO THE PLATFORM SHALL NOT
-			EXCEED THE GREATER OF (A) €100 OR (B) THE AMOUNT YOU PAID TO US IN THE 12 MONTHS PRECEDING
-			THE CLAIM.
+			EXCEED THE GREATER OF (A) €100 OR (B) THE AMOUNT YOU PAID TO US IN THE 12 MONTHS PRECEDING THE
+			CLAIM.
 		</p>
 
 		<h3 class="title4">11.5 Exceptions</h3>
@@ -337,8 +334,8 @@
 
 		<h3 class="title4">13.1 Informal Resolution</h3>
 		<p>
-			If you have a dispute with us, please contact us first at admin@localsnow.org to attempt
-			to resolve it informally.
+			If you have a dispute with us, please contact us first at admin@localsnow.org to attempt to
+			resolve it informally.
 		</p>
 
 		<h3 class="title4">13.2 User Disputes</h3>
@@ -350,13 +347,15 @@
 
 		<h3 class="title4">13.3 Governing Law</h3>
 		<p>
-			These Terms shall be governed by and construed in accordance with the laws of Spain, without regard to its conflict of law provisions.
+			These Terms shall be governed by and construed in accordance with the laws of Spain, without
+			regard to its conflict of law provisions.
 		</p>
 
 		<h3 class="title4">13.4 Arbitration</h3>
 		<p>
-			Any dispute arising from these Terms or the Platform that cannot be resolved informally
-			shall be resolved through binding arbitration in accordance with the rules of Spain, except where prohibited by law.
+			Any dispute arising from these Terms or the Platform that cannot be resolved informally shall
+			be resolved through binding arbitration in accordance with the rules of Spain, except where
+			prohibited by law.
 		</p>
 	</section>
 
@@ -372,9 +371,9 @@
 			<li>Updating the "Last Updated" date at the top of this page</li>
 		</ul>
 		<p>
-			Your continued use of the Platform after changes constitutes acceptance of the modified
-			Terms. If you do not agree to the changes, you must stop using the Platform and may close
-			your account.
+			Your continued use of the Platform after changes constitutes acceptance of the modified Terms.
+			If you do not agree to the changes, you must stop using the Platform and may close your
+			account.
 		</p>
 	</section>
 
@@ -411,8 +410,8 @@
 
 		<h3 class="title4">16.3 Waiver</h3>
 		<p>
-			Our failure to enforce any right or provision of these Terms shall not constitute a waiver
-			of such right or provision.
+			Our failure to enforce any right or provision of these Terms shall not constitute a waiver of
+			such right or provision.
 		</p>
 
 		<h3 class="title4">16.4 Assignment</h3>
@@ -423,8 +422,8 @@
 
 		<h3 class="title4">16.5 Force Majeure</h3>
 		<p>
-			We shall not be liable for any failure or delay in performance due to circumstances beyond
-			our reasonable control, including natural disasters, war, terrorism, pandemics, or internet
+			We shall not be liable for any failure or delay in performance due to circumstances beyond our
+			reasonable control, including natural disasters, war, terrorism, pandemics, or internet
 			service failures.
 		</p>
 	</section>
@@ -439,13 +438,13 @@
 		</p>
 	</section>
 
-	<section class="mt-8 rounded-lg border border-border bg-muted p-4">
+	<section class="border-border bg-muted mt-8 rounded-lg border p-4">
 		<h3 class="mb-2 text-sm font-semibold">Key Points Summary</h3>
 		<ul class="text-sm">
 			<li>Local Snow is a marketplace platform connecting instructors with clients</li>
 			<li>We are not a party to lessons; instructors are independent providers</li>
-			<li>Free to list as an instructor; €5 lead fee per booking request</li>
-			<li>Clients pay €15 refundable deposit per booking request (spam prevention)</li>
+			<li>Directory access is free for clients, instructors, and schools</li>
+			<li>Local Snow does not charge for booking requests or contact access</li>
 			<li>Users must be 18+, provide accurate information, and comply with our policies</li>
 			<li>We disclaim liability for lesson quality, safety, or disputes between users</li>
 			<li>These Terms may be updated; continued use indicates acceptance</li>

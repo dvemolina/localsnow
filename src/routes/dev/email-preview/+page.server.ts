@@ -18,10 +18,7 @@ export const load: PageServerLoad = async () => {
 	const sampleData = {
 		signupWelcome: {
 			name: 'John',
-			email: 'john@example.com',
-			betaCode: 'BETA2025',
-			isBetaLaunch: true,
-			betaValidUntil: '2025-03-31'
+			email: 'john@example.com'
 		},
 		bookingNotificationInstructor: {
 			instructorEmail: 'instructor@example.com',
@@ -60,7 +57,8 @@ export const load: PageServerLoad = async () => {
 			hoursPerDay: 4,
 			sports: ['Skiing', 'Snowboarding'],
 			skillLevel: 'Intermediate',
-			message: 'Looking forward to learning from an expert! We have some basic experience but want to improve our technique.',
+			message:
+				'Looking forward to learning from an expert! We have some basic experience but want to improve our technique.',
 			estimatedPrice: 320,
 			currency: 'EUR'
 		},
@@ -126,7 +124,8 @@ export const load: PageServerLoad = async () => {
 			clientName: 'Mike Smith',
 			clientEmail: 'mike@example.com',
 			clientPhone: '+1-555-1234',
-			message: 'Hi! I\'m interested in booking ski lessons for my family. We\'re beginners and would love to learn the basics. What are your available dates in February?',
+			message:
+				"Hi! I'm interested in booking ski lessons for my family. We're beginners and would love to learn the basics. What are your available dates in February?",
 			instructorProfileUrl: 'https://localsnow.org/instructors/42'
 		}
 	};

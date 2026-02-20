@@ -23,10 +23,7 @@ describe('EmailService', () => {
 		it('should validate data with Zod schema', async () => {
 			const validData = {
 				name: 'John',
-				email: 'john@example.com',
-				betaCode: 'BETA2025',
-				isBetaLaunch: true,
-				betaValidUntil: '2025-03-31'
+				email: 'john@example.com'
 			};
 
 			await emailService.sendSignupEmail(validData);
@@ -46,8 +43,7 @@ describe('EmailService', () => {
 		it('should reject invalid email', async () => {
 			const invalidData = {
 				name: 'John',
-				email: 'not-an-email',
-				betaCode: 'BETA2025'
+				email: 'not-an-email'
 			};
 
 			await expect(emailService.sendSignupEmail(invalidData)).rejects.toThrow();
@@ -150,7 +146,8 @@ describe('EmailService', () => {
 				instructorName: 'Sarah',
 				clientName: 'Mike',
 				clientEmail: 'mike@example.com',
-				message: 'This is a long message that should be truncated in the Telegram notification because it exceeds the length limit we want for notifications',
+				message:
+					'This is a long message that should be truncated in the Telegram notification because it exceeds the length limit we want for notifications',
 				instructorProfileUrl: 'https://localsnow.org/instructors/42'
 			};
 
@@ -166,8 +163,7 @@ describe('EmailService', () => {
 		it('should throw on invalid email address', async () => {
 			const invalidData = {
 				name: 'John',
-				email: 'invalid-email',
-				betaCode: 'BETA2025'
+				email: 'invalid-email'
 			};
 
 			await expect(emailService.sendSignupEmail(invalidData)).rejects.toThrow();
