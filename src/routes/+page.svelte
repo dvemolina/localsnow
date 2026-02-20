@@ -89,6 +89,29 @@
 		sameAs: []
 	};
 
+	// FAQ Schema for SEO
+	const faqSchema = $derived({
+		'@context': 'https://schema.org',
+		'@type': 'FAQPage',
+		mainEntity: [
+			{ '@type': 'Question', name: $t('home_faq_q1'), acceptedAnswer: { '@type': 'Answer', text: $t('home_faq_a1') } },
+			{ '@type': 'Question', name: $t('home_faq_q2'), acceptedAnswer: { '@type': 'Answer', text: $t('home_faq_a2') } },
+			{ '@type': 'Question', name: $t('home_faq_q3'), acceptedAnswer: { '@type': 'Answer', text: $t('home_faq_a3') } },
+			{ '@type': 'Question', name: $t('home_faq_q4'), acceptedAnswer: { '@type': 'Answer', text: $t('home_faq_a4') } },
+			{ '@type': 'Question', name: $t('home_faq_q5'), acceptedAnswer: { '@type': 'Answer', text: $t('home_faq_a5') } },
+			{ '@type': 'Question', name: $t('home_faq_q6'), acceptedAnswer: { '@type': 'Answer', text: $t('home_faq_a6') } },
+			{ '@type': 'Question', name: $t('home_faq_q7'), acceptedAnswer: { '@type': 'Answer', text: $t('home_faq_a7') } },
+			{ '@type': 'Question', name: $t('home_faq_q8'), acceptedAnswer: { '@type': 'Answer', text: $t('home_faq_a8') } },
+			{ '@type': 'Question', name: $t('home_faq_q9'), acceptedAnswer: { '@type': 'Answer', text: $t('home_faq_a9') } },
+			{ '@type': 'Question', name: $t('home_faq_q10'), acceptedAnswer: { '@type': 'Answer', text: $t('home_faq_a10') } },
+			{ '@type': 'Question', name: $t('home_faq_q11'), acceptedAnswer: { '@type': 'Answer', text: $t('home_faq_a11') } },
+			{ '@type': 'Question', name: $t('home_faq_q12'), acceptedAnswer: { '@type': 'Answer', text: $t('home_faq_a12') } }
+		]
+	});
+
+	// Base path for resort country pages
+	const resortsBase = $derived(route('/resorts', currentLocale));
+
 	// Hero Resort Search Form
 	const form = superForm(data.form, {
 		validators: zodClient(heroResortSearchSchema)
@@ -117,6 +140,7 @@
 
 	{@html `<script type="application/ld+json">${JSON.stringify(websiteSchema)}<\/script>`}
 	{@html `<script type="application/ld+json">${JSON.stringify(organizationSchema)}<\/script>`}
+	{@html `<script type="application/ld+json">${JSON.stringify(faqSchema)}<\/script>`}
 	<link rel="canonical" href={canonicalUrl} />
 	{#each alternates as alt}
 		<link rel="alternate" hreflang={alt.locale} href={alt.url} />
@@ -154,8 +178,28 @@
 				itemprop="headline"
 				class="text-shadow mb-4 text-3xl font-bold sm:text-5xl md:text-6xl lg:text-6xl"
 			>
-				{$t('home_hero_title')}
+				{$t('home_hero_title_v2')}
 			</h1>
+			<div class="flex flex-wrap items-center justify-center gap-3 md:gap-4 mb-4 text-white/90 text-xs md:text-sm">
+				<div class="flex items-center gap-1.5">
+					<svg class="h-4 w-4 md:h-5 md:w-5" fill="currentColor" viewBox="0 0 20 20">
+						<path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/>
+					</svg>
+					<span>{$t('home_trust_metric_global')}</span>
+				</div>
+				<div class="flex items-center gap-1.5">
+					<svg class="h-4 w-4 md:h-5 md:w-5" fill="currentColor" viewBox="0 0 20 20">
+						<path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"/>
+					</svg>
+					<span>{$t('home_trust_metric_resorts')}</span>
+				</div>
+				<div class="flex items-center gap-1.5">
+					<svg class="h-4 w-4 md:h-5 md:w-5" fill="currentColor" viewBox="0 0 20 20">
+						<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+					</svg>
+					<span>{$t('home_trust_metric_certified')}</span>
+				</div>
+			</div>
 			<div class="flex h-full flex-col justify-center align-bottom">
 				<p class="text-shadow mb-6 max-w-[600px] text-lg text-white sm:text-xl md:text-2xl">
 					{$t('home_hero_subtitle')}
@@ -317,6 +361,281 @@
 	</div>
 </section>
 
+<!-- Browse by Region Section -->
+<section class="grey-section">
+	<div class="container">
+		<h2 class="mb-2 text-center text-2xl md:text-3xl font-bold">{$t('home_regions_title')}</h2>
+		<p class="mb-8 text-center text-sm md:text-base text-muted-foreground">{$t('home_regions_subtitle')}</p>
+
+		<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4">
+			<a href="{resortsBase}/spain" class="group border-border bg-card hover:shadow-md transition-shadow rounded-lg border p-4 text-center">
+				<div class="text-3xl md:text-4xl mb-2">🇪🇸</div>
+				<h3 class="font-semibold text-sm md:text-base mb-1">{$t('home_region_spain')}</h3>
+				<p class="text-xs text-muted-foreground">{$t('home_region_description')}</p>
+			</a>
+			<a href="{resortsBase}/switzerland" class="group border-border bg-card hover:shadow-md transition-shadow rounded-lg border p-4 text-center">
+				<div class="text-3xl md:text-4xl mb-2">🇨🇭</div>
+				<h3 class="font-semibold text-sm md:text-base mb-1">{$t('home_region_switzerland')}</h3>
+				<p class="text-xs text-muted-foreground">{$t('home_region_description')}</p>
+			</a>
+			<a href="{resortsBase}/france" class="group border-border bg-card hover:shadow-md transition-shadow rounded-lg border p-4 text-center">
+				<div class="text-3xl md:text-4xl mb-2">🇫🇷</div>
+				<h3 class="font-semibold text-sm md:text-base mb-1">{$t('home_region_france')}</h3>
+				<p class="text-xs text-muted-foreground">{$t('home_region_description')}</p>
+			</a>
+			<a href="{resortsBase}/austria" class="group border-border bg-card hover:shadow-md transition-shadow rounded-lg border p-4 text-center">
+				<div class="text-3xl md:text-4xl mb-2">🇦🇹</div>
+				<h3 class="font-semibold text-sm md:text-base mb-1">{$t('home_region_austria')}</h3>
+				<p class="text-xs text-muted-foreground">{$t('home_region_description')}</p>
+			</a>
+			<a href="{resortsBase}/italy" class="group border-border bg-card hover:shadow-md transition-shadow rounded-lg border p-4 text-center">
+				<div class="text-3xl md:text-4xl mb-2">🇮🇹</div>
+				<h3 class="font-semibold text-sm md:text-base mb-1">{$t('home_region_italy')}</h3>
+				<p class="text-xs text-muted-foreground">{$t('home_region_description')}</p>
+			</a>
+			<a href="{resortsBase}/canada" class="group border-border bg-card hover:shadow-md transition-shadow rounded-lg border p-4 text-center">
+				<div class="text-3xl md:text-4xl mb-2">🇨🇦</div>
+				<h3 class="font-semibold text-sm md:text-base mb-1">{$t('home_region_canada')}</h3>
+				<p class="text-xs text-muted-foreground">{$t('home_region_description')}</p>
+			</a>
+			<a href="{resortsBase}/usa" class="group border-border bg-card hover:shadow-md transition-shadow rounded-lg border p-4 text-center">
+				<div class="text-3xl md:text-4xl mb-2">🇺🇸</div>
+				<h3 class="font-semibold text-sm md:text-base mb-1">{$t('home_region_usa')}</h3>
+				<p class="text-xs text-muted-foreground">{$t('home_region_description')}</p>
+			</a>
+			<a href="{resortsBase}/japan" class="group border-border bg-card hover:shadow-md transition-shadow rounded-lg border p-4 text-center">
+				<div class="text-3xl md:text-4xl mb-2">🇯🇵</div>
+				<h3 class="font-semibold text-sm md:text-base mb-1">{$t('home_region_japan')}</h3>
+				<p class="text-xs text-muted-foreground">{$t('home_region_description')}</p>
+			</a>
+		</div>
+
+		<div class="mt-8 text-center">
+			<a href={resortsBase} class="inline-block rounded-md border border-primary px-6 py-3 text-sm md:text-base font-medium text-primary hover:bg-primary hover:text-white transition-all">
+				{$t('home_regions_view_all')} →
+			</a>
+		</div>
+	</div>
+</section>
+
+<!-- For Instructors Section -->
+<section class="section">
+	<div class="container max-w-6xl">
+		<div class="mb-10 text-center">
+			<h2 class="mb-3 text-2xl md:text-3xl font-bold">{$t('home_for_instructors_title')}</h2>
+			<p class="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
+				{$t('home_for_instructors_subtitle')}
+			</p>
+		</div>
+
+		<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+			<!-- Keep 100% of Earnings -->
+			<div class="border-border bg-card rounded-lg border p-6 text-center shadow-sm">
+				<div class="bg-primary/10 text-primary mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+					</svg>
+				</div>
+				<h3 class="mb-2 text-lg md:text-xl font-semibold">{$t('home_instructors_keep_100_title')}</h3>
+				<p class="text-sm text-muted-foreground mb-3">{$t('home_instructors_keep_100_desc')}</p>
+				<div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-3 text-sm">
+					<div class="font-bold text-green-900 dark:text-green-100">€100 lesson = €100 earned</div>
+					<div class="text-xs text-green-700 dark:text-green-300 mt-1">{$t('home_instructors_vs_platforms')}</div>
+				</div>
+			</div>
+
+			<!-- Get Discovered -->
+			<div class="border-border bg-card rounded-lg border p-6 text-center shadow-sm">
+				<div class="bg-primary/10 text-primary mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+					</svg>
+				</div>
+				<h3 class="mb-2 text-lg md:text-xl font-semibold">{$t('home_instructors_get_discovered_title')}</h3>
+				<p class="text-sm text-muted-foreground mb-3">{$t('home_instructors_get_discovered_desc')}</p>
+				<ul class="text-left text-xs text-muted-foreground space-y-1">
+					<li class="flex items-start gap-2"><span class="text-primary">✓</span><span>{$t('home_instructors_search_resort')}</span></li>
+					<li class="flex items-start gap-2"><span class="text-primary">✓</span><span>{$t('home_instructors_search_language')}</span></li>
+					<li class="flex items-start gap-2"><span class="text-primary">✓</span><span>{$t('home_instructors_search_specialty')}</span></li>
+				</ul>
+			</div>
+
+			<!-- Control Your Business -->
+			<div class="border-border bg-card rounded-lg border p-6 text-center shadow-sm">
+				<div class="bg-primary/10 text-primary mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+					</svg>
+				</div>
+				<h3 class="mb-2 text-lg md:text-xl font-semibold">{$t('home_instructors_control_title')}</h3>
+				<p class="text-sm text-muted-foreground mb-3">{$t('home_instructors_control_desc')}</p>
+				<ul class="text-left text-xs text-muted-foreground space-y-1">
+					<li class="flex items-start gap-2"><span class="text-primary">✓</span><span>{$t('home_instructors_control_rates')}</span></li>
+					<li class="flex items-start gap-2"><span class="text-primary">✓</span><span>{$t('home_instructors_control_schedule')}</span></li>
+					<li class="flex items-start gap-2"><span class="text-primary">✓</span><span>{$t('home_instructors_control_clients')}</span></li>
+				</ul>
+			</div>
+		</div>
+
+		<!-- How It Works for Instructors -->
+		<div class="bg-muted/50 rounded-lg p-6 md:p-8 mb-8">
+			<h3 class="text-xl font-bold mb-6 text-center">{$t('home_instructors_how_title')}</h3>
+			<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+				<div class="text-center">
+					<div class="bg-primary/10 text-primary mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full text-xl font-bold">1</div>
+					<h4 class="font-semibold text-sm mb-1">{$t('home_instructors_step1_title')}</h4>
+					<p class="text-xs text-muted-foreground">{$t('home_instructors_step1_desc')}</p>
+				</div>
+				<div class="text-center">
+					<div class="bg-primary/10 text-primary mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full text-xl font-bold">2</div>
+					<h4 class="font-semibold text-sm mb-1">{$t('home_instructors_step2_title')}</h4>
+					<p class="text-xs text-muted-foreground">{$t('home_instructors_step2_desc')}</p>
+				</div>
+				<div class="text-center">
+					<div class="bg-primary/10 text-primary mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full text-xl font-bold">3</div>
+					<h4 class="font-semibold text-sm mb-1">{$t('home_instructors_step3_title')}</h4>
+					<p class="text-xs text-muted-foreground">{$t('home_instructors_step3_desc')}</p>
+				</div>
+				<div class="text-center">
+					<div class="bg-primary/10 text-primary mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full text-xl font-bold">4</div>
+					<h4 class="font-semibold text-sm mb-1">{$t('home_instructors_step4_title')}</h4>
+					<p class="text-xs text-muted-foreground">{$t('home_instructors_step4_desc')}</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- Early Adopter CTA -->
+		<div class="bg-gradient-to-r from-primary/10 to-blue-50 dark:from-primary/20 dark:to-blue-900/20 rounded-lg p-6 md:p-8 border-2 border-primary/30">
+			<div class="max-w-3xl mx-auto text-center">
+				<div class="inline-flex items-center gap-2 rounded-full bg-primary/20 px-4 py-2 text-sm font-bold text-primary mb-4">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+					</svg>
+					{$t('home_instructors_early_badge')}
+				</div>
+				<h3 class="text-xl md:text-2xl font-bold mb-3">{$t('home_instructors_early_title')}</h3>
+				<p class="text-sm md:text-base text-muted-foreground mb-6">{$t('home_instructors_early_desc')}</p>
+				<div class="flex flex-col sm:flex-row gap-3 justify-center">
+					<a href={route('/signup')} class="bg-primary inline-block rounded-md px-8 py-3 font-semibold text-white shadow-sm transition-all hover:shadow-md">
+						{$t('home_instructors_early_cta')}
+					</a>
+					<a href={route('/how-it-works')} class="border-primary text-primary hover:bg-primary inline-block rounded-md border px-8 py-3 font-semibold transition-all hover:text-white">
+						{$t('home_instructors_learn_more')}
+					</a>
+				</div>
+				<p class="mt-4 text-xs text-muted-foreground italic">{$t('home_instructors_early_note')}</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- For Ski Schools Section -->
+<section class="grey-section">
+	<div class="container max-w-6xl">
+		<div class="mb-10 text-center">
+			<h2 class="mb-3 text-2xl md:text-3xl font-bold">{$t('home_for_schools_title')}</h2>
+			<p class="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
+				{$t('home_for_schools_subtitle')}
+			</p>
+		</div>
+
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+			<!-- Left: Why Schools Love LocalSnow -->
+			<div class="space-y-6">
+				<h3 class="text-xl font-bold mb-4">{$t('home_schools_why_title')}</h3>
+				<div class="space-y-4">
+					<div class="flex items-start gap-3">
+						<div class="flex-shrink-0 rounded-full bg-primary/10 p-2">
+							<svg class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+							</svg>
+						</div>
+						<div>
+							<h4 class="font-semibold text-sm mb-1">{$t('home_schools_benefit1_title')}</h4>
+							<p class="text-xs text-muted-foreground">{$t('home_schools_benefit1_desc')}</p>
+						</div>
+					</div>
+					<div class="flex items-start gap-3">
+						<div class="flex-shrink-0 rounded-full bg-primary/10 p-2">
+							<svg class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+							</svg>
+						</div>
+						<div>
+							<h4 class="font-semibold text-sm mb-1">{$t('home_schools_benefit2_title')}</h4>
+							<p class="text-xs text-muted-foreground">{$t('home_schools_benefit2_desc')}</p>
+						</div>
+					</div>
+					<div class="flex items-start gap-3">
+						<div class="flex-shrink-0 rounded-full bg-primary/10 p-2">
+							<svg class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+							</svg>
+						</div>
+						<div>
+							<h4 class="font-semibold text-sm mb-1">{$t('home_schools_benefit3_title')}</h4>
+							<p class="text-xs text-muted-foreground">{$t('home_schools_benefit3_desc')}</p>
+						</div>
+					</div>
+					<div class="flex items-start gap-3">
+						<div class="flex-shrink-0 rounded-full bg-primary/10 p-2">
+							<svg class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+							</svg>
+						</div>
+						<div>
+							<h4 class="font-semibold text-sm mb-1">{$t('home_schools_benefit4_title')}</h4>
+							<p class="text-xs text-muted-foreground">{$t('home_schools_benefit4_desc')}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Right: Use Cases -->
+			<div>
+				<h3 class="text-xl font-bold mb-4">{$t('home_schools_use_cases_title')}</h3>
+				<div class="space-y-4">
+					<div class="border-border bg-card rounded-lg border p-4">
+						<h4 class="font-semibold text-sm mb-2 flex items-center gap-2">
+							<span class="text-primary">📋</span>
+							{$t('home_schools_use_case1_title')}
+						</h4>
+						<p class="text-xs text-muted-foreground">{$t('home_schools_use_case1_desc')}</p>
+					</div>
+					<div class="border-border bg-card rounded-lg border p-4">
+						<h4 class="font-semibold text-sm mb-2 flex items-center gap-2">
+							<span class="text-primary">👥</span>
+							{$t('home_schools_use_case2_title')}
+						</h4>
+						<p class="text-xs text-muted-foreground">{$t('home_schools_use_case2_desc')}</p>
+					</div>
+					<div class="border-border bg-card rounded-lg border p-4">
+						<h4 class="font-semibold text-sm mb-2 flex items-center gap-2">
+							<span class="text-primary">🎯</span>
+							{$t('home_schools_use_case3_title')}
+						</h4>
+						<p class="text-xs text-muted-foreground">{$t('home_schools_use_case3_desc')}</p>
+					</div>
+					<div class="border-border bg-card rounded-lg border p-4">
+						<h4 class="font-semibold text-sm mb-2 flex items-center gap-2">
+							<span class="text-primary">💼</span>
+							{$t('home_schools_use_case4_title')}
+						</h4>
+						<p class="text-xs text-muted-foreground">{$t('home_schools_use_case4_desc')}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="text-center">
+			<a href={route('/signup')} class="bg-primary inline-block rounded-md px-8 py-3 font-semibold text-white shadow-sm transition-all hover:shadow-md">
+				{$t('home_schools_cta')}
+			</a>
+			<p class="mt-4 text-xs text-muted-foreground">{$t('home_schools_cta_note')}</p>
+		</div>
+	</div>
+</section>
+
 <!-- How It Works Section -->
 <section class="grey-section">
 	<h2 class="mb-8 text-center text-3xl font-bold">{$t('home_how_it_works_title')}</h2>
@@ -369,6 +688,58 @@
 	</div>
 </section>
 
+<!-- Value Propositions Section -->
+<section class="section">
+	<div class="container max-w-6xl">
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+			<div class="flex items-start gap-3">
+				<div class="flex-shrink-0 rounded-full bg-primary/10 p-2.5">
+					<svg class="h-5 w-5 md:h-6 md:w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+					</svg>
+				</div>
+				<div>
+					<h3 class="font-semibold text-sm md:text-base mb-1">{$t('home_value_prop_1_title')}</h3>
+					<p class="text-xs md:text-sm text-muted-foreground leading-relaxed">{$t('home_value_prop_1_desc')}</p>
+				</div>
+			</div>
+			<div class="flex items-start gap-3">
+				<div class="flex-shrink-0 rounded-full bg-primary/10 p-2.5">
+					<svg class="h-5 w-5 md:h-6 md:w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+					</svg>
+				</div>
+				<div>
+					<h3 class="font-semibold text-sm md:text-base mb-1">{$t('home_value_prop_2_title')}</h3>
+					<p class="text-xs md:text-sm text-muted-foreground leading-relaxed">{$t('home_value_prop_2_desc')}</p>
+				</div>
+			</div>
+			<div class="flex items-start gap-3">
+				<div class="flex-shrink-0 rounded-full bg-primary/10 p-2.5">
+					<svg class="h-5 w-5 md:h-6 md:w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+					</svg>
+				</div>
+				<div>
+					<h3 class="font-semibold text-sm md:text-base mb-1">{$t('home_value_prop_3_title')}</h3>
+					<p class="text-xs md:text-sm text-muted-foreground leading-relaxed">{$t('home_value_prop_3_desc')}</p>
+				</div>
+			</div>
+			<div class="flex items-start gap-3">
+				<div class="flex-shrink-0 rounded-full bg-primary/10 p-2.5">
+					<svg class="h-5 w-5 md:h-6 md:w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+					</svg>
+				</div>
+				<div>
+					<h3 class="font-semibold text-sm md:text-base mb-1">{$t('home_value_prop_4_title')}</h3>
+					<p class="text-xs md:text-sm text-muted-foreground leading-relaxed">{$t('home_value_prop_4_desc')}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
 <!-- Why We're Free Section -->
 <section class="section rounded-lg py-16">
 	<div class="container max-w-4xl">
@@ -379,134 +750,91 @@
 			</p>
 		</div>
 
-		<div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-			<div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+			<div class="rounded-lg border border-red-200 bg-white dark:bg-gray-800 p-6 shadow-sm">
 				<div class="flex items-start gap-4">
 					<div class="flex-shrink-0 rounded-full bg-red-100 p-3">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="24"
-							height="24"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							class="text-red-600"
-							><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"
-							></line><line x1="9" y1="9" x2="15" y2="15"></line></svg
-						>
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-600">
+							<circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line>
+						</svg>
 					</div>
 					<div>
-						<h3 class="mb-2 text-lg font-bold text-gray-900">
+						<h3 class="mb-2 text-lg font-bold text-gray-900 dark:text-white">
 							{$t('home_why_free_problem_title')}
 						</h3>
-						<p class="text-sm leading-relaxed text-gray-600">
-							{$t('home_why_free_problem_desc')}
+						<p class="text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+							{$t('home_why_free_problem_desc_v2')}
 						</p>
 					</div>
 				</div>
 			</div>
 
-			<div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+			<div class="rounded-lg border border-green-200 bg-white dark:bg-gray-800 p-6 shadow-sm">
 				<div class="flex items-start gap-4">
 					<div class="flex-shrink-0 rounded-full bg-green-100 p-3">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="24"
-							height="24"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							class="text-green-600"><polyline points="20 6 9 17 4 12"></polyline></svg
-						>
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600">
+							<polyline points="20 6 9 17 4 12"></polyline>
+						</svg>
 					</div>
 					<div>
-						<h3 class="mb-2 text-lg font-bold text-gray-900">
+						<h3 class="mb-2 text-lg font-bold text-gray-900 dark:text-white">
 							{$t('home_why_free_solution_title')}
 						</h3>
-						<p class="text-sm leading-relaxed text-gray-600">
-							{$t('home_why_free_solution_desc')}
-						</p>
-					</div>
-				</div>
-			</div>
-
-			<div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-				<div class="flex items-start gap-4">
-					<div class="flex-shrink-0 rounded-full bg-blue-100 p-3">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="24"
-							height="24"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							class="text-blue-600"
-							><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle
-								cx="9"
-								cy="7"
-								r="4"
-							></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path
-								d="M16 3.13a4 4 0 0 1 0 7.75"
-							></path></svg
-						>
-					</div>
-					<div>
-						<h3 class="mb-2 text-lg font-bold text-gray-900">
-							{$t('home_why_free_community_title')}
-						</h3>
-						<p class="text-sm leading-relaxed text-gray-600">
-							{$t('home_why_free_community_desc')}
-						</p>
-					</div>
-				</div>
-			</div>
-
-			<div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-				<div class="flex items-start gap-4">
-					<div class="flex-shrink-0 rounded-full bg-purple-100 p-3">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="24"
-							height="24"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							class="text-purple-600"
-							><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"
-							></polyline></svg
-						>
-					</div>
-					<div>
-						<h3 class="mb-2 text-lg font-bold text-gray-900">
-							{$t('home_why_free_forever_title')}
-						</h3>
-						<p class="text-sm leading-relaxed text-gray-600">
-							{$t('home_why_free_forever_desc')}
+						<p class="text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+							{$t('home_why_free_solution_desc_v2')}
 						</p>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<div class="mt-10 rounded-lg border-2 border-green-500 bg-white p-6 text-center shadow-sm">
-			<p class="mb-2 text-lg text-gray-700">
-				<strong>{$t('home_why_free_sound_good_title')}</strong>
+		<div class="rounded-lg border-2 border-green-500 bg-white dark:bg-gray-800 p-6 text-center shadow-sm">
+			<h3 class="mb-3 text-lg font-bold text-gray-900 dark:text-white">
+				{$t('home_why_free_commitment_title')}
+			</h3>
+			<p class="mb-3 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+				{$t('home_why_free_commitment_desc')}
 			</p>
-			<p class="text-gray-600">
-				{$t('home_why_free_sound_good_desc')}
+			<p class="text-sm text-gray-600 dark:text-gray-400">
+				{$t('home_why_free_commitment_cta')}
 			</p>
+		</div>
+	</div>
+</section>
+
+<!-- FAQ Section -->
+<section class="section">
+	<div class="container max-w-4xl">
+		<h2 class="mb-2 text-center text-2xl md:text-3xl font-bold">{$t('home_faq_title')}</h2>
+		<p class="mb-8 text-center text-sm md:text-base text-muted-foreground">{$t('home_faq_subtitle')}</p>
+
+		<div class="space-y-3">
+			{#each [
+				{ q: $t('home_faq_q1'), a: $t('home_faq_a1') },
+				{ q: $t('home_faq_q2'), a: $t('home_faq_a2') },
+				{ q: $t('home_faq_q3'), a: $t('home_faq_a3') },
+				{ q: $t('home_faq_q4'), a: $t('home_faq_a4') },
+				{ q: $t('home_faq_q5'), a: $t('home_faq_a5') },
+				{ q: $t('home_faq_q6'), a: $t('home_faq_a6') },
+				{ q: $t('home_faq_q7'), a: $t('home_faq_a7') },
+				{ q: $t('home_faq_q8'), a: $t('home_faq_a8') },
+				{ q: $t('home_faq_q9'), a: $t('home_faq_a9') },
+				{ q: $t('home_faq_q10'), a: $t('home_faq_a10') },
+				{ q: $t('home_faq_q11'), a: $t('home_faq_a11') },
+				{ q: $t('home_faq_q12'), a: $t('home_faq_a12') }
+			] as item}
+				<details class="group border-border bg-card rounded-lg border overflow-hidden">
+					<summary class="flex cursor-pointer items-center justify-between px-4 md:px-6 py-4 font-semibold text-sm md:text-base hover:bg-muted/50 transition-colors">
+						<span>{item.q}</span>
+						<svg class="h-5 w-5 flex-shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+						</svg>
+					</summary>
+					<div class="px-4 md:px-6 pb-4 text-sm md:text-base text-muted-foreground leading-relaxed">
+						<p>{item.a}</p>
+					</div>
+				</details>
+			{/each}
 		</div>
 	</div>
 </section>

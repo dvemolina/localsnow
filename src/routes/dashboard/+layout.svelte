@@ -4,7 +4,7 @@
 	import { t } from '$lib/i18n/i18n';
 	import { getRoles } from '$lib/utils/roles';
 	let { data, children } = $props();
-	let user = $state(data.user);
+	const user = $derived(data.user);
 </script>
 
 {#if getRoles(user).length === 0}

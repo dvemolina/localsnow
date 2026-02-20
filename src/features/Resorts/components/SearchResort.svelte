@@ -36,6 +36,7 @@
   let isOpen = $state(false);
   let highlightedIndex = $state(-1);
   let selectedResort: Resort | null = $state(null);
+  let inputFocused = $state(false);
 
   let abortController: AbortController | null = null;
   let debounceTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -171,6 +172,12 @@
     selectResort(resort);
   }
 
+  async function handleSuggestionClick(resortSlug: string, resortName: string) {
+    query = resortName;
+    inputFocused = false;
+    await fetchSuggestions(resortName);
+  }
+
   function onKeyDown(event: KeyboardEvent) {
     if (!isOpen) return;
 
@@ -223,11 +230,40 @@
           bind:value={query}
           oninput={onInput}
           onkeydown={onKeyDown}
+          onfocus={() => { inputFocused = true; }}
+          onblur={() => { setTimeout(() => { inputFocused = false; }, 200); }}
           autocomplete="off"
           aria-autocomplete="list"
           aria-controls="resort-listbox"
           aria-activedescendant={highlightedIndex >= 0 ? `resort-item-${highlightedIndex}` : undefined}
         />
+
+        {#if inputFocused && !query && !isOpen}
+          <div class="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-[9999] max-h-64 overflow-auto">
+            <div class="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700">
+              {$t('search_popular_resorts_label')}
+            </div>
+            <div class="py-1">
+              {#each [
+                { slug: 'verbier', name: 'Verbier', flag: '🇨🇭', country: 'Switzerland' },
+                { slug: 'baqueira-beret', name: 'Baqueira-Beret', flag: '🇪🇸', country: 'Spain' },
+                { slug: 'chamonix', name: 'Chamonix', flag: '🇫🇷', country: 'France' },
+                { slug: 'zermatt', name: 'Zermatt', flag: '🇨🇭', country: 'Switzerland' },
+                { slug: 'whistler', name: 'Whistler', flag: '🇨🇦', country: 'Canada' },
+                { slug: 'niseko', name: 'Niseko', flag: '🇯🇵', country: 'Japan' }
+              ] as resort}
+                <button
+                  type="button"
+                  onmousedown={(e) => { e.preventDefault(); handleSuggestionClick(resort.slug, resort.name); }}
+                  class="w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-between text-sm"
+                >
+                  <span>{resort.name}</span>
+                  <span class="text-gray-500 text-xs">{resort.flag} {resort.country}</span>
+                </button>
+              {/each}
+            </div>
+          </div>
+        {/if}
 
         {#if isOpen}
           <ul
