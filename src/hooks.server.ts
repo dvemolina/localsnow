@@ -37,13 +37,17 @@ const rateLimitHandle: Handle = async ({ event, resolve }) => {
  */
 const languageHandle: Handle = async ({ event, resolve }) => {
 	const pathname = event.url.pathname;
+	const { locale, path } = extractLocale(pathname);
+
+	// Remove locale prefixes from non-translated routes/files (e.g. /en/sitemap.xml)
+	if (locale && !shouldTranslatePath(path)) {
+		throw redirect(308, `${path}${event.url.search}`);
+	}
 
 	// Skip non-page requests (API, static files, etc.)
 	if (!shouldTranslatePath(pathname)) {
 		return resolve(event);
 	}
-
-	const { locale, path } = extractLocale(pathname);
 
 	// If URL doesn't have locale prefix, redirect to localized version
 	if (!locale) {
@@ -126,7 +130,10 @@ const securityHeadersHandle: Handle = async ({ event, resolve }) => {
 	const csp = response.headers.get('content-security-policy');
 
 	if (csp) {
-		const directives = csp.split(';').map((part) => part.trim()).filter(Boolean);
+		const directives = csp
+			.split(';')
+			.map((part) => part.trim())
+			.filter(Boolean);
 		const imgSrcIndex = directives.findIndex((directive) => directive.startsWith('img-src'));
 
 		if (imgSrcIndex >= 0) {
@@ -138,7 +145,9 @@ const securityHeadersHandle: Handle = async ({ event, resolve }) => {
 		}
 
 		// Allow Sentry to send error reports
-		const connectSrcIndex = directives.findIndex((directive) => directive.startsWith('connect-src'));
+		const connectSrcIndex = directives.findIndex((directive) =>
+			directive.startsWith('connect-src')
+		);
 		const sentryDomain = '*.ingest.de.sentry.io';
 		if (connectSrcIndex >= 0) {
 			if (!directives[connectSrcIndex].includes(sentryDomain)) {

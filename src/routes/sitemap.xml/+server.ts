@@ -55,40 +55,40 @@ function urlEntry(path: string, priority: string, changefreq: string, lastmod?: 
 }
 
 export const GET: RequestHandler = async () => {
+	// Get current date for lastmod
+	const today = new Date().toISOString().split('T')[0];
+
+	const urls: string[] = [];
+
+	// 1. Static pages (high priority)
+	const staticPages = [
+		{ url: '/', priority: '1.0', changefreq: 'daily' }, // Homepage
+		{ url: '/instructors', priority: '0.9', changefreq: 'daily' },
+		{ url: '/schools', priority: '0.9', changefreq: 'daily' },
+		{ url: '/resorts', priority: '0.8', changefreq: 'weekly' },
+		{ url: '/signup', priority: '0.8', changefreq: 'weekly' },
+		{ url: '/how-it-works', priority: '0.7', changefreq: 'monthly' },
+		{ url: '/about', priority: '0.6', changefreq: 'monthly' },
+		{ url: '/contact', priority: '0.6', changefreq: 'monthly' }
+	];
+
+	staticPages.forEach((page) => {
+		urls.push(urlEntry(page.url, page.priority, page.changefreq, today));
+	});
+
+	// 2. Legal pages (lower priority)
+	const legalPages = [
+		{ url: '/legal/privacy', priority: '0.3', changefreq: 'yearly' },
+		{ url: '/legal/terms', priority: '0.3', changefreq: 'yearly' },
+		{ url: '/legal/cookies', priority: '0.3', changefreq: 'yearly' }
+	];
+
+	legalPages.forEach((page) => {
+		urls.push(urlEntry(page.url, page.priority, page.changefreq));
+	});
+
+	// 3. Instructor + school profiles
 	try {
-		// Get current date for lastmod
-		const today = new Date().toISOString().split('T')[0];
-
-		const urls: string[] = [];
-
-		// 1. Static pages (high priority)
-		const staticPages = [
-			{ url: '/', priority: '1.0', changefreq: 'daily' }, // Homepage
-			{ url: '/instructors', priority: '0.9', changefreq: 'daily' },
-			{ url: '/schools', priority: '0.9', changefreq: 'daily' },
-			{ url: '/resorts', priority: '0.8', changefreq: 'weekly' },
-			{ url: '/signup', priority: '0.8', changefreq: 'weekly' },
-			{ url: '/how-it-works', priority: '0.7', changefreq: 'monthly' },
-			{ url: '/about', priority: '0.6', changefreq: 'monthly' },
-			{ url: '/contact', priority: '0.6', changefreq: 'monthly' }
-		];
-
-		staticPages.forEach((page) => {
-			urls.push(urlEntry(page.url, page.priority, page.changefreq, today));
-		});
-
-		// 2. Legal pages (lower priority)
-		const legalPages = [
-			{ url: '/legal/privacy', priority: '0.3', changefreq: 'yearly' },
-			{ url: '/legal/terms', priority: '0.3', changefreq: 'yearly' },
-			{ url: '/legal/cookies', priority: '0.3', changefreq: 'yearly' }
-		];
-
-		legalPages.forEach((page) => {
-			urls.push(urlEntry(page.url, page.priority, page.changefreq));
-		});
-
-		// 3. Instructor profiles (dynamic, high priority)
 		const instructors = await db
 			.select({
 				id: users.id,
@@ -119,7 +119,6 @@ export const GET: RequestHandler = async () => {
 			urls.push(urlEntry(`/instructors/${instructorSlug}`, '0.8', 'weekly', lastmod));
 		});
 
-		// 3b. School profiles (dynamic, high priority)
 		const schoolProfiles = await db
 			.select({
 				slug: schools.slug,
@@ -132,9 +131,12 @@ export const GET: RequestHandler = async () => {
 		schoolProfiles.forEach((school) => {
 			urls.push(urlEntry(`/schools/${school.slug}`, '0.8', 'weekly', today));
 		});
+	} catch (error) {
+		console.error('[sitemap] Failed generating instructor/school profile URLs:', error);
+	}
 
-		// 4. Resort hierarchy pages (dynamic, hierarchical priority)
-		// Get all countries
+	// 4. Resort hierarchy pages
+	try {
 		const allCountries = await db
 			.select({
 				countrySlug: countries.countrySlug
@@ -146,7 +148,6 @@ export const GET: RequestHandler = async () => {
 			urls.push(urlEntry(`/resorts/${country.countrySlug}`, '0.7', 'weekly', today));
 		});
 
-		// Get all regions
 		const allRegions = await db
 			.select({
 				countrySlug: countries.countrySlug,
@@ -162,7 +163,6 @@ export const GET: RequestHandler = async () => {
 			);
 		});
 
-		// Get all resorts
 		const allResorts = await db
 			.select({
 				countrySlug: countries.countrySlug,
@@ -187,8 +187,12 @@ export const GET: RequestHandler = async () => {
 			// Resort schools page (all schools at this resort)
 			urls.push(urlEntry(`${baseResortUrl}/schools`, '0.85', 'daily', today));
 		});
+	} catch (error) {
+		console.error('[sitemap] Failed generating resort hierarchy URLs:', error);
+	}
 
-		// 5. Resort + Sport combinations (highest priority for conversions)
+	// 5. Resort + sport combinations (highest priority for conversions)
+	try {
 		const resortSportCombinations = await getAllResortSportCombinations();
 
 		resortSportCombinations.forEach((combo) => {
@@ -203,22 +207,21 @@ export const GET: RequestHandler = async () => {
 				)
 			);
 		});
+	} catch (error) {
+		console.error('[sitemap] Failed generating resort + sport URLs:', error);
+	}
 
-		// Build sitemap XML
-		const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+	// Build sitemap XML
+	const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
 ${urls.join('')}
 </urlset>`;
 
-		return new Response(sitemap, {
-			headers: {
-				'Content-Type': 'application/xml; charset=utf-8',
-				'Cache-Control': 'public, max-age=3600' // Cache for 1 hour
-			}
-		});
-	} catch (error) {
-		console.error('Error generating sitemap:', error);
-		return new Response('Error generating sitemap', { status: 500 });
-	}
+	return new Response(sitemap, {
+		headers: {
+			'Content-Type': 'application/xml; charset=utf-8',
+			'Cache-Control': 'public, max-age=3600' // Cache for 1 hour
+		}
+	});
 };

@@ -164,19 +164,29 @@ export const pathToRouteKey = (() => {
  * API routes, static files, etc. should not be translated
  */
 export function shouldTranslatePath(pathname: string): boolean {
+	const { path } = extractLocale(pathname);
+	const basePath = path || pathname;
+
+	// Don't translate technical SEO and crawler files
+	if (basePath === '/sitemap.xml' || basePath === '/robots.txt') return false;
+
 	// Don't translate API routes
-	if (pathname.startsWith('/api')) return false;
+	if (basePath.startsWith('/api')) return false;
 
 	// Don't translate OAuth routes (must match Google Console callback URLs exactly)
-	if (pathname.startsWith('/oauth')) return false;
+	if (basePath.startsWith('/oauth')) return false;
 
 	// Don't translate static files
-	if (pathname.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|webp|webm|mp4)$/)) {
+	if (
+		basePath.match(
+			/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|webp|webm|mp4|xml|txt|webmanifest|map)$/i
+		)
+	) {
 		return false;
 	}
 
 	// Don't translate admin routes (optional - keep in English)
-	if (pathname.startsWith('/admin')) return false;
+	if (basePath.startsWith('/admin')) return false;
 
 	return true;
 }
