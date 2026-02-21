@@ -180,27 +180,27 @@
 			>
 				{$t('home_hero_title_v2')}
 			</h1>
-			<div class="flex flex-wrap items-center justify-center gap-3 md:gap-4 mb-4 text-white/90 text-xs md:text-sm">
-				<div class="flex items-center gap-1.5">
-					<svg class="h-4 w-4 md:h-5 md:w-5" fill="currentColor" viewBox="0 0 20 20">
-						<path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/>
-					</svg>
-					<span>{$t('home_trust_metric_global')}</span>
-				</div>
-				<div class="flex items-center gap-1.5">
-					<svg class="h-4 w-4 md:h-5 md:w-5" fill="currentColor" viewBox="0 0 20 20">
-						<path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"/>
-					</svg>
-					<span>{$t('home_trust_metric_resorts')}</span>
-				</div>
-				<div class="flex items-center gap-1.5">
-					<svg class="h-4 w-4 md:h-5 md:w-5" fill="currentColor" viewBox="0 0 20 20">
-						<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-					</svg>
-					<span>{$t('home_trust_metric_certified')}</span>
-				</div>
-			</div>
 			<div class="flex h-full flex-col justify-center align-bottom">
+				<div class="flex flex-wrap items-center justify-start gap-3 md:gap-4 p-0 mb-1 text-white/90 text-xs md:text-sm">
+					<div class="flex items-center gap-1.5">
+						<svg class="h-4 w-4 md:h-5 md:w-5" fill="currentColor" viewBox="0 0 20 20">
+							<path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/>
+						</svg>
+						<span>{$t('home_trust_metric_global')}</span>
+					</div>
+					<div class="flex items-center gap-1.5">
+						<svg class="h-4 w-4 md:h-5 md:w-5" fill="currentColor" viewBox="0 0 20 20">
+							<path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"/>
+						</svg>
+						<span>{$t('home_trust_metric_resorts')}</span>
+					</div>
+					<div class="flex items-center gap-1.5">
+						<svg class="h-4 w-4 md:h-5 md:w-5" fill="currentColor" viewBox="0 0 20 20">
+							<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+						</svg>
+						<span>{$t('home_trust_metric_certified')}</span>
+					</div>
+				</div>
 				<p class="text-shadow mb-6 max-w-[600px] text-lg text-white sm:text-xl md:text-2xl">
 					{$t('home_hero_subtitle')}
 				</p>
@@ -438,9 +438,9 @@
 				</div>
 				<h3 class="mb-2 text-lg md:text-xl font-semibold">{$t('home_instructors_keep_100_title')}</h3>
 				<p class="text-sm text-muted-foreground mb-3">{$t('home_instructors_keep_100_desc')}</p>
-				<div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-3 text-sm">
-					<div class="font-bold text-green-900 dark:text-green-100">€100 lesson = €100 earned</div>
-					<div class="text-xs text-green-700 dark:text-green-300 mt-1">{$t('home_instructors_vs_platforms')}</div>
+				<div class="bg-green-50 rounded-lg p-3 text-sm">
+					<div class="font-bold text-green-900 ">€100 lesson = €100 earned</div>
+					<div class="text-xs text-green-700 mt-1">{$t('home_instructors_vs_platforms')}</div>
 				</div>
 			</div>
 
@@ -505,7 +505,7 @@
 		</div>
 
 		<!-- Early Adopter CTA -->
-		<div class="bg-gradient-to-r from-primary/10 to-blue-50 dark:from-primary/20 dark:to-blue-900/20 rounded-lg p-6 md:p-8 border-2 border-primary/30">
+		<div class="bg-gradient-to-r from-primary/10 to-blue-50 rounded-lg p-6 md:p-8 border-2 border-primary/30">
 			<div class="max-w-3xl mx-auto text-center">
 				<div class="inline-flex items-center gap-2 rounded-full bg-primary/20 px-4 py-2 text-sm font-bold text-primary mb-4">
 					<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -751,7 +751,7 @@
 		</div>
 
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-			<div class="rounded-lg border border-red-200 bg-white dark:bg-gray-800 p-6 shadow-sm">
+			<div class="rounded-lg border border-red-200 bg-white p-6 shadow-sm">
 				<div class="flex items-start gap-4">
 					<div class="flex-shrink-0 rounded-full bg-red-100 p-3">
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-600">
@@ -759,17 +759,17 @@
 						</svg>
 					</div>
 					<div>
-						<h3 class="mb-2 text-lg font-bold text-gray-900 dark:text-white">
+						<h3 class="mb-2 text-lg font-bold text-gray-900 ">
 							{$t('home_why_free_problem_title')}
 						</h3>
-						<p class="text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+						<p class="text-sm leading-relaxed text-gray-600 ">
 							{$t('home_why_free_problem_desc_v2')}
 						</p>
 					</div>
 				</div>
 			</div>
 
-			<div class="rounded-lg border border-green-200 bg-white dark:bg-gray-800 p-6 shadow-sm">
+			<div class="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
 				<div class="flex items-start gap-4">
 					<div class="flex-shrink-0 rounded-full bg-green-100 p-3">
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600">
@@ -777,10 +777,10 @@
 						</svg>
 					</div>
 					<div>
-						<h3 class="mb-2 text-lg font-bold text-gray-900 dark:text-white">
+						<h3 class="mb-2 text-lg font-bold text-gray-900">
 							{$t('home_why_free_solution_title')}
 						</h3>
-						<p class="text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+						<p class="text-sm leading-relaxed text-gray-600">
 							{$t('home_why_free_solution_desc_v2')}
 						</p>
 					</div>
@@ -788,11 +788,11 @@
 			</div>
 		</div>
 
-		<div class="rounded-lg border-2 border-green-500 bg-white dark:bg-gray-800 p-6 text-center shadow-sm">
-			<h3 class="mb-3 text-lg font-bold text-gray-900 dark:text-white">
+		<div class="rounded-lg border-2 border-green-500 bg-white p-6 text-center shadow-sm">
+			<h3 class="mb-3 text-lg font-bold text-gray-900">
 				{$t('home_why_free_commitment_title')}
 			</h3>
-			<p class="mb-3 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+			<p class="mb-3 text-sm text-gray-700 leading-relaxed">
 				{$t('home_why_free_commitment_desc')}
 			</p>
 			<p class="text-sm text-gray-600 dark:text-gray-400">
