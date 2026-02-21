@@ -9,6 +9,10 @@
 
 	let { instructorData, baseLesson = null, preserveFilters = false } = $props();
 
+	// baseLesson may be passed as a prop or embedded in instructorData (from listing page)
+	const effectiveBaseLesson = baseLesson ?? instructorData.baseLesson ?? null;
+	const baseLessonIsFromSchool = !!(effectiveBaseLesson && effectiveBaseLesson.isFromSchool);
+
 	// Map sport IDs to labels
 	const sportLabels = {
 		1: 'Ski',
@@ -144,16 +148,18 @@
 				instruction for all levels.
 			{/if}
 		</p>
-		{#if baseLesson}
+		{#if effectiveBaseLesson}
 			<div class="flex w-full items-center justify-between rounded-md border border-border bg-muted/50 px-3 py-2">
 				<div class="flex flex-col">
 					<span class="text-xs text-muted-foreground">From</span>
 					<div class="flex items-baseline gap-1">
-						<span class="text-lg font-bold">{baseLesson.basePrice}</span>
-						<span class="text-xs text-muted-foreground">{baseLesson.currency}/hr</span>
+						<span class="text-lg font-bold">{effectiveBaseLesson.basePrice}</span>
+						<span class="text-xs text-muted-foreground">{effectiveBaseLesson.currency}/hr</span>
 					</div>
 				</div>
-				<Badge variant="secondary" class="text-xs">Base rate</Badge>
+				<Badge variant="secondary" class="text-xs">
+					{baseLessonIsFromSchool ? 'School rate' : 'Base rate'}
+				</Badge>
 			</div>
 		{/if}
 		<Button variant="outline" class="group-hover:bg-primary group-hover:text-primary-foreground transition-colors">

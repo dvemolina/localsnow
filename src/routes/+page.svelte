@@ -183,8 +183,17 @@
 			<div class="flex h-full flex-col justify-center align-bottom">
 				<div class="flex flex-wrap items-center justify-start gap-3 md:gap-4 p-0 mb-1 text-white/90 text-xs md:text-sm">
 					<div class="flex items-center gap-1.5">
-						<svg class="h-4 w-4 md:h-5 md:w-5" fill="currentColor" viewBox="0 0 20 20">
-							<path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/>
+						<svg
+							class="h-4 w-4 md:h-5 md:w-5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							stroke-width="1.8"
+						>
+							<circle cx="12" cy="12" r="9" />
+							<path d="M3 12h18" />
+							<path d="M12 3c2.5 2.4 4 5.6 4 9s-1.5 6.6-4 9" />
+							<path d="M12 3c-2.5 2.4-4 5.6-4 9s1.5 6.6 4 9" />
 						</svg>
 						<span>{$t('home_trust_metric_global')}</span>
 					</div>

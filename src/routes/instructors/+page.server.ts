@@ -2,12 +2,14 @@
 import type { PageServerLoad } from './$types';
 import { InstructorService } from '$src/features/Instructors/lib/instructorService';
 import { LessonService } from '$src/features/Lessons/lib/lessonService';
+import { LessonRepository } from '$src/features/Lessons/lib/lessonRepository';
 import { ReviewService } from '$src/features/Reviews/lib/reviewService';
 import { db } from '$lib/server/db';
 import { resorts } from '$lib/server/db/schema';
 import { eq, inArray } from 'drizzle-orm';
 
 const lessonService = new LessonService();
+const lessonRepository = new LessonRepository();
 const instructorService = new InstructorService();
 const reviewService = new ReviewService();
 
@@ -102,7 +104,21 @@ export const load: PageServerLoad = async ({ url }) => {
 						lessonService.listLessonsByInstructor(instructor.id),
 						reviewService.getInstructorStats(instructor.id)
 					]);
-					const baseLesson = lessons.find((l) => l.isBaseLesson) || null;
+					let baseLesson = lessons.find((l) => l.isBaseLesson) || null;
+
+					// For school-affiliated instructors with no personal fares, try school fares
+					if (!baseLesson && instructor.school?.id) {
+						try {
+							const schoolLessons = await lessonRepository.listLessonsBySchool(instructor.school.id);
+							const schoolBaseLesson = schoolLessons.find((l) => l.isBaseLesson) || null;
+							if (schoolBaseLesson) {
+								baseLesson = { ...schoolBaseLesson, isFromSchool: true } as any;
+							}
+						} catch {
+							// Ignore school lesson fetch errors
+						}
+					}
+
 					return {
 						...instructor,
 						baseLesson,

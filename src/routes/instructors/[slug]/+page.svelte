@@ -407,7 +407,8 @@
 
 		<!-- Right Column - Detailed Info -->
 		<div class="flex flex-1 flex-col space-y-6">
-			{#if data.baseLesson && !data.groupTiers?.length && !data.durationPackages?.length }
+			<!-- Personal fares -->
+			{#if data.baseLesson && !data.groupTiers?.length && !data.durationPackages?.length}
 				<div class="w-full rounded-lg border border-primary/20 bg-card p-4">
 					<div class="mb-2 flex items-center justify-between">
 						<span class="text-sm font-medium">{$t('lessons_hourly_rate_label')}</span>
@@ -423,11 +424,42 @@
 				</div>
 			{/if}
 			{#if data.groupTiers?.length > 0 || data.durationPackages?.length > 0}
-				<SimplePriceDisplay 
+				<SimplePriceDisplay
 					lesson={data.baseLesson}
 					groupTiers={data.groupTiers}
 					durationPackages={data.durationPackages}
 				/>
+			{/if}
+			<!-- School fares (fallback when instructor has no personal fares) -->
+			{#if data.pricingFromSchool && data.schoolBaseLesson && !data.baseLesson}
+				<div class="w-full rounded-lg border border-border bg-card p-4">
+					<div class="mb-2 flex items-center justify-between">
+						<div class="flex items-center gap-2">
+							<span class="text-sm font-medium">{$t('lessons_hourly_rate_label')}</span>
+							<Badge variant="outline" class="text-xs gap-1">
+								<svg xmlns="http://www.w3.org/2000/svg" class="size-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+								</svg>
+								{school?.name}
+							</Badge>
+						</div>
+						<Badge variant="secondary" class="text-xs">{$t('badge_from')}</Badge>
+					</div>
+					<div class="flex items-baseline gap-2">
+						<span class="text-2xl font-bold text-primary">{data.schoolBaseLesson.basePrice}</span>
+						<span class="text-sm text-muted-foreground">{data.schoolBaseLesson.currency}/h</span>
+					</div>
+					{#if data.schoolGroupTiers?.length > 0 || data.schoolDurationPackages?.length > 0}
+						<SimplePriceDisplay
+							lesson={data.schoolBaseLesson}
+							groupTiers={data.schoolGroupTiers}
+							durationPackages={data.schoolDurationPackages}
+						/>
+					{/if}
+					<p class="mt-2 text-xs text-muted-foreground">
+						{$t('instructor_school_rate_help', { schoolName: school?.name ?? '' })}
+					</p>
+				</div>
 			{/if}
 			<div class="rounded-lg border border-border bg-card p-6 flex flex-col gap-4">
 				

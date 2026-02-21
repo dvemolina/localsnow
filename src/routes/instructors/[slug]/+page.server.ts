@@ -3,6 +3,7 @@ import { error, fail, json, redirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 import { InstructorService } from '$src/features/Instructors/lib/instructorService';
 import { PricingService } from '$src/features/Pricing/lib/pricingService';
+import { LessonRepository } from '$src/features/Lessons/lib/lessonRepository';
 import { BookingRequestService } from '$src/features/Bookings/lib/bookingRequestService';
 import { UserService } from '$src/features/Users/lib/UserService';
 import { SportsService } from '$src/features/Sports/lib/sportsService';
@@ -24,6 +25,7 @@ import { funnelEventService } from '$lib/server/services/funnelEventService';
 
 const instructorService = new InstructorService();
 const pricingService = new PricingService();
+const lessonRepository = new LessonRepository();
 const bookingRequestService = new BookingRequestService();
 const userService = new UserService();
 const sportsService = new SportsService();
@@ -86,16 +88,34 @@ export const load: PageServerLoad = async (event) => {
 		// Get sport names from IDs
 		const sports = await sportsService.getSportsByIds(sportIds);
 
-		// ✅ Load pricing data if base lesson exists
+		// Load pricing data — instructor's own, or fall back to school's fares
 		let groupTiers: unknown[] = [];
 		let durationPackages: unknown[] = [];
 		let promoCodes: unknown[] = [];
+		let schoolBaseLesson = null;
+		let schoolGroupTiers: unknown[] = [];
+		let schoolDurationPackages: unknown[] = [];
+		let pricingFromSchool = false;
 
 		if (instructorData.baseLesson) {
 			const pricingData = await pricingService.getLessonPricingData(instructorData.baseLesson.id);
 			groupTiers = pricingData.groupTiers;
 			durationPackages = pricingData.durationPackages;
 			promoCodes = pricingData.promoCodes;
+		} else if (school) {
+			// No personal fares — show school's fares (read-only on public profile)
+			try {
+				const schoolLessons = await lessonRepository.listLessonsBySchool(school.id);
+				schoolBaseLesson = schoolLessons.find(l => l.isBaseLesson) ?? null;
+				if (schoolBaseLesson) {
+					const schoolPricingData = await pricingService.getLessonPricingData(schoolBaseLesson.id);
+					schoolGroupTiers = schoolPricingData.groupTiers;
+					schoolDurationPackages = schoolPricingData.durationPackages;
+					pricingFromSchool = true;
+				}
+			} catch (err) {
+				console.error('Error fetching school pricing for profile:', err);
+			}
 		}
 
 		// Track profile visit (async, don't wait)
@@ -118,6 +138,10 @@ export const load: PageServerLoad = async (event) => {
 			groupTiers,
 			durationPackages,
 			promoCodes,
+			schoolBaseLesson,
+			schoolGroupTiers,
+			schoolDurationPackages,
+			pricingFromSchool,
 			sports,
 			resorts,
 			reviews,

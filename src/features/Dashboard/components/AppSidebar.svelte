@@ -71,6 +71,11 @@
 			icon: '/icons/ski-resort.svg'
 		},
 		{
+			title: $t('sidebar_lessons'),
+			url: '/dashboard/lessons',
+			icon: '/icons/service.svg'
+		},
+		{
 			title: $t('sidebar_leads') || 'Leads',
 			url: '/dashboard/leads',
 			icon: '/icons/notebook.svg'

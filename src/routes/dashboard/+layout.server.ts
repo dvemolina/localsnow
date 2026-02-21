@@ -27,7 +27,7 @@ export const load: LayoutServerLoad = async (event) => {
     }
 
     const accessRules: Array<{ path: string; roles: UserRole[] }> = [
-        { path: '/dashboard/lessons', roles: ['instructor-independent'] },
+        { path: '/dashboard/lessons', roles: ['instructor-independent', 'instructor-school'] },
         { path: '/dashboard/availability', roles: ['instructor-independent'] },
         { path: '/dashboard/leads', roles: ['instructor-independent', 'instructor-school'] },
         { path: '/dashboard/bookings', roles: ['instructor-independent', 'instructor-school'] },

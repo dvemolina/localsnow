@@ -4,31 +4,38 @@ import { zod } from "sveltekit-superforms/adapters";
 import { fail } from "@sveltejs/kit";
 import { lessonSchema } from "$src/features/Lessons/lib/lessonSchema";
 import { LessonService } from "$src/features/Lessons/lib/lessonService";
+import { LessonRepository } from "$src/features/Lessons/lib/lessonRepository";
+import { SchoolInstructorRepository } from "$src/features/Schools/lib/schoolInstructorRepository";
 import { db } from '$lib/server/db';
 import { groupPricingTiers, durationPackages, promoCodes } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { requireDashboardRole } from "$src/lib/utils/dashboardAuth";
 
 const lessonService = new LessonService();
+const lessonRepository = new LessonRepository();
+const schoolInstructorRepository = new SchoolInstructorRepository();
 
 export const load: PageServerLoad = async (event) => {
-    const user = requireDashboardRole(event, ['instructor-independent'], 'Login to access lessons');
-    
+    const user = requireDashboardRole(event, ['instructor-independent', 'instructor-school'], 'Login to access lessons');
+
     const lessonForm = await superValidate(zod(lessonSchema));
-    
-    // Get the base lesson if user is an instructor
+
     let baseLesson = null;
-    // Replace this part in your load function:
     let groupTiers: any[] = [];
     let durationPackagesList: any[] = [];
     let promoCodesList: any[] = [];
 
+    // For school instructors, also fetch their affiliated school and school fares
+    let affiliatedSchool = null;
+    let schoolBaseLesson = null;
+    let schoolGroupTiers: any[] = [];
+    let schoolDurationPackages: any[] = [];
+
     try {
         const lessons = await lessonService.listLessonsByInstructor(user.id);
         baseLesson = lessons.find(lesson => lesson.isBaseLesson) ?? null;
-        
+
         if (baseLesson) {
-            // Load new pricing structures
             [groupTiers, durationPackagesList, promoCodesList] = await Promise.all([
                 db.select().from(groupPricingTiers).where(eq(groupPricingTiers.lessonId, baseLesson.id)),
                 db.select().from(durationPackages).where(eq(durationPackages.lessonId, baseLesson.id)),
@@ -39,12 +46,36 @@ export const load: PageServerLoad = async (event) => {
         console.error('Error fetching lessons and pricing:', error);
     }
 
-    return { 
-        lessonForm, 
+    // If user is a school instructor, fetch their school's fares
+    if (user.role === 'instructor-school') {
+        try {
+            affiliatedSchool = await schoolInstructorRepository.getInstructorSchool(user.id);
+            if (affiliatedSchool) {
+                const schoolLessons = await lessonRepository.listLessonsBySchool(affiliatedSchool.id);
+                schoolBaseLesson = schoolLessons.find(l => l.isBaseLesson) ?? null;
+                if (schoolBaseLesson) {
+                    [schoolGroupTiers, schoolDurationPackages] = await Promise.all([
+                        db.select().from(groupPricingTiers).where(eq(groupPricingTiers.lessonId, schoolBaseLesson.id)),
+                        db.select().from(durationPackages).where(eq(durationPackages.lessonId, schoolBaseLesson.id))
+                    ]);
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching school fares:', error);
+        }
+    }
+
+    return {
+        lessonForm,
         baseLesson,
         groupTiers,
         durationPackages: durationPackagesList,
-        promoCodes: promoCodesList
+        promoCodes: promoCodesList,
+        affiliatedSchool,
+        schoolBaseLesson,
+        schoolGroupTiers,
+        schoolDurationPackages,
+        isSchoolInstructor: user.role === 'instructor-school'
     };
 };
 
@@ -52,7 +83,7 @@ export const actions: Actions = {
     saveBaseLesson: async (event) => {
         const user = requireDashboardRole(
             event,
-            ['instructor-independent'],
+            ['instructor-independent', 'instructor-school'],
             'Session expired. Please login again.'
         );
 
