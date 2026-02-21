@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types';
 import { db } from '$src/lib/server/db/index';
-import { resorts, countries, regions, users, instructorResorts, userRoles } from '$src/lib/server/db/schema';
+import { resorts, countries, users, instructorResorts, userRoles } from '$src/lib/server/db/schema';
 import { eq, sql, isNull, and, desc, inArray } from 'drizzle-orm';
 import { extractLocale, type Locale } from '$lib/i18n/routes';
 import { getAlternateUrls, route } from '$lib/i18n/routeHelpers';
@@ -8,26 +8,18 @@ import { getAlternateUrls, route } from '$lib/i18n/routeHelpers';
 const PRIMARY_ORIGIN = 'https://localsnow.org';
 
 export const load: PageServerLoad = async ({ url }) => {
-	// Show ALL resorts worldwide that have at least 1 active instructor
-	const resortsWithInstructors = await db
+	// Query all countries that have at least one resort, with resort and instructor counts
+	const countriesData = await db
 		.select({
-			resortId: resorts.id,
-			resortName: resorts.name,
-			resortSlug: resorts.slug,
-			minElevation: resorts.minElevation,
-			maxElevation: resorts.maxElevation,
-			countryId: countries.id,
-			countryName: countries.country,
+			id: countries.id,
+			country: countries.country,
 			countrySlug: countries.countrySlug,
-			regionId: regions.id,
-			regionName: regions.region,
-			regionSlug: regions.regionSlug,
-			// Count active instructors for this resort
+			countryCode: countries.countryCode,
+			resortCount: sql<number>`cast(count(distinct ${resorts.id}) as integer)`,
 			instructorCount: sql<number>`cast(count(distinct ${users.id}) as integer)`
 		})
-		.from(resorts)
-		.innerJoin(countries, eq(resorts.countryId, countries.id))
-		.leftJoin(regions, eq(resorts.regionId, regions.id))
+		.from(countries)
+		.innerJoin(resorts, eq(resorts.countryId, countries.id))
 		.leftJoin(instructorResorts, eq(resorts.id, instructorResorts.resortId))
 		.leftJoin(
 			userRoles,
@@ -36,72 +28,11 @@ export const load: PageServerLoad = async ({ url }) => {
 				inArray(userRoles.role, ['instructor-independent', 'instructor-school'])
 			)
 		)
-		.leftJoin(
-			users,
-			and(
-				eq(userRoles.userId, users.id),
-				isNull(users.deletedAt)
-			)
-		)
-		.groupBy(
-			resorts.id,
-			resorts.name,
-			resorts.slug,
-			resorts.minElevation,
-			resorts.maxElevation,
-			countries.id,
-			countries.country,
-			countries.countrySlug,
-			regions.id,
-			regions.region,
-			regions.regionSlug
-		)
-		.having(sql`count(distinct ${users.id}) > 0`)
-		.orderBy(desc(sql`count(distinct ${users.id})`), resorts.name);
+		.leftJoin(users, and(eq(userRoles.userId, users.id), isNull(users.deletedAt)))
+		.groupBy(countries.id, countries.country, countries.countrySlug, countries.countryCode)
+		.orderBy(desc(sql`count(distinct ${resorts.id})`), countries.country);
 
-	// Group resorts by region (flattened structure for compatibility with existing UI)
-	// Format: Array of regions, each containing resorts from that region
-	const resortsByRegion = resortsWithInstructors.reduce(
-		(acc, resort) => {
-			// Create a unique key combining country and region for worldwide support
-			const regionKey = `${resort.countrySlug || 'other'}-${resort.regionSlug || 'other'}`;
-
-			if (!acc[regionKey]) {
-				acc[regionKey] = {
-					region: resort.regionName
-						? `${resort.regionName}, ${resort.countryName}`
-						: resort.countryName || 'Other',
-					regionSlug: resort.regionSlug || 'other',
-					countrySlug: resort.countrySlug || 'other',
-					countryName: resort.countryName || 'Other',
-					resorts: []
-				};
-			}
-
-			acc[regionKey].resorts.push({
-				id: resort.resortId,
-				name: resort.resortName,
-				slug: resort.resortSlug,
-				minElevation: resort.minElevation,
-				maxElevation: resort.maxElevation,
-				regionName: resort.regionName,
-				regionSlug: resort.regionSlug,
-				instructorCount: resort.instructorCount
-			});
-
-			return acc;
-		},
-		{} as Record<string, any>
-	);
-
-	// Convert to array and sort by total instructors in each region
-	const regionsArray = Object.values(resortsByRegion).map((region: any) => ({
-		...region,
-		totalInstructors: region.resorts.reduce((sum: number, r: any) => sum + r.instructorCount, 0)
-	}));
-
-	// Sort regions by total instructor count (highest first)
-	regionsArray.sort((a, b) => b.totalInstructors - a.totalInstructors);
+	const totalResorts = countriesData.reduce((sum, c) => sum + c.resortCount, 0);
 
 	const { locale } = extractLocale(url.pathname);
 	const currentLocale = (locale || 'en') as Locale;
@@ -113,11 +44,12 @@ export const load: PageServerLoad = async ({ url }) => {
 	}));
 
 	return {
-		resortsByCountry: regionsArray, // Keep variable name for compatibility
-		totalResorts: resortsWithInstructors.length,
+		countries: countriesData,
+		totalCountries: countriesData.length,
+		totalResorts,
 		seo: {
 			title: 'Ski Resorts Worldwide | Find Instructors at Top Ski Resorts',
-			description: `Browse ${resortsWithInstructors.length} ski resorts worldwide. Find professional ski and snowboard instructors at top resorts around the world.`,
+			description: `Browse ski resorts across ${countriesData.length} countries worldwide. Find professional ski and snowboard instructors at resorts around the world.`,
 			canonicalUrl,
 			alternates
 		}

@@ -1626,7 +1626,7 @@
 	"contact_page_faq_cta": "Visita nuestra página Cómo Funciona para encontrar respuestas a preguntas comunes sobre reservas y uso de la plataforma.",
 	"contact_page_how_it_works_button": "Cómo Funciona",
 	"home_free_banner_badge": "DIRECTORIO 100% GRATUITO",
-	"home_free_banner_title": "Un Directorio Construido para Descubrimiento, No para Beneficio",
+	"home_free_banner_title": "Construido para Descubrimiento, No para Beneficio",
 	"home_free_banner_description": "A diferencia de plataformas que esconden instructores detras de pasarelas de pago, nuestro directorio es completamente gratuito. Explora perfiles de instructores, consulta especialidades y envía solicitudes de clase sin coste. Construido para la comunidad, no para inversores.",
 	"home_free_banner_booking_fees": "€0",
 	"home_free_banner_booking_fees_label": "Acceso al Directorio",
@@ -1992,5 +1992,23 @@
 	"home_why_free_solution_desc_v2": "LocalSnow es un directorio gratuito—como las Páginas Amarillas para instructores de esquí. Explora perfiles reales con cualificaciones, idiomas, tarifas y reseñas. Contacta a los instructores directamente. Sin comisión, sin intermediarios.",
 	"home_why_free_commitment_title": "Nuestro Compromiso Contigo",
 	"home_why_free_commitment_desc": "Nos comprometemos a mantener este directorio gratuito. Si alguna vez añadimos funciones de pago, daremos suficiente aviso y mantendremos las tarifas mínimas—nunca el 15-30% de comisiones que cobran las plataformas de reservas. Este directorio está construido para la comunidad, no para inversores.",
-	"home_why_free_commitment_cta": "¿Tienes preguntas? Lee nuestra misión completa o contáctanos en admin@localsnow.org"
+	"home_why_free_commitment_cta": "¿Tienes preguntas? Lee nuestra misión completa o contáctanos en admin@localsnow.org",
+
+	"resorts_listing_title": "Estaciones de Esquí en Todo el Mundo",
+	"resorts_listing_subtitle": "Explora {count} países con estaciones de esquí en todo el mundo",
+	"resorts_listing_search_placeholder": "Buscar países...",
+	"resorts_listing_filter_with_instructors": "Mostrar solo con instructores disponibles",
+	"resorts_listing_resort_count": "{count} estaciones",
+	"resorts_listing_no_results_search": "No se encontraron países para \"{query}\"",
+	"resorts_listing_no_results_instructors": "No se encontraron estaciones con instructores disponibles",
+
+	"resorts_country_title": "Estaciones de Esquí en {country}",
+	"resorts_country_subtitle": "Explora {count} estaciones de esquí en {country}",
+	"resorts_country_no_resorts": "No se encontraron estaciones en este país.",
+
+	"resorts_region_title": "Estaciones de Esquí en {region}",
+	"resorts_region_subtitle": "{region}, {country} · {count} estaciones",
+	"resorts_region_elevation": "Altitud: {min}m – {max}m",
+	"resorts_region_visit_website": "Visitar sitio web",
+	"resorts_region_no_resorts": "No se encontraron estaciones en esta región."
 }

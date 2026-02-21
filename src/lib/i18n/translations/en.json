@@ -1384,7 +1384,7 @@
 	"contact_page_faq_cta": "Visit our How It Works page for answers to common questions about using the directory and sending lesson requests.",
 	"contact_page_how_it_works_button": "How It Works",
 	"home_free_banner_badge": "100% FREE DIRECTORY",
-	"home_free_banner_title": "A Directory Built for Discovery, Not Profit",
+	"home_free_banner_title": "Built for Discovery, Not Profit",
 	"home_free_banner_description": "Unlike booking platforms that hide instructors behind a paywall, our directory is completely free. Browse instructor profiles, check specialties, and send lesson requests at no cost. Built for the community, not investors.",
 	"home_free_banner_booking_fees": "€0",
 	"home_free_banner_booking_fees_label": "Directory Access",
@@ -1750,5 +1750,23 @@
 	"home_why_free_solution_desc_v2": "LocalSnow is a free directory—like Yellow Pages for ski instructors. Browse real profiles with qualifications, languages, rates, and reviews. Contact instructors directly. No commission, no middleman.",
 	"home_why_free_commitment_title": "Our Commitment to You",
 	"home_why_free_commitment_desc": "We're committed to keeping this directory free. If we ever add paid features, we'll give plenty of notice and keep any fees minimal—never the 15-30% commissions that booking platforms charge. This directory is built for the community, not investors.",
-	"home_why_free_commitment_cta": "Have questions? Read our full mission or contact us at admin@localsnow.org"
+	"home_why_free_commitment_cta": "Have questions? Read our full mission or contact us at admin@localsnow.org",
+
+	"resorts_listing_title": "Ski Resorts Worldwide",
+	"resorts_listing_subtitle": "Explore {count} countries with ski resorts worldwide",
+	"resorts_listing_search_placeholder": "Search countries...",
+	"resorts_listing_filter_with_instructors": "Show only with available instructors",
+	"resorts_listing_resort_count": "{count} resorts",
+	"resorts_listing_no_results_search": "No countries found matching \"{query}\"",
+	"resorts_listing_no_results_instructors": "No resorts with available instructors found",
+
+	"resorts_country_title": "Ski Resorts in {country}",
+	"resorts_country_subtitle": "Browse {count} ski resorts across {country}",
+	"resorts_country_no_resorts": "No resorts found in this country.",
+
+	"resorts_region_title": "Ski Resorts in {region}",
+	"resorts_region_subtitle": "{region}, {country} · {count} resorts",
+	"resorts_region_elevation": "Elevation: {min}m – {max}m",
+	"resorts_region_visit_website": "Visit website",
+	"resorts_region_no_resorts": "No resorts found in this region."
 }

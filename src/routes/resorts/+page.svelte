@@ -1,27 +1,27 @@
 <script lang="ts">
-	import { Card } from '$lib/components/ui/card';
 	import { Input } from '$lib/components/ui/input';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Search, Mountain } from '@lucide/svelte';
+	import { Search } from '@lucide/svelte';
+	import { t } from '$lib/i18n/i18n';
 
 	let { data } = $props();
-	const { resortsByCountry, totalResorts, seo } = data;
-	const defaultAlternate = seo.alternates?.find((alt) => alt.locale === 'en');
+	const { countries, totalCountries, totalResorts, seo } = data;
+	const defaultAlternate = seo.alternates?.find((alt: { locale: string }) => alt.locale === 'en');
 
 	let searchQuery = $state('');
 
-	// Filter resorts based on search
-	const filteredResorts = $derived(
+	function countryFlag(code: string): string {
+		if (!code || code.length < 2) return '🏔️';
+		return [...code.toUpperCase().slice(0, 2)]
+			.map((c) => String.fromCodePoint(0x1f1e6 - 65 + c.charCodeAt(0)))
+			.join('');
+	}
+
+	const filteredCountries = $derived(
 		searchQuery.trim() === ''
-			? resortsByCountry
-			: resortsByCountry
-					.map((country) => ({
-						...country,
-						resorts: country.resorts.filter((resort) =>
-							resort.name.toLowerCase().includes(searchQuery.toLowerCase())
-						)
-					}))
-					.filter((country) => country.resorts.length > 0)
+			? countries
+			: countries.filter((c: { country: string }) =>
+					c.country.toLowerCase().includes(searchQuery.toLowerCase())
+				)
 	);
 </script>
 
@@ -42,9 +42,9 @@
 <section class="w-full">
 	<!-- Header -->
 	<div class="mb-6 mt-4 text-center">
-		<h1 class="title2 mb-2">Ski Resorts Worldwide</h1>
+		<h1 class="title2 mb-2">{$t('resorts_listing_title')}</h1>
 		<p class="text-muted-foreground">
-			Browse {totalResorts} ski resorts worldwide and find professional instructors
+			{$t('resorts_listing_subtitle', { count: totalCountries, resorts: totalResorts })}
 		</p>
 	</div>
 
@@ -54,60 +54,34 @@
 			<Search class="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
 			<Input
 				type="text"
-				placeholder="Search resorts..."
+				placeholder={$t('resorts_listing_search_placeholder')}
 				bind:value={searchQuery}
 				class="pl-10"
 			/>
 		</div>
 	</div>
 
-	<!-- Resorts List -->
-	<div>
-		{#if filteredResorts.length === 0}
-			<div class="text-center py-12">
-				<p class="text-muted-foreground">No resorts found matching "{searchQuery}"</p>
-			</div>
-		{:else}
-			{#each filteredResorts as region}
-				<div class="mb-12">
-					<h2 class="mb-6 text-2xl font-bold">
-						{region.region}
-						<Badge variant="secondary" class="ml-2">{region.resorts.length} resorts</Badge>
-					</h2>
-
-					<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-						{#each region.resorts as resort}
-							<a
-								href="/resorts/{region.countrySlug}/{resort.regionSlug}/{resort.slug}"
-								class="group"
-							>
-								<Card class="h-full transition-shadow hover:shadow-lg">
-									<div class="p-4">
-										<div class="mb-2 flex items-start justify-between">
-											<h3 class="font-semibold group-hover:text-blue-600">
-												{resort.name}
-											</h3>
-											<Mountain class="h-4 w-4 text-muted-foreground" />
-										</div>
-
-										{#if resort.regionName}
-											<p class="mb-2 text-sm text-muted-foreground">
-												{resort.regionName}
-											</p>
-										{/if}
-
-										{#if resort.minElevation && resort.maxElevation}
-											<p class="text-xs text-muted-foreground">
-												{resort.minElevation}m - {resort.maxElevation}m
-											</p>
-										{/if}
-									</div>
-								</Card>
-							</a>
-						{/each}
-					</div>
-				</div>
+	<!-- Country Grid -->
+	{#if filteredCountries.length === 0}
+		<div class="py-12 text-center">
+			<p class="text-muted-foreground">
+				{$t('resorts_listing_no_results_search', { query: searchQuery })}
+			</p>
+		</div>
+	{:else}
+		<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 md:gap-4">
+			{#each filteredCountries as country}
+				<a
+					href="/resorts/{country.countrySlug}"
+					class="border-border bg-card hover:shadow-md group rounded-lg border p-4 text-center transition-shadow"
+				>
+					<div class="mb-2 text-3xl md:text-4xl">{countryFlag(country.countryCode)}</div>
+					<h2 class="mb-1 text-sm font-semibold md:text-base">{country.country}</h2>
+					<p class="text-muted-foreground text-xs">
+						{$t('resorts_listing_resort_count', { count: country.resortCount })}
+					</p>
+				</a>
 			{/each}
-		{/if}
-	</div>
+		</div>
+	{/if}
 </section>

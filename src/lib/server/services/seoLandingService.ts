@@ -10,9 +10,10 @@ import {
   instructorReviews,
   faqs,
   schools,
-  schoolResorts
+  schoolResorts,
+  userRoles
 } from "$src/lib/server/db/schema";
-import { eq, and, inArray, ne, sql } from "drizzle-orm";
+import { eq, and, inArray, ne, sql, isNull } from "drizzle-orm";
 
 export interface InstructorLandingData {
   id: number;
@@ -491,7 +492,7 @@ export async function getCountryDetails(countrySlug: string) {
     .where(eq(regions.countryId, country.id))
     .orderBy(regions.region);
 
-  // Get all resorts in this country grouped by region
+  // Get all resorts in this country grouped by region, with instructor counts
   const resortsData = await db
     .select({
       id: resorts.id,
@@ -501,29 +502,46 @@ export async function getCountryDetails(countrySlug: string) {
       maxElevation: resorts.maxElevation,
       regionId: regions.id,
       regionName: regions.region,
-      regionSlug: regions.regionSlug
+      regionSlug: regions.regionSlug,
+      instructorCount: sql<number>`cast(count(distinct ${users.id}) as integer)`
     })
     .from(resorts)
     .leftJoin(regions, eq(resorts.regionId, regions.id))
+    .leftJoin(instructorResorts, eq(resorts.id, instructorResorts.resortId))
+    .leftJoin(
+      userRoles,
+      and(
+        eq(instructorResorts.instructorId, userRoles.userId),
+        inArray(userRoles.role, ['instructor-independent', 'instructor-school'])
+      )
+    )
+    .leftJoin(users, and(eq(userRoles.userId, users.id), isNull(users.deletedAt)))
     .where(eq(resorts.countryId, country.id))
+    .groupBy(
+      resorts.id, resorts.name, resorts.slug, resorts.minElevation, resorts.maxElevation,
+      regions.id, regions.region, regions.regionSlug
+    )
     .orderBy(regions.region, resorts.name);
 
-  // Group resorts by region
+  // Group resorts by region, summing instructor counts
   const resortsByRegion = resortsData.reduce((acc, resort) => {
     const regionKey = resort.regionSlug || 'no-region';
     if (!acc[regionKey]) {
       acc[regionKey] = {
         region: resort.regionName || 'Other',
         regionSlug: resort.regionSlug || '',
+        instructorCount: 0,
         resorts: []
       };
     }
+    acc[regionKey].instructorCount += resort.instructorCount;
     acc[regionKey].resorts.push({
       id: resort.id,
       name: resort.name,
       slug: resort.slug,
       minElevation: resort.minElevation,
-      maxElevation: resort.maxElevation
+      maxElevation: resort.maxElevation,
+      instructorCount: resort.instructorCount
     });
     return acc;
   }, {} as Record<string, any>);
@@ -565,7 +583,7 @@ export async function getRegionDetails(countrySlug: string, regionSlug: string) 
 
   const region = regionData[0];
 
-  // Get all resorts in this region
+  // Get all resorts in this region with instructor counts
   const resortsData = await db
     .select({
       id: resorts.id,
@@ -575,10 +593,21 @@ export async function getRegionDetails(countrySlug: string, regionSlug: string) 
       maxElevation: resorts.maxElevation,
       lat: resorts.lat,
       lon: resorts.lon,
-      website: resorts.website
+      website: resorts.website,
+      instructorCount: sql<number>`cast(count(distinct ${users.id}) as integer)`
     })
     .from(resorts)
+    .leftJoin(instructorResorts, eq(resorts.id, instructorResorts.resortId))
+    .leftJoin(
+      userRoles,
+      and(
+        eq(instructorResorts.instructorId, userRoles.userId),
+        inArray(userRoles.role, ['instructor-independent', 'instructor-school'])
+      )
+    )
+    .leftJoin(users, and(eq(userRoles.userId, users.id), isNull(users.deletedAt)))
     .where(eq(resorts.regionId, region.regionId))
+    .groupBy(resorts.id, resorts.name, resorts.slug, resorts.minElevation, resorts.maxElevation, resorts.lat, resorts.lon, resorts.website)
     .orderBy(resorts.name);
 
   return {
