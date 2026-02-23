@@ -75,7 +75,7 @@
 
 	<!-- ── ACTIVE SCHOOL ───────────────────────────────────────────────────── -->
 	{#if hasActiveSchool && data.association}
-		<Card.Root class="mb-6 border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/30">
+		<Card.Root class="mb-6 border-green-200 bg-green-50">
 			<Card.Header>
 				<div class="flex items-center gap-3">
 					{#if data.association.schoolLogo}
@@ -93,7 +93,7 @@
 						</div>
 					{/if}
 					<div>
-						<Card.Title class="text-green-900 dark:text-green-100">
+						<Card.Title class="text-green-900 ">
 							{data.association.schoolName}
 						</Card.Title>
 						<Badge variant="default" class="mt-1 bg-green-600">Active member</Badge>
@@ -101,7 +101,7 @@
 				</div>
 			</Card.Header>
 			<Card.Content>
-				<p class="text-sm text-green-800 dark:text-green-200">
+				<p class="text-sm text-green-800 ">
 					You are currently a member of this school. Clients can find your profile through the school directory.
 				</p>
 			</Card.Content>
@@ -110,9 +110,9 @@
 
 	<!-- ── PENDING APPLICATION ─────────────────────────────────────────────── -->
 	{#if hasPendingApplication && data.association}
-		<Card.Root class="mb-6 border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/30">
+		<Card.Root class="mb-6 border-amber-200 bg-amber-50  ">
 			<Card.Header>
-				<Card.Title class="flex items-center gap-2 text-amber-900 dark:text-amber-100">
+				<Card.Title class="flex items-center gap-2 text-amber-900 ">
 					<svg class="h-5 w-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
 						<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
 					</svg>
@@ -120,7 +120,7 @@
 				</Card.Title>
 			</Card.Header>
 			<Card.Content>
-				<p class="mb-4 text-sm text-amber-800 dark:text-amber-200">
+				<p class="mb-4 text-sm text-amber-800 ">
 					Your application to <strong>{data.association.schoolName}</strong> is awaiting review by the school admin.
 				</p>
 				<form
@@ -155,7 +155,7 @@
 			<h2 class="title4 mb-3">Pending invitations</h2>
 			<div class="space-y-3">
 				{#each data.invitations as invitation (invitation.schoolId)}
-					<Card.Root class="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/30">
+					<Card.Root class="border-blue-200 bg-blue-50 ">
 						<Card.Content class="flex flex-col gap-3 pt-4 sm:flex-row sm:items-center sm:justify-between">
 							<div class="flex items-center gap-3">
 								{#if invitation.schoolLogo}
@@ -173,8 +173,8 @@
 									</div>
 								{/if}
 								<div>
-									<p class="font-semibold text-blue-900 dark:text-blue-100">{invitation.schoolName}</p>
-									<p class="text-xs text-blue-600 dark:text-blue-300">
+									<p class="font-semibold text-blue-900">{invitation.schoolName}</p>
+									<p class="text-xs text-blue-600">
 										Invited {new Date(invitation.requestedAt).toLocaleDateString()}
 									</p>
 								</div>
@@ -319,13 +319,13 @@
 			{#if form?.registrationRequested}
 				<!-- Success state -->
 				<Card.Content>
-					<div class="flex items-start gap-3 rounded-lg bg-green-50 p-4 dark:bg-green-950/30">
+					<div class="flex items-start gap-3 rounded-lg bg-green-50 p-4">
 						<svg class="h-5 w-5 flex-shrink-0 text-green-600" fill="currentColor" viewBox="0 0 20 20">
 							<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
 						</svg>
 						<div>
-							<p class="font-medium text-green-800 dark:text-green-200">{form.message}</p>
-							<p class="mt-1 text-sm text-green-700 dark:text-green-300">
+							<p class="font-medium text-green-800 ">{form.message}</p>
+							<p class="mt-1 text-sm text-green-700">
 								Once we add the school you'll be able to search for it and apply.
 							</p>
 						</div>
