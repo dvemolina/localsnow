@@ -10,6 +10,7 @@
 	import ProfileCompletionCard from '$src/features/Dashboard/components/ProfileCompletionCard.svelte';
 	import { t } from '$lib/i18n/i18n';
 	import { getRoles, hasInstructorRole, hasRole } from '$lib/utils/roles';
+	import { generateInstructorSlug } from '$lib/utils/slug';
 	let { data } = $props();
 	const user = $derived(data.user);
 
@@ -19,6 +20,13 @@
 		if (hour < 18) return $t('dashboard_greeting_afternoon');
 		return $t('dashboard_greeting_evening');
 	});
+
+	// Onboarding state (only set for unverified instructors)
+	const requiredRemaining = $derived(
+		data.profileCompletion?.items.filter((i) => !i.completed && i.required).length ?? 0
+	);
+	const profileIsComplete = $derived(requiredRemaining === 0);
+	const instructorSlug = $derived(generateInstructorSlug(user.id, user.name, user.lastName));
 
 	const quickActions = $derived([
 		{
@@ -67,7 +75,135 @@
 			{$t('dashboard_choose_role_button')}
 		</Button>
 	</div>
+
+{:else if hasInstructorRole(user) && !user.isVerified && data.profileCompletion}
+
+	<!-- ═══════════════════════════════════════════════════════
+	     ONBOARDING MODES — unverified instructors only
+	     ═══════════════════════════════════════════════════════ -->
+
+	{#if !profileIsComplete}
+		<!-- ── SETUP MODE: profile still has required items missing ── -->
+		<div class="container mx-auto max-w-2xl py-8">
+			<div class="mb-8 text-center">
+				<div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+					<svg class="h-8 w-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+							d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+					</svg>
+				</div>
+				<h1 class="title2 mb-2">Welcome to LocalSnow, {user.name}!</h1>
+				<p class="text-muted-foreground">
+					Complete your profile to go live and start receiving student inquiries.
+				</p>
+			</div>
+
+			<ProfileCompletionCard
+				completionItems={data.profileCompletion.items}
+				completedCount={data.profileCompletion.completedCount}
+				totalCount={data.profileCompletion.items.length}
+			/>
+
+			<div class="mt-6 flex justify-center">
+				<a href="/dashboard/setup">
+					<Button size="lg">Complete my profile →</Button>
+				</a>
+			</div>
+		</div>
+
+	{:else}
+		<!-- ── PENDING VERIFICATION MODE: profile done, awaiting admin review ── -->
+		<div class="container mx-auto max-w-2xl py-8">
+
+			<!-- Hero: submitted! -->
+			<div class="mb-8 text-center">
+				<div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+					<svg class="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+					</svg>
+				</div>
+				<h1 class="title2 mb-2">Profile submitted!</h1>
+				<p class="text-muted-foreground">
+					We're reviewing your credentials. You'll get an email once your profile goes live — usually within 24 hours.
+				</p>
+			</div>
+
+			<!-- Profile preview card — the aha moment -->
+			<div class="mb-6 rounded-xl border-2 border-primary/20 bg-primary/5 p-6 text-center">
+				<p class="mb-1 text-sm font-medium">Here's what students will see</p>
+				<p class="mb-4 text-sm text-muted-foreground">
+					Your profile is ready. Take a look and share it while you wait.
+				</p>
+				<a href="/instructors/{instructorSlug}" target="_blank" rel="noopener">
+					<Button size="lg">
+						View my profile
+						<svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+						</svg>
+					</Button>
+				</a>
+				<p class="mt-3 text-xs text-muted-foreground">
+					Copy the link and share it — your profile page works even before your listing goes public.
+				</p>
+			</div>
+
+			<!-- What to do while waiting -->
+			<Card.Root>
+				<Card.Header class="pb-3">
+					<Card.Title class="text-base">While you wait...</Card.Title>
+				</Card.Header>
+				<Card.Content class="space-y-3">
+					<a href="/dashboard/availability/working-hours"
+						class="flex items-center gap-3 rounded-lg p-3 hover:bg-muted/50 transition-colors group">
+						<div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
+							<svg class="h-5 w-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+							</svg>
+						</div>
+						<div class="flex-1">
+							<p class="text-sm font-medium">Set your availability</p>
+							<p class="text-xs text-muted-foreground">Let students know when you're free to teach</p>
+						</div>
+						<svg class="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+						</svg>
+					</a>
+					<a href="/dashboard/profile"
+						class="flex items-center gap-3 rounded-lg p-3 hover:bg-muted/50 transition-colors group">
+						<div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
+							<svg class="h-5 w-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+							</svg>
+						</div>
+						<div class="flex-1">
+							<p class="text-sm font-medium">Polish your profile</p>
+							<p class="text-xs text-muted-foreground">Add a bio, photo, and languages to stand out</p>
+						</div>
+						<svg class="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+						</svg>
+					</a>
+				</Card.Content>
+			</Card.Root>
+
+			<!-- Optional items remaining -->
+			{#if data.profileCompletion.completedCount < data.profileCompletion.items.length}
+				<div class="mt-4">
+					<ProfileCompletionCard
+						completionItems={data.profileCompletion.items}
+						completedCount={data.profileCompletion.completedCount}
+						totalCount={data.profileCompletion.items.length}
+					/>
+				</div>
+			{/if}
+		</div>
+	{/if}
+
 {:else}
+
+	<!-- ═══════════════════════════════════════════════════════
+	     FULL DASHBOARD — verified instructors, school admins, clients
+	     ═══════════════════════════════════════════════════════ -->
 	<div class="container mx-auto max-w-6xl">
 		<!-- Welcome Header -->
 		<div class="mb-8">
@@ -78,17 +214,6 @@
 				{$t('dashboard_welcome_subtitle')}
 			</p>
 		</div>
-
-		<!-- Profile Completion Card (instructors, unverified only) -->
-		{#if hasInstructorRole(user) && !user.isVerified && data.profileCompletion}
-			<div class="mb-8">
-				<ProfileCompletionCard
-					completionItems={data.profileCompletion.items}
-					completedCount={data.profileCompletion.completedCount}
-					totalCount={data.profileCompletion.items.length}
-				/>
-			</div>
-		{/if}
 
 		<!-- Stats Overview -->
 		<div class="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -143,7 +268,7 @@
 
 				<ProfileVisitsCard visits={data.profileVisits || 0} />
 
-				<LeadStatsCard leadStats={data.leadStats} />
+				<LeadStatsCard leadStats={data.leadStats as any} />
 			{:else if hasRole(user, 'school-admin')}
 				<Card.Root>
 					<Card.Header class="pb-2">
@@ -213,7 +338,7 @@
 		<!-- Recent Leads Section (for instructors) -->
 		{#if hasInstructorRole(user) && data.recentLeads}
 			<div class="mb-8">
-				<RequestsCard requests={data.recentLeads} type="lead" instructorId={user.id} />
+				<RequestsCard requests={data.recentLeads as any} type="lead" instructorId={user.id} />
 			</div>
 		{/if}
 

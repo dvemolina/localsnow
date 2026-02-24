@@ -64,6 +64,6 @@ export const actions: Actions = {
 		}
 
 		const locale = getLocaleFromPath(event.url.pathname);
-		throw redirect(303, `/${locale}/dashboard`);
+		throw redirect(303, `/${locale}/dashboard/setup`);
 	}
 };

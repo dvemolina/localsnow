@@ -39,6 +39,7 @@
 	const hasSchoolFares = !!schoolBaseLesson;
 
 	let isEditing = $state(false);
+	let showAdvancedPricing = $state(false);
 
 	// Pre-populate form if editing
 	$effect(() => {
@@ -199,20 +200,34 @@
 		</Card.Content>
 	</Card.Root>
 
-	<!-- Pricing Manager - Advanced Options -->
+	<!-- Pricing Manager - Advanced Options (collapsible) -->
 	<div class="mt-6">
-		<div class="mb-4">
-			<h2 class="title3 mb-1">{$t('lessons_advanced_pricing')}</h2>
-			<p class="text-sm text-muted-foreground">
-				{$t('lessons_advanced_pricing_desc')}
-			</p>
-		</div>
-		<LessonPricingManager
-			lesson={baseLesson}
-			groupTiers={data.groupTiers || []}
-			durationPackages={data.durationPackages || []}
-			promoCodes={data.promoCodes || []}
-		/>
+		<button
+			type="button"
+			onclick={() => showAdvancedPricing = !showAdvancedPricing}
+			class="flex w-full items-center justify-between rounded-lg border border-border bg-card px-4 py-3 text-left transition-colors hover:bg-muted/50"
+		>
+			<div>
+				<p class="font-medium">{$t('lessons_advanced_pricing')}</p>
+				<p class="text-sm text-muted-foreground">{$t('lessons_advanced_pricing_desc')}</p>
+			</div>
+			<svg
+				class="h-5 w-5 shrink-0 text-muted-foreground transition-transform duration-200 {showAdvancedPricing ? 'rotate-180' : ''}"
+				fill="none" stroke="currentColor" viewBox="0 0 24 24"
+			>
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+			</svg>
+		</button>
+		{#if showAdvancedPricing}
+			<div class="mt-4">
+				<LessonPricingManager
+					lesson={baseLesson}
+					groupTiers={data.groupTiers || []}
+					durationPackages={data.durationPackages || []}
+					promoCodes={data.promoCodes || []}
+				/>
+			</div>
+		{/if}
 	</div>
 {:else}
 		<!-- Edit/Create Form -->
