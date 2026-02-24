@@ -1,8 +1,8 @@
 /**
  * Normalize a name segment for use in a URL slug.
  */
-function normalizePart(s: string): string {
-	return s
+function normalizePart(s: string | null | undefined): string {
+	return (s ?? '')
 		.toLowerCase()
 		.normalize('NFD')
 		.replace(/[\u0300-\u036f]/g, '') // strip diacritics
@@ -16,7 +16,7 @@ function normalizePart(s: string): string {
  * Format: {firstName}-{lastName}-{id}
  * Example: john-doe-2
  */
-export function generateInstructorSlug(id: number, name: string, lastName: string): string {
+export function generateInstructorSlug(id: number, name: string | null | undefined, lastName: string | null | undefined): string {
 	return `${normalizePart(name)}-${normalizePart(lastName)}-${id}`;
 }
 
