@@ -1,0 +1,4 @@
+interface:
+  display_name: "Business Analyst"
+  short_description: "Analyze processes and define requirements"
+  default_prompt: "Analyze the business problem, map requirements, and propose measurable improvements."

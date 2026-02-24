@@ -28,6 +28,7 @@
 		submitting: submittingBasics
 	} = basicsFormObj;
 	const profileImageProxy = fileProxy(basicsFormObj, 'profileImage');
+	const qualificationProxy = fileProxy(basicsFormObj, 'qualification');
 
 	// ── Step 2: Resort + Sports ────────────────────────────────────────────
 	const teachingFormObj = superForm(data.teachingForm, {
@@ -191,7 +192,30 @@
 				<Form.FieldErrors />
 			</Form.Field>
 
-			<Button type="submit" class="w-full" size="lg" disabled={$submittingBasics}>
+			<!-- Qualification certificate (required for verification) -->
+		<Form.Field form={basicsFormObj} name="qualification">
+			<Form.Control>
+				{#snippet children({ props })}
+					<Form.Label>
+						Qualification certificate
+						<span class="ml-1 text-xs font-semibold text-red-600">Required for verification</span>
+					</Form.Label>
+					<Input
+						{...props}
+						type="file"
+						accept="application/pdf"
+						bind:files={$qualificationProxy}
+						class="cursor-pointer"
+					/>
+					<p class="mt-1 text-xs text-muted-foreground">
+						Upload your instructor certification document (PDF, max 10MB)
+					</p>
+				{/snippet}
+			</Form.Control>
+			<Form.FieldErrors />
+		</Form.Field>
+
+		<Button type="submit" class="w-full" size="lg" disabled={$submittingBasics}>
 				{#if $submittingBasics}
 					<svg class="mr-2 h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
 						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />

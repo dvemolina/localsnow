@@ -1,0 +1,4 @@
+interface:
+  display_name: "Content Marketer"
+  short_description: "Plan and optimize SEO-driven content"
+  default_prompt: "Create a content strategy with SEO priorities, editorial plan, and conversion-focused distribution."

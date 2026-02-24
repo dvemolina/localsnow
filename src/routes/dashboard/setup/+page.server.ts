@@ -36,12 +36,13 @@ export const load: PageServerLoad = async (event) => {
 
 	const baseLesson = lessons.find((l) => l.isBaseLesson) ?? null;
 	const hasPhone = !!(fullUser?.professionalPhone);
+	const hasQualification = !!(fullUser?.qualificationUrl);
 	const hasSports = instructorData.sports.length > 0;
 	const hasBaseLesson = !!baseLesson;
 
 	// Auto-advance to the right step when no step is in the URL
 	if (urlStep === 0) {
-		if (!hasPhone) throw redirect(302, '?step=1');
+		if (!hasPhone || !hasQualification) throw redirect(302, '?step=1');
 		if (!hasSports) throw redirect(302, '?step=2');
 		if (!isSchool && !hasBaseLesson) throw redirect(302, '?step=3');
 		throw redirect(302, '/dashboard');
@@ -117,6 +118,12 @@ export const actions: Actions = {
 				profileImageUrl = await storageService.uploadProfileImage(buf, user.id);
 			}
 
+			let qualificationUrl: string | null | undefined = undefined;
+			if (form.data.qualification && form.data.qualification.size > 0) {
+				const buf = Buffer.from(await form.data.qualification.arrayBuffer());
+				qualificationUrl = await storageService.uploadQualificationPDF(buf, user.id);
+			}
+
 			await instructorService.updateInstructorProfile(user.id, {
 				bio: form.data.bio,
 				professionalCountryCode: form.data.professionalCountryCode,
@@ -126,7 +133,8 @@ export const actions: Actions = {
 				spokenLanguages: currentUser?.spokenLanguages ?? [],
 				profileImageUrl:
 					profileImageUrl !== undefined ? profileImageUrl : currentUser?.profileImageUrl,
-				qualificationUrl: currentUser?.qualificationUrl
+				qualificationUrl:
+					qualificationUrl !== undefined ? qualificationUrl : currentUser?.qualificationUrl
 			});
 		} catch (error) {
 			console.error('[Setup] saveBasics error:', error);

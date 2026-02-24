@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fullstack Developer"
+  short_description: "Deliver end-to-end product features"
+  default_prompt: "Implement this feature across database, backend, and frontend with tests and rollout notes."

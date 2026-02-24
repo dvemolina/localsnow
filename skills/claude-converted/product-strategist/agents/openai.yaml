@@ -1,0 +1,4 @@
+interface:
+  display_name: "Product Strategist"
+  short_description: "Turn market insight into product strategy"
+  default_prompt: "Build a product strategy brief with positioning, prioritization, GTM, and KPIs."

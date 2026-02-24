@@ -1,50 +1,57 @@
 /**
- * Generate a URL slug for an instructor profile
- * Format: {id}-{name}-{lastInitial}
- * Example: 2-john-d
- *
- * This maintains privacy by only showing first letter of surname
+ * Normalize a name segment for use in a URL slug.
  */
-export function generateInstructorSlug(id: number, name: string, lastName: string): string {
-	// Normalize name: lowercase, remove special chars, replace spaces with hyphens
-	const normalizedName = name
+function normalizePart(s: string): string {
+	return s
 		.toLowerCase()
 		.normalize('NFD')
-		.replace(/[\u0300-\u036f]/g, '') // Remove diacritics
-		.replace(/[^a-z0-9\s-]/g, '') // Remove special chars
+		.replace(/[\u0300-\u036f]/g, '') // strip diacritics
+		.replace(/[^a-z0-9\s-]/g, '') // remove special chars
 		.trim()
-		.replace(/\s+/g, '-'); // Replace spaces with hyphens
-
-	// Get first letter of last name, lowercase
-	const lastInitial = lastName.charAt(0).toLowerCase();
-
-	return `${id}-${normalizedName}-${lastInitial}`;
+		.replace(/\s+/g, '-');
 }
 
 /**
- * Parse an instructor slug to extract the ID
- * Format: {id}-{name}-{lastInitial}
- * Example: "2-john-d" returns 2
+ * Generate a URL slug for an instructor profile.
+ * Format: {firstName}-{lastName}-{id}
+ * Example: john-doe-2
+ */
+export function generateInstructorSlug(id: number, name: string, lastName: string): string {
+	return `${normalizePart(name)}-${normalizePart(lastName)}-${id}`;
+}
+
+/**
+ * Parse an instructor slug to extract the ID.
  *
- * Returns null if slug is invalid
+ * Supports two formats:
+ *   New: {firstName}-{lastName}-{id}  →  "john-doe-2"    (ID is the last numeric segment)
+ *   Old: {id}-{name}-{initial}        →  "2-john-d"      (ID is the first segment, legacy)
+ *
+ * Returns null if the slug is invalid.
  */
 export function parseInstructorSlug(slug: string): number | null {
-	// Extract the first part before the first hyphen
 	const parts = slug.split('-');
 
-	if (parts.length < 3) {
-		// Invalid format, might be just an ID (legacy support)
+	if (parts.length < 2) {
+		// Bare numeric ID (legacy support)
 		const id = parseInt(slug);
 		return isNaN(id) ? null : id;
 	}
 
-	const id = parseInt(parts[0]);
-	return isNaN(id) ? null : id;
+	// New format: ID is the last segment
+	const lastId = parseInt(parts[parts.length - 1]);
+	if (!isNaN(lastId)) return lastId;
+
+	// Old format: ID is the first segment (backwards compatibility)
+	const firstId = parseInt(parts[0]);
+	if (!isNaN(firstId)) return firstId;
+
+	return null;
 }
 
 /**
- * Validate that a slug matches the expected format for an instructor
- * This is used for canonical URL redirects
+ * Validate that a slug matches the expected canonical format for an instructor.
+ * Used for canonical URL redirects.
  */
 export function validateInstructorSlug(
 	slug: string,
