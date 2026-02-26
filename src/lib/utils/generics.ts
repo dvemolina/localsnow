@@ -33,7 +33,7 @@ export function generateUsernameFromGoogle(claims: GoogleClaims) {
 
     // Format name and surname
     const formattedName = claims.given_name.toLowerCase();
-    const firstLetterSurname = claims.family_name.charAt(0).toLowerCase();
+    const firstLetterSurname = claims.family_name ? claims.family_name.charAt(0).toLowerCase() : '';
 
     // Combine into username
     return `${formattedName}${firstLetterSurname}${lastThreeDigits}`;
