@@ -96,7 +96,9 @@ services:
       restart_policy:
         condition: on-failure
         delay: 5s
-        max_attempts: 3
+        # Keep retrying after transient Docker/daemon failures. A finite
+        # retry cap can leave the service permanently down until an
+        # operator forces an update.
       resources:
         limits:
           memory: 1G
@@ -184,7 +186,9 @@ services:
       restart_policy:
         condition: on-failure
         delay: 5s
-        max_attempts: 3
+        # Keep retrying after transient Docker/daemon failures. A finite
+        # retry cap can leave the service permanently down until an
+        # operator forces an update.
         window: 120s
 
       # Resource limits
