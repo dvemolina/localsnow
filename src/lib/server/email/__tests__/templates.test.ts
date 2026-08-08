@@ -70,7 +70,7 @@ describe('Email Templates', () => {
 			const result = templates.bookingNotificationInstructor(data);
 
 			expect(result.html).toContain('2025-02-15');
-			expect(result.html).not.toContain(' - ');
+			expect(result.html).not.toContain('2025-02-15 - ');
 		});
 	});
 

@@ -265,6 +265,13 @@
 			</div>
 		{:else}
 			<form onsubmit={handleSubmit} class="space-y-6">
+				<div class="rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-900">
+					<p class="font-medium">Free direct request</p>
+					<p class="mt-1 text-green-800">
+						No LocalSnow fee and no LocalSnow safeguard. The instructor receives your message and confirms availability directly with you.
+					</p>
+				</div>
+
 				<!-- Client Information Section -->
 				<div class="space-y-4">
 					<h3 class="text-sm font-semibold">{$t('contact_your_information') || 'Your Information'}</h3>

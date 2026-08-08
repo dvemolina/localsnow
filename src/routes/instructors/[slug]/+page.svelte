@@ -6,8 +6,14 @@
 	import { Badge } from '$src/lib/components/ui/badge';
 	import { Button } from '$src/lib/components/ui/button';
 	import ContactInstructorDialog from '$src/features/Leads/components/ContactInstructorDialog.svelte';
+	import BookingRequestDialog from '$src/features/Bookings/components/BookingRequestDialog.svelte';
 	import SimplePriceDisplay from '$src/features/Pricing/components/SimplePriceDisplay.svelte';
 	import ReviewList from '$src/features/Reviews/components/ReviewList.svelte';
+	import {
+		getAvailabilityProofState,
+		getClientPathOptions,
+		protectedBookingIsEnabled
+	} from '$src/features/ClientProof/lib/clientProofPath';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import { t } from '$lib/i18n/i18n';
@@ -16,6 +22,7 @@
 	import { getAlternateUrls, route } from '$lib/i18n/routeHelpers';
 	let { data } = $props();
 	let showContactModal = $state(false);
+	let showProtectedBookingModal = $state(page.url.searchParams.get('openBooking') === 'true');
 	const PRIMARY_ORIGIN = 'https://localsnow.org';
 	const currentLocale = $derived((extractLocale(page.url.pathname).locale || 'en') as Locale);
 
@@ -31,6 +38,15 @@
 
 	const isAuthenticated = !!data.user; // Will be true if user exists
 	const isIndependent = instructor.role === 'instructor-independent';
+	const hasProtectedBooking = $derived(protectedBookingIsEnabled({ hasBaseLesson: !!data.baseLesson }));
+	const clientPathOptions = $derived(getClientPathOptions({ hasProtectedBooking }));
+	const directPath = $derived(clientPathOptions.find((option) => option.kind === 'direct'));
+	const protectedPath = $derived(clientPathOptions.find((option) => option.kind === 'protected'));
+	const availabilityProof = getAvailabilityProofState({
+		hasAvailabilitySignal: true,
+		availableSlotsCount: 0,
+		isFresh: false
+	});
 
 	// Construct profile URL with slug
 	const instructorSlug = generateInstructorSlug(instructor.id, instructor.name, instructor.lastName);
@@ -358,28 +374,36 @@
 				</div>
 			</div>
 
-			<!-- Contact Button - Primary CTA -->
-			<Button
-				onclick={() => (showContactModal = true)}
-				class="mt-4 w-full"
-				size="lg"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="mr-2 size-5"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-					/>
-				</svg>
-				{$t('button_contact_instructor') || 'Contact Instructor'}
-			</Button>
+			<!-- Client proof CTA block -->
+			<div class="mt-4 w-full space-y-3 rounded-lg border border-primary/20 bg-primary/5 p-4">
+				<div class="flex items-start justify-between gap-3">
+					<div>
+						<p class="text-sm font-semibold">{availabilityProof.label}</p>
+						<p class="mt-1 text-xs text-muted-foreground">{availabilityProof.clientCopy}</p>
+					</div>
+					<Badge variant={availabilityProof.tone === 'positive' ? 'default' : 'secondary'} class="shrink-0 text-xs">
+						Availability
+					</Badge>
+				</div>
+
+				<div class="grid gap-2">
+					<Button onclick={() => (showContactModal = true)} class="w-full" size="lg">
+						{directPath?.cta ?? 'Contact instructor free'}
+					</Button>
+					<p class="text-xs text-muted-foreground">{directPath?.safeguardCopy}</p>
+
+					<Button
+						onclick={() => (showProtectedBookingModal = true)}
+						class="w-full"
+						size="lg"
+						variant="outline"
+						disabled={!hasProtectedBooking}
+					>
+						{protectedPath?.cta ?? 'Request protected booking'}
+					</Button>
+					<p class="text-xs text-muted-foreground">{protectedPath?.safeguardCopy}</p>
+				</div>
+			</div>
 
 			<!-- Quick Info Box -->
 			<div class="mt-4 w-full space-y-3 rounded-lg bg-muted p-4">
@@ -785,3 +809,15 @@
 	isAuthenticated={isAuthenticated}
 	user={data.user}
 />
+
+{#if data.baseLesson}
+	<BookingRequestDialog
+		bind:open={showProtectedBookingModal}
+		instructorId={instructor.id}
+		lessonId={data.baseLesson.id}
+		instructorName={instructor.name}
+		baseLesson={data.baseLesson}
+		isAuthenticated={isAuthenticated}
+		user={data.user}
+	/>
+{/if}
