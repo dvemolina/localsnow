@@ -144,4 +144,65 @@ describe('availability spine', () => {
 		});
 		expect(JSON.stringify(state)).not.toContain('named client');
 	});
+
+	it('lets private commitments win even when no availability rule matches', () => {
+		const state = getClientSafeAvailabilityState({
+			instructorId: 7,
+			start: new Date('2027-01-04T18:00:00Z'),
+			end: new Date('2027-01-04T19:00:00Z'),
+			rules: [],
+			commitments: [
+				{
+					id: 'google-calendar:private-evening-event',
+					instructorId: 7,
+					start: new Date('2027-01-04T18:00:00Z'),
+					end: new Date('2027-01-04T19:00:00Z'),
+					sourceProduct: 'google_calendar',
+					sourceRecordType: 'external_event',
+					sourceRecordId: 'private-evening-event',
+					status: 'confirmed',
+					visibility: 'private',
+					publicState: 'blocked',
+					privateLabel: 'Named private dinner'
+				}
+			]
+		});
+
+		expect(state).toMatchObject({
+			state: 'blocked',
+			label: 'Request another time',
+			canRequestDirectly: false,
+			canRequestProtectedBooking: false
+		});
+		expect(JSON.stringify(state)).not.toContain('Named private dinner');
+		expect(JSON.stringify(state)).not.toContain('private-evening-event');
+	});
+
+	it('ignores expired tentative holds instead of showing stale limited availability', () => {
+		const state = getClientSafeAvailabilityState({
+			instructorId: 7,
+			start: new Date('2027-01-04T14:00:00Z'),
+			end: new Date('2027-01-04T15:00:00Z'),
+			rules: [mondayRule],
+			commitments: [
+				{
+					id: 'localsnow-calendar-block:expired-hold',
+					instructorId: 7,
+					start: new Date('2027-01-04T14:00:00Z'),
+					end: new Date('2027-01-04T15:00:00Z'),
+					sourceProduct: 'localsnow',
+					sourceRecordType: 'booking_request',
+					sourceRecordId: 'expired-hold',
+					status: 'tentative',
+					visibility: 'private',
+					publicState: 'limited',
+					expiresAt: new Date('2027-01-04T13:00:00Z')
+				}
+			],
+			now: new Date('2027-01-04T13:30:00Z')
+		});
+
+		expect(state.state).toBe('available');
+		expect(state.confidence).toBe('rule-based');
+	});
 });

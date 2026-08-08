@@ -79,6 +79,11 @@ type ClientSafeStateInput = {
 	end: Date;
 	rules: AvailabilityRule[];
 	commitments: AvailabilityCommitment[];
+	/**
+	 * Availability proof uses UTC Date objects for now. Resort-local timezones should become explicit
+	 * before this spine is promoted from proof helper to persisted calendar law.
+	 */
+	now?: Date;
 };
 
 export function normalizeWorkingHoursRule(hours: WorkingHoursLike): AvailabilityRule {
@@ -132,25 +137,13 @@ export function getClientSafeAvailabilityState({
 	start,
 	end,
 	rules,
-	commitments
+	commitments,
+	now = new Date()
 }: ClientSafeStateInput): ClientSafeAvailabilityState {
-	const matchingRule = rules.find((rule) => ruleAllowsSlot(rule, instructorId, start, end));
-
-	if (!matchingRule) {
-		return {
-			state: 'requestable',
-			label: 'Request availability',
-			confidence: 'unknown',
-			canRequestDirectly: true,
-			canRequestProtectedBooking: false,
-			reason: 'Availability is not configured for that exact time yet.'
-		};
-	}
-
 	const activeConflicts = commitments.filter(
 		(commitment) =>
 			commitment.instructorId === instructorId &&
-			isActiveCommitment(commitment) &&
+			isActiveCommitment(commitment, now) &&
 			timeRangesOverlap(start, end, commitment.start, commitment.end)
 	);
 
@@ -173,6 +166,19 @@ export function getClientSafeAvailabilityState({
 			canRequestDirectly: true,
 			canRequestProtectedBooking: true,
 			reason: 'This time may already have a tentative commitment, but you can still request it.'
+		};
+	}
+
+	const matchingRule = rules.find((rule) => ruleAllowsSlot(rule, instructorId, start, end));
+
+	if (!matchingRule) {
+		return {
+			state: 'requestable',
+			label: 'Request availability',
+			confidence: 'unknown',
+			canRequestDirectly: true,
+			canRequestProtectedBooking: false,
+			reason: 'Availability is not configured for that exact time yet.'
 		};
 	}
 
@@ -260,8 +266,16 @@ function ruleAllowsSlot(
 	return startTime >= rule.startTime && endTime <= rule.endTime;
 }
 
-function isActiveCommitment(commitment: AvailabilityCommitment): boolean {
-	return !['cancelled', 'expired', 'completed'].includes(commitment.status);
+function isActiveCommitment(commitment: AvailabilityCommitment, now: Date): boolean {
+	if (['cancelled', 'expired', 'completed'].includes(commitment.status)) {
+		return false;
+	}
+
+	if (commitment.status === 'tentative' && commitment.expiresAt && commitment.expiresAt <= now) {
+		return false;
+	}
+
+	return true;
 }
 
 function toDate(value: Date | string): Date {

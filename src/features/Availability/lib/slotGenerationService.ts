@@ -19,6 +19,26 @@ export type DayAvailability = {
 	slots: TimeSlot[];
 };
 
+export type PublicTimeSlot = Pick<TimeSlot, 'date' | 'startTime' | 'endTime' | 'status'>;
+
+export type PublicDayAvailability = Omit<DayAvailability, 'slots'> & {
+	slots: PublicTimeSlot[];
+};
+
+export function toPublicAvailability(availability: DayAvailability[]): PublicDayAvailability[] {
+	return availability.map((day) => ({
+		date: day.date,
+		dayOfWeek: day.dayOfWeek,
+		isWorkingDay: day.isWorkingDay,
+		slots: day.slots.map(({ date, startTime, endTime, status }) => ({
+			date,
+			startTime,
+			endTime,
+			status
+		}))
+	}));
+}
+
 export class SlotGenerationService {
 	/**
 	 * Generate available time slots for a date range
