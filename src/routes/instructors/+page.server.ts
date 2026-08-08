@@ -4,6 +4,7 @@ import { InstructorService } from '$src/features/Instructors/lib/instructorServi
 import { LessonService } from '$src/features/Lessons/lib/lessonService';
 import { LessonRepository } from '$src/features/Lessons/lib/lessonRepository';
 import { ReviewService } from '$src/features/Reviews/lib/reviewService';
+import { WorkingHoursService } from '$src/features/Availability/lib/workingHoursService';
 import { db } from '$lib/server/db';
 import { resorts } from '$lib/server/db/schema';
 import { eq, inArray } from 'drizzle-orm';
@@ -12,6 +13,14 @@ const lessonService = new LessonService();
 const lessonRepository = new LessonRepository();
 const instructorService = new InstructorService();
 const reviewService = new ReviewService();
+const workingHoursService = new WorkingHoursService();
+
+const protectedSupportInstructorIds = new Set(
+	(process.env.LOCALSNOW_G1_PROTECTED_INSTRUCTOR_IDS ?? '')
+		.split(',')
+		.map((id) => Number(id.trim()))
+		.filter((id) => Number.isInteger(id) && id > 0)
+);
 
 const resolveResortId = async (resortParam: string | null): Promise<number | undefined> => {
 	if (!resortParam) {
@@ -96,20 +105,23 @@ export const load: PageServerLoad = async ({ url }) => {
 			});
 		}
 
-		// Fetch base lessons and review stats for all instructors
+		// Fetch base lessons, review stats, and availability signal for all instructors
 		let instructorsWithLessons = await Promise.all(
 			instructors.map(async (instructor) => {
 				try {
-					const [lessons, reviewStats] = await Promise.all([
+					const [lessons, reviewStats, workingHours] = await Promise.all([
 						lessonService.listLessonsByInstructor(instructor.id),
-						reviewService.getInstructorStats(instructor.id)
+						reviewService.getInstructorStats(instructor.id),
+						workingHoursService.getInstructorWorkingHours(instructor.id)
 					]);
 					let baseLesson = lessons.find((l) => l.isBaseLesson) || null;
 
 					// For school-affiliated instructors with no personal fares, try school fares
 					if (!baseLesson && instructor.school?.id) {
 						try {
-							const schoolLessons = await lessonRepository.listLessonsBySchool(instructor.school.id);
+							const schoolLessons = await lessonRepository.listLessonsBySchool(
+								instructor.school.id
+							);
 							const schoolBaseLesson = schoolLessons.find((l) => l.isBaseLesson) || null;
 							if (schoolBaseLesson) {
 								baseLesson = { ...schoolBaseLesson, isFromSchool: true } as any;
@@ -122,7 +134,11 @@ export const load: PageServerLoad = async ({ url }) => {
 					return {
 						...instructor,
 						baseLesson,
-						reviewStats
+						reviewStats,
+						clientProofPath: {
+							workingHoursCount: workingHours.length,
+							protectedBookingAllowed: protectedSupportInstructorIds.has(instructor.id)
+						}
 					};
 				} catch (error) {
 					console.error(`Error fetching data for instructor ${instructor.id}:`, error);

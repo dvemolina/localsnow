@@ -10,6 +10,7 @@
 	import SimplePriceDisplay from '$src/features/Pricing/components/SimplePriceDisplay.svelte';
 	import ReviewList from '$src/features/Reviews/components/ReviewList.svelte';
 	import {
+		getAvailabilityProofInputFromWorkingHours,
 		getAvailabilityProofState,
 		getClientPathOptions,
 		protectedBookingIsEnabled
@@ -38,15 +39,23 @@
 
 	const isAuthenticated = !!data.user; // Will be true if user exists
 	const isIndependent = instructor.role === 'instructor-independent';
-	const hasProtectedBooking = $derived(protectedBookingIsEnabled({ hasBaseLesson: !!data.baseLesson }));
+	const hasProtectedBooking = $derived(
+		protectedBookingIsEnabled({
+			hasBaseLesson: !!data.baseLesson,
+			isSchoolRate: false,
+			allowProtectedBooking: data.clientProofPath?.protectedBookingAllowed === true
+		})
+	);
 	const clientPathOptions = $derived(getClientPathOptions({ hasProtectedBooking }));
 	const directPath = $derived(clientPathOptions.find((option) => option.kind === 'direct'));
 	const protectedPath = $derived(clientPathOptions.find((option) => option.kind === 'protected'));
-	const availabilityProof = getAvailabilityProofState({
-		hasAvailabilitySignal: true,
-		availableSlotsCount: 0,
-		isFresh: false
-	});
+	const availabilityProof = $derived(
+		getAvailabilityProofState(
+			getAvailabilityProofInputFromWorkingHours({
+				workingHoursCount: data.clientProofPath?.workingHoursCount ?? 0
+			})
+		)
+	);
 
 	// Construct profile URL with slug
 	const instructorSlug = generateInstructorSlug(instructor.id, instructor.name, instructor.lastName);
@@ -797,7 +806,7 @@
 				d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
 			/>
 		</svg>
-		{$t('button_contact_instructor') || 'Contact Instructor'}
+		{directPath?.cta ?? 'Contact instructor free'}
 	</Button>
 </section>
 
@@ -810,7 +819,7 @@
 	user={data.user}
 />
 
-{#if data.baseLesson}
+{#if data.baseLesson && hasProtectedBooking}
 	<BookingRequestDialog
 		bind:open={showProtectedBookingModal}
 		instructorId={instructor.id}

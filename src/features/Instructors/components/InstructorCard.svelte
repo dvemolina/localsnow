@@ -7,6 +7,7 @@
 	import { t } from '$lib/i18n/i18n';
 	import { page } from '$app/state';
 	import {
+		getAvailabilityProofInputFromWorkingHours,
 		getAvailabilityProofState,
 		getClientPathOptions,
 		protectedBookingIsEnabled
@@ -17,12 +18,16 @@
 	// baseLesson may be passed as a prop or embedded in instructorData (from listing page)
 	const effectiveBaseLesson = baseLesson ?? instructorData.baseLesson ?? null;
 	const baseLessonIsFromSchool = !!(effectiveBaseLesson && effectiveBaseLesson.isFromSchool);
-	const hasProtectedBooking = protectedBookingIsEnabled({ hasBaseLesson: !!effectiveBaseLesson });
-	const availabilityProof = getAvailabilityProofState({
-		hasAvailabilitySignal: true,
-		availableSlotsCount: 0,
-		isFresh: false
+	const hasProtectedBooking = protectedBookingIsEnabled({
+		hasBaseLesson: !!effectiveBaseLesson,
+		isSchoolRate: baseLessonIsFromSchool,
+		allowProtectedBooking: instructorData.clientProofPath?.protectedBookingAllowed === true
 	});
+	const availabilityProof = getAvailabilityProofState(
+		getAvailabilityProofInputFromWorkingHours({
+			workingHoursCount: instructorData.clientProofPath?.workingHoursCount ?? 0
+		})
+	);
 	const clientPathOptions = getClientPathOptions({ hasProtectedBooking });
 	const protectedPath = clientPathOptions.find((option) => option.kind === 'protected');
 
@@ -178,9 +183,15 @@
 		<div class="rounded-md border border-primary/20 bg-primary/5 px-3 py-2 text-xs">
 			<div class="flex items-center justify-between gap-2">
 				<span class="font-medium">{availabilityProof.label}</span>
-				<Badge variant="secondary" class="text-[0.65rem]">{protectedPath?.priceSignal ?? 'paid'} option</Badge>
+				<Badge variant="secondary" class="text-[0.65rem]">
+					{hasProtectedBooking ? 'assisted option' : 'free request'}
+				</Badge>
 			</div>
-			<p class="mt-1 text-muted-foreground">Free request or {protectedPath?.label.toLowerCase()}.</p>
+			<p class="mt-1 text-muted-foreground">
+				{hasProtectedBooking
+					? `Free request or ${protectedPath?.label.toLowerCase()}.`
+					: 'Free request first. Protected support is enabled profile by profile.'}
+			</p>
 		</div>
 		<Button variant="outline" class="group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
 			View Profile
