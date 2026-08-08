@@ -558,33 +558,33 @@
 					</div>
 				{/if}
 
-				<!-- Free Directory Information -->
-				<div class="rounded-lg border-2 border-green-200 bg-green-50 p-4">
+				<!-- Protected Booking Information -->
+				<div class="rounded-lg border-2 border-primary/20 bg-primary/5 p-4">
 					<div class="mb-3 flex items-center gap-2">
-						<svg class="size-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<svg class="size-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
 						</svg>
-						<h3 class="font-medium text-green-900">100% Free - No Deposit Required</h3>
+						<h3 class="font-medium text-primary">Protected booking request</h3>
 					</div>
 
-					<div class="space-y-2 text-sm text-green-800">
+					<div class="space-y-2 text-sm text-foreground">
 						<p class="flex items-start gap-2">
 							<svg class="mt-0.5 size-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
 								<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
 							</svg>
-							<span>No payment required to send booking requests</span>
+							<span>Your selected slots are requested as a tentative hold, not exposed as private calendar details.</span>
 						</p>
 						<p class="flex items-start gap-2">
 							<svg class="mt-0.5 size-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
 								<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
 							</svg>
-							<span>Unlimited booking requests</span>
+							<span>If the instructor cannot serve the request, LocalSnow helps reschedule or find a replacement.</span>
 						</p>
 						<p class="flex items-start gap-2">
 							<svg class="mt-0.5 size-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
 								<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
 							</svg>
-							<span>Instructor contact info shared immediately</span>
+							<span>LocalSnow will follow up on the request; payment handling is not promised until the final lesson details are confirmed.</span>
 						</p>
 					</div>
 				</div>
@@ -639,7 +639,7 @@
 				</div>
 
 								<p class="text-center text-xs text-muted-foreground pt-2">
-									By submitting, you agree the instructor will contact you directly.
+									By submitting, you request LocalSnow protected booking support. The instructor still confirms the final lesson details.
 								</p>
 							</form>
 						{/if}

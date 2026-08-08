@@ -9,6 +9,7 @@ import { UserService } from '$src/features/Users/lib/UserService';
 import { SportsService } from '$src/features/Sports/lib/sportsService';
 import { ReviewService } from '$src/features/Reviews/lib/reviewService';
 import { SchoolInstructorService } from '$src/features/Schools/lib/schoolInstructorService';
+import { WorkingHoursService } from '$src/features/Availability/lib/workingHoursService';
 import { trackProfileVisit } from '$src/features/Dashboard/lib/utils';
 import { getClientIP } from '$src/lib/utils/auth';
 import {
@@ -31,6 +32,14 @@ const userService = new UserService();
 const sportsService = new SportsService();
 const reviewService = new ReviewService();
 const schoolInstructorService = new SchoolInstructorService();
+const workingHoursService = new WorkingHoursService();
+
+const protectedSupportInstructorIds = new Set(
+	(process.env.LOCALSNOW_G1_PROTECTED_INSTRUCTOR_IDS ?? '')
+		.split(',')
+		.map((id) => Number(id.trim()))
+		.filter((id) => Number.isInteger(id) && id > 0)
+);
 
 export const load: PageServerLoad = async (event) => {
 	// Parse slug to extract instructor ID
@@ -76,13 +85,14 @@ export const load: PageServerLoad = async (event) => {
 	}
 
 	try {
-		// Get sports, resorts, reviews, and school in parallel
-		const [sportIds, resorts, reviews, reviewStats, school] = await Promise.all([
+		// Get sports, resorts, reviews, school, and current availability signal in parallel
+		const [sportIds, resorts, reviews, reviewStats, school, workingHours] = await Promise.all([
 			instructorService.getInstructorSports(instructorId),
 			instructorService.getInstructorResorts(instructorId),
 			reviewService.getInstructorReviews(instructorId, 10, 0),
 			reviewService.getInstructorStats(instructorId),
-			schoolInstructorService.getInstructorSchool(instructorId)
+			schoolInstructorService.getInstructorSchool(instructorId),
+			workingHoursService.getInstructorWorkingHours(instructorId)
 		]);
 
 		// Get sport names from IDs
@@ -106,7 +116,7 @@ export const load: PageServerLoad = async (event) => {
 			// No personal fares — show school's fares (read-only on public profile)
 			try {
 				const schoolLessons = await lessonRepository.listLessonsBySchool(school.id);
-				schoolBaseLesson = schoolLessons.find(l => l.isBaseLesson) ?? null;
+				schoolBaseLesson = schoolLessons.find((l) => l.isBaseLesson) ?? null;
 				if (schoolBaseLesson) {
 					const schoolPricingData = await pricingService.getLessonPricingData(schoolBaseLesson.id);
 					schoolGroupTiers = schoolPricingData.groupTiers;
@@ -147,7 +157,11 @@ export const load: PageServerLoad = async (event) => {
 			reviews,
 			reviewStats,
 			user: completeUser,
-			school
+			school,
+			clientProofPath: {
+				workingHoursCount: workingHours.length,
+				protectedBookingAllowed: protectedSupportInstructorIds.has(instructorId)
+			}
 		};
 	} catch (err) {
 		console.error('Error loading instructor profile:', err);
