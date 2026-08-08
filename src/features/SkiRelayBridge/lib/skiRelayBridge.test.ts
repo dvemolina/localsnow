@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
 	buildLocalSnowProfileBridgeDraft,
 	buildSkiRelayOpportunityDraft,
-	createSkiRelayAvailabilityCommitment,
+	createSkiRelayAvailabilityCommitments,
 	getSkiRelayBridgeReadiness
 } from './skiRelayBridge';
 
@@ -46,18 +46,23 @@ describe('skiRelayBridge', () => {
 		});
 
 		expect(draft.status).toBe('ready');
-		expect(draft.publicProfileDraft).toMatchObject({
+		expect(draft.publicProfileDraft?.publicProfileFields).toMatchObject({
 			displayName: 'Alex Mountain',
 			bio: 'Independent ski instructor in Baqueira.',
 			sports: ['ski', 'snowboard'],
 			languages: ['en', 'es'],
 			resortSlug: 'baqueira-beret',
 			isPublished: false,
-			sourceProduct: 'skirelay',
-			sourceInstructorId: 'relay-inst-123',
 			publicEmail: 'alex@example.com',
 			publicPhone: null
 		});
+		expect(draft.publicProfileDraft?.bridgeMetadata).toEqual({
+			sourceProduct: 'skirelay',
+			sourceInstructorId: 'relay-inst-123'
+		});
+		expect(JSON.stringify(draft.publicProfileDraft?.publicProfileFields)).not.toContain(
+			'relay-inst-123'
+		);
 		expect(JSON.stringify(draft.publicProfileDraft)).not.toContain('ES00PRIVATEIBAN');
 		expect(JSON.stringify(draft.publicProfileDraft)).not.toContain('bizum');
 	});
@@ -93,24 +98,30 @@ describe('skiRelayBridge', () => {
 		});
 
 		expect(opportunity.status).toBe('ready');
-		expect(opportunity.opportunityDraft).toMatchObject({
-			sourceProduct: 'localsnow',
-			sourceRequestId: 42,
+		expect(opportunity.opportunityDraft?.networkOpportunityDraft).toMatchObject({
 			visibility: 'private-network',
 			resortSlug: 'baqueira-beret',
 			sport: 'ski',
 			skillLevel: 'intermediate',
 			numberOfStudents: 2
 		});
-		expect(opportunity.opportunityDraft?.networkSummary).toContain('2 intermediate ski students');
-		expect(opportunity.opportunityDraft?.privateClient).toMatchObject({
-			name: 'Client Secret',
-			email: 'client@example.com',
-			phone: '+34 611 111 111'
+		expect(opportunity.opportunityDraft?.networkOpportunityDraft.networkSummary).toContain(
+			'2 intermediate ski students'
+		);
+		expect(opportunity.opportunityDraft?.internalClientContext).toMatchObject({
+			sourceProduct: 'localsnow',
+			sourceRequestId: 42,
+			clientName: 'Client Secret',
+			clientEmail: 'client@example.com',
+			clientPhone: '+34 611 111 111',
+			message: 'Family lesson, nervous beginner sibling.'
 		});
-		expect(opportunity.opportunityDraft?.networkSummary).not.toContain('Client Secret');
-		expect(opportunity.opportunityDraft?.networkSummary).not.toContain('client@example.com');
-		expect(opportunity.opportunityDraft?.networkSummary).not.toContain('+34 611');
+		const networkJson = JSON.stringify(opportunity.opportunityDraft?.networkOpportunityDraft);
+		expect(networkJson).not.toContain('Client Secret');
+		expect(networkJson).not.toContain('client@example.com');
+		expect(networkJson).not.toContain('+34 611');
+		expect(networkJson).not.toContain('Family lesson');
+		expect(networkJson).not.toContain('42');
 	});
 
 	it('does not bridge active or served LocalSnow requests into SkiRelay', () => {
@@ -132,18 +143,42 @@ describe('skiRelayBridge', () => {
 		expect(opportunity.opportunityDraft).toBeNull();
 	});
 
-	it('can project a SkiRelay opportunity into the shared availability spine', () => {
-		const commitment = createSkiRelayAvailabilityCommitment({
+	it('can project SkiRelay opportunity sessions into separate shared availability commitments', () => {
+		const commitments = createSkiRelayAvailabilityCommitments({
 			opportunityId: 'relay-opportunity-42',
 			instructorId: 12,
-			sessions: [{ date: '2026-01-15', startTime: '09:00', endTime: '12:00' }],
+			sessions: [
+				{ date: '2026-01-15', startTime: '09:00', endTime: '12:00' },
+				{ date: '2026-01-16', startTime: '09:00', endTime: '12:00' }
+			],
 			privateLabel: 'Client Secret family overflow class'
 		});
 
+		expect(commitments).toHaveLength(2);
+		expect(commitments.map((commitment) => commitment.id)).toEqual([
+			'skirelay-referral:relay-opportunity-42:0',
+			'skirelay-referral:relay-opportunity-42:1'
+		]);
+		expect(commitments[0].start).toEqual(new Date('2026-01-15T09:00:00.000Z'));
+		expect(commitments[0].end).toEqual(new Date('2026-01-15T12:00:00.000Z'));
+		expect(commitments[1].start).toEqual(new Date('2026-01-16T09:00:00.000Z'));
+		expect(commitments[1].end).toEqual(new Date('2026-01-16T12:00:00.000Z'));
+
+		const commitment = commitments[0];
 		expect(commitment.sourceProduct).toBe('skirelay');
 		expect(commitment.sourceRecordType).toBe('referral');
 		expect(commitment.visibility).toBe('private');
 		expect(commitment.publicLabel).toBe('Private SkiRelay commitment');
 		expect(commitment.privateLabel).toContain('Client Secret');
+	});
+
+	it('rejects invalid SkiRelay opportunity session ranges', () => {
+		expect(() =>
+			createSkiRelayAvailabilityCommitments({
+				opportunityId: 'relay-opportunity-42',
+				instructorId: 12,
+				sessions: [{ date: '2026-01-15', startTime: '12:00', endTime: '09:00' }]
+			})
+		).toThrow('end after its start');
 	});
 });

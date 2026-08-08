@@ -25,7 +25,7 @@ export type SkiRelayBridgeConsent = {
 	shareEmailPublicly?: boolean;
 };
 
-export type LocalSnowProfileBridgeDraft = {
+export type LocalSnowPublicProfileFields = {
 	displayName: string;
 	bio: string | null;
 	sports: string[];
@@ -33,10 +33,18 @@ export type LocalSnowProfileBridgeDraft = {
 	resortSlug: string;
 	avatarUrl: string | null;
 	isPublished: false;
-	sourceProduct: 'skirelay';
-	sourceInstructorId: string;
 	publicPhone: string | null;
 	publicEmail: string | null;
+};
+
+export type LocalSnowProfileBridgeMetadata = {
+	sourceProduct: 'skirelay';
+	sourceInstructorId: string;
+};
+
+export type LocalSnowProfileBridgeDraft = {
+	publicProfileFields: LocalSnowPublicProfileFields;
+	bridgeMetadata: LocalSnowProfileBridgeMetadata;
 };
 
 export type BridgeReadiness = {
@@ -80,9 +88,7 @@ export type SkiRelaySession = {
 	endTime: string;
 };
 
-export type SkiRelayOpportunityDraft = {
-	sourceProduct: 'localsnow';
-	sourceRequestId: number;
+export type SkiRelayNetworkOpportunityDraft = {
 	visibility: 'private-network';
 	resortSlug: string;
 	sport: string;
@@ -90,12 +96,20 @@ export type SkiRelayOpportunityDraft = {
 	numberOfStudents: number;
 	sessions: SkiRelaySession[];
 	networkSummary: string;
-	privateClient: {
-		name: string | null;
-		email: string | null;
-		phone: string | null;
-	};
-	privateClientNotes: string | null;
+};
+
+export type SkiRelayInternalClientContext = {
+	sourceProduct: 'localsnow';
+	sourceRequestId: number;
+	clientName: string | null;
+	clientEmail: string | null;
+	clientPhone: string | null;
+	message: string | null;
+};
+
+export type SkiRelayOpportunityDraft = {
+	networkOpportunityDraft: SkiRelayNetworkOpportunityDraft;
+	internalClientContext: SkiRelayInternalClientContext;
 };
 
 export type SkiRelayAvailabilityCommitment = AvailabilityCommitment & {
@@ -161,17 +175,21 @@ export function buildLocalSnowProfileBridgeDraft({
 		status: 'ready',
 		reason: null,
 		publicProfileDraft: {
-			displayName: profile.displayName.trim(),
-			bio: profile.bio?.trim() || null,
-			sports: [...profile.sports],
-			languages: [...(profile.languages ?? [])],
-			resortSlug: profile.resortSlug!.trim(),
-			avatarUrl: profile.avatarUrl ?? null,
-			isPublished: false,
-			sourceProduct: 'skirelay',
-			sourceInstructorId: profile.skiRelayInstructorId,
-			publicPhone: consent.sharePhonePublicly ? (profile.phone ?? null) : null,
-			publicEmail: consent.shareEmailPublicly ? (profile.email ?? null) : null
+			publicProfileFields: {
+				displayName: profile.displayName.trim(),
+				bio: profile.bio?.trim() || null,
+				sports: [...profile.sports],
+				languages: [...(profile.languages ?? [])],
+				resortSlug: profile.resortSlug!.trim(),
+				avatarUrl: profile.avatarUrl ?? null,
+				isPublished: false,
+				publicPhone: consent.sharePhonePublicly ? (profile.phone ?? null) : null,
+				publicEmail: consent.shareEmailPublicly ? (profile.email ?? null) : null
+			},
+			bridgeMetadata: {
+				sourceProduct: 'skirelay',
+				sourceInstructorId: profile.skiRelayInstructorId
+			}
 		}
 	};
 }
@@ -205,26 +223,28 @@ export function buildSkiRelayOpportunityDraft({
 		status: 'ready',
 		reason: null,
 		opportunityDraft: {
-			sourceProduct: 'localsnow',
-			sourceRequestId: request.localSnowRequestId,
-			visibility: 'private-network',
-			resortSlug: request.resortSlug,
-			sport: request.sport,
-			skillLevel: request.skillLevel,
-			numberOfStudents: request.numberOfStudents,
-			sessions: [...request.sessions],
-			networkSummary: buildNetworkSummary(request),
-			privateClient: {
-				name: request.clientName ?? null,
-				email: request.clientEmail ?? null,
-				phone: request.clientPhone ?? null
+			networkOpportunityDraft: {
+				visibility: 'private-network',
+				resortSlug: request.resortSlug,
+				sport: request.sport,
+				skillLevel: request.skillLevel,
+				numberOfStudents: request.numberOfStudents,
+				sessions: [...request.sessions],
+				networkSummary: buildNetworkSummary(request)
 			},
-			privateClientNotes: request.message ?? null
+			internalClientContext: {
+				sourceProduct: 'localsnow',
+				sourceRequestId: request.localSnowRequestId,
+				clientName: request.clientName ?? null,
+				clientEmail: request.clientEmail ?? null,
+				clientPhone: request.clientPhone ?? null,
+				message: request.message ?? null
+			}
 		}
 	};
 }
 
-export function createSkiRelayAvailabilityCommitment({
+export function createSkiRelayAvailabilityCommitments({
 	opportunityId,
 	instructorId,
 	sessions,
@@ -234,33 +254,53 @@ export function createSkiRelayAvailabilityCommitment({
 	instructorId: number;
 	sessions: SkiRelaySession[];
 	privateLabel?: string;
-}): SkiRelayAvailabilityCommitment {
+}): SkiRelayAvailabilityCommitment[] {
 	if (!sessions.length) {
 		throw new Error(
 			'At least one SkiRelay session is required to create an availability commitment.'
 		);
 	}
 
-	const sortedSessions = [...sessions].sort((a, b) =>
-		`${a.date}T${a.startTime}`.localeCompare(`${b.date}T${b.startTime}`)
-	);
-	const firstSession = sortedSessions[0];
-	const lastSession = sortedSessions[sortedSessions.length - 1];
+	return [...sessions]
+		.sort((a, b) => `${a.date}T${a.startTime}`.localeCompare(`${b.date}T${b.startTime}`))
+		.map((session, index) => {
+			const start = toDateTime(session.date, session.startTime);
+			const end = toDateTime(session.date, session.endTime);
 
-	return {
-		id: `skirelay-referral:${opportunityId}`,
-		instructorId,
-		start: toDateTime(firstSession.date, firstSession.startTime),
-		end: toDateTime(lastSession.date, lastSession.endTime),
-		sourceProduct: 'skirelay',
-		sourceRecordType: 'referral',
-		sourceRecordId: opportunityId,
-		status: 'tentative',
-		visibility: 'private',
-		publicState: 'limited',
-		publicLabel: 'Private SkiRelay commitment',
-		privateLabel
-	};
+			if (!(start < end)) {
+				throw new Error('Each SkiRelay session must end after its start.');
+			}
+
+			return {
+				id: `skirelay-referral:${opportunityId}:${index}`,
+				instructorId,
+				start,
+				end,
+				sourceProduct: 'skirelay',
+				sourceRecordType: 'referral',
+				sourceRecordId: opportunityId,
+				status: 'tentative',
+				visibility: 'private',
+				publicState: 'limited',
+				publicLabel: 'Private SkiRelay commitment',
+				privateLabel
+			};
+		});
+}
+
+export function createSkiRelayAvailabilityCommitment(input: {
+	opportunityId: string;
+	instructorId: number;
+	sessions: SkiRelaySession[];
+	privateLabel?: string;
+}): SkiRelayAvailabilityCommitment {
+	const commitments = createSkiRelayAvailabilityCommitments(input);
+
+	if (commitments.length !== 1) {
+		throw new Error('Use createSkiRelayAvailabilityCommitments for multi-session opportunities.');
+	}
+
+	return commitments[0];
 }
 
 function isUnservedRequest(request: LocalSnowUnservedRequest): boolean {
@@ -277,5 +317,7 @@ function buildNetworkSummary(request: LocalSnowUnservedRequest): string {
 }
 
 function toDateTime(date: string, time: string): Date {
+	// Proof helper contract: SkiRelayBridge session date/time strings are already normalized to UTC.
+	// A production bridge should carry explicit resort timezone before creating commitments.
 	return new Date(`${date}T${time}:00.000Z`);
 }
