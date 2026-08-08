@@ -9,6 +9,7 @@ The `PR Checks` workflow runs on every pull request and manually via `workflow_d
 1. Install dependencies with the pinned pnpm from `packageManager`.
 2. Run `pnpm test:run`.
 3. Run `pnpm run build`.
+4. Build the production Docker image without pushing it.
 
 The workflow provides safe CI-only dummy configuration values for server modules that validate environment at import/build time. These values are not production secrets and must not be used outside CI.
 
@@ -18,11 +19,13 @@ Repo-wide `svelte-check` has OOM/SIGKILLed during agent review runs. Do not make
 
 ## Recommended branch protection after this PR lands
 
-Once `PR Checks / Test and build` has passed on at least one PR and exists on `main`, enable branch protection for `main`:
+Once `PR Checks / Test and build` and `PR Checks / Docker build` have passed on at least one PR and exist on `main`, enable branch protection for `main`:
 
 - Require a pull request before merging.
 - Require status checks to pass before merging.
-- Required check: `PR Checks / Test and build`.
+- Required checks:
+  - `PR Checks / Test and build`
+  - `PR Checks / Docker build`
 - Require branches to be up to date before merging only if the team accepts the extra rebase churn.
 - Do not require repo-wide `svelte-check` until it is stable in CI.
 
