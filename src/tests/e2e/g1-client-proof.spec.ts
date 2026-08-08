@@ -33,7 +33,10 @@ test('G1 client proof path shows availability confidence and free/protected choi
 		await expect(page.getByText(/payment handling is not promised/i)).toBeVisible();
 	} else {
 		await expect(
-			page.getByText(/Protected support is enabled profile by profile/i).first()
+			page.getByRole('button', { name: /Use free request for now/i }).first()
+		).toBeVisible();
+		await expect(
+			page.getByText(/protected support will be enabled profile by profile/i).first()
 		).toBeVisible();
 	}
 });
