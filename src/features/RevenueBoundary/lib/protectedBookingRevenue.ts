@@ -21,6 +21,7 @@ export type ProtectedBookingRevenueReadiness = {
 		| 'enable-protected-support'
 		| 'confirm-final-lesson-terms'
 		| 'set-positive-final-price'
+		| 'set-nonnegative-service-fee'
 		| 'create-localsnow-client-charge';
 };
 
@@ -36,10 +37,7 @@ export type ProtectedBookingLineItem =
 			amountCents: number;
 	  };
 
-export type ForbiddenPaymentAutomation =
-	| 'stripe_connect'
-	| 'shared_ledger'
-	| 'automatic_instructor_payout';
+export type ForbiddenPaymentAutomation = 'stripe_connect' | 'shared_ledger' | 'automatic_payout';
 
 export type ProtectedBookingChargePlan = {
 	bookingRequestId: number;
@@ -102,6 +100,15 @@ export function getProtectedBookingRevenueReadiness(
 		};
 	}
 
+	if (input.localSnowServiceFeeCents < 0) {
+		return {
+			canCreateClientCharge: false,
+			reason:
+				'A non-negative LocalSnow service fee is required before a protected booking charge can be created.',
+			nextAction: 'set-nonnegative-service-fee'
+		};
+	}
+
 	return {
 		canCreateClientCharge: true,
 		reason:
@@ -134,7 +141,7 @@ export function buildProtectedBookingRevenuePlan(
 		{
 			kind: 'localsnow_protection_fee',
 			label: 'LocalSnow protected booking support',
-			amountCents: Math.max(0, input.localSnowServiceFeeCents)
+			amountCents: input.localSnowServiceFeeCents
 		}
 	];
 
@@ -153,7 +160,7 @@ export function buildProtectedBookingRevenuePlan(
 				recipientType: input.payoutRecipientType,
 				automation: 'not_started'
 			},
-			forbiddenAutomation: ['stripe_connect', 'shared_ledger', 'automatic_instructor_payout']
+			forbiddenAutomation: ['stripe_connect', 'shared_ledger', 'automatic_payout']
 		}
 	};
 }

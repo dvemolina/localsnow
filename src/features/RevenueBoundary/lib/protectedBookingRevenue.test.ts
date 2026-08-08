@@ -66,7 +66,7 @@ describe('protectedBookingRevenue', () => {
 		expect(plan.chargePlan?.forbiddenAutomation).toEqual([
 			'stripe_connect',
 			'shared_ledger',
-			'automatic_instructor_payout'
+			'automatic_payout'
 		]);
 	});
 
@@ -81,6 +81,8 @@ describe('protectedBookingRevenue', () => {
 			recipientType: 'school',
 			automation: 'not_started'
 		});
+		expect(plan.chargePlan?.forbiddenAutomation).toContain('automatic_payout');
+		expect(JSON.stringify(plan.chargePlan?.forbiddenAutomation)).not.toContain('instructor');
 	});
 
 	it('maps the protected charge plan to the existing client_deposits shape', () => {
@@ -109,6 +111,23 @@ describe('protectedBookingRevenue', () => {
 
 		expect(plan.status).toBe('blocked');
 		expect(plan.reason).toContain('positive final price');
+		expect(plan.chargePlan).toBeNull();
+	});
+
+	it('rejects negative LocalSnow service fees instead of silently normalizing them', () => {
+		const readiness = getProtectedBookingRevenueReadiness({
+			...confirmedProtectedRequest,
+			localSnowServiceFeeCents: -100
+		});
+		expect(readiness.canCreateClientCharge).toBe(false);
+		expect(readiness.reason).toContain('non-negative LocalSnow service fee');
+		expect(readiness.nextAction).toBe('set-nonnegative-service-fee');
+
+		const plan = buildProtectedBookingRevenuePlan({
+			...confirmedProtectedRequest,
+			localSnowServiceFeeCents: -100
+		});
+		expect(plan.status).toBe('blocked');
 		expect(plan.chargePlan).toBeNull();
 	});
 });
