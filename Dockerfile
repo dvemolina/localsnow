@@ -8,8 +8,10 @@
 # -----------------------------------------------------------------------------
 FROM node:25-alpine AS deps
 
+ARG PNPM_VERSION=10.23.0
+
 # Install pnpm
-RUN npm install -g pnpm@latest
+RUN npm install -g pnpm@${PNPM_VERSION}
 
 WORKDIR /app
 
@@ -24,6 +26,8 @@ RUN pnpm install --frozen-lockfile
 # -----------------------------------------------------------------------------
 FROM node:25-alpine AS builder
 
+ARG PNPM_VERSION=10.23.0
+
 RUN apk add --no-cache \
 libpng-dev \
 libjpeg-turbo-dev \
@@ -32,7 +36,7 @@ vips-dev
 
 
 # Install pnpm
-RUN npm install -g pnpm@latest
+RUN npm install -g pnpm@${PNPM_VERSION}
 
 WORKDIR /app
 # Copy dependencies from deps stage
@@ -54,10 +58,12 @@ RUN pnpm run build:seeds
 # Stage 3: Runner (Production)
 # -----------------------------------------------------------------------------
 FROM node:25-alpine AS runner
+
+ARG PNPM_VERSION=10.23.0
 WORKDIR /app
 
 # Install pnpm
-RUN npm install -g pnpm
+RUN npm install -g pnpm@${PNPM_VERSION}
 
 # Create non-root user for security
 RUN addgroup --system --gid 1001 nodejs && \
