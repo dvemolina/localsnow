@@ -1,7 +1,7 @@
 # Ski Network Product Boundaries — LocalSnow + SkiRelay
 
 **Date:** 2026-08-07  
-**Status:** Draft for CEO/product approval before further implementation  
+**Status:** Approved direction; Moli review comments folded into goals on 2026-08-08  
 **Scope:** Define how LocalSnow and SkiRelay work together without merging into one confused product.
 
 ---
@@ -42,6 +42,38 @@ Client demand appears in LocalSnow
 ```
 
 This is the bridge. Do not optimize for architectural elegance before this loop works.
+
+### Moli review decisions folded in
+
+Moli reviewed and approved the direction with comments. Treat these as the current product-control goals unless later corrected:
+
+1. **One unified availability engine.** LocalSnow and SkiRelay should share an Availability + Commitments engine capable of season-based availability, slot granularity, blocks, commitments, and eventually two-way Google Calendar/iCal sync.
+2. **Professional but stripped-down first version.** The first version may be simple, but it must still feel professional and deliver real minimum value. Avoid a heavy instructor admin calendar; prefer a clean client-like calendar/slot UX.
+3. **Privacy boundary.** Public-facing availability should reveal only client-safe state such as available, limited, blocked, or requestable. Source details, client names, notes, and booking internals belong only to the instructor/operator. Even SkiRelay should not expose private booking details to other instructors by default.
+4. **LocalSnow booking promise split.** Free/direct path can be request-first: client contacts the instructor and waits for confirmation. Paid/protected path should let the client choose desired slots, tentatively block them, and rely on LocalSnow to reschedule or find a replacement if the instructor cannot serve.
+5. **Competitor reality check.** Maison Sport and CheckYeti already train clients to expect date/availability/booking UX. LocalSnow should not look behind the market, but it can compete early with transparent slot freshness, request/hold states, and human guarantee instead of full instant-book automation.
+6. **Services/pricing are not settled enough for a complex engine.** Benchmark Maison Sport, CheckYeti, SkiBro, and resort-specific real-world pricing before building advanced packages/promos. Start with simple offer cards, duration/group constraints, sport/level, `from` price or price-on-request, and clear inquiry/protected-booking CTAs.
+7. **SkiRelay → LocalSnow publishing should be a growth loop.** SkiRelay onboarding should offer one-click creation/sync of a free LocalSnow public profile through an explicit consented schema/API bridge. Joining SkiRelay must not publish public data silently.
+8. **Schools remain LocalSnow-only for now.** Schools are valuable publicly, but school admins, instructor relationships, overrides, payments, and pricing rules are too much bloat for SkiRelay MVP.
+9. **Payments stay separate and manual-backed.** LocalSnow needs only basic client payment processing for protected bookings now. Paying instructors/schools can remain manual. Do not build Stripe Connect, shared ledger, or SkiRelay payment automation until real transactions prove the need.
+
+### Goals that prevent drift
+
+Use these goals to classify every next task:
+
+```txt
+G1 — LocalSnow client proof
+Client can find a relevant instructor/school, understand availability confidence, pick/request slots, and either contact directly or choose protected booking.
+
+G2 — Availability spine proof
+One canonical availability/commitment model can represent season availability, external calendar blocks, LocalSnow tentative/confirmed bookings, and SkiRelay referrals without leaking private details.
+
+G3 — SkiRelay supply bridge proof
+An instructor in SkiRelay can become LocalSnow public supply by explicit consent, and a LocalSnow unserved request can become a private SkiRelay opportunity later.
+
+G4 — Revenue without payment bloat
+LocalSnow can charge the client for protected booking/support while instructor/school payout remains manual until transaction volume justifies automation.
+```
 
 ---
 
@@ -531,17 +563,25 @@ Only after real client requests happen:
 
 ---
 
-## 11. Open CEO decisions
+## 11. CEO decisions after review
 
-Moli should explicitly approve or correct these before implementation:
+Moli's review answers convert the old open questions into these decisions:
 
-1. **Availability source of truth:** yes/no to one shared Availability + Commitments engine.
-2. **Availability visibility:** should instructors be able to mark some availability as private-network-only and some as public-requestable?
-3. **Exact booking promise:** should LocalSnow show exact bookable slots soon, or stay “request availability” until trust/supply is stronger?
-4. **Services:** should the first public service model be simple cards/prices-on-request instead of advanced packages/promos?
-5. **SkiRelay publishing:** should SkiRelay onboarding ask “Create free LocalSnow public profile?” as a core growth loop?
-6. **Schools:** keep schools LocalSnow-only for MVP, yes/no?
-7. **Payments:** keep LocalSnow client payments and SkiRelay referral payments separate until real transactions prove the ledger need, yes/no?
+1. **Availability source of truth:** yes — one shared Availability + Commitments engine.
+2. **Availability visibility:** yes — availability can be public-requestable or private/network-only, but public views only expose client-safe availability state, not booking details.
+3. **Exact booking promise:** LocalSnow should move toward granular slotted availability, but with honest confidence states. Free/direct flow remains request/confirm. Paid/protected flow can tentatively hold requested slots and includes LocalSnow replacement/rescheduling help.
+4. **Services:** do not build advanced packages/promos yet. First public model should be simple service cards with duration/group/sport/level and `from` price or price-on-request. Do competitor/resort pricing research before deeper modeling.
+5. **SkiRelay publishing:** yes — make explicit, consented one-click setup/sync into a free LocalSnow profile a core growth loop.
+6. **Schools:** yes — keep schools LocalSnow-only for MVP. Avoid SkiRelay school-admin/payment/pricing complexity now.
+7. **Payments:** yes — keep LocalSnow client payments and SkiRelay/referral/instructor payout separate. Basic LocalSnow payment processing only; founder/manual payouts until real volume demands automation.
+
+Remaining design tasks before implementation:
+
+- Compare the current LocalSnow and SkiRelay availability models and choose the canonical minimal model.
+- Design the client-facing slot UX states: fresh/confirmed, stale/request-only, tentative hold, blocked, replacement help.
+- Benchmark Maison Sport, CheckYeti, SkiBro, and resort-specific lesson pricing patterns before changing services/pricing schema.
+- Define the consented SkiRelay → LocalSnow profile-publish API schema.
+- Define the LocalSnow protected booking payment boundary without Stripe Connect or shared ledger.
 
 ---
 
