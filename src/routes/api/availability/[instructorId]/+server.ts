@@ -1,6 +1,9 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { SlotGenerationService } from '$src/features/Availability/lib/slotGenerationService';
+import {
+	SlotGenerationService,
+	toPublicAvailability
+} from '$src/features/Availability/lib/slotGenerationService';
 
 const slotService = new SlotGenerationService();
 
@@ -17,10 +20,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
 	const slotDuration = parseInt(url.searchParams.get('slotDuration') || '60');
 
 	if (!startDateStr || !endDateStr) {
-		return json(
-			{ error: 'startDate and endDate are required' },
-			{ status: 400 }
-		);
+		return json({ error: 'startDate and endDate are required' }, { status: 400 });
 	}
 
 	try {
@@ -43,13 +43,10 @@ export const GET: RequestHandler = async ({ params, url }) => {
 			startDate: startDateStr,
 			endDate: endDateStr,
 			slotDurationMinutes: slotDuration,
-			availability
+			availability: toPublicAvailability(availability)
 		});
 	} catch (error) {
 		console.error('Error generating availability slots:', error);
-		return json(
-			{ error: 'Failed to generate availability slots' },
-			{ status: 500 }
-		);
+		return json({ error: 'Failed to generate availability slots' }, { status: 500 });
 	}
 };

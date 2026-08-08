@@ -1,6 +1,7 @@
 import { db } from '$lib/server/db';
 import { instructorWorkingHours, instructorCalendarBlocks } from '$lib/server/db/schema';
 import { eq, and, gte, lte, or } from 'drizzle-orm';
+import { getSlotStatusFromCalendarBlockSource } from './availabilitySpine';
 
 export type TimeSlot = {
 	date: string; // YYYY-MM-DD
@@ -17,6 +18,26 @@ export type DayAvailability = {
 	isWorkingDay: boolean;
 	slots: TimeSlot[];
 };
+
+export type PublicTimeSlot = Pick<TimeSlot, 'date' | 'startTime' | 'endTime' | 'status'>;
+
+export type PublicDayAvailability = Omit<DayAvailability, 'slots'> & {
+	slots: PublicTimeSlot[];
+};
+
+export function toPublicAvailability(availability: DayAvailability[]): PublicDayAvailability[] {
+	return availability.map((day) => ({
+		date: day.date,
+		dayOfWeek: day.dayOfWeek,
+		isWorkingDay: day.isWorkingDay,
+		slots: day.slots.map(({ date, startTime, endTime, status }) => ({
+			date,
+			startTime,
+			endTime,
+			status
+		}))
+	}));
+}
 
 export class SlotGenerationService {
 	/**
@@ -129,10 +150,7 @@ export class SlotGenerationService {
 		let currentHour = startHour;
 		let currentMinute = startMinute;
 
-		while (
-			currentHour < endHour ||
-			(currentHour === endHour && currentMinute < endMinute)
-		) {
+		while (currentHour < endHour || (currentHour === endHour && currentMinute < endMinute)) {
 			const slotStartTime = `${String(currentHour).padStart(2, '0')}:${String(currentMinute).padStart(2, '0')}`;
 
 			// Calculate end time
@@ -197,20 +215,8 @@ export class SlotGenerationService {
 	/**
 	 * Map block source to slot status
 	 */
-	private getStatusFromSource(
-		source: string
-	): 'blocked' | 'pending' | 'booked' {
-		switch (source) {
-			case 'google_calendar':
-			case 'manual':
-				return 'blocked';
-			case 'booking_pending':
-				return 'pending';
-			case 'booking_confirmed':
-				return 'booked';
-			default:
-				return 'blocked';
-		}
+	private getStatusFromSource(source: string): 'blocked' | 'pending' | 'booked' {
+		return getSlotStatusFromCalendarBlockSource(source);
 	}
 
 	/**
