@@ -572,19 +572,19 @@
 							<svg class="mt-0.5 size-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
 								<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
 							</svg>
-							<span>Your selected slots are requested as a tentative hold, not exposed as private calendar details.</span>
+							<span>Pay for the guarantee: LocalSnow manages getting the lesson you want on the paid route.</span>
 						</p>
 						<p class="flex items-start gap-2">
 							<svg class="mt-0.5 size-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
 								<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
 							</svg>
-							<span>If the instructor cannot serve the request, LocalSnow reschedules, finds another suitable instructor, or refunds the client.</span>
+							<span>LocalSnow confirms the requested instructor first. If they cannot serve, LocalSnow finds a suitable replacement or refunds you.</span>
 						</p>
 						<p class="flex items-start gap-2">
 							<svg class="mt-0.5 size-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
 								<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
 							</svg>
-							<span>Before payment, LocalSnow confirms the final lesson price. If a replacement costs more later, the client approves the difference first.</span>
+							<span>If a replacement costs more later, you approve the difference first. If no suitable lesson can be arranged, you get refunded.</span>
 						</p>
 						<div class="mt-3 rounded-md border border-primary/20 bg-background/70 p-3 text-xs text-muted-foreground">
 							<p class="font-medium text-foreground">Protected booking total before you pay</p>

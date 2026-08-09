@@ -4,7 +4,8 @@ import {
 	buildProtectedBookingPaymentBoundary,
 	buildProtectedBookingRevenuePlan,
 	getProtectedBookingReplacementResolution,
-	getProtectedBookingRevenueReadiness
+	getProtectedBookingRevenueReadiness,
+	getProtectedCheckoutReadiness
 } from './protectedBookingRevenue';
 
 describe('protectedBookingRevenue', () => {
@@ -18,6 +19,78 @@ describe('protectedBookingRevenue', () => {
 		currency: 'EUR' as const,
 		payoutRecipientType: 'instructor' as const
 	};
+
+	const serviceableProtectedCheckout = {
+		protectedSupportEnabled: true,
+		protectedTotalCents: 40000,
+		request: {
+			resortSelected: true,
+			dateSelected: true,
+			timeWindowSelected: true,
+			sportSelected: true,
+			levelSelected: true,
+			participantCount: 2,
+			durationMinutes: 180
+		},
+		serviceability: {
+			leadTime: 'safe' as const,
+			supplyConfidence: 'fallback_available' as const,
+			clientAcceptsSuitableReplacement: true
+		}
+	};
+
+	it('allows paid protected checkout when LocalSnow can guarantee the lesson outcome without exact instructor confirmation', () => {
+		const readiness = getProtectedCheckoutReadiness(serviceableProtectedCheckout);
+
+		expect(readiness).toMatchObject({
+			status: 'checkout_ready',
+			canCollectPayment: true,
+			exactInstructorConfirmationRequiredBeforePayment: false,
+			nextAction: 'collect-protected-payment'
+		});
+		expect(readiness.clientCopy).toContain(
+			'Pay the protected booking total now. LocalSnow confirms the requested instructor first; if they cannot serve, LocalSnow finds a suitable replacement or refunds you.'
+		);
+	});
+
+	it('asks for more details instead of payment when the request is too vague to guarantee', () => {
+		const readiness = getProtectedCheckoutReadiness({
+			...serviceableProtectedCheckout,
+			request: {
+				...serviceableProtectedCheckout.request,
+				dateSelected: false,
+				timeWindowSelected: false
+			}
+		});
+
+		expect(readiness).toMatchObject({
+			status: 'needs_more_details',
+			canCollectPayment: false,
+			nextAction: 'collect-request-details',
+			missingDetails: ['date', 'time window']
+		});
+	});
+
+	it('blocks payment when LocalSnow cannot responsibly service or replace the request', () => {
+		const readiness = getProtectedCheckoutReadiness({
+			...serviceableProtectedCheckout,
+			serviceability: {
+				leadTime: 'too_soon' as const,
+				supplyConfidence: 'none' as const,
+				clientAcceptsSuitableReplacement: true
+			}
+		});
+
+		expect(readiness).toMatchObject({
+			status: 'not_serviceable',
+			canCollectPayment: false,
+			nextAction: 'do-not-take-payment'
+		});
+		expect(readiness.reasons).toEqual([
+			'Request is too soon for LocalSnow to guarantee fulfillment.',
+			'LocalSnow has no suitable instructor or fallback confidence for this request.'
+		]);
+	});
 
 	it('blocks payment for free/direct requests', () => {
 		const readiness = getProtectedBookingRevenueReadiness({
@@ -202,12 +275,12 @@ describe('protectedBookingRevenue', () => {
 		expect(plan.chargePlan).toBeNull();
 	});
 
-	it('locks the protected promise to reschedule, replace, or refund', () => {
+	it('locks the paid guarantee to desired lesson fulfillment, not exact instructor certainty', () => {
 		const plan = buildProtectedBookingRevenuePlan(confirmedProtectedRequest);
 
 		expect(plan.chargePlan?.customerPromise).toEqual({
 			kind: 'reschedule-replace-or-refund',
-			copy: 'LocalSnow reschedules, finds another suitable instructor, or refunds the client.',
+			copy: 'LocalSnow confirms the requested instructor first; if they cannot serve, LocalSnow finds a suitable replacement or refunds the client.',
 			replacementPricePolicy: 'client_approval_required_for_price_increase'
 		});
 	});

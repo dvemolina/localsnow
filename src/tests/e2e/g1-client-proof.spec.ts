@@ -30,12 +30,11 @@ test('G1 client proof path shows availability confidence and free/protected choi
 	if ((await protectedSupport.count()) > 0 && (await protectedSupport.isEnabled())) {
 		await protectedSupport.click();
 		await expect(page.getByText(/Protected booking request/i)).toBeVisible();
-		await expect(
-			page.getByText(/reschedules, finds another suitable instructor, or refunds/i)
-		).toBeVisible();
-		await expect(page.getByText(/approves the difference first/i)).toBeVisible();
+		await expect(page.getByText(/finds a suitable replacement or refunds you/i)).toBeVisible();
+		await expect(page.getByText(/approve the difference first/i)).toBeVisible();
 		await expect(page.getByText(/Protected booking total before you pay/i)).toBeVisible();
 		await expect(page.getByText(/one protected booking total/i)).toBeVisible();
+		await expect(page.getByText(/confirms the requested instructor first/i)).toBeVisible();
 		await expect(page.getByText(/separate LocalSnow protected booking fee/i)).toHaveCount(0);
 	} else {
 		await expect(
