@@ -34,6 +34,9 @@ test('G1 client proof path shows availability confidence and free/protected choi
 			page.getByText(/reschedules, finds another suitable instructor, or refunds/i)
 		).toBeVisible();
 		await expect(page.getByText(/approves the difference first/i)).toBeVisible();
+		await expect(page.getByText(/Protected booking total before you pay/i)).toBeVisible();
+		await expect(page.getByText(/one protected booking total/i)).toBeVisible();
+		await expect(page.getByText(/separate LocalSnow protected booking fee/i)).toHaveCount(0);
 	} else {
 		await expect(
 			page.getByRole('button', { name: /Use free request for now/i }).first()

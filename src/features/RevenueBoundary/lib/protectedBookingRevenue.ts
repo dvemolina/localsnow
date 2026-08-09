@@ -6,7 +6,7 @@ export type ProtectedBookingRevenueInput = {
 	bookingRequestId: number;
 	path: BookingRevenuePath;
 	protectedSupportEnabled: boolean;
-	instructorConfirmedFinalTerms: boolean;
+	checkoutReady: boolean;
 	finalLessonPriceCents: number;
 	localSnowServiceFeeCents: number;
 	currency: CurrencyCode;
@@ -19,7 +19,7 @@ export type ProtectedBookingRevenueReadiness = {
 	nextAction:
 		| 'use-direct-payment-between-client-and-instructor'
 		| 'enable-protected-support'
-		| 'confirm-final-lesson-terms'
+		| 'prepare-checkout-total'
 		| 'set-positive-final-price'
 		| 'set-nonnegative-service-fee'
 		| 'create-localsnow-client-charge';
@@ -90,6 +90,55 @@ export type ProtectedBookingReplacementResolution = {
 	clientCopy: string;
 };
 
+export type ProtectedBookingPaymentBoundaryInput = {
+	currency: CurrencyCode;
+	lessonEstimateCents: number;
+	checkoutReady: boolean;
+	finalLessonPriceCents?: number;
+	localSnowServiceFeeCents?: number;
+};
+
+export type ProtectedBookingPaymentBoundaryLineItem =
+	| {
+			kind: 'estimated_lesson_amount' | 'confirmed_lesson_amount';
+			label: 'Estimated lesson amount' | 'Instructor net';
+			amountCents: number;
+			displayAmount: string;
+			visibility: 'client' | 'internal';
+	  }
+	| {
+			kind: 'localsnow_margin';
+			label: 'LocalSnow margin';
+			amountCents: number;
+			displayAmount: string;
+			visibility: 'internal';
+	  };
+
+export type ProtectedBookingClientDisplay = {
+	feeDisplayMode: 'bundled_total';
+	label: 'Protected booking total';
+	displayAmount: string;
+};
+
+export type ProtectedBookingInternalAccounting = {
+	instructorNetCents: number;
+	localSnowMarginCents: number;
+};
+
+export type ProtectedBookingPaymentBoundary = {
+	status: 'estimate_only' | 'ready_for_payment_review';
+	canCollectPayment: boolean;
+	currency: CurrencyCode;
+	lineItems: ProtectedBookingPaymentBoundaryLineItem[];
+	totalClientChargeCents: number | null;
+	displayTotalClientCharge: string;
+	clientDisplay: ProtectedBookingClientDisplay;
+	internalAccounting: ProtectedBookingInternalAccounting | null;
+	clientChargeTiming: 'after_checkout_total_is_ready' | 'after_client_reviews_protected_total';
+	reviewRequirement: 'client_reviews_protected_booking_total_before_payment';
+	clientCopy: string[];
+};
+
 export function getProtectedBookingRevenueReadiness(
 	input: ProtectedBookingRevenueInput
 ): ProtectedBookingRevenueReadiness {
@@ -110,11 +159,11 @@ export function getProtectedBookingRevenueReadiness(
 		};
 	}
 
-	if (!input.instructorConfirmedFinalTerms) {
+	if (!input.checkoutReady) {
 		return {
 			canCreateClientCharge: false,
-			reason: 'LocalSnow should not charge until the instructor confirms final lesson terms.',
-			nextAction: 'confirm-final-lesson-terms'
+			reason: 'LocalSnow should not charge until the protected booking checkout total is ready.',
+			nextAction: 'prepare-checkout-total'
 		};
 	}
 
@@ -216,6 +265,91 @@ export function buildClientDepositDraft({
 	};
 }
 
+export function buildProtectedBookingPaymentBoundary(
+	input: ProtectedBookingPaymentBoundaryInput
+): ProtectedBookingPaymentBoundary {
+	const canShowFinalPaymentReview =
+		input.checkoutReady &&
+		input.finalLessonPriceCents != null &&
+		input.finalLessonPriceCents > 0 &&
+		input.localSnowServiceFeeCents != null &&
+		input.localSnowServiceFeeCents >= 0;
+
+	if (!canShowFinalPaymentReview) {
+		return {
+			status: 'estimate_only',
+			canCollectPayment: false,
+			currency: input.currency,
+			lineItems: [
+				{
+					kind: 'estimated_lesson_amount',
+					label: 'Estimated lesson amount',
+					amountCents: input.lessonEstimateCents,
+					displayAmount: formatCurrencyCents(input.lessonEstimateCents, input.currency),
+					visibility: 'client'
+				}
+			],
+			totalClientChargeCents: null,
+			displayTotalClientCharge: 'Calculated before payment',
+			clientDisplay: {
+				feeDisplayMode: 'bundled_total',
+				label: 'Protected booking total',
+				displayAmount: 'Calculated before payment'
+			},
+			internalAccounting: null,
+			clientChargeTiming: 'after_checkout_total_is_ready',
+			reviewRequirement: 'client_reviews_protected_booking_total_before_payment',
+			clientCopy: [
+				'The protected booking total is automatically calculated from the instructor rate card and LocalSnow margin.',
+				'LocalSnow shows one protected booking total before payment.',
+				'Payment only happens after the client reviews the protected total.'
+			]
+		};
+	}
+
+	const totalClientChargeCents = input.finalLessonPriceCents! + input.localSnowServiceFeeCents!;
+
+	return {
+		status: 'ready_for_payment_review',
+		canCollectPayment: true,
+		currency: input.currency,
+		lineItems: [
+			{
+				kind: 'confirmed_lesson_amount',
+				label: 'Instructor net',
+				amountCents: input.finalLessonPriceCents!,
+				displayAmount: formatCurrencyCents(input.finalLessonPriceCents!, input.currency),
+				visibility: 'internal'
+			},
+			{
+				kind: 'localsnow_margin',
+				label: 'LocalSnow margin',
+				amountCents: input.localSnowServiceFeeCents!,
+				displayAmount: formatCurrencyCents(input.localSnowServiceFeeCents!, input.currency),
+				visibility: 'internal'
+			}
+		],
+		totalClientChargeCents,
+		displayTotalClientCharge: formatCurrencyCents(totalClientChargeCents, input.currency),
+		clientDisplay: {
+			feeDisplayMode: 'bundled_total',
+			label: 'Protected booking total',
+			displayAmount: formatCurrencyCents(totalClientChargeCents, input.currency)
+		},
+		internalAccounting: {
+			instructorNetCents: input.finalLessonPriceCents!,
+			localSnowMarginCents: input.localSnowServiceFeeCents!
+		},
+		clientChargeTiming: 'after_client_reviews_protected_total',
+		reviewRequirement: 'client_reviews_protected_booking_total_before_payment',
+		clientCopy: [
+			'The protected booking total is ready for checkout.',
+			'The client sees one protected booking total before payment.',
+			'LocalSnow keeps internal accounting for instructor net and LocalSnow margin while payout remains manual.'
+		]
+	};
+}
+
 export function getProtectedBookingReplacementResolution(
 	input: ProtectedBookingReplacementResolutionInput
 ): ProtectedBookingReplacementResolution {
@@ -271,6 +405,11 @@ export function getProtectedBookingReplacementResolution(
 
 function centsToDecimalString(cents: number): string {
 	return (cents / 100).toFixed(2);
+}
+
+function formatCurrencyCents(cents: number, currency: CurrencyCode): string {
+	const symbol = currency === 'EUR' ? '€' : `${currency} `;
+	return `${symbol}${centsToDecimalString(cents)}`;
 }
 
 function addHours(date: Date, hours: number): Date {
