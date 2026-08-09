@@ -1,8 +1,10 @@
 // src/features/Admin/lib/adminBookingService.ts
 import { db } from '$lib/server/db';
 import { bookingRequests, clientDeposits, leadPayments } from '$lib/server/db/schema';
-import { eq, and, or, like, gte, lte, sql, count } from 'drizzle-orm';
+import { eq, and, or, like, gte, lte, sql, count, type SQL } from 'drizzle-orm';
+import { buildProtectedBookingOperationsQueue } from '$src/features/RevenueBoundary/lib/protectedBookingOperationsQueue';
 import { adminAuditService } from './adminAuditService';
+import type { RequestEvent } from '@sveltejs/kit';
 
 interface BookingFilters {
 	search?: string;
@@ -10,6 +12,31 @@ interface BookingFilters {
 	dateFrom?: Date;
 	dateTo?: Date;
 	instructorId?: number;
+}
+
+type BookingStatus =
+	| 'pending'
+	| 'viewed'
+	| 'accepted'
+	| 'rejected'
+	| 'cancelled'
+	| 'expired'
+	| 'completed'
+	| 'no_show';
+
+const bookingStatuses = new Set<BookingStatus>([
+	'pending',
+	'viewed',
+	'accepted',
+	'rejected',
+	'cancelled',
+	'expired',
+	'completed',
+	'no_show'
+]);
+
+function isBookingStatus(status: string): status is BookingStatus {
+	return bookingStatuses.has(status as BookingStatus);
 }
 
 export const adminBookingService = {
@@ -20,19 +47,18 @@ export const adminBookingService = {
 		const offset = (page - 1) * pageSize;
 
 		// Build where conditions
-		const conditions: any[] = [];
+		const conditions: SQL[] = [];
 
 		if (filters.search) {
-			conditions.push(
-				or(
-					like(bookingRequests.clientName, `%${filters.search}%`),
-					like(bookingRequests.clientEmail, `%${filters.search}%`)
-				)
+			const searchCondition = or(
+				like(bookingRequests.clientName, `%${filters.search}%`),
+				like(bookingRequests.clientEmail, `%${filters.search}%`)
 			);
+			if (searchCondition) conditions.push(searchCondition);
 		}
 
-		if (filters.status) {
-			conditions.push(eq(bookingRequests.status, filters.status as any));
+		if (filters.status && isBookingStatus(filters.status)) {
+			conditions.push(eq(bookingRequests.status, filters.status));
 		}
 
 		if (filters.dateFrom) {
@@ -63,6 +89,7 @@ export const adminBookingService = {
 						email: true
 					}
 				},
+				deposit: true,
 				sports: {
 					with: {
 						sport: true
@@ -81,6 +108,22 @@ export const adminBookingService = {
 
 		return {
 			bookings,
+			protectedOperationsQueue: buildProtectedBookingOperationsQueue(
+				bookings.map((booking) => ({
+					bookingId: booking.id,
+					clientName: booking.clientName,
+					clientEmail: booking.clientEmail,
+					requestedInstructorName: `${booking.instructor.name} ${booking.instructor.lastName}`,
+					startDate: booking.startDate,
+					createdAt: booking.createdAt,
+					numberOfStudents: booking.numberOfStudents,
+					sportLabels: booking.sports.map(({ sport }) => sport.sport),
+					bookingStatus: booking.status,
+					depositStatus: booking.deposit?.status ?? null,
+					protectedTotal: booking.deposit?.amount ?? null,
+					currency: booking.deposit?.currency ?? booking.currency
+				}))
+			),
 			pagination: {
 				page,
 				pageSize,
@@ -134,7 +177,7 @@ export const adminBookingService = {
 	/**
 	 * Cancel a booking
 	 */
-	async cancelBooking(bookingId: number, adminId: number, reason: string, event?: any) {
+	async cancelBooking(bookingId: number, adminId: number, reason: string, event?: RequestEvent) {
 		await db
 			.update(bookingRequests)
 			.set({
@@ -160,7 +203,7 @@ export const adminBookingService = {
 	 * Process refund for a booking deposit
 	 * Note: This marks it as refunded in DB, actual Stripe refund should be done separately
 	 */
-	async refundDeposit(bookingId: number, adminId: number, event?: any) {
+	async refundDeposit(bookingId: number, adminId: number, event?: RequestEvent) {
 		const deposit = await db.query.clientDeposits.findFirst({
 			where: eq(clientDeposits.bookingRequestId, bookingId)
 		});
@@ -203,7 +246,7 @@ export const adminBookingService = {
 	 * Get booking statistics for reporting
 	 */
 	async getBookingStatistics(dateFrom?: Date, dateTo?: Date) {
-		const conditions: any[] = [];
+		const conditions: SQL[] = [];
 
 		if (dateFrom) {
 			conditions.push(gte(bookingRequests.createdAt, dateFrom));
@@ -231,13 +274,12 @@ export const adminBookingService = {
 				total: sql<number>`SUM(${bookingRequests.estimatedPrice})`
 			})
 			.from(bookingRequests)
-			.where(and(
-				whereClause,
-				or(
-					eq(bookingRequests.status, 'accepted'),
-					eq(bookingRequests.status, 'completed')
+			.where(
+				and(
+					whereClause,
+					or(eq(bookingRequests.status, 'accepted'), eq(bookingRequests.status, 'completed'))
 				)
-			));
+			);
 
 		return {
 			byStatus,
