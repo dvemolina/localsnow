@@ -71,15 +71,16 @@ describe('clientProofPath', () => {
 		).toBe(true);
 	});
 
-	it('frames protected support as assisted follow-up, not payment automation', () => {
+	it('frames protected support as safeguarded booking, not payout automation', () => {
 		const protectedPath = getClientPathOptions({ hasProtectedBooking: true }).find(
 			(option) => option.kind === 'protected'
 		);
 
 		expect(protectedPath?.enabled).toBe(true);
 		expect(protectedPath?.priceSignal).toBe('assisted');
-		expect(protectedPath?.cta).toBe('Request protected support');
-		expect(protectedPath?.safeguardCopy).toContain('follow up');
-		expect(protectedPath?.safeguardCopy).not.toContain('payment');
+		expect(protectedPath?.cta).toBe('Request protected booking');
+		expect(protectedPath?.safeguardCopy).toContain('reschedule');
+		expect(protectedPath?.safeguardCopy).toContain('refund');
+		expect(protectedPath?.safeguardCopy).not.toContain('payout');
 	});
 });

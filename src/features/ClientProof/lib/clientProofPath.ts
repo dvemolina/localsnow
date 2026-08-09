@@ -97,9 +97,9 @@ export function getClientPathOptions({
 		priceSignal: 'assisted',
 		enabled: hasProtectedBooking,
 		safeguardCopy: hasProtectedBooking
-			? 'LocalSnow can help coordinate the request and follow up if the instructor cannot serve the preferred slot.'
+			? 'With LocalSnow safeguarded booking, we reschedule, find another suitable instructor, or refund the client if the instructor cannot serve the request.'
 			: 'For now, use the free request path. LocalSnow protected support will be enabled profile by profile.',
-		cta: hasProtectedBooking ? 'Request protected support' : 'Use free request for now'
+		cta: hasProtectedBooking ? 'Request protected booking' : 'Use free request for now'
 	};
 
 	return [direct, protectedPath];

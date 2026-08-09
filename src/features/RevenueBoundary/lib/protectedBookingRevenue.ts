@@ -39,6 +39,12 @@ export type ProtectedBookingLineItem =
 
 export type ForbiddenPaymentAutomation = 'stripe_connect' | 'shared_ledger' | 'automatic_payout';
 
+export type ProtectedBookingCustomerPromise = {
+	kind: 'reschedule-replace-or-refund';
+	copy: string;
+	replacementPricePolicy: 'client_approval_required_for_price_increase';
+};
+
 export type ProtectedBookingChargePlan = {
 	bookingRequestId: number;
 	collectionOwner: 'localsnow';
@@ -46,6 +52,7 @@ export type ProtectedBookingChargePlan = {
 	currency: CurrencyCode;
 	totalClientChargeCents: number;
 	lineItems: ProtectedBookingLineItem[];
+	customerPromise: ProtectedBookingCustomerPromise;
 	payout: {
 		mode: 'manual';
 		recipientType: PayoutRecipientType;
@@ -61,6 +68,26 @@ export type ClientDepositDraft = {
 	currency: CurrencyCode;
 	status: 'pending';
 	expiresAt: Date;
+};
+
+export type ProtectedBookingReplacementResolutionInput = {
+	paidClientChargeCents: number;
+	sameInstructorCanReschedule: boolean;
+	replacementInstructorAvailable: boolean;
+	replacementClientChargeCents?: number;
+	clientApprovedPriceIncrease?: boolean;
+};
+
+export type ProtectedBookingReplacementResolution = {
+	action:
+		| 'reschedule-same-instructor'
+		| 'offer-replacement-without-price-increase'
+		| 'ask-client-to-approve-price-increase'
+		| 'replace-after-client-approved-price-increase'
+		| 'refund-client';
+	canProceedWithoutClientDecision: boolean;
+	clientPriceDeltaCents: number;
+	clientCopy: string;
 };
 
 export function getProtectedBookingRevenueReadiness(
@@ -155,6 +182,11 @@ export function buildProtectedBookingRevenuePlan(
 			currency: input.currency,
 			totalClientChargeCents: lineItems.reduce((total, item) => total + item.amountCents, 0),
 			lineItems,
+			customerPromise: {
+				kind: 'reschedule-replace-or-refund',
+				copy: 'LocalSnow reschedules, finds another suitable instructor, or refunds the client.',
+				replacementPricePolicy: 'client_approval_required_for_price_increase'
+			},
 			payout: {
 				mode: 'manual',
 				recipientType: input.payoutRecipientType,
@@ -181,6 +213,59 @@ export function buildClientDepositDraft({
 		currency: plan.currency,
 		status: 'pending',
 		expiresAt: addHours(now, 48)
+	};
+}
+
+export function getProtectedBookingReplacementResolution(
+	input: ProtectedBookingReplacementResolutionInput
+): ProtectedBookingReplacementResolution {
+	if (input.sameInstructorCanReschedule) {
+		return {
+			action: 'reschedule-same-instructor',
+			canProceedWithoutClientDecision: true,
+			clientPriceDeltaCents: 0,
+			clientCopy: 'LocalSnow reschedules with the same instructor under the paid protected booking.'
+		};
+	}
+
+	if (!input.replacementInstructorAvailable || input.replacementClientChargeCents == null) {
+		return {
+			action: 'refund-client',
+			canProceedWithoutClientDecision: true,
+			clientPriceDeltaCents: -input.paidClientChargeCents,
+			clientCopy:
+				'LocalSnow could not find a suitable instructor for the protected booking, so the client gets a refund.'
+		};
+	}
+
+	const clientPriceDeltaCents = input.replacementClientChargeCents - input.paidClientChargeCents;
+
+	if (clientPriceDeltaCents <= 0) {
+		return {
+			action: 'offer-replacement-without-price-increase',
+			canProceedWithoutClientDecision: true,
+			clientPriceDeltaCents,
+			clientCopy:
+				'LocalSnow can offer another suitable instructor without increasing the client price.'
+		};
+	}
+
+	if (input.clientApprovedPriceIncrease) {
+		return {
+			action: 'replace-after-client-approved-price-increase',
+			canProceedWithoutClientDecision: true,
+			clientPriceDeltaCents,
+			clientCopy:
+				'The client approved the replacement instructor price difference, so LocalSnow can continue the protected booking.'
+		};
+	}
+
+	return {
+		action: 'ask-client-to-approve-price-increase',
+		canProceedWithoutClientDecision: false,
+		clientPriceDeltaCents,
+		clientCopy:
+			'The replacement instructor costs more, so the client must approve the difference before LocalSnow changes the booking.'
 	};
 }
 
