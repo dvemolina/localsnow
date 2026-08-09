@@ -27,7 +27,7 @@
 		});
 	}
 
-	function getStatusColor(status: string) {
+	function getStatusColor(status: string | null) {
 		const colors: Record<string, string> = {
 			pending: 'bg-yellow-100 text-yellow-800',
 			viewed: 'bg-blue-100 text-blue-800',
@@ -35,6 +35,18 @@
 			completed: 'bg-green-600 text-white',
 			rejected: 'bg-red-100 text-red-800',
 			expired: 'bg-gray-100 text-gray-800'
+		};
+		return status ? colors[status] || 'bg-gray-100 text-gray-800' : 'bg-gray-100 text-gray-800';
+	}
+
+	function getOperationStatusColor(status: string) {
+		const colors: Record<string, string> = {
+			replacement_or_refund_needed: 'bg-red-100 text-red-800',
+			confirm_requested_instructor_first: 'bg-yellow-100 text-yellow-800',
+			payment_pending: 'bg-slate-100 text-slate-800',
+			requested_instructor_confirmed: 'bg-green-100 text-green-800',
+			refund_completed: 'bg-blue-100 text-blue-800',
+			closed: 'bg-gray-100 text-gray-800'
 		};
 		return colors[status] || 'bg-gray-100 text-gray-800';
 	}
@@ -45,6 +57,51 @@
 		<h1 class="title2 mb-2">{$t('bookings_admin_booking_management')}</h1>
 		<p class="text-muted-foreground">{$t('bookings_admin_booking_management_desc')}</p>
 	</div>
+
+	<!-- Protected Booking Operations Queue -->
+	<Card>
+		<CardHeader>
+			<CardTitle>Protected booking operations queue</CardTitle>
+		</CardHeader>
+		<CardContent>
+			<p class="text-muted-foreground mb-4 text-sm">
+				Paid route only: confirm the requested instructor first. If they cannot serve, arrange a
+				suitable replacement or refund. Instructor/school payout stays manual.
+			</p>
+			{#if data.protectedOperationsQueue.length > 0}
+				<div class="space-y-3">
+					{#each data.protectedOperationsQueue.slice(0, 8) as item}
+						<div class="rounded-lg border p-4">
+							<div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+								<div class="space-y-1">
+									<div class="flex flex-wrap items-center gap-2">
+										<span class="text-muted-foreground font-mono text-xs">#{item.bookingId}</span>
+										<Badge class={getOperationStatusColor(item.status)}>{item.label}</Badge>
+									</div>
+									<p class="font-medium">{item.clientName} → {item.requestedInstructorName}</p>
+									<p class="text-muted-foreground text-sm">
+										{formatDate(item.startDate)} · {item.numberOfStudents} student{item.numberOfStudents ===
+										1
+											? ''
+											: 's'} · {item.sportLabels.join(', ') || 'sport not set'}
+									</p>
+								</div>
+								<div class="text-left md:text-right">
+									<p class="text-sm font-semibold">{item.currency} {item.protectedTotal}</p>
+									<p class="text-muted-foreground text-xs">Protected total · payout manual</p>
+								</div>
+							</div>
+							<p class="mt-3 text-sm">{item.nextOperatorAction}</p>
+						</div>
+					{/each}
+				</div>
+			{:else}
+				<p class="text-muted-foreground rounded-lg border border-dashed p-4 text-sm">
+					No paid protected booking operations yet.
+				</p>
+			{/if}
+		</CardContent>
+	</Card>
 
 	<!-- Filters -->
 	<Card>
@@ -57,10 +114,7 @@
 						onkeydown={(e) => e.key === 'Enter' && applyFilters()}
 					/>
 				</div>
-				<Select.Root
-					selected={{ value: statusFilter }}
-					onSelectedChange={(v) => statusFilter = v?.value || 'all'}
-				>
+				<Select.Root type="single" bind:value={statusFilter}>
 					<Select.Trigger>
 						<Select.Value placeholder={$t('table_status')} />
 					</Select.Trigger>
@@ -78,8 +132,11 @@
 		</CardContent>
 	</Card>
 
-	<p class="text-sm text-muted-foreground">
-		{$t('admin_showing_of', { values: { count: data.bookings.length, total: data.pagination.total } })} {$t('admin_bookings').toLowerCase()}
+	<p class="text-muted-foreground text-sm">
+		{$t('admin_showing_of', {
+			values: { count: data.bookings.length, total: data.pagination.total }
+		})}
+		{$t('admin_bookings').toLowerCase()}
 	</p>
 
 	<!-- Bookings Table -->
@@ -106,11 +163,12 @@
 							<Table.Cell>
 								<div>
 									<p class="font-medium">{booking.clientName}</p>
-									<p class="text-xs text-muted-foreground">{booking.clientEmail}</p>
+									<p class="text-muted-foreground text-xs">{booking.clientEmail}</p>
 								</div>
 							</Table.Cell>
 							<Table.Cell>
-								{booking.instructor.name} {booking.instructor.lastName}
+								{booking.instructor.name}
+								{booking.instructor.lastName}
 							</Table.Cell>
 							<Table.Cell>
 								<div class="flex gap-1">
@@ -127,7 +185,7 @@
 									{booking.status}
 								</Badge>
 							</Table.Cell>
-							<Table.Cell class="text-xs text-muted-foreground">
+							<Table.Cell class="text-muted-foreground text-xs">
 								{formatDate(booking.createdAt)}
 							</Table.Cell>
 						</Table.Row>
@@ -145,7 +203,11 @@
 					{$t('button_previous')}
 				</Button>
 			{/if}
-			<span class="text-sm">{$t('admin_page_of', { values: { page: data.pagination.page, total: data.pagination.totalPages } })}</span>
+			<span class="text-sm"
+				>{$t('admin_page_of', {
+					values: { page: data.pagination.page, total: data.pagination.totalPages }
+				})}</span
+			>
 			{#if data.pagination.page < data.pagination.totalPages}
 				<Button href="/admin/bookings?page={data.pagination.page + 1}" variant="outline" size="sm">
 					{$t('button_next')}
