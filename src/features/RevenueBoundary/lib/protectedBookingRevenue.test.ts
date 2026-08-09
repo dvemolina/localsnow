@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
 	buildClientDepositDraft,
 	buildProtectedBookingRevenuePlan,
+	getProtectedBookingReplacementResolution,
 	getProtectedBookingRevenueReadiness
 } from './protectedBookingRevenue';
 
@@ -129,5 +130,42 @@ describe('protectedBookingRevenue', () => {
 		});
 		expect(plan.status).toBe('blocked');
 		expect(plan.chargePlan).toBeNull();
+	});
+
+	it('locks the protected promise to reschedule, replace, or refund', () => {
+		const plan = buildProtectedBookingRevenuePlan(confirmedProtectedRequest);
+
+		expect(plan.chargePlan?.customerPromise).toEqual({
+			kind: 'reschedule-replace-or-refund',
+			copy: 'LocalSnow reschedules, finds another suitable instructor, or refunds the client.',
+			replacementPricePolicy: 'client_approval_required_for_price_increase'
+		});
+	});
+
+	it('requires client approval before moving to a more expensive replacement instructor', () => {
+		const resolution = getProtectedBookingReplacementResolution({
+			paidClientChargeCents: 40000,
+			sameInstructorCanReschedule: false,
+			replacementInstructorAvailable: true,
+			replacementClientChargeCents: 45000,
+			clientApprovedPriceIncrease: false
+		});
+
+		expect(resolution.action).toBe('ask-client-to-approve-price-increase');
+		expect(resolution.canProceedWithoutClientDecision).toBe(false);
+		expect(resolution.clientPriceDeltaCents).toBe(5000);
+		expect(resolution.clientCopy).toContain('approve the difference');
+	});
+
+	it('refunds when no suitable reschedule or replacement exists', () => {
+		const resolution = getProtectedBookingReplacementResolution({
+			paidClientChargeCents: 40000,
+			sameInstructorCanReschedule: false,
+			replacementInstructorAvailable: false
+		});
+
+		expect(resolution.action).toBe('refund-client');
+		expect(resolution.canProceedWithoutClientDecision).toBe(true);
+		expect(resolution.clientCopy).toContain('refund');
 	});
 });
