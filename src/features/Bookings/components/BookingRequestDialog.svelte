@@ -586,6 +586,10 @@
 							</svg>
 							<span>Before payment, LocalSnow confirms the final lesson price. If a replacement costs more later, the client approves the difference first.</span>
 						</p>
+						<div class="mt-3 rounded-md border border-primary/20 bg-background/70 p-3 text-xs text-muted-foreground">
+							<p class="font-medium text-foreground">Protected booking total before you pay</p>
+							<p class="mt-1">LocalSnow will show one protected booking total before collecting payment, with no separate protected-support fee shown to the client.</p>
+						</div>
 					</div>
 				</div>
 

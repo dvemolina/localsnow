@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
 	buildClientDepositDraft,
+	buildProtectedBookingPaymentBoundary,
 	buildProtectedBookingRevenuePlan,
 	getProtectedBookingReplacementResolution,
 	getProtectedBookingRevenueReadiness
@@ -11,7 +12,7 @@ describe('protectedBookingRevenue', () => {
 		bookingRequestId: 77,
 		path: 'protected' as const,
 		protectedSupportEnabled: true,
-		instructorConfirmedFinalTerms: true,
+		checkoutReady: true,
 		finalLessonPriceCents: 36000,
 		localSnowServiceFeeCents: 4000,
 		currency: 'EUR' as const,
@@ -29,15 +30,15 @@ describe('protectedBookingRevenue', () => {
 		expect(readiness.nextAction).toBe('use-direct-payment-between-client-and-instructor');
 	});
 
-	it('blocks protected charges until the instructor confirms final lesson terms', () => {
+	it('blocks protected charges until the protected checkout total is ready', () => {
 		const readiness = getProtectedBookingRevenueReadiness({
 			...confirmedProtectedRequest,
-			instructorConfirmedFinalTerms: false
+			checkoutReady: false
 		});
 
 		expect(readiness.canCreateClientCharge).toBe(false);
-		expect(readiness.reason).toContain('final lesson terms');
-		expect(readiness.nextAction).toBe('confirm-final-lesson-terms');
+		expect(readiness.reason).toContain('checkout total is ready');
+		expect(readiness.nextAction).toBe('prepare-checkout-total');
 	});
 
 	it('creates a LocalSnow client charge plan without automated instructor payout', () => {
@@ -102,6 +103,75 @@ describe('protectedBookingRevenue', () => {
 			status: 'pending',
 			expiresAt: new Date('2026-01-12T10:00:00.000Z')
 		});
+	});
+
+	it('shows a bundled estimate-only protected total before checkout is ready', () => {
+		const boundary = buildProtectedBookingPaymentBoundary({
+			currency: 'EUR',
+			lessonEstimateCents: 36000,
+			checkoutReady: false
+		});
+
+		expect(boundary).toMatchObject({
+			status: 'estimate_only',
+			canCollectPayment: false,
+			totalClientChargeCents: null,
+			clientChargeTiming: 'after_checkout_total_is_ready',
+			reviewRequirement: 'client_reviews_protected_booking_total_before_payment',
+			clientDisplay: {
+				feeDisplayMode: 'bundled_total',
+				label: 'Protected booking total',
+				displayAmount: 'Calculated before payment'
+			}
+		});
+		const copy = boundary.clientCopy.join(' ');
+		expect(copy).toContain('automatically calculated');
+		expect(copy).toContain('one protected booking total');
+		expect(copy).not.toContain('separate LocalSnow fee');
+	});
+
+	it('bundles the client-facing protected total while keeping internal margin accounting', () => {
+		const boundary = buildProtectedBookingPaymentBoundary({
+			currency: 'EUR',
+			lessonEstimateCents: 36000,
+			finalLessonPriceCents: 37500,
+			localSnowServiceFeeCents: 4500,
+			checkoutReady: true
+		});
+
+		expect(boundary).toMatchObject({
+			status: 'ready_for_payment_review',
+			canCollectPayment: true,
+			totalClientChargeCents: 42000,
+			displayTotalClientCharge: '€420.00',
+			clientChargeTiming: 'after_client_reviews_protected_total',
+			reviewRequirement: 'client_reviews_protected_booking_total_before_payment',
+			clientDisplay: {
+				feeDisplayMode: 'bundled_total',
+				label: 'Protected booking total',
+				displayAmount: '€420.00'
+			},
+			internalAccounting: {
+				instructorNetCents: 37500,
+				localSnowMarginCents: 4500
+			}
+		});
+		expect(boundary.lineItems).toEqual([
+			{
+				kind: 'confirmed_lesson_amount',
+				label: 'Instructor net',
+				amountCents: 37500,
+				displayAmount: '€375.00',
+				visibility: 'internal'
+			},
+			{
+				kind: 'localsnow_margin',
+				label: 'LocalSnow margin',
+				amountCents: 4500,
+				displayAmount: '€45.00',
+				visibility: 'internal'
+			}
+		]);
 	});
 
 	it('rejects zero or negative final lesson amounts as not chargeable', () => {
