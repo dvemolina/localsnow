@@ -139,6 +139,153 @@ export type ProtectedBookingPaymentBoundary = {
 	clientCopy: string[];
 };
 
+export type ProtectedCheckoutReadinessInput = {
+	protectedSupportEnabled: boolean;
+	protectedTotalCents?: number;
+	request: {
+		resortSelected: boolean;
+		dateSelected: boolean;
+		timeWindowSelected: boolean;
+		sportSelected: boolean;
+		levelSelected: boolean;
+		participantCount: number;
+		durationMinutes: number;
+	};
+	serviceability: {
+		leadTime: 'safe' | 'too_soon';
+		supplyConfidence: 'exact_instructor_available' | 'fallback_available' | 'unknown' | 'none';
+		clientAcceptsSuitableReplacement: boolean;
+	};
+};
+
+export type ProtectedCheckoutReadiness =
+	| {
+			status: 'checkout_ready';
+			canCollectPayment: true;
+			exactInstructorConfirmationRequiredBeforePayment: false;
+			nextAction: 'collect-protected-payment';
+			clientCopy: string;
+			missingDetails: [];
+			reasons: [];
+	  }
+	| {
+			status: 'needs_more_details';
+			canCollectPayment: false;
+			exactInstructorConfirmationRequiredBeforePayment: false;
+			nextAction: 'collect-request-details';
+			clientCopy: string;
+			missingDetails: string[];
+			reasons: [];
+	  }
+	| {
+			status: 'not_serviceable';
+			canCollectPayment: false;
+			exactInstructorConfirmationRequiredBeforePayment: false;
+			nextAction: 'do-not-take-payment';
+			clientCopy: string;
+			missingDetails: [];
+			reasons: string[];
+	  };
+
+export function getProtectedCheckoutReadiness(
+	input: ProtectedCheckoutReadinessInput
+): ProtectedCheckoutReadiness {
+	if (!input.protectedSupportEnabled) {
+		return {
+			status: 'not_serviceable',
+			canCollectPayment: false,
+			exactInstructorConfirmationRequiredBeforePayment: false,
+			nextAction: 'do-not-take-payment',
+			clientCopy: 'Protected booking is not available for this request yet.',
+			missingDetails: [],
+			reasons: ['Protected booking is not enabled for this instructor or request.']
+		};
+	}
+
+	const missingDetails = getProtectedCheckoutMissingDetails(input);
+	if (
+		missingDetails.length > 0 ||
+		input.protectedTotalCents == null ||
+		input.protectedTotalCents <= 0
+	) {
+		return {
+			status: 'needs_more_details',
+			canCollectPayment: false,
+			exactInstructorConfirmationRequiredBeforePayment: false,
+			nextAction: 'collect-request-details',
+			clientCopy:
+				'Add the lesson details so LocalSnow can calculate the protected booking total before payment.',
+			missingDetails,
+			reasons: []
+		};
+	}
+
+	const reasons = getProtectedCheckoutServiceabilityReasons(input);
+	if (reasons.length > 0) {
+		return {
+			status: 'not_serviceable',
+			canCollectPayment: false,
+			exactInstructorConfirmationRequiredBeforePayment: false,
+			nextAction: 'do-not-take-payment',
+			clientCopy: 'Protected booking is not available for this request yet.',
+			missingDetails: [],
+			reasons
+		};
+	}
+
+	return {
+		status: 'checkout_ready',
+		canCollectPayment: true,
+		exactInstructorConfirmationRequiredBeforePayment: false,
+		nextAction: 'collect-protected-payment',
+		clientCopy:
+			'Pay the protected booking total now. LocalSnow confirms the requested instructor first; if they cannot serve, LocalSnow finds a suitable replacement or refunds you.',
+		missingDetails: [],
+		reasons: []
+	};
+}
+
+function getProtectedCheckoutMissingDetails(input: ProtectedCheckoutReadinessInput): string[] {
+	const missingDetails: string[] = [];
+
+	if (!input.request.resortSelected) missingDetails.push('resort');
+	if (!input.request.dateSelected) missingDetails.push('date');
+	if (!input.request.timeWindowSelected) missingDetails.push('time window');
+	if (!input.request.sportSelected) missingDetails.push('sport');
+	if (!input.request.levelSelected) missingDetails.push('level');
+	if (input.request.participantCount <= 0) missingDetails.push('participants');
+	if (input.request.durationMinutes <= 0) missingDetails.push('duration');
+	if (input.protectedTotalCents == null || input.protectedTotalCents <= 0) {
+		missingDetails.push('protected booking total');
+	}
+
+	return missingDetails;
+}
+
+function getProtectedCheckoutServiceabilityReasons(
+	input: ProtectedCheckoutReadinessInput
+): string[] {
+	const reasons: string[] = [];
+
+	if (input.serviceability.leadTime === 'too_soon') {
+		reasons.push('Request is too soon for LocalSnow to guarantee fulfillment.');
+	}
+
+	if (input.serviceability.supplyConfidence === 'none') {
+		reasons.push('LocalSnow has no suitable instructor or fallback confidence for this request.');
+	}
+
+	if (input.serviceability.supplyConfidence === 'unknown') {
+		reasons.push('LocalSnow does not yet know whether this request is serviceable.');
+	}
+
+	if (!input.serviceability.clientAcceptsSuitableReplacement) {
+		reasons.push('Client must accept that LocalSnow may use a suitable replacement instructor.');
+	}
+
+	return reasons;
+}
+
 export function getProtectedBookingRevenueReadiness(
 	input: ProtectedBookingRevenueInput
 ): ProtectedBookingRevenueReadiness {
@@ -233,7 +380,7 @@ export function buildProtectedBookingRevenuePlan(
 			lineItems,
 			customerPromise: {
 				kind: 'reschedule-replace-or-refund',
-				copy: 'LocalSnow reschedules, finds another suitable instructor, or refunds the client.',
+				copy: 'LocalSnow confirms the requested instructor first; if they cannot serve, LocalSnow finds a suitable replacement or refunds the client.',
 				replacementPricePolicy: 'client_approval_required_for_price_increase'
 			},
 			payout: {
