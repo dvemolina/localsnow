@@ -26,11 +26,14 @@ test('G1 client proof path shows availability confidence and free/protected choi
 	await expect(page.getByText(/No LocalSnow fee/i)).toBeVisible();
 	await page.keyboard.press('Escape');
 
-	const protectedSupport = page.getByRole('button', { name: /Request protected support/i }).first();
+	const protectedSupport = page.getByRole('button', { name: /Request protected booking/i }).first();
 	if ((await protectedSupport.count()) > 0 && (await protectedSupport.isEnabled())) {
 		await protectedSupport.click();
 		await expect(page.getByText(/Protected booking request/i)).toBeVisible();
-		await expect(page.getByText(/payment handling is not promised/i)).toBeVisible();
+		await expect(
+			page.getByText(/reschedules, finds another suitable instructor, or refunds/i)
+		).toBeVisible();
+		await expect(page.getByText(/approves the difference first/i)).toBeVisible();
 	} else {
 		await expect(
 			page.getByRole('button', { name: /Use free request for now/i }).first()

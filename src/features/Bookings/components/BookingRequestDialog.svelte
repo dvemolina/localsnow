@@ -578,13 +578,13 @@
 							<svg class="mt-0.5 size-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
 								<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
 							</svg>
-							<span>If the instructor cannot serve the request, LocalSnow helps reschedule or find a replacement.</span>
+							<span>If the instructor cannot serve the request, LocalSnow reschedules, finds another suitable instructor, or refunds the client.</span>
 						</p>
 						<p class="flex items-start gap-2">
 							<svg class="mt-0.5 size-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
 								<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
 							</svg>
-							<span>LocalSnow will follow up on the request; payment handling is not promised until the final lesson details are confirmed.</span>
+							<span>Before payment, LocalSnow confirms the final lesson price. If a replacement costs more later, the client approves the difference first.</span>
 						</p>
 					</div>
 				</div>
