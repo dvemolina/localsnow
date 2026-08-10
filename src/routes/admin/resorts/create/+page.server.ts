@@ -1,6 +1,7 @@
 import { db } from '$lib/server/db';
 import { resorts, countries, regions } from '$lib/server/db/schema';
 import { fail, redirect } from '@sveltejs/kit';
+import { getAdminActionAccessFailure } from '$lib/server/adminAccess';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async () => {
@@ -22,7 +23,10 @@ export const load: PageServerLoad = async () => {
 };
 
 export const actions: Actions = {
-	default: async ({ request }) => {
+	default: async ({ request, locals }) => {
+		const accessFailure = getAdminActionAccessFailure(locals.user);
+		if (accessFailure) return accessFailure;
+
 		const formData = await request.formData();
 		const name = formData.get('name') as string;
 		const slug = formData.get('slug') as string;

@@ -4,6 +4,7 @@ import { StorageService } from '$lib/server/R2Storage';
 import { eq } from 'drizzle-orm';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { hasAdminAccess } from '$src/lib/utils/roles';
+import { getAdminActionAccessFailure } from '$lib/server/adminAccess';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -38,7 +39,10 @@ export const load: PageServerLoad = async ({ params }) => {
 };
 
 export const actions: Actions = {
-	updateDetails: async ({ request, params }) => {
+	updateDetails: async ({ request, params, locals }) => {
+		const accessFailure = getAdminActionAccessFailure(locals.user);
+		if (accessFailure) return accessFailure;
+
 		const formData = await request.formData();
 		const name = formData.get('name') as string;
 		const slug = formData.get('slug') as string;
@@ -49,8 +53,8 @@ export const actions: Actions = {
 		const maxElevation = formData.get('maxElevation') as string;
 		const lat = formData.get('lat') as string;
 		const lon = formData.get('lon') as string;
-		const website = formData.get('website') as string; 
-		const description = formData.get('description') as string
+		const website = formData.get('website') as string;
+		const description = formData.get('description') as string;
 
 		// Validation
 		if (!name || !slug || !countryId) {
@@ -99,7 +103,10 @@ export const actions: Actions = {
 		return { success: true, message: 'Resort updated successfully' };
 	},
 
-	uploadImage: async ({ request, params }) => {
+	uploadImage: async ({ request, params, locals }) => {
+		const accessFailure = getAdminActionAccessFailure(locals.user);
+		if (accessFailure) return accessFailure;
+
 		const formData = await request.formData();
 		const imageFile = formData.get('image') as File;
 
