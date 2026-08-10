@@ -387,19 +387,19 @@
 			<div class="mt-4 w-full space-y-3 rounded-lg border border-primary/20 bg-primary/5 p-4">
 				<div class="flex items-start justify-between gap-3">
 					<div>
-						<p class="text-sm font-semibold">{availabilityProof.label}</p>
-						<p class="mt-1 text-xs text-muted-foreground">{availabilityProof.clientCopy}</p>
+						<p class="text-sm font-semibold">{$t(availabilityProof.labelKey)}</p>
+						<p class="mt-1 text-xs text-muted-foreground">{$t(availabilityProof.clientCopyKey)}</p>
 					</div>
 					<Badge variant={availabilityProof.tone === 'positive' ? 'default' : 'secondary'} class="shrink-0 text-xs">
-						Availability
+						{$t('availability_proof_available_label')}
 					</Badge>
 				</div>
 
 				<div class="grid gap-2">
 					<Button onclick={() => (showContactModal = true)} class="w-full" size="lg">
-						{directPath?.cta ?? 'Contact instructor free'}
+						{$t(directPath?.ctaKey ?? 'client_path_direct_cta')}
 					</Button>
-					<p class="text-xs text-muted-foreground">{directPath?.safeguardCopy}</p>
+					<p class="text-xs text-muted-foreground">{$t(directPath?.safeguardCopyKey ?? 'client_path_direct_safeguard')}</p>
 
 					<Button
 						onclick={() => (showProtectedBookingModal = true)}
@@ -408,9 +408,9 @@
 						variant="outline"
 						disabled={!hasProtectedBooking}
 					>
-						{protectedPath?.cta ?? 'Request protected booking'}
+						{$t(protectedPath?.ctaKey ?? 'client_path_protected_disabled_cta')}
 					</Button>
-					<p class="text-xs text-muted-foreground">{protectedPath?.safeguardCopy}</p>
+					<p class="text-xs text-muted-foreground">{$t(protectedPath?.safeguardCopyKey ?? 'client_path_protected_disabled_safeguard')}</p>
 				</div>
 			</div>
 
@@ -806,7 +806,7 @@
 				d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
 			/>
 		</svg>
-		{directPath?.cta ?? 'Contact instructor free'}
+		{$t(directPath?.ctaKey ?? 'client_path_direct_cta')}
 	</Button>
 </section>
 

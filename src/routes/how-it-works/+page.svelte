@@ -4,6 +4,7 @@
 	import { getAlternateUrls, route } from '$lib/i18n/routeHelpers';
 	import { page } from '$app/state';
 	import { extractLocale, type Locale } from '$lib/i18n/routes';
+	import { getHowItWorksTrustPaths } from '$src/features/ClientProof/lib/clientProofPath';
 
 	const PRIMARY_ORIGIN = 'https://localsnow.org';
 	const currentLocale = $derived((extractLocale(page.url.pathname).locale || 'en') as Locale);
@@ -14,12 +15,13 @@
 	const canonicalPath = $derived(route('/how-it-works', currentLocale));
 	const canonicalUrl = $derived(`${PRIMARY_ORIGIN}${canonicalPath}`);
 	const alternates = $derived(
-		getAlternateUrls(canonicalPath).map((alt) => ({
+		getAlternateUrls('/how-it-works').map((alt) => ({
 			locale: alt.locale,
 			url: `${PRIMARY_ORIGIN}${alt.url}`
 		}))
 	);
 	const defaultAlternate = $derived(alternates.find((alt) => alt.locale === 'en'));
+	const howItWorksTrustPaths = getHowItWorksTrustPaths();
 
 	// FAQ Schema for SEO - using get(t) for non-reactive context
 	const faqSchema = {
@@ -129,6 +131,36 @@
 			{$t('how_works_free_forever_desc')}
 		</p>
 	</div>
+
+	<!-- Free vs Protected Routes -->
+	<section class="border-border bg-card not-prose mt-8 rounded-lg border p-6 shadow-sm">
+		<h2 class="title3 mb-2">{$t(howItWorksTrustPaths.headingKey)}</h2>
+		<p class="mb-5 text-sm text-gray-600">{$t(howItWorksTrustPaths.subtitleKey)}</p>
+
+		<div class="grid gap-4 md:grid-cols-2">
+			{#each howItWorksTrustPaths.steps as step}
+				<div class="rounded-lg border bg-white p-5">
+					<div class="mb-3 flex items-center justify-between gap-3">
+						<h3 class="title4 mb-0">{$t(step.labelKey)}</h3>
+						<span
+							class={step.costSignal === 'free'
+								? 'rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800'
+								: 'bg-primary/10 text-primary rounded-full px-3 py-1 text-xs font-semibold'}
+						>
+							{$t(step.badgeKey)}
+						</span>
+					</div>
+					<p class="mb-0 text-sm text-gray-600">{$t(step.clientCopyKey)}</p>
+				</div>
+			{/each}
+		</div>
+
+		<p
+			class="mt-4 mb-0 rounded-md border border-dashed border-blue-200 bg-blue-50 p-3 text-sm text-blue-900"
+		>
+			{$t(howItWorksTrustPaths.discoveryNoteKey)}
+		</p>
+	</section>
 
 	<!-- For Students Section -->
 	<section class="border-border bg-card not-prose mt-12 rounded-lg border p-6 shadow-sm">
