@@ -4,6 +4,7 @@ import {
 	getAvailabilityProofState,
 	getClientPathOptions,
 	getHomepageTrustPaths,
+	getHowItWorksTrustPaths,
 	protectedBookingIsEnabled
 } from './clientProofPath';
 
@@ -108,5 +109,35 @@ describe('clientProofPath', () => {
 		expect(trustPaths.paths[1].copy).toContain('replacement');
 		expect(trustPaths.paths[1].copy).toContain('refund');
 		expect(trustPaths.paths[1].copy).not.toContain('automatic payout');
+	});
+
+	it('explains How It Works as two client paths without inventing an operational checklist', () => {
+		const trustPaths = getHowItWorksTrustPaths();
+
+		expect(trustPaths.heading).toBe('Choose the level of help you want');
+		expect(trustPaths.steps.map((step) => step.kind)).toEqual(['direct', 'protected']);
+		expect(trustPaths.steps[0]).toMatchObject({
+			kind: 'direct',
+			costSignal: 'free',
+			operatorRole: 'none'
+		});
+		expect(trustPaths.steps[1]).toMatchObject({
+			kind: 'protected',
+			costSignal: 'paid-support',
+			operatorRole: 'manual-support'
+		});
+		expect(trustPaths.steps[1].clientCopy).toContain('requested instructor first');
+		expect(trustPaths.steps[1].clientCopy).toContain('replacement');
+		expect(trustPaths.steps[1].clientCopy).toContain('refund');
+		expect(trustPaths.steps[1].clientCopy).not.toContain('automatic matching');
+		expect(trustPaths.discoveryNote).toContain('not a fixed checklist');
+
+		const spanishTrustPaths = getHowItWorksTrustPaths('es');
+		expect(spanishTrustPaths.heading).toBe('Elige el nivel de ayuda que quieres');
+		expect(spanishTrustPaths.steps[1]).toMatchObject({
+			kind: 'protected',
+			operatorRole: 'manual-support'
+		});
+		expect(spanishTrustPaths.steps[1].clientCopy).toContain('instructor solicitado');
 	});
 });

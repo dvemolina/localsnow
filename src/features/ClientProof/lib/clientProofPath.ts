@@ -36,6 +36,21 @@ export type HomepageTrustPaths = {
 	operatorTruth: string;
 };
 
+export type HowItWorksTrustStep = {
+	kind: 'direct' | 'protected';
+	label: string;
+	costSignal: 'free' | 'paid-support';
+	operatorRole: 'none' | 'manual-support';
+	clientCopy: string;
+};
+
+export type HowItWorksTrustPaths = {
+	heading: string;
+	subtitle: string;
+	steps: HowItWorksTrustStep[];
+	discoveryNote: string;
+};
+
 export type ProtectedBookingCapabilityInput = {
 	hasBaseLesson: boolean;
 	isSchoolRate?: boolean;
@@ -147,5 +162,61 @@ export function getHomepageTrustPaths(): HomepageTrustPaths {
 		],
 		operatorTruth:
 			'Behind the scenes, protected booking is manually operated by LocalSnow until real transaction volume proves automation is needed.'
+	};
+}
+
+export function getHowItWorksTrustPaths(locale: 'en' | 'es' = 'en'): HowItWorksTrustPaths {
+	if (locale === 'es') {
+		return {
+			heading: 'Elige el nivel de ayuda que quieres',
+			subtitle:
+				'LocalSnow puede ser un directorio gratuito o una capa de soporte para reserva protegida. El cliente elige la ruta antes de comprometerse.',
+			steps: [
+				{
+					kind: 'direct',
+					label: 'Ruta directa gratuita',
+					costSignal: 'free',
+					operatorRole: 'none',
+					clientCopy:
+						'Explora perfiles, contacta directamente con instructores o escuelas, acordáis los detalles y les pagas directamente. LocalSnow no garantiza la confirmación en esta ruta.'
+				},
+				{
+					kind: 'protected',
+					label: 'Ruta protegida con LocalSnow',
+					costSignal: 'paid-support',
+					operatorRole: 'manual-support',
+					clientCopy:
+						'Paga soporte de LocalSnow cuando quieres ayuda para que la clase ocurra: contactamos primero al instructor solicitado y luego ayudamos con sustitución, reprogramación o reembolso si hace falta. Es soporte humano, no cumplimiento automático por software.'
+				}
+			],
+			discoveryNote:
+				'Esto intencionadamente no es un checklist fijo todavía. LocalSnow está aprendiendo el flujo real de reserva protegida mediante operaciones manuales antes de automatizarlo.'
+		};
+	}
+
+	return {
+		heading: 'Choose the level of help you want',
+		subtitle:
+			'LocalSnow can be a free directory or a protected booking support layer. The client chooses the route before committing.',
+		steps: [
+			{
+				kind: 'direct',
+				label: 'Free direct route',
+				costSignal: 'free',
+				operatorRole: 'none',
+				clientCopy:
+					'Browse profiles, contact instructors or schools directly, agree the details yourselves, and pay them directly. LocalSnow does not guarantee confirmation on this route.'
+			},
+			{
+				kind: 'protected',
+				label: 'Protected LocalSnow route',
+				costSignal: 'paid-support',
+				operatorRole: 'manual-support',
+				clientCopy:
+					'Pay for LocalSnow support when you want help making the lesson happen: we contact the requested instructor first, then help with a suitable replacement, reschedule, or refund if needed. This is human support, not software-driven fulfillment.'
+			}
+		],
+		discoveryNote:
+			'This is intentionally not a fixed checklist yet. LocalSnow is learning the real protected-booking workflow through manual operations before automating it.'
 	};
 }
