@@ -2,10 +2,14 @@
 import { db } from '$lib/server/db';
 import { launchCodes } from '$lib/server/db/schema';
 import { fail, redirect } from '@sveltejs/kit';
+import { getAdminActionAccessFailure } from '$lib/server/adminAccess';
 import type { Actions } from './$types';
 
 export const actions: Actions = {
-	default: async ({ request }) => {
+	default: async ({ request, locals }) => {
+		const accessFailure = getAdminActionAccessFailure(locals.user);
+		if (accessFailure) return accessFailure;
+
 		const data = await request.formData();
 		const code = data.get('code')?.toString().trim().toUpperCase();
 		const description = data.get('description')?.toString().trim();

@@ -3,6 +3,7 @@ import { db } from '$lib/server/db';
 import { launchCodes } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { fail, redirect, error } from '@sveltejs/kit';
+import { getAdminActionAccessFailure } from '$lib/server/adminAccess';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -26,7 +27,10 @@ export const load: PageServerLoad = async ({ params }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ request, params }) => {
+	default: async ({ request, params, locals }) => {
+		const accessFailure = getAdminActionAccessFailure(locals.user);
+		if (accessFailure) return accessFailure;
+
 		const id = Number(params.id);
 		const data = await request.formData();
 
@@ -51,8 +55,7 @@ export const actions: Actions = {
 
 		// Check if code already exists (excluding current)
 		const existing = await db.query.launchCodes.findFirst({
-			where: (codes, { eq, and, ne }) =>
-				and(eq(codes.code, code), ne(codes.id, id))
+			where: (codes, { eq, and, ne }) => and(eq(codes.code, code), ne(codes.id, id))
 		});
 
 		if (existing) {
@@ -60,7 +63,8 @@ export const actions: Actions = {
 		}
 
 		try {
-			await db.update(launchCodes)
+			await db
+				.update(launchCodes)
 				.set({
 					code,
 					description: description || null,

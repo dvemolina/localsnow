@@ -5,6 +5,7 @@ import { desc, eq, sql, count } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 import type { Actions } from './$types';
 import { fail } from '@sveltejs/kit';
+import { getAdminActionAccessFailure } from '$lib/server/adminAccess';
 
 export const load: PageServerLoad = async () => {
 	// Fetch all launch codes with usage statistics
@@ -43,7 +44,10 @@ export const load: PageServerLoad = async () => {
 
 export const actions: Actions = {
 	// Toggle active status
-	toggle: async ({ request }) => {
+	toggle: async ({ request, locals }) => {
+		const accessFailure = getAdminActionAccessFailure(locals.user);
+		if (accessFailure) return accessFailure;
+
 		const data = await request.formData();
 		const id = Number(data.get('id'));
 
@@ -62,10 +66,7 @@ export const actions: Actions = {
 			}
 
 			// Toggle status
-			await db
-				.update(launchCodes)
-				.set({ isActive: !code.isActive })
-				.where(eq(launchCodes.id, id));
+			await db.update(launchCodes).set({ isActive: !code.isActive }).where(eq(launchCodes.id, id));
 
 			return { success: true };
 		} catch (error) {
@@ -75,7 +76,10 @@ export const actions: Actions = {
 	},
 
 	// Delete launch code
-	delete: async ({ request }) => {
+	delete: async ({ request, locals }) => {
+		const accessFailure = getAdminActionAccessFailure(locals.user);
+		if (accessFailure) return accessFailure;
+
 		const data = await request.formData();
 		const id = Number(data.get('id'));
 

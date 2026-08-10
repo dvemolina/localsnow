@@ -3,6 +3,8 @@ import { sports } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { hasAdminAccess } from '$src/lib/utils/roles';
+import { getAdminActionAccessFailure } from '$lib/server/adminAccess';
+import { isSportName, isSportSlug } from '$src/features/Sports/lib/sportsConstants';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -18,13 +20,16 @@ export const load: PageServerLoad = async ({ params }) => {
 };
 
 export const actions: Actions = {
-	update: async ({ request, params }) => {
+	update: async ({ request, params, locals }) => {
+		const accessFailure = getAdminActionAccessFailure(locals.user);
+		if (accessFailure) return accessFailure;
+
 		const formData = await request.formData();
-		const sport = formData.get('sport') as string;
-		const sportSlug = formData.get('sportSlug') as string;
+		const sport = formData.get('sport');
+		const sportSlug = formData.get('sportSlug');
 
 		// Validation
-		if (!sport || !sportSlug) {
+		if (!isSportName(sport) || !isSportSlug(sportSlug)) {
 			return fail(400, { error: 'Sport name and slug are required' });
 		}
 

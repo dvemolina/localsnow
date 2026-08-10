@@ -3,6 +3,7 @@ import { resorts } from '$lib/server/db/schema';
 import { StorageService } from '$lib/server/R2Storage';
 import { eq } from 'drizzle-orm';
 import { error, fail } from '@sveltejs/kit';
+import { getAdminActionAccessFailure } from '$lib/server/adminAccess';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -22,7 +23,10 @@ export const load: PageServerLoad = async ({ params }) => {
 };
 
 export const actions: Actions = {
-	uploadImage: async ({ request, params }) => {
+	uploadImage: async ({ request, params, locals }) => {
+		const accessFailure = getAdminActionAccessFailure(locals.user);
+		if (accessFailure) return accessFailure;
+
 		const formData = await request.formData();
 		const imageFile = formData.get('image') as File;
 
