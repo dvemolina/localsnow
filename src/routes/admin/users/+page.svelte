@@ -55,6 +55,7 @@
 						<Select.Item value="instructor-independent">{$t('users_role_instructor_independent')}</Select.Item>
 						<Select.Item value="instructor-school">{$t('users_role_instructor_school')}</Select.Item>
 						<Select.Item value="school-admin">{$t('role_school_admin')}</Select.Item>
+						<Select.Item value="operator">{$t('role_operator')}</Select.Item>
 						<Select.Item value="admin">{$t('role_admin')}</Select.Item>
 					</Select.Content>
 				</Select.Root>

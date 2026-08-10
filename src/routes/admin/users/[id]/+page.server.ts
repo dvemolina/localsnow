@@ -2,7 +2,7 @@ import { adminUserService } from '$src/features/Admin/lib/adminUserService';
 import { roleTransitionService } from '$src/features/Admin/lib/roleTransitionService';
 import { adminAuditService } from '$src/features/Admin/lib/adminAuditService';
 import { fail, redirect } from '@sveltejs/kit';
-import { hasRole, hasInstructorRole } from '$src/lib/utils/roles';
+import { hasAdminAccess, hasRole, hasInstructorRole } from '$src/lib/utils/roles';
 import type { PageServerLoad, Actions } from './$types';
 import { db } from '$lib/server/db';
 import { users, schools, userRoles } from '$lib/server/db/schema';
@@ -11,7 +11,7 @@ import { eq, inArray } from 'drizzle-orm';
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const userId = parseInt(params.id);
 
-	if (!locals.user || !hasRole(locals.user, 'admin')) {
+	if (!locals.user || !hasAdminAccess(locals.user)) {
 		throw redirect(302, '/admin');
 	}
 
@@ -83,7 +83,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		const ownerCandidates = await db
 			.select({ userId: userRoles.userId })
 			.from(userRoles)
-			.where(inArray(userRoles.role, ['school-admin', 'admin']));
+			.where(inArray(userRoles.role, ['school-admin', 'operator', 'admin']));
 
 		const candidateIds = ownerCandidates.map(row => row.userId).filter(id => id !== userId);
 		if (candidateIds.length > 0) {
@@ -112,7 +112,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 export const actions: Actions = {
 	addRole: async (event) => {
 		const { request, params, locals } = event;
-		if (!locals.user || !hasRole(locals.user, 'admin')) {
+		if (!locals.user || !hasAdminAccess(locals.user)) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -137,7 +137,7 @@ export const actions: Actions = {
 	},
 	removeRole: async (event) => {
 		const { request, params, locals } = event;
-		if (!locals.user || !hasRole(locals.user, 'admin')) {
+		if (!locals.user || !hasAdminAccess(locals.user)) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -164,7 +164,7 @@ export const actions: Actions = {
 	 * Preview what will happen if role is changed
 	 */
 	previewRoleChange: async ({ request, params, locals }) => {
-		if (!locals.user || !hasRole(locals.user, 'admin')) {
+		if (!locals.user || !hasAdminAccess(locals.user)) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -195,7 +195,7 @@ export const actions: Actions = {
 	 * Execute role change
 	 */
 	changeRole: async ({ request, params, locals }) => {
-		if (!locals.user || !hasRole(locals.user, 'admin')) {
+		if (!locals.user || !hasAdminAccess(locals.user)) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -237,7 +237,7 @@ export const actions: Actions = {
 	 * Restore previous role
 	 */
 	restoreRole: async ({ request, params, locals }) => {
-		if (!locals.user || !hasRole(locals.user, 'admin')) {
+		if (!locals.user || !hasAdminAccess(locals.user)) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -262,7 +262,7 @@ export const actions: Actions = {
 	 * Transfer school ownership
 	 */
 	transferSchool: async ({ request, params, locals }) => {
-		if (!locals.user || !hasRole(locals.user, 'admin')) {
+		if (!locals.user || !hasAdminAccess(locals.user)) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -288,7 +288,7 @@ export const actions: Actions = {
 	 * Suspend user
 	 */
 	suspend: async ({ request, params, locals }) => {
-		if (!locals.user || !hasRole(locals.user, 'admin')) {
+		if (!locals.user || !hasAdminAccess(locals.user)) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -314,7 +314,7 @@ export const actions: Actions = {
 	 * Unsuspend user
 	 */
 	unsuspend: async ({ request, params, locals }) => {
-		if (!locals.user || !hasRole(locals.user, 'admin')) {
+		if (!locals.user || !hasAdminAccess(locals.user)) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 

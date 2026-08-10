@@ -1,7 +1,7 @@
 import type { PageServerLoad, Actions } from './$types';
 import { adminResortRequestService } from '$src/features/Admin/lib/adminResortRequestService';
 import { fail } from '@sveltejs/kit';
-import { hasRole } from '$src/lib/utils/roles';
+import { hasAdminAccess } from '$src/lib/utils/roles';
 
 export const load: PageServerLoad = async ({ url }) => {
 	const page = parseInt(url.searchParams.get('page') || '1');
@@ -28,7 +28,7 @@ export const load: PageServerLoad = async ({ url }) => {
 export const actions: Actions = {
 	approve: async ({ request, locals }) => {
 		const user = locals.user;
-		if (!user || !hasRole(user, 'admin')) {
+		if (!user || !hasAdminAccess(user)) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -50,7 +50,7 @@ export const actions: Actions = {
 
 	reject: async ({ request, locals }) => {
 		const user = locals.user;
-		if (!user || !hasRole(user, 'admin')) {
+		if (!user || !hasAdminAccess(user)) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 

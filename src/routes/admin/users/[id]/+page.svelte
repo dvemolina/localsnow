@@ -35,6 +35,7 @@
 		{ value: 'instructor-independent', label: 'Independent Instructor' },
 		{ value: 'instructor-school', label: 'School Instructor' },
 		{ value: 'school-admin', label: 'School Admin' },
+		{ value: 'operator', label: 'Operator' },
 		{ value: 'admin', label: 'Admin' }
 	];
 

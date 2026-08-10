@@ -16,6 +16,7 @@ import {
 
 export const userRoleEnum = pgEnum('user_role', [
 	'admin',
+	'operator',
 	'instructor-independent',
 	'instructor-school',
 	'school-admin',

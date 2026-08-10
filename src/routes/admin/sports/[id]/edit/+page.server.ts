@@ -2,7 +2,7 @@ import { db } from '$lib/server/db';
 import { sports } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { error, fail, redirect } from '@sveltejs/kit';
-import { hasRole } from '$src/lib/utils/roles';
+import { hasAdminAccess } from '$src/lib/utils/roles';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -61,7 +61,7 @@ export const actions: Actions = {
 	},
 
 	delete: async ({ params, locals }) => {
-		if (!locals.user || !hasRole(locals.user, 'admin')) {
+		if (!locals.user || !hasAdminAccess(locals.user)) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 

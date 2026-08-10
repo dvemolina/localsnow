@@ -1,7 +1,7 @@
 // src/routes/admin/schools/[id]/+page.server.ts
 import { adminSchoolService } from '$src/features/Admin/lib/adminSchoolService';
 import { error, fail } from '@sveltejs/kit';
-import { hasRole } from '$src/lib/utils/roles';
+import { hasAdminAccess } from '$src/lib/utils/roles';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -24,7 +24,7 @@ export const actions: Actions = {
 	verify: async ({ params, locals, request }) => {
 		const schoolId = parseInt(params.id);
 
-		if (!locals.user || !hasRole(locals.user, 'admin')) {
+		if (!locals.user || !hasAdminAccess(locals.user)) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -42,7 +42,7 @@ export const actions: Actions = {
 		const reason = formData.get('reason') as string;
 		const schoolId = parseInt(params.id);
 
-		if (!locals.user || !hasRole(locals.user, 'admin')) {
+		if (!locals.user || !hasAdminAccess(locals.user)) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -65,7 +65,7 @@ export const actions: Actions = {
 		const reason = formData.get('reason') as string;
 		const schoolId = parseInt(params.id);
 
-		if (!locals.user || !hasRole(locals.user, 'admin')) {
+		if (!locals.user || !hasAdminAccess(locals.user)) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -86,7 +86,7 @@ export const actions: Actions = {
 	unsuspend: async ({ params, locals, request }) => {
 		const schoolId = parseInt(params.id);
 
-		if (!locals.user || !hasRole(locals.user, 'admin')) {
+		if (!locals.user || !hasAdminAccess(locals.user)) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -102,7 +102,7 @@ export const actions: Actions = {
 	publish: async ({ params, locals, request }) => {
 		const schoolId = parseInt(params.id);
 
-		if (!locals.user || !hasRole(locals.user, 'admin')) {
+		if (!locals.user || !hasAdminAccess(locals.user)) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -118,7 +118,7 @@ export const actions: Actions = {
 	unpublish: async ({ params, locals, request }) => {
 		const schoolId = parseInt(params.id);
 
-		if (!locals.user || !hasRole(locals.user, 'admin')) {
+		if (!locals.user || !hasAdminAccess(locals.user)) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 

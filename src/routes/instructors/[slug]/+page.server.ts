@@ -21,7 +21,7 @@ import {
 	generateInstructorSlug,
 	validateInstructorSlug
 } from '$lib/utils/slug';
-import { hasRole } from '$src/lib/utils/roles';
+import { hasAdminAccess } from '$src/lib/utils/roles';
 import { funnelEventService } from '$lib/server/services/funnelEventService';
 
 const instructorService = new InstructorService();
@@ -63,7 +63,7 @@ export const load: PageServerLoad = async (event) => {
 
 	// Check if profile is published (only admins or the instructor themselves can view unpublished)
 	const isOwnProfile = event.locals.user?.id === instructorId;
-	const isAdmin = hasRole(event.locals.user, 'admin');
+	const isAdmin = hasAdminAccess(event.locals.user);
 	if (!instructorData.instructor.isPublished && !isOwnProfile && !isAdmin) {
 		throw error(404, 'Instructor not found');
 	}
