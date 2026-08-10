@@ -2,7 +2,7 @@
 import { db } from '$lib/server/db';
 import { bookingRequests, clientDeposits, leadPayments } from '$lib/server/db/schema';
 import { eq, and, or, like, gte, lte, sql, count, type SQL } from 'drizzle-orm';
-import { buildProtectedBookingOperationsQueue } from '$src/features/RevenueBoundary/lib/protectedBookingOperationsQueue';
+import { buildProtectedBookingOperationsOverview } from '$src/features/RevenueBoundary/lib/protectedBookingOperationsQueue';
 import { adminAuditService } from './adminAuditService';
 import type { RequestEvent } from '@sveltejs/kit';
 
@@ -106,24 +106,13 @@ export const adminBookingService = {
 
 		const total = totalResult[0]?.count || 0;
 
+		const protectedOperationsOverview =
+			await adminBookingService.getProtectedBookingOperationsOverview();
+
 		return {
 			bookings,
-			protectedOperationsQueue: buildProtectedBookingOperationsQueue(
-				bookings.map((booking) => ({
-					bookingId: booking.id,
-					clientName: booking.clientName,
-					clientEmail: booking.clientEmail,
-					requestedInstructorName: `${booking.instructor.name} ${booking.instructor.lastName}`,
-					startDate: booking.startDate,
-					createdAt: booking.createdAt,
-					numberOfStudents: booking.numberOfStudents,
-					sportLabels: booking.sports.map(({ sport }) => sport.sport),
-					bookingStatus: booking.status,
-					depositStatus: booking.deposit?.status ?? null,
-					protectedTotal: booking.deposit?.amount ?? null,
-					currency: booking.deposit?.currency ?? booking.currency
-				}))
-			),
+			protectedOperationsOverview,
+			protectedOperationsQueue: protectedOperationsOverview.items,
 			pagination: {
 				page,
 				pageSize,
@@ -131,6 +120,51 @@ export const adminBookingService = {
 				totalPages: Math.ceil(total / pageSize)
 			}
 		};
+	},
+
+	/**
+	 * Build the manual protected-booking cockpit independently from page filters.
+	 * This is not automation: it surfaces the next human step so paid guarantee work cannot hide.
+	 */
+	async getProtectedBookingOperationsOverview(visibleLimit = 8) {
+		const protectedBookings = await db.query.bookingRequests.findMany({
+			limit: 200,
+			orderBy: (bookings, { desc }) => [desc(bookings.createdAt)],
+			with: {
+				instructor: {
+					columns: {
+						id: true,
+						name: true,
+						lastName: true,
+						email: true
+					}
+				},
+				deposit: true,
+				sports: {
+					with: {
+						sport: true
+					}
+				}
+			}
+		});
+
+		return buildProtectedBookingOperationsOverview(
+			protectedBookings.map((booking) => ({
+				bookingId: booking.id,
+				clientName: booking.clientName,
+				clientEmail: booking.clientEmail,
+				requestedInstructorName: `${booking.instructor.name} ${booking.instructor.lastName}`,
+				startDate: booking.startDate,
+				createdAt: booking.createdAt,
+				numberOfStudents: booking.numberOfStudents,
+				sportLabels: booking.sports.map(({ sport }) => sport.sport),
+				bookingStatus: booking.status,
+				depositStatus: booking.deposit?.status ?? null,
+				protectedTotal: booking.deposit?.amount ?? null,
+				currency: booking.deposit?.currency ?? booking.currency
+			})),
+			visibleLimit
+		);
 	},
 
 	/**

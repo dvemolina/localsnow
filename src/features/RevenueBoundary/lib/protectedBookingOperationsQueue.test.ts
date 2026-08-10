@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { buildProtectedBookingOperationsQueue } from './protectedBookingOperationsQueue';
+import {
+	buildProtectedBookingOperationsOverview,
+	buildProtectedBookingOperationsQueue
+} from './protectedBookingOperationsQueue';
 
 describe('protectedBookingOperationsQueue', () => {
 	const basePaidRequest = {
@@ -86,5 +89,43 @@ describe('protectedBookingOperationsQueue', () => {
 		]);
 
 		expect(queue).toEqual([]);
+	});
+
+	it('builds a manual-ops overview so the operator sees urgent and hidden work without automating it', () => {
+		const overview = buildProtectedBookingOperationsOverview(
+			[
+				{
+					...basePaidRequest,
+					bookingId: 1,
+					bookingStatus: 'cancelled'
+				},
+				{
+					...basePaidRequest,
+					bookingId: 2,
+					bookingStatus: 'pending'
+				},
+				{
+					...basePaidRequest,
+					bookingId: 3,
+					bookingStatus: 'accepted'
+				},
+				{
+					...basePaidRequest,
+					bookingId: 4,
+					bookingStatus: 'cancelled',
+					depositStatus: 'refunded'
+				}
+			],
+			2
+		);
+
+		expect(overview.items.map((item) => item.bookingId)).toEqual([1, 2]);
+		expect(overview.totalCount).toBe(4);
+		expect(overview.hiddenCount).toBe(2);
+		expect(overview.urgentCount).toBe(1);
+		expect(overview.activeManualActionCount).toBe(2);
+		expect(overview.operatorPromise).toBe(
+			'Manual ops cockpit: no automatic matching, payout, or refund. The product shows the next human step so Moli can run the wires behind the bar.'
+		);
 	});
 });

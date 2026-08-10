@@ -11,6 +11,7 @@
 
 	let searchValue = $state(data.filters.search || '');
 	let statusFilter = $state(data.filters.status || 'all');
+	const protectedOps = $derived(data.protectedOperationsOverview);
 
 	function applyFilters() {
 		const params = new URLSearchParams();
@@ -61,16 +62,35 @@
 	<!-- Protected Booking Operations Queue -->
 	<Card>
 		<CardHeader>
-			<CardTitle>Protected booking operations queue</CardTitle>
+			<div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+				<div>
+					<CardTitle>Protected booking operator cockpit</CardTitle>
+					<p class="text-muted-foreground mt-1 text-sm">{protectedOps.operatorPromise}</p>
+				</div>
+				<div class="grid grid-cols-3 gap-2 text-center text-xs">
+					<div class="rounded-lg border px-3 py-2">
+						<p class="text-lg font-semibold">{protectedOps.activeManualActionCount}</p>
+						<p class="text-muted-foreground">manual steps</p>
+					</div>
+					<div class="rounded-lg border px-3 py-2">
+						<p class="text-lg font-semibold">{protectedOps.urgentCount}</p>
+						<p class="text-muted-foreground">urgent</p>
+					</div>
+					<div class="rounded-lg border px-3 py-2">
+						<p class="text-lg font-semibold">{protectedOps.hiddenCount}</p>
+						<p class="text-muted-foreground">not shown</p>
+					</div>
+				</div>
+			</div>
 		</CardHeader>
 		<CardContent>
 			<p class="text-muted-foreground mb-4 text-sm">
 				Paid route only: confirm the requested instructor first. If they cannot serve, arrange a
 				suitable replacement or refund. Instructor/school payout stays manual.
 			</p>
-			{#if data.protectedOperationsQueue.length > 0}
+			{#if protectedOps.items.length > 0}
 				<div class="space-y-3">
-					{#each data.protectedOperationsQueue.slice(0, 8) as item}
+					{#each protectedOps.items as item}
 						<div class="rounded-lg border p-4">
 							<div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
 								<div class="space-y-1">
@@ -95,6 +115,15 @@
 						</div>
 					{/each}
 				</div>
+				{#if protectedOps.hiddenCount > 0}
+					<p class="text-muted-foreground mt-3 rounded-lg border border-dashed p-3 text-sm">
+						{protectedOps.hiddenCount} more protected booking operation{protectedOps.hiddenCount ===
+						1
+							? ''
+							: 's'} exist outside this top-priority view. Clear the urgent/manual steps first, then
+						review older protected bookings.
+					</p>
+				{/if}
 			{:else}
 				<p class="text-muted-foreground rounded-lg border border-dashed p-4 text-sm">
 					No paid protected booking operations yet.

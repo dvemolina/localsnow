@@ -43,6 +43,20 @@ export type ProtectedBookingOperationItem = {
 	guaranteeCopy: string;
 };
 
+export type ProtectedBookingOperationsOverview = {
+	items: ProtectedBookingOperationItem[];
+	totalCount: number;
+	hiddenCount: number;
+	urgentCount: number;
+	activeManualActionCount: number;
+	operatorPromise: string;
+};
+
+const ACTIVE_MANUAL_ACTION_STATUSES = new Set<ProtectedBookingOperationStatus>([
+	'replacement_or_refund_needed',
+	'confirm_requested_instructor_first'
+]);
+
 const NEEDS_REPLACEMENT_OR_REFUND = new Set(['rejected', 'cancelled', 'expired', 'no_show']);
 const REQUESTED_INSTRUCTOR_CONFIRMED = new Set(['accepted', 'completed']);
 
@@ -52,7 +66,30 @@ export function buildProtectedBookingOperationsQueue(
 	return rows
 		.map(toProtectedBookingOperationItem)
 		.filter((item): item is ProtectedBookingOperationItem => item != null)
-		.sort((a, b) => a.priority - b.priority || Number(a.startDate) - Number(b.startDate));
+		.sort((a, b) => a.priority - b.priority || toTime(a.startDate) - toTime(b.startDate));
+}
+
+export function buildProtectedBookingOperationsOverview(
+	rows: ProtectedBookingOperationInput[],
+	visibleLimit = 8
+): ProtectedBookingOperationsOverview {
+	const queue = buildProtectedBookingOperationsQueue(rows);
+	const items = queue.slice(0, visibleLimit);
+
+	return {
+		items,
+		totalCount: queue.length,
+		hiddenCount: Math.max(queue.length - items.length, 0),
+		urgentCount: queue.filter((item) => item.status === 'replacement_or_refund_needed').length,
+		activeManualActionCount: queue.filter((item) => ACTIVE_MANUAL_ACTION_STATUSES.has(item.status))
+			.length,
+		operatorPromise:
+			'Manual ops cockpit: no automatic matching, payout, or refund. The product shows the next human step so Moli can run the wires behind the bar.'
+	};
+}
+
+function toTime(date: Date | string): number {
+	return new Date(date).getTime();
 }
 
 function toProtectedBookingOperationItem(
