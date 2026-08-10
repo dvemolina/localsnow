@@ -9,6 +9,7 @@
 	import { getAlternateUrls, route } from '$lib/i18n/routeHelpers';
 	import { page } from '$app/state';
 	import { extractLocale, type Locale } from '$lib/i18n/routes';
+	import { getHomepageTrustPaths } from '$src/features/ClientProof/lib/clientProofPath';
 	let { data } = $props();
 	const PRIMARY_ORIGIN = 'https://localsnow.org';
 
@@ -26,6 +27,7 @@
 		}))
 	);
 	const defaultAlternate = $derived(alternates.find((alt) => alt.locale === 'en'));
+	const homepageTrustPaths = getHomepageTrustPaths();
 
 	// Top resorts for homepage - use $derived for translation reactivity
 	// Showcasing global coverage across continents
@@ -66,7 +68,7 @@
 		'@type': 'WebSite',
 		name: 'Local Snow',
 		description:
-			'Curated directory of ski and snowboard instructors. Browse profiles with real details, check specialties and languages, send lesson requests directly. Free to use, no platform fees.',
+			'Find ski and snowboard instructors and schools. Search free, contact directly without commission, or choose LocalSnow protected booking for replacement, reschedule, or refund support.',
 		url: 'https://localsnow.org',
 		potentialAction: {
 			'@type': 'SearchAction',
@@ -307,6 +309,44 @@
 				{$t('home_free_banner_tagline')}
 			</p>
 		</div>
+	</div>
+</section>
+
+<!-- Free vs Protected Trust Paths -->
+<section class="section">
+	<div class="container max-w-5xl">
+		<div class="mb-8 text-center">
+			<p class="text-primary mb-2 text-sm font-semibold uppercase tracking-wide">How LocalSnow works now</p>
+			<h2 class="mb-3 text-3xl font-bold text-gray-900">{homepageTrustPaths.headline}</h2>
+			<p class="mx-auto max-w-3xl text-base text-muted-foreground md:text-lg">
+				{homepageTrustPaths.subtitle}
+			</p>
+		</div>
+
+		<div class="grid gap-4 md:grid-cols-2">
+			{#each homepageTrustPaths.paths as path}
+				<div class="rounded-xl border bg-card p-6 shadow-sm">
+					<div class="mb-4 flex items-center justify-between gap-3">
+						<h3 class="text-xl font-semibold">{path.label}</h3>
+						<span
+							class={path.kind === 'direct'
+								? 'rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800'
+								: 'rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary'}
+						>
+							{path.priceSignal === 'free' ? 'Free' : 'Protected'}
+						</span>
+					</div>
+					<p class="text-sm leading-relaxed text-muted-foreground">{path.copy}</p>
+					<p class="mt-4 rounded-lg bg-muted p-3 text-sm font-medium text-foreground">
+						{path.clientPromise}
+					</p>
+				</div>
+			{/each}
+		</div>
+
+		<p class="mx-auto mt-5 max-w-3xl text-center text-sm text-muted-foreground">
+			{homepageTrustPaths.operatorTruth}
+		</p>
 	</div>
 </section>
 

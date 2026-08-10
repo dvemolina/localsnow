@@ -3,6 +3,7 @@ import {
 	getAvailabilityProofInputFromWorkingHours,
 	getAvailabilityProofState,
 	getClientPathOptions,
+	getHomepageTrustPaths,
 	protectedBookingIsEnabled
 } from './clientProofPath';
 
@@ -82,5 +83,30 @@ describe('clientProofPath', () => {
 		expect(protectedPath?.safeguardCopy).toContain('reschedule');
 		expect(protectedPath?.safeguardCopy).toContain('refund');
 		expect(protectedPath?.safeguardCopy).not.toContain('payout');
+	});
+
+	it('summarizes the public platform as free to search and paid to guarantee without pretending full automation', () => {
+		const trustPaths = getHomepageTrustPaths();
+
+		expect(trustPaths.headline).toBe(
+			'Free to search. Paid when you want LocalSnow to guarantee the lesson.'
+		);
+		expect(trustPaths.paths.map((path) => path.kind)).toEqual(['direct', 'protected']);
+		expect(trustPaths.paths[0]).toMatchObject({
+			kind: 'direct',
+			label: 'Free direct path',
+			priceSignal: 'free',
+			humanOpsRequired: false
+		});
+		expect(trustPaths.paths[1]).toMatchObject({
+			kind: 'protected',
+			label: 'Protected booking path',
+			priceSignal: 'assisted',
+			humanOpsRequired: true
+		});
+		expect(trustPaths.paths[1].copy).toContain('requested instructor first');
+		expect(trustPaths.paths[1].copy).toContain('replacement');
+		expect(trustPaths.paths[1].copy).toContain('refund');
+		expect(trustPaths.paths[1].copy).not.toContain('automatic payout');
 	});
 });
