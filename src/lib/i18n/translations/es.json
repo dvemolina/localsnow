@@ -428,6 +428,7 @@
 	"role_client": "Cliente",
 	"role_instructor_school": "Instructor (Escuela)",
 	"role_admin": "Admin",
+	"role_operator": "Operador",
 	"role_no_role": "Sin rol",
 	"status_pending": "Pendiente",
 	"status_cancelled": "Cancelled",

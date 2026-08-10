@@ -1,7 +1,7 @@
 // src/routes/admin/schools/+page.server.ts
 import { adminSchoolService } from '$src/features/Admin/lib/adminSchoolService';
 import { fail } from '@sveltejs/kit';
-import { hasRole } from '$src/lib/utils/roles';
+import { hasAdminAccess } from '$src/lib/utils/roles';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ url }) => {
@@ -36,7 +36,7 @@ export const actions: Actions = {
 		const formData = await request.formData();
 		const schoolId = parseInt(formData.get('schoolId') as string);
 
-		if (!locals.user || !hasRole(locals.user, 'admin')) {
+		if (!locals.user || !hasAdminAccess(locals.user)) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -50,7 +50,7 @@ export const actions: Actions = {
 		const schoolId = parseInt(formData.get('schoolId') as string);
 		const reason = formData.get('reason') as string;
 
-		if (!locals.user || !hasRole(locals.user, 'admin')) {
+		if (!locals.user || !hasAdminAccess(locals.user)) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 
@@ -67,7 +67,7 @@ export const actions: Actions = {
 		const formData = await request.formData();
 		const schoolId = parseInt(formData.get('schoolId') as string);
 
-		if (!locals.user || !hasRole(locals.user, 'admin')) {
+		if (!locals.user || !hasAdminAccess(locals.user)) {
 			return fail(403, { error: 'Unauthorized' });
 		}
 

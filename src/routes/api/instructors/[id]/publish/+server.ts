@@ -1,7 +1,7 @@
 import type { RequestHandler } from './$types';
 import { json, error } from '@sveltejs/kit';
 import { InstructorService } from '$src/features/Instructors/lib/instructorService';
-import { hasInstructorRole, hasRole } from '$src/lib/utils/roles';
+import { hasAdminAccess, hasInstructorRole } from '$src/lib/utils/roles';
 
 const instructorService = new InstructorService();
 
@@ -17,13 +17,13 @@ export const POST: RequestHandler = async (event) => {
         throw error(400, 'Invalid instructor ID');
     }
 
-    // Check authorization - only the instructor themselves or admin can publish/unpublish
-    if (user.id !== instructorId && !hasRole(user, 'admin')) {
+    // Check authorization - only the instructor themselves or internal admin/operator can publish/unpublish
+    if (user.id !== instructorId && !hasAdminAccess(user)) {
         throw error(403, 'Forbidden');
     }
 
     // Verify user is an instructor
-    if (!hasInstructorRole(user) && !hasRole(user, 'admin')) {
+    if (!hasInstructorRole(user) && !hasAdminAccess(user)) {
         throw error(403, 'Only instructors can publish profiles');
     }
 

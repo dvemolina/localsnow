@@ -4,7 +4,14 @@ import { eq, and, inArray, isNull, or } from 'drizzle-orm';
 import { adminAuditService } from './adminAuditService';
 import type { RequestEvent } from '@sveltejs/kit';
 
-export type Role = 'admin' | 'instructor-independent' | 'instructor-school' | 'school-admin' | 'client' | null;
+export type Role =
+	| 'admin'
+	| 'operator'
+	| 'instructor-independent'
+	| 'instructor-school'
+	| 'school-admin'
+	| 'client'
+	| null;
 
 export interface TransitionBlock {
 	type: 'active_bookings' | 'school_has_instructors' | 'school_has_admins' | 'school_not_found';

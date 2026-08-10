@@ -557,6 +557,7 @@
 	"role_instructor_independent": "Instructor (Independent)",
 	"role_instructor_school": "Instructor (School)",
 	"role_admin": "Admin",
+	"role_operator": "Operator",
 	"role_no_role": "No role",
 	"status_verified": "Verified",
 	"status_cancelled": "Cancelled",

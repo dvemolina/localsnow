@@ -5,6 +5,9 @@
 	import { t } from '$lib/i18n/i18n';
 	let { data, children } = $props();
 	let user = $state(data.user);
+	const internalRoleLabel = $derived(
+		(user.roles?.includes('admin') || user.role === 'admin') ? $t('role_admin') : $t('role_operator')
+	);
 </script>
 
 <!-- Admin Dashboard with Sidebar -->
@@ -18,7 +21,7 @@
 			</div>
 			<div class="flex items-center gap-2">
 				<span class="text-sm text-muted-foreground">
-					{user.name} ({$t('role_admin')})
+					{user.name} ({internalRoleLabel})
 				</span>
 			</div>
 		</div>

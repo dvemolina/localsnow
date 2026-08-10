@@ -5,7 +5,7 @@
 	import { route } from '$lib/i18n/routeHelpers';
 	import { t } from '$lib/i18n/i18n';
 	import LanguageSwitch from '$lib/components/shared/LanguageSwitch.svelte';
-	import { hasRole } from '$lib/utils/roles';
+	import { hasAdminAccess, hasRole } from '$lib/utils/roles';
 	let { user } = $props()
 
 	const userItems = $derived([
@@ -140,7 +140,7 @@
 		if (hasRole(user, 'instructor-independent')) items.push(...instructorItems);
 		if (hasRole(user, 'instructor-school')) items.push(...instructorSchoolItems);
 		if (hasRole(user, 'school-admin')) items.push(...schoolAdminItems);
-		if (hasRole(user, 'admin')) items.push(...adminItems);
+		if (hasAdminAccess(user)) items.push(...adminItems);
 
 		const seen = new Set();
 		return items.filter(item => {

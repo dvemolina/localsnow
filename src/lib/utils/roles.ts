@@ -1,4 +1,10 @@
-export type UserRole = 'admin' | 'instructor-independent' | 'instructor-school' | 'school-admin' | 'client';
+export type UserRole =
+	| 'admin'
+	| 'operator'
+	| 'instructor-independent'
+	| 'instructor-school'
+	| 'school-admin'
+	| 'client';
 export type UserLike = {
 	role?: UserRole | null;
 	roles?: UserRole[] | null;
@@ -18,7 +24,11 @@ export function hasRole(user: UserLike | null | undefined, role: UserRole): bool
 export function hasAnyRole(user: UserLike | null | undefined, roles: UserRole[]): boolean {
 	if (!roles.length) return false;
 	const userRoles = getRoles(user);
-	return roles.some(role => userRoles.includes(role));
+	return roles.some((role) => userRoles.includes(role));
+}
+
+export function hasAdminAccess(user: UserLike | null | undefined): boolean {
+	return hasAnyRole(user, ['admin', 'operator']);
 }
 
 export function hasInstructorRole(user: UserLike | null | undefined): boolean {
