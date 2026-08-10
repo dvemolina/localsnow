@@ -20,6 +20,22 @@ export type ClientPathOption = {
 	enabled: boolean;
 };
 
+export type HomepageTrustPath = {
+	kind: 'direct' | 'protected';
+	label: string;
+	priceSignal: 'free' | 'assisted';
+	copy: string;
+	clientPromise: string;
+	humanOpsRequired: boolean;
+};
+
+export type HomepageTrustPaths = {
+	headline: string;
+	subtitle: string;
+	paths: HomepageTrustPath[];
+	operatorTruth: string;
+};
+
 export type ProtectedBookingCapabilityInput = {
 	hasBaseLesson: boolean;
 	isSchoolRate?: boolean;
@@ -97,10 +113,39 @@ export function getClientPathOptions({
 		priceSignal: 'assisted',
 		enabled: hasProtectedBooking,
 		safeguardCopy: hasProtectedBooking
-			? 'With LocalSnow safeguarded booking, we reschedule, find another suitable instructor, or refund the client if the instructor cannot serve the request.'
+			? 'With LocalSnow safeguarded booking, we contact the requested instructor first, then reschedule, find another suitable instructor, or refund the client if the instructor cannot serve the request.'
 			: 'For now, use the free request path. LocalSnow protected support will be enabled profile by profile.',
 		cta: hasProtectedBooking ? 'Request protected booking' : 'Use free request for now'
 	};
 
 	return [direct, protectedPath];
+}
+
+export function getHomepageTrustPaths(): HomepageTrustPaths {
+	return {
+		headline: 'Free to search. Paid when you want LocalSnow to guarantee the lesson.',
+		subtitle:
+			'Use LocalSnow as a free directory when you want direct contact. Choose protected booking when you want LocalSnow to help make the lesson happen.',
+		paths: [
+			{
+				kind: 'direct',
+				label: 'Free direct path',
+				priceSignal: 'free',
+				copy: 'Find instructors and schools, contact them directly, and wait for their confirmation. LocalSnow does not take commission or guarantee the outcome on the free path.',
+				clientPromise: 'Discovery and direct contact stay free.',
+				humanOpsRequired: false
+			},
+			{
+				kind: 'protected',
+				label: 'Protected booking path',
+				priceSignal: 'assisted',
+				copy: 'Pay for LocalSnow support: we contact the requested instructor first, then arrange a suitable replacement, reschedule, or refund if the lesson cannot happen.',
+				clientPromise:
+					'One protected total before payment; any more expensive replacement needs client approval first.',
+				humanOpsRequired: true
+			}
+		],
+		operatorTruth:
+			'Behind the scenes, protected booking is manually operated by LocalSnow until real transaction volume proves automation is needed.'
+	};
 }
