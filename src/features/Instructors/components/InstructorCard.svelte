@@ -9,7 +9,6 @@
 	import {
 		getAvailabilityProofInputFromWorkingHours,
 		getAvailabilityProofState,
-		getClientPathOptions,
 		protectedBookingIsEnabled
 	} from '$src/features/ClientProof/lib/clientProofPath';
 
@@ -28,8 +27,6 @@
 			workingHoursCount: instructorData.clientProofPath?.workingHoursCount ?? 0
 		})
 	);
-	const clientPathOptions = getClientPathOptions({ hasProtectedBooking });
-	const protectedPath = clientPathOptions.find((option) => option.kind === 'protected');
 
 	// Map sport IDs to labels
 	const sportLabels = {
@@ -182,15 +179,15 @@
 		{/if}
 		<div class="rounded-md border border-primary/20 bg-primary/5 px-3 py-2 text-xs">
 			<div class="flex items-center justify-between gap-2">
-				<span class="font-medium">{availabilityProof.label}</span>
+				<span class="font-medium">{$t(availabilityProof.labelKey)}</span>
 				<Badge variant="secondary" class="text-[0.65rem]">
-					{hasProtectedBooking ? 'assisted option' : 'free request'}
+					{$t(hasProtectedBooking ? 'client_path_badge_assisted' : 'client_path_badge_free')}
 				</Badge>
 			</div>
 			<p class="mt-1 text-muted-foreground">
 				{hasProtectedBooking
-					? `Free request or ${protectedPath?.label.toLowerCase()}.`
-					: 'Free request first. Protected support is enabled profile by profile.'}
+					? $t('client_path_card_assisted_summary')
+					: $t('client_path_card_free_summary')}
 			</p>
 		</div>
 		<Button variant="outline" class="group-hover:bg-primary group-hover:text-primary-foreground transition-colors">

@@ -6,49 +6,52 @@ export type AvailabilityProofInput = {
 };
 
 export type AvailabilityProofState = {
-	label: 'Available to request' | 'Request availability' | 'Availability not set';
+	labelKey: string;
 	tone: 'positive' | 'neutral' | 'muted';
-	clientCopy: string;
+	clientCopyKey: string;
 };
 
 export type ClientPathOption = {
 	kind: 'direct' | 'protected';
-	label: string;
+	labelKey: string;
 	priceSignal: 'free' | 'assisted';
-	safeguardCopy: string;
-	cta: string;
+	safeguardCopyKey: string;
+	ctaKey: string;
 	enabled: boolean;
 };
 
 export type HomepageTrustPath = {
 	kind: 'direct' | 'protected';
-	label: string;
+	labelKey: string;
 	priceSignal: 'free' | 'assisted';
-	copy: string;
-	clientPromise: string;
+	badgeKey: string;
+	copyKey: string;
+	clientPromiseKey: string;
 	humanOpsRequired: boolean;
 };
 
 export type HomepageTrustPaths = {
-	headline: string;
-	subtitle: string;
+	eyebrowKey: string;
+	headlineKey: string;
+	subtitleKey: string;
 	paths: HomepageTrustPath[];
-	operatorTruth: string;
+	operatorTruthKey: string;
 };
 
 export type HowItWorksTrustStep = {
 	kind: 'direct' | 'protected';
-	label: string;
+	labelKey: string;
+	badgeKey: string;
 	costSignal: 'free' | 'paid-support';
 	operatorRole: 'none' | 'manual-support';
-	clientCopy: string;
+	clientCopyKey: string;
 };
 
 export type HowItWorksTrustPaths = {
-	heading: string;
-	subtitle: string;
+	headingKey: string;
+	subtitleKey: string;
 	steps: HowItWorksTrustStep[];
-	discoveryNote: string;
+	discoveryNoteKey: string;
 };
 
 export type ProtectedBookingCapabilityInput = {
@@ -60,27 +63,24 @@ export type ProtectedBookingCapabilityInput = {
 export function getAvailabilityProofState(input: AvailabilityProofInput): AvailabilityProofState {
 	if (!input.hasAvailabilitySignal) {
 		return {
-			label: 'Availability not set',
+			labelKey: 'availability_proof_not_set_label',
 			tone: 'muted',
-			clientCopy:
-				'This instructor has not published a LocalSnow availability pattern yet. Send a free request and wait for confirmation.'
+			clientCopyKey: 'availability_proof_not_set_copy'
 		};
 	}
 
 	if (input.isFresh && (input.availableSlotsCount ?? 0) > 0) {
 		return {
-			label: 'Available to request',
+			labelKey: 'availability_proof_available_label',
 			tone: 'positive',
-			clientCopy:
-				'This profile has a LocalSnow availability pattern. It shows whether a request may work, not private booking details.'
+			clientCopyKey: 'availability_proof_available_copy'
 		};
 	}
 
 	return {
-		label: 'Request availability',
+		labelKey: 'availability_proof_request_label',
 		tone: 'neutral',
-		clientCopy:
-			'Availability is not live-confirmed for this profile yet. Request your preferred time and the instructor will confirm or suggest another option.'
+		clientCopyKey: 'availability_proof_request_copy'
 	};
 }
 
@@ -112,111 +112,83 @@ export function getClientPathOptions({
 }: {
 	hasProtectedBooking: boolean;
 }): ClientPathOption[] {
-	const direct: ClientPathOption = {
-		kind: 'direct',
-		label: 'Free direct request',
-		priceSignal: 'free',
-		enabled: true,
-		safeguardCopy:
-			'No LocalSnow safeguard: you contact the instructor directly and wait for their confirmation.',
-		cta: 'Contact instructor free'
-	};
-
-	const protectedPath: ClientPathOption = {
-		kind: 'protected',
-		label: hasProtectedBooking ? 'Protected booking request' : 'Protected support coming soon',
-		priceSignal: 'assisted',
-		enabled: hasProtectedBooking,
-		safeguardCopy: hasProtectedBooking
-			? 'With LocalSnow safeguarded booking, we contact the requested instructor first, then reschedule, find another suitable instructor, or refund the client if the instructor cannot serve the request.'
-			: 'For now, use the free request path. LocalSnow protected support will be enabled profile by profile.',
-		cta: hasProtectedBooking ? 'Request protected booking' : 'Use free request for now'
-	};
-
-	return [direct, protectedPath];
+	return [
+		{
+			kind: 'direct',
+			labelKey: 'client_path_direct_label',
+			priceSignal: 'free',
+			enabled: true,
+			safeguardCopyKey: 'client_path_direct_safeguard',
+			ctaKey: 'client_path_direct_cta'
+		},
+		{
+			kind: 'protected',
+			labelKey: hasProtectedBooking
+				? 'client_path_protected_label'
+				: 'client_path_protected_disabled_label',
+			priceSignal: 'assisted',
+			enabled: hasProtectedBooking,
+			safeguardCopyKey: hasProtectedBooking
+				? 'client_path_protected_safeguard'
+				: 'client_path_protected_disabled_safeguard',
+			ctaKey: hasProtectedBooking
+				? 'client_path_protected_cta'
+				: 'client_path_protected_disabled_cta'
+		}
+	];
 }
 
 export function getHomepageTrustPaths(): HomepageTrustPaths {
 	return {
-		headline: 'Free to search. Paid when you want LocalSnow to guarantee the lesson.',
-		subtitle:
-			'Use LocalSnow as a free directory when you want direct contact. Choose protected booking when you want LocalSnow to help make the lesson happen.',
+		eyebrowKey: 'home_trust_paths_eyebrow',
+		headlineKey: 'home_trust_paths_headline',
+		subtitleKey: 'home_trust_paths_subtitle',
 		paths: [
 			{
 				kind: 'direct',
-				label: 'Free direct path',
+				labelKey: 'home_trust_paths_direct_label',
 				priceSignal: 'free',
-				copy: 'Find instructors and schools, contact them directly, and wait for their confirmation. LocalSnow does not take commission or guarantee the outcome on the free path.',
-				clientPromise: 'Discovery and direct contact stay free.',
+				badgeKey: 'home_trust_paths_direct_badge',
+				copyKey: 'home_trust_paths_direct_copy',
+				clientPromiseKey: 'home_trust_paths_direct_promise',
 				humanOpsRequired: false
 			},
 			{
 				kind: 'protected',
-				label: 'Protected booking path',
+				labelKey: 'home_trust_paths_protected_label',
 				priceSignal: 'assisted',
-				copy: 'Pay for LocalSnow support: we contact the requested instructor first, then arrange a suitable replacement, reschedule, or refund if the lesson cannot happen.',
-				clientPromise:
-					'One protected total before payment; any more expensive replacement needs client approval first.',
+				badgeKey: 'home_trust_paths_protected_badge',
+				copyKey: 'home_trust_paths_protected_copy',
+				clientPromiseKey: 'home_trust_paths_protected_promise',
 				humanOpsRequired: true
 			}
 		],
-		operatorTruth:
-			'Behind the scenes, protected booking is manually operated by LocalSnow until real transaction volume proves automation is needed.'
+		operatorTruthKey: 'home_trust_paths_operator_truth'
 	};
 }
 
-export function getHowItWorksTrustPaths(locale: 'en' | 'es' = 'en'): HowItWorksTrustPaths {
-	if (locale === 'es') {
-		return {
-			heading: 'Elige el nivel de ayuda que quieres',
-			subtitle:
-				'LocalSnow puede ser un directorio gratuito o una capa de soporte para reserva protegida. El cliente elige la ruta antes de comprometerse.',
-			steps: [
-				{
-					kind: 'direct',
-					label: 'Ruta directa gratuita',
-					costSignal: 'free',
-					operatorRole: 'none',
-					clientCopy:
-						'Explora perfiles, contacta directamente con instructores o escuelas, acordáis los detalles y les pagas directamente. LocalSnow no garantiza la confirmación en esta ruta.'
-				},
-				{
-					kind: 'protected',
-					label: 'Ruta protegida con LocalSnow',
-					costSignal: 'paid-support',
-					operatorRole: 'manual-support',
-					clientCopy:
-						'Paga soporte de LocalSnow cuando quieres ayuda para que la clase ocurra: contactamos primero al instructor solicitado y luego ayudamos con sustitución, reprogramación o reembolso si hace falta. Es soporte humano, no cumplimiento automático por software.'
-				}
-			],
-			discoveryNote:
-				'Esto intencionadamente no es un checklist fijo todavía. LocalSnow está aprendiendo el flujo real de reserva protegida mediante operaciones manuales antes de automatizarlo.'
-		};
-	}
-
+export function getHowItWorksTrustPaths(): HowItWorksTrustPaths {
 	return {
-		heading: 'Choose the level of help you want',
-		subtitle:
-			'LocalSnow can be a free directory or a protected booking support layer. The client chooses the route before committing.',
+		headingKey: 'how_it_works_trust_paths_heading',
+		subtitleKey: 'how_it_works_trust_paths_subtitle',
 		steps: [
 			{
 				kind: 'direct',
-				label: 'Free direct route',
+				labelKey: 'how_it_works_trust_paths_direct_label',
+				badgeKey: 'how_it_works_trust_paths_direct_badge',
 				costSignal: 'free',
 				operatorRole: 'none',
-				clientCopy:
-					'Browse profiles, contact instructors or schools directly, agree the details yourselves, and pay them directly. LocalSnow does not guarantee confirmation on this route.'
+				clientCopyKey: 'how_it_works_trust_paths_direct_copy'
 			},
 			{
 				kind: 'protected',
-				label: 'Protected LocalSnow route',
+				labelKey: 'how_it_works_trust_paths_protected_label',
+				badgeKey: 'how_it_works_trust_paths_protected_badge',
 				costSignal: 'paid-support',
 				operatorRole: 'manual-support',
-				clientCopy:
-					'Pay for LocalSnow support when you want help making the lesson happen: we contact the requested instructor first, then help with a suitable replacement, reschedule, or refund if needed. This is human support, not software-driven fulfillment.'
+				clientCopyKey: 'how_it_works_trust_paths_protected_copy'
 			}
 		],
-		discoveryNote:
-			'This is intentionally not a fixed checklist yet. LocalSnow is learning the real protected-booking workflow through manual operations before automating it.'
+		discoveryNoteKey: 'how_it_works_trust_paths_discovery_note'
 	};
 }

@@ -15,15 +15,13 @@
 	const canonicalPath = $derived(route('/how-it-works', currentLocale));
 	const canonicalUrl = $derived(`${PRIMARY_ORIGIN}${canonicalPath}`);
 	const alternates = $derived(
-		getAlternateUrls(canonicalPath).map((alt) => ({
+		getAlternateUrls('/how-it-works').map((alt) => ({
 			locale: alt.locale,
 			url: `${PRIMARY_ORIGIN}${alt.url}`
 		}))
 	);
 	const defaultAlternate = $derived(alternates.find((alt) => alt.locale === 'en'));
-	const howItWorksTrustPaths = $derived(
-		getHowItWorksTrustPaths(currentLocale === 'es' ? 'es' : 'en')
-	);
+	const howItWorksTrustPaths = getHowItWorksTrustPaths();
 
 	// FAQ Schema for SEO - using get(t) for non-reactive context
 	const faqSchema = {
@@ -136,27 +134,23 @@
 
 	<!-- Free vs Protected Routes -->
 	<section class="border-border bg-card not-prose mt-8 rounded-lg border p-6 shadow-sm">
-		<h2 class="title3 mb-2">{howItWorksTrustPaths.heading}</h2>
-		<p class="mb-5 text-sm text-gray-600">{howItWorksTrustPaths.subtitle}</p>
+		<h2 class="title3 mb-2">{$t(howItWorksTrustPaths.headingKey)}</h2>
+		<p class="mb-5 text-sm text-gray-600">{$t(howItWorksTrustPaths.subtitleKey)}</p>
 
 		<div class="grid gap-4 md:grid-cols-2">
 			{#each howItWorksTrustPaths.steps as step}
 				<div class="rounded-lg border bg-white p-5">
 					<div class="mb-3 flex items-center justify-between gap-3">
-						<h3 class="title4 mb-0">{step.label}</h3>
+						<h3 class="title4 mb-0">{$t(step.labelKey)}</h3>
 						<span
 							class={step.costSignal === 'free'
 								? 'rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800'
 								: 'bg-primary/10 text-primary rounded-full px-3 py-1 text-xs font-semibold'}
 						>
-							{#if step.costSignal === 'free'}
-								{currentLocale === 'es' ? 'Gratis' : 'Free'}
-							{:else}
-								{currentLocale === 'es' ? 'Protegida' : 'Protected'}
-							{/if}
+							{$t(step.badgeKey)}
 						</span>
 					</div>
-					<p class="mb-0 text-sm text-gray-600">{step.clientCopy}</p>
+					<p class="mb-0 text-sm text-gray-600">{$t(step.clientCopyKey)}</p>
 				</div>
 			{/each}
 		</div>
@@ -164,7 +158,7 @@
 		<p
 			class="mt-4 mb-0 rounded-md border border-dashed border-blue-200 bg-blue-50 p-3 text-sm text-blue-900"
 		>
-			{howItWorksTrustPaths.discoveryNote}
+			{$t(howItWorksTrustPaths.discoveryNoteKey)}
 		</p>
 	</section>
 
